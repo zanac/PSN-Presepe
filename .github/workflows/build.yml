@@ -1,0 +1,36 @@
+name: Arduino Mega Build
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Arduino CLI
+        uses: arduino/setup-arduino-cli@v2
+        with:
+          version: "1.x"
+
+      - name: Install AVR core
+        run: |
+          arduino-cli core update-index
+          arduino-cli core install arduino:avr
+
+      - name: Compile for Arduino Mega 2560
+        run: |
+          mkdir -p build
+          arduino-cli compile \
+            --fqbn arduino:avr:mega \
+            --output-dir build \
+            firmware/PSN-Presepe
+
+      - name: Upload compiled firmware artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: PSN-Presepe-Arduino-Mega
+          path: build/
