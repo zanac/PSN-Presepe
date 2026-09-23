@@ -20,14 +20,14 @@ Controller basato su Arduino Mega 2560 per la gestione modulare di un presepe a 
 
 I pin di Arduino **non alimentano direttamente i carichi a 12 V**. Ogni uscita del Mega pilota l'ingresso `PWM` del relativo canale MOSFET. I normali carichi a due fili possono utilizzare la coppia `OUT+` / `OUT-`; la striscia RGB a positivo comune viene invece collegata come indicato qui sotto.
 
-### MOSFET #1 — Cielo e stelle
+### MOSFET #1 — Cielo RGB
 
 | Arduino Mega | Ingresso MOSFET | Uscita MOSFET | Carico 12 V | Controllo |
 |---:|---|---|---|---|
 | D2 | PWM1 | OUT1- | Striscia RGB — ritorno R | PWM / dimmerabile |
 | D3 | PWM2 | OUT2- | Striscia RGB — ritorno G | PWM / dimmerabile |
 | D4 | PWM3 | OUT3- | Striscia RGB — ritorno B | PWM / dimmerabile |
-| D5 | PWM4 | OUT4+ / OUT4- | Stelle | PWM / dimmerabile |
+| — | PWM4 | OUT4+ / OUT4- | **Libero** | — |
 
 La striscia RGB è un carico **12 V a positivo comune (anodo comune)**. Il suo unico filo `+12V` viene collegato direttamente alla distribuzione +12 V protetta/WAGO e rimane sempre alimentato. I tre canali MOSFET commutano invece i ritorni R/G/B sul lato negativo:
 
@@ -48,16 +48,20 @@ Mega D4 ────────────────────────
 
 La striscia RGB **non deve essere cablata come tre carichi indipendenti a due fili**. In questa configurazione `OUT1+`, `OUT2+` e `OUT3+` non sono necessari per la striscia RGB.
 
-Per le stelle:
+### Stelle WS2811 indirizzabili
+
+Le stelle sono ora una stringa **WS2811 12 V da 50 pixel individualmente indirizzabili**. Non passano dal MOSFET: D5 è il segnale DATA.
 
 ```text
-Mega D5 ───────► PWM4
-
-12V PSU ───────► DC+ / DC-     MOSFET #1
-
-                 OUT4+ ───────► + Stelle
-                 OUT4- ───────► - Stelle
++12V alimentatore ──► fusibile/distribuzione ──► WS2811 +12V
+0V alimentatore ───────────────────────────────► WS2811 GND
+Arduino GND ───────────────────────────────────► stesso 0V comune
+Mega D5 ── resistenza 330–470 Ω ──────────────► WS2811 DATA / DIN
 ```
+
+Con le WS2811 il **GND Arduino deve essere comune allo 0 V dell'alimentatore 12 V**, perché il segnale DATA necessita dello stesso riferimento elettrico. Il Mega continua comunque a essere alimentato a 5 V via USB: il +12 V non deve mai essere collegato ai pin 5V o I/O di Arduino.
+
+Il firmware può comandare ogni stella separatamente, con luminosità e colore differenti, facendo comparire progressivamente stelle casuali durante il crepuscolo e spegnendole durante l'alba. Il canale 4 del MOSFET #1 rimane libero.
 
 ### MOSFET #2 — Scenografia e movimenti
 
@@ -107,7 +111,7 @@ La CI Wokwi rimane per ora opzionale: la normale compilazione GitHub Actions non
 
 ## Nota elettrica
 
-Il lato logico Arduino 5 V e il lato di potenza 12 V sono mantenuti separati nel progetto attuale. Prima del cablaggio definitivo verificare con il multimetro la continuità tra `DC+` e gli eventuali `OUT+` utilizzati. Per pompa e mulino devono inoltre essere verificati corrente nominale, corrente di spunto e protezione dei carichi induttivi.
+Con l'introduzione delle stelle WS2811, **Arduino GND e lo 0 V dell'alimentatore 12 V sono collegati in comune** per fornire il riferimento al segnale DATA. Il Mega resta alimentato separatamente a 5 V via USB. Prima del cablaggio definitivo verificare con il multimetro la continuità tra `DC+` e gli eventuali `OUT+` utilizzati. Per pompa e mulino devono inoltre essere verificati corrente nominale, corrente di spunto e protezione dei carichi induttivi.
 
 ---
 
