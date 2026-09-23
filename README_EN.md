@@ -8,6 +8,12 @@ Arduino Mega 2560 controller for a modular 12V nativity scene.
 
 > Conceptual mockup of the controller layout. For authoritative wiring, refer to the vector diagrams in the `docs/` directory.
 
+## Wiring diagram
+
+![PSN-Presepe Phase 1 + Phase 2 wiring diagram](docs/schema-fase1-fase2-pulito.png)
+
+> This is the **current reference wiring diagram**. The 12 V RGB strip uses a common positive connection: +12 V is wired directly, while R, G and B are switched on the negative side by the MOSFET channels.
+
 ## Current hardware mapping
 
 The Arduino pins **do not power the 12V loads directly**. Each Mega output drives the corresponding `PWM` input of a MOSFET channel. Two-wire loads can use the channel's `OUT+` / `OUT-` pair; the common-positive RGB strip is wired differently as shown below.
