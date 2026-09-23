@@ -1,105 +1,107 @@
 # PSN-Presepe
 
-Arduino Mega 2560 controller for a modular 12V nativity scene.
+Controller basato su Arduino Mega 2560 per la gestione modulare di un presepe a 12 V.
 
-## Controller mockup
+**Italiano** | [English](README_EN.md)
 
-![PSN-Presepe controller mockup](docs/a_high_resolution_infographic_wiring_diagram_photo.png)
+## Mockup della centralina
 
-> Conceptual mockup of the controller layout. For authoritative wiring, refer to the vector diagrams in the `docs/` directory.
+![Mockup centralina PSN-Presepe](docs/a_high_resolution_infographic_wiring_diagram_photo.png)
 
-## Current hardware mapping
+> Mockup concettuale della disposizione della centralina. Per i collegamenti elettrici fare riferimento agli schemi vettoriali presenti nella cartella `docs/`.
 
-The Arduino pins **do not power the 12V loads directly**. Each Mega output drives the corresponding `PWM` input of a MOSFET channel. Two-wire loads can use the channel's `OUT+` / `OUT-` pair; the common-positive RGB strip is wired differently as shown below.
+## Mappatura hardware attuale
 
-### MOSFET #1 — Sky and stars
+I pin di Arduino **non alimentano direttamente i carichi a 12 V**. Ogni uscita del Mega pilota l'ingresso `PWM` del relativo canale MOSFET. I normali carichi a due fili possono utilizzare la coppia `OUT+` / `OUT-`; la striscia RGB a positivo comune viene invece collegata come indicato qui sotto.
 
-| Arduino Mega | MOSFET input | MOSFET output | 12V load | Control |
+### MOSFET #1 — Cielo e stelle
+
+| Arduino Mega | Ingresso MOSFET | Uscita MOSFET | Carico 12 V | Controllo |
 |---:|---|---|---|---|
-| D2 | PWM1 | OUT1- | RGB strip — R return | PWM / dimmable |
-| D3 | PWM2 | OUT2- | RGB strip — G return | PWM / dimmable |
-| D4 | PWM3 | OUT3- | RGB strip — B return | PWM / dimmable |
-| D5 | PWM4 | OUT4+ / OUT4- | Stars | PWM / dimmable |
+| D2 | PWM1 | OUT1- | Striscia RGB — ritorno R | PWM / dimmerabile |
+| D3 | PWM2 | OUT2- | Striscia RGB — ritorno G | PWM / dimmerabile |
+| D4 | PWM3 | OUT3- | Striscia RGB — ritorno B | PWM / dimmerabile |
+| D5 | PWM4 | OUT4+ / OUT4- | Stelle | PWM / dimmerabile |
 
-The RGB strip is a **12V common-positive (common-anode)** load. Its single `+12V` wire is connected directly to the protected +12V distribution/WAGO and remains continuously supplied. The MOSFET channels switch the three R/G/B returns on the negative side:
+La striscia RGB è un carico **12 V a positivo comune (anodo comune)**. Il suo unico filo `+12V` viene collegato direttamente alla distribuzione +12 V protetta/WAGO e rimane sempre alimentato. I tre canali MOSFET commutano invece i ritorni R/G/B sul lato negativo:
 
 ```text
-+12V PSU ──► fuse/distribution ──► RGB +12V common
++12V alimentatore ──► fusibile/distribuzione ──► +12V comune RGB
 
-RGB R ───────────────────────────► OUT1-
-RGB G ───────────────────────────► OUT2-
-RGB B ───────────────────────────► OUT3-
+RGB R ─────────────────────────────────────────► OUT1-
+RGB G ─────────────────────────────────────────► OUT2-
+RGB B ─────────────────────────────────────────► OUT3-
 
-Mega D2 ─────────────────────────► PWM1  (Red)
-Mega D3 ─────────────────────────► PWM2  (Green)
-Mega D4 ─────────────────────────► PWM3  (Blue)
+Mega D2 ───────────────────────────────────────► PWM1  (Rosso)
+Mega D3 ───────────────────────────────────────► PWM2  (Verde)
+Mega D4 ───────────────────────────────────────► PWM3  (Blu)
 
-12V PSU + ───────────────────────► MOSFET DC+
-12V PSU 0V ──────────────────────► MOSFET DC-
++12V alimentatore ─────────────────────────────► DC+ MOSFET
+0V alimentatore ───────────────────────────────► DC- MOSFET
 ```
 
-Do **not** wire the RGB strip as three independent two-wire loads. The `OUT1+`, `OUT2+` and `OUT3+` terminals are not needed for the RGB strip in this wiring scheme.
+La striscia RGB **non deve essere cablata come tre carichi indipendenti a due fili**. In questa configurazione `OUT1+`, `OUT2+` e `OUT3+` non sono necessari per la striscia RGB.
 
-Example for the stars:
+Per le stelle:
 
 ```text
 Mega D5 ───────► PWM4
 
 12V PSU ───────► DC+ / DC-     MOSFET #1
 
-                 OUT4+ ───────► + Stars
-                 OUT4- ───────► - Stars
+                 OUT4+ ───────► + Stelle
+                 OUT4- ───────► - Stelle
 ```
 
-### MOSFET #2 — Scenery and movements
+### MOSFET #2 — Scenografia e movimenti
 
-| Arduino Mega | MOSFET input | MOSFET output | 12V load | Planned control |
+| Arduino Mega | Ingresso MOSFET | Uscita MOSFET | Carico 12 V | Controllo previsto |
 |---:|---|---|---|---|
-| D6 | PWM1 | OUT1+ / OUT1- | House lights | ON/OFF / PWM |
-| D7 | PWM2 | OUT2+ / OUT2- | Pump | ON/OFF |
-| D8 | PWM3 | OUT3+ / OUT3- | Mill | ON/OFF |
-| D9 | PWM4 | OUT4+ / OUT4- | Grotto / lamp posts | ON/OFF / PWM |
+| D6 | PWM1 | OUT1+ / OUT1- | Luci case | ON/OFF / PWM |
+| D7 | PWM2 | OUT2+ / OUT2- | Pompa | ON/OFF |
+| D8 | PWM3 | OUT3+ / OUT3- | Mulino | ON/OFF |
+| D9 | PWM4 | OUT4+ / OUT4- | Grotta / lampioni | ON/OFF / PWM |
 
-D6-D9 are currently reserved for Phase 2; the present firmware implements the Phase 1 sky/stars sequence.
+D6-D9 sono attualmente riservati alla Fase 2; il firmware attuale implementa la Fase 1 dedicata a cielo e stelle.
 
-### Controls
+### Comandi
 
-| Arduino Mega | Device | Wiring |
+| Arduino Mega | Dispositivo | Collegamento |
 |---:|---|---|
-| D22 | START/STOP button | D22 ↔ button ↔ logic GND |
-| D23 | NEXT button | D23 ↔ button ↔ logic GND |
-| D24 | TEST button | D24 ↔ button ↔ logic GND |
-| A0 | B10K cycle-speed potentiometer | 5V ↔ outer pin, A0 ↔ wiper, GND ↔ outer pin |
+| D22 | Pulsante START/STOP | D22 ↔ pulsante ↔ GND logica |
+| D23 | Pulsante AVANTI | D23 ↔ pulsante ↔ GND logica |
+| D24 | Pulsante TEST | D24 ↔ pulsante ↔ GND logica |
+| A0 | Potenziometro B10K velocità ciclo | 5V ↔ esterno, A0 ↔ cursore, GND ↔ esterno |
 
-The buttons use `INPUT_PULLUP`, so no external pull-up resistor is required. Arduino logic GND is distributed to the MOSFET `GND1...GND4` inputs and controls through the logic-ground WAGO.
+I pulsanti utilizzano `INPUT_PULLUP`, quindi non richiedono una resistenza di pull-up esterna. Il GND logico di Arduino viene distribuito tramite WAGO agli ingressi `GND1...GND4` dei MOSFET e ai comandi.
 
 ## Firmware
 
-Open:
+Aprire:
 
 `firmware/PSN-Presepe/PSN-Presepe.ino`
 
-with the standard Arduino IDE and select **Arduino Mega or Mega 2560**.
+con Arduino IDE standard e selezionare **Arduino Mega or Mega 2560**.
 
-The current firmware implements Phase 1 (RGB sky + stars + controls). D6-D9 are reserved in the source for the Phase 2 second MOSFET and will be activated as the sequence is developed.
+Il firmware attuale implementa la Fase 1 (cielo RGB + stelle + comandi). D6-D9 sono riservati nel sorgente al secondo modulo MOSFET della Fase 2.
 
 ## GitHub Actions
 
-`.github/workflows/build.yml` can be started manually from the GitHub Actions page and compiles for:
+Il workflow `.github/workflows/build.yml` può essere avviato manualmente dalla pagina GitHub Actions e compila il firmware per:
 
 `arduino:avr:mega`
 
-The compiled HEX/ELF files are uploaded as a GitHub Actions artifact.
+I file HEX/ELF compilati vengono pubblicati come artifact della GitHub Action.
 
-## Simulation
+## Simulazione
 
-`simulation/diagram.json` contains a starter Wokwi model. LEDs represent the real MOSFET channels, so the control logic can be tested without connecting 12V hardware.
+`simulation/diagram.json` contiene un modello iniziale per Wokwi. I LED virtuali rappresentano i canali MOSFET reali e permettono di verificare la logica senza collegare l'hardware a 12 V.
 
-The repository deliberately keeps Wokwi CI optional at this stage: the normal build works without any external secret/token.
+La CI Wokwi rimane per ora opzionale: la normale compilazione GitHub Actions non richiede token o servizi esterni.
 
-## Electrical note
+## Nota elettrica
 
-The Arduino 5V logic side and 12V power side are kept separate in the current design. Before final RGB wiring, verify with a multimeter whether DC+ is continuous with OUT1+/OUT2+/OUT3+/OUT4+ on the actual MOSFET board. Pump and mill require current/inrush and inductive-load protection checks before physical connection.
+Il lato logico Arduino 5 V e il lato di potenza 12 V sono mantenuti separati nel progetto attuale. Prima del cablaggio definitivo verificare con il multimetro la continuità tra `DC+` e gli eventuali `OUT+` utilizzati. Per pompa e mulino devono inoltre essere verificati corrente nominale, corrente di spunto e protezione dei carichi induttivi.
 
 ---
 
