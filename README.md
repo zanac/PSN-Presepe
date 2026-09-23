@@ -2,6 +2,12 @@
 
 Arduino Mega 2560 controller for a modular 12V nativity scene.
 
+## Controller mockup
+
+![PSN-Presepe controller mockup](docs/a_high_resolution_infographic_wiring_diagram_photo.png)
+
+> Conceptual mockup of the controller layout. For authoritative wiring, refer to the vector diagrams in the `docs/` directory.
+
 ## Current hardware mapping
 
 | Module | Input | Mega pin | Function |
@@ -29,7 +35,7 @@ The current firmware implements Phase 1 (RGB sky + stars + controls). D6-D9 are 
 
 ## GitHub Actions
 
-`.github/workflows/build.yml` compiles every push and pull request for:
+`.github/workflows/build.yml` can be started manually from the GitHub Actions page and compiles for:
 
 `arduino:avr:mega`
 
