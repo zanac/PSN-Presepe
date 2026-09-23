@@ -6,7 +6,7 @@
     D2 = Cielo RGB Rosso
     D3 = Cielo RGB Verde
     D4 = Cielo RGB Blu
-    D5 = Stelle
+    D5 = DATA stelle WS2811 (50 pixel, 12 V)
 
   COMANDI DEFINITIVI
     D22 = START/STOP (pulsante NO verso GND)
@@ -27,12 +27,19 @@
 
   Serial Monitor: 115200 baud
 
+  STELLE WS2811:
+    +12V -> alimentatore 12 V protetto
+    GND  -> 0 V alimentatore E GND Arduino (massa comune)
+    DATA -> D5 tramite resistenza 330-470 ohm
+    MOSFET #1 canale 4 libero
+
   NOTA MOSFET:
   Quando avremo verificato il B0GXDL8N7D reale, se gli ingressi
   risultassero active-low basta impostare PWM_INVERTED = true.
 */
 
 #include <Arduino.h>
+#include <Adafruit_NeoPixel.h>
 
 // ============================================================
 // CONFIGURAZIONE PIN
@@ -41,7 +48,9 @@
 const uint8_t PIN_CIELO_R = 2;
 const uint8_t PIN_CIELO_G = 3;
 const uint8_t PIN_CIELO_B = 4;
-const uint8_t PIN_STELLE  = 5;
+const uint8_t PIN_STELLE_DATA = 5;
+const uint16_t NUM_STELLE = 50;
+Adafruit_NeoPixel stelle(NUM_STELLE, PIN_STELLE_DATA, NEO_GRB + NEO_KHZ800);
 
 const uint8_t PIN_START = 22;
 const uint8_t PIN_NEXT  = 23;
@@ -120,7 +129,14 @@ void setCielo(uint8_t r, uint8_t g, uint8_t b) {
 }
 
 void setStelle(uint8_t value) {
-  pwmWrite(PIN_STELLE, value);
+  // WS2811: bianco caldo, luminosita' globale variabile.
+  // Ogni pixel riceve una lieve variazione deterministica per evitare uniformita'.
+  for (uint16_t i = 0; i < NUM_STELLE; i++) {
+    uint8_t scala = 45 + ((i * 37U) % 56); // 45..100%
+    uint16_t v = ((uint16_t)value * scala) / 100U;
+    stelle.setPixelColor(i, stelle.Color(v, (v * 72U) / 100U, (v * 38U) / 100U));
+  }
+  stelle.show();
 }
 
 void tuttoSpento() {
@@ -382,8 +398,9 @@ void testUscite() {
   Serial.println(F("CH3 / D4 - BLU"));
   fadeTest(PIN_CIELO_B);
 
-  Serial.println(F("CH4 / D5 - STELLE"));
-  fadeTest(PIN_STELLE);
+  Serial.println(F("D5 DATA - WS2811 STELLE"));
+  for (uint8_t v = 0; v <= 250; v += 10) { setStelle(v); delay(20); }
+  for (int v = 250; v >= 0; v -= 10) { setStelle((uint8_t)v); delay(20); }
 
   tuttoSpento();
 
@@ -435,7 +452,9 @@ void setup() {
   pinMode(PIN_CIELO_R, OUTPUT);
   pinMode(PIN_CIELO_G, OUTPUT);
   pinMode(PIN_CIELO_B, OUTPUT);
-  pinMode(PIN_STELLE, OUTPUT);
+  stelle.begin();
+  stelle.clear();
+  stelle.show();
 
   pinMode(PIN_START, INPUT_PULLUP);
   pinMode(PIN_NEXT,  INPUT_PULLUP);
@@ -454,7 +473,7 @@ void setup() {
   Serial.println(F("D2  = RGB Rosso"));
   Serial.println(F("D3  = RGB Verde"));
   Serial.println(F("D4  = RGB Blu"));
-  Serial.println(F("D5  = Stelle"));
+  Serial.println(F("D5  = DATA WS2811 (50 stelle)"));
   Serial.println(F("D22 = START/STOP"));
   Serial.println(F("D23 = AVANTI"));
   Serial.println(F("D24 = TEST"));
