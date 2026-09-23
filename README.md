@@ -10,18 +10,49 @@ Arduino Mega 2560 controller for a modular 12V nativity scene.
 
 ## Current hardware mapping
 
-| Module | Input | Mega pin | Function |
-|---|---|---:|---|
-| MOSFET #1 | PWM1 | D2 | RGB red |
-| MOSFET #1 | PWM2 | D3 | RGB green |
-| MOSFET #1 | PWM3 | D4 | RGB blue |
-| MOSFET #1 | PWM4 | D5 | Stars |
-| MOSFET #2 | PWM1 | D6 | House lights |
-| MOSFET #2 | PWM2 | D7 | Pump |
-| MOSFET #2 | PWM3 | D8 | Mill |
-| MOSFET #2 | PWM4 | D9 | Grotto / lamp posts |
+The Arduino pins **do not power the 12V loads directly**. Each Mega output drives the corresponding `PWM` input of a MOSFET channel; the real load is connected to that channel's `OUT+` and `OUT-` terminals.
 
-Controls: D22 START/STOP, D23 NEXT, D24 TEST, A0 B10K cycle-speed potentiometer.
+### MOSFET #1 — Sky and stars
+
+| Arduino Mega | MOSFET input | MOSFET output | 12V load | Control |
+|---:|---|---|---|---|
+| D2 | PWM1 | OUT1+ / OUT1- | RGB strip — Red | PWM / dimmable |
+| D3 | PWM2 | OUT2+ / OUT2- | RGB strip — Green | PWM / dimmable |
+| D4 | PWM3 | OUT3+ / OUT3- | RGB strip — Blue | PWM / dimmable |
+| D5 | PWM4 | OUT4+ / OUT4- | Stars | PWM / dimmable |
+
+Example for the stars:
+
+```text
+Mega D5 ───────► PWM4
+
+12V PSU ───────► DC+ / DC-     MOSFET #1
+
+                 OUT4+ ───────► + Stars
+                 OUT4- ───────► - Stars
+```
+
+### MOSFET #2 — Scenery and movements
+
+| Arduino Mega | MOSFET input | MOSFET output | 12V load | Planned control |
+|---:|---|---|---|---|
+| D6 | PWM1 | OUT1+ / OUT1- | House lights | ON/OFF / PWM |
+| D7 | PWM2 | OUT2+ / OUT2- | Pump | ON/OFF |
+| D8 | PWM3 | OUT3+ / OUT3- | Mill | ON/OFF |
+| D9 | PWM4 | OUT4+ / OUT4- | Grotto / lamp posts | ON/OFF / PWM |
+
+D6-D9 are currently reserved for Phase 2; the present firmware implements the Phase 1 sky/stars sequence.
+
+### Controls
+
+| Arduino Mega | Device | Wiring |
+|---:|---|---|
+| D22 | START/STOP button | D22 ↔ button ↔ logic GND |
+| D23 | NEXT button | D23 ↔ button ↔ logic GND |
+| D24 | TEST button | D24 ↔ button ↔ logic GND |
+| A0 | B10K cycle-speed potentiometer | 5V ↔ outer pin, A0 ↔ wiper, GND ↔ outer pin |
+
+The buttons use `INPUT_PULLUP`, so no external pull-up resistor is required. Arduino logic GND is distributed to the MOSFET `GND1...GND4` inputs and controls through the logic-ground WAGO.
 
 ## Firmware
 
