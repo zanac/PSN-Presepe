@@ -18,14 +18,14 @@ Arduino Mega 2560 controller for a modular 12V nativity scene.
 
 The Arduino pins **do not power the 12V loads directly**. Each Mega output drives the corresponding `PWM` input of a MOSFET channel. Two-wire loads can use the channel's `OUT+` / `OUT-` pair; the common-positive RGB strip is wired differently as shown below.
 
-### MOSFET #1 — Sky and stars
+### MOSFET #1 — RGB sky
 
 | Arduino Mega | MOSFET input | MOSFET output | 12V load | Control |
 |---:|---|---|---|---|
 | D2 | PWM1 | OUT1- | RGB strip — R return | PWM / dimmable |
 | D3 | PWM2 | OUT2- | RGB strip — G return | PWM / dimmable |
 | D4 | PWM3 | OUT3- | RGB strip — B return | PWM / dimmable |
-| D5 | PWM4 | OUT4+ / OUT4- | Stars | PWM / dimmable |
+| — | PWM4 | OUT4+ / OUT4- | **Free** | — |
 
 The RGB strip is a **12V common-positive (common-anode)** load. Its single `+12V` wire is connected directly to the protected +12V distribution/WAGO and remains continuously supplied. The MOSFET channels switch the three R/G/B returns on the negative side:
 
@@ -46,16 +46,20 @@ Mega D4 ────────────────────────
 
 Do **not** wire the RGB strip as three independent two-wire loads. The `OUT1+`, `OUT2+` and `OUT3+` terminals are not needed for the RGB strip in this wiring scheme.
 
-Example for the stars:
+### Addressable WS2811 stars
+
+The stars are now a **12 V WS2811 string with 50 individually addressable pixels**. They do not use a MOSFET channel; D5 carries the DATA signal.
 
 ```text
-Mega D5 ───────► PWM4
-
-12V PSU ───────► DC+ / DC-     MOSFET #1
-
-                 OUT4+ ───────► + Stars
-                 OUT4- ───────► - Stars
+12V PSU + ──► fuse/distribution ──► WS2811 +12V
+12V PSU 0V ───────────────────────► WS2811 GND
+Arduino GND ──────────────────────► same common 0V
+Mega D5 ── 330–470 ohm resistor ─► WS2811 DATA / DIN
 ```
+
+With WS2811 pixels, **Arduino GND must share the 12 V PSU 0 V reference** so DATA has a valid electrical reference. The Mega remains powered from its separate 5 V USB supply; +12 V must never be connected to Arduino 5V or I/O pins.
+
+Firmware can control each star independently with different brightness and color, progressively introducing random stars at twilight and fading them during dawn. MOSFET #1 channel 4 is now free.
 
 ### MOSFET #2 — Scenery and movements
 
@@ -105,7 +109,7 @@ The repository deliberately keeps Wokwi CI optional at this stage: the normal bu
 
 ## Electrical note
 
-The Arduino 5V logic side and 12V power side are kept separate in the current design. Before final RGB wiring, verify with a multimeter whether DC+ is continuous with OUT1+/OUT2+/OUT3+/OUT4+ on the actual MOSFET board. Pump and mill require current/inrush and inductive-load protection checks before physical connection.
+With WS2811 stars, **Arduino GND and the 12 V PSU 0 V are intentionally common** to provide a reference for DATA. The Mega is still powered separately from its 5 V USB supply. Before final RGB wiring, verify with a multimeter whether DC+ is continuous with OUT1+/OUT2+/OUT3+/OUT4+ on the actual MOSFET board. Pump and mill require current/inrush and inductive-load protection checks before physical connection.
 
 ---
 
