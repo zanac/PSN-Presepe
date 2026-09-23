@@ -10,16 +10,35 @@ Arduino Mega 2560 controller for a modular 12V nativity scene.
 
 ## Current hardware mapping
 
-The Arduino pins **do not power the 12V loads directly**. Each Mega output drives the corresponding `PWM` input of a MOSFET channel; the real load is connected to that channel's `OUT+` and `OUT-` terminals.
+The Arduino pins **do not power the 12V loads directly**. Each Mega output drives the corresponding `PWM` input of a MOSFET channel. Two-wire loads can use the channel's `OUT+` / `OUT-` pair; the common-positive RGB strip is wired differently as shown below.
 
 ### MOSFET #1 — Sky and stars
 
 | Arduino Mega | MOSFET input | MOSFET output | 12V load | Control |
 |---:|---|---|---|---|
-| D2 | PWM1 | OUT1+ / OUT1- | RGB strip — Red | PWM / dimmable |
-| D3 | PWM2 | OUT2+ / OUT2- | RGB strip — Green | PWM / dimmable |
-| D4 | PWM3 | OUT3+ / OUT3- | RGB strip — Blue | PWM / dimmable |
+| D2 | PWM1 | OUT1- | RGB strip — R return | PWM / dimmable |
+| D3 | PWM2 | OUT2- | RGB strip — G return | PWM / dimmable |
+| D4 | PWM3 | OUT3- | RGB strip — B return | PWM / dimmable |
 | D5 | PWM4 | OUT4+ / OUT4- | Stars | PWM / dimmable |
+
+The RGB strip is a **12V common-positive (common-anode)** load. Its single `+12V` wire is connected directly to the protected +12V distribution/WAGO and remains continuously supplied. The MOSFET channels switch the three R/G/B returns on the negative side:
+
+```text
++12V PSU ──► fuse/distribution ──► RGB +12V common
+
+RGB R ───────────────────────────► OUT1-
+RGB G ───────────────────────────► OUT2-
+RGB B ───────────────────────────► OUT3-
+
+Mega D2 ─────────────────────────► PWM1  (Red)
+Mega D3 ─────────────────────────► PWM2  (Green)
+Mega D4 ─────────────────────────► PWM3  (Blue)
+
+12V PSU + ───────────────────────► MOSFET DC+
+12V PSU 0V ──────────────────────► MOSFET DC-
+```
+
+Do **not** wire the RGB strip as three independent two-wire loads. The `OUT1+`, `OUT2+` and `OUT3+` terminals are not needed for the RGB strip in this wiring scheme.
 
 Example for the stars:
 
