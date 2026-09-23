@@ -50,3 +50,7 @@ The repository deliberately keeps Wokwi CI optional at this stage: the normal bu
 ## Electrical note
 
 The Arduino 5V logic side and 12V power side are kept separate in the current design. Before final RGB wiring, verify with a multimeter whether DC+ is continuous with OUT1+/OUT2+/OUT3+/OUT4+ on the actual MOSFET board. Pump and mill require current/inrush and inductive-load protection checks before physical connection.
+
+---
+
+By **Vanni Brutto**
