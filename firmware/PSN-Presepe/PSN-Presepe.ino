@@ -128,15 +128,70 @@ void setCielo(uint8_t r, uint8_t g, uint8_t b) {
   pwmWrite(PIN_CIELO_B, b);
 }
 
-void setStelle(uint8_t value) {
-  // WS2811: bianco caldo, luminosita' globale variabile.
-  // Ogni pixel riceve una lieve variazione deterministica per evitare uniformita'.
+// ============================================================
+// STELLE WS2811
+// ============================================================
+// Effetto naturale: ogni notte viene generato un cielo diverso.
+// Le stelle hanno luminosita' massima differente e compaiono/scompaiono
+// progressivamente. Una piccola parte scintilla molto lentamente.
+
+uint8_t stellaLum[NUM_STELLE];
+uint8_t stellaOrdine[NUM_STELLE];
+bool stellaTwinkle[NUM_STELLE];
+bool cieloGenerato = false;
+Fase ultimaFaseStelle = GIORNO;
+
+void generaCieloStellato() {
   for (uint16_t i = 0; i < NUM_STELLE; i++) {
-    uint8_t scala = 45 + ((i * 37U) % 56); // 45..100%
-    uint16_t v = ((uint16_t)value * scala) / 100U;
-    stelle.setPixelColor(i, stelle.Color(v, (v * 72U) / 100U, (v * 38U) / 100U));
+    stellaLum[i] = random(35, 181);       // luminosita' massima volutamente limitata
+    stellaOrdine[i] = i;
+    stellaTwinkle[i] = (random(100) < 18); // ~18% scintilla
+  }
+
+  // Fisher-Yates: ordine casuale di accensione.
+  for (int i = NUM_STELLE - 1; i > 0; i--) {
+    int j = random(i + 1);
+    uint8_t tmp = stellaOrdine[i];
+    stellaOrdine[i] = stellaOrdine[j];
+    stellaOrdine[j] = tmp;
+  }
+  cieloGenerato = true;
+}
+
+void mostraStelle(float livello) {
+  livello = constrain(livello, 0.0f, 1.0f);
+  stelle.clear();
+
+  // Numero di stelle visibili cresce progressivamente.
+  uint16_t visibili = (uint16_t)(livello * NUM_STELLE + 0.5f);
+
+  for (uint16_t pos = 0; pos < visibili; pos++) {
+    uint8_t i = stellaOrdine[pos];
+    float locale = livello * NUM_STELLE - pos;
+    locale = constrain(locale, 0.0f, 1.0f);
+
+    uint16_t v = (uint16_t)(stellaLum[i] * locale);
+
+    // Scintillio morbido e limitato, senza lampeggi netti.
+    if (stellaTwinkle[i] && v > 10) {
+      uint8_t onda = (uint8_t)((millis() / (28UL + (i % 17))) & 0x1F);
+      if (onda > 15) onda = 31 - onda;
+      v = (v * (88U + onda)) / 103U;
+    }
+
+    // Bianco caldo ottenuto miscelando RGB.
+    stelle.setPixelColor(i, stelle.Color(
+      (uint8_t)v,
+      (uint8_t)((v * 72U) / 100U),
+      (uint8_t)((v * 38U) / 100U)
+    ));
   }
   stelle.show();
+}
+
+void setStelle(uint8_t value) {
+  if (!cieloGenerato) generaCieloStellato();
+  mostraStelle(value / 255.0f);
 }
 
 void tuttoSpento() {
@@ -249,6 +304,12 @@ void faseAvanti() {
 
 void aggiornaScena(float p) {
   Fase fase = faseDaPercentuale(p);
+
+  // Genera una nuova disposizione a ogni ingresso nel crepuscolo.
+  if (fase == CREPUSCOLO && ultimaFaseStelle != CREPUSCOLO) {
+    generaCieloStellato();
+  }
+  ultimaFaseStelle = fase;
 
   uint8_t r = 0, g = 0, b = 0, stelle = 0;
 
@@ -448,6 +509,7 @@ void stampaStato(unsigned long durata, float p) {
 
 void setup() {
   Serial.begin(115200);
+  randomSeed(analogRead(A15) ^ micros());
 
   pinMode(PIN_CIELO_R, OUTPUT);
   pinMode(PIN_CIELO_G, OUTPUT);
