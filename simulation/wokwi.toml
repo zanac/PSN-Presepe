@@ -1,0 +1,4 @@
+[wokwi]
+version = 1
+firmware = '../build/PSN-Presepe.ino.hex'
+elf = '../build/PSN-Presepe.ino.elf'

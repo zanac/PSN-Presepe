@@ -1,0 +1,283 @@
+{
+  "version": 1,
+  "author": "PSN-Presepe",
+  "editor": "wokwi",
+  "parts": [
+    {
+      "type": "wokwi-arduino-mega",
+      "id": "mega",
+      "top": 0,
+      "left": 0,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-led",
+      "id": "r",
+      "top": -120,
+      "left": 470,
+      "attrs": {
+        "color": "red",
+        "label": "RGB R"
+      }
+    },
+    {
+      "type": "wokwi-led",
+      "id": "g",
+      "top": -70,
+      "left": 470,
+      "attrs": {
+        "color": "green",
+        "label": "RGB G"
+      }
+    },
+    {
+      "type": "wokwi-led",
+      "id": "b",
+      "top": -20,
+      "left": 470,
+      "attrs": {
+        "color": "blue",
+        "label": "RGB B"
+      }
+    },
+    {
+      "type": "wokwi-led",
+      "id": "stars",
+      "top": 30,
+      "left": 470,
+      "attrs": {
+        "color": "yellow",
+        "label": "Stars"
+      }
+    },
+    {
+      "type": "wokwi-led",
+      "id": "houses",
+      "top": 100,
+      "left": 470,
+      "attrs": {
+        "color": "white",
+        "label": "Houses"
+      }
+    },
+    {
+      "type": "wokwi-led",
+      "id": "pump",
+      "top": 150,
+      "left": 470,
+      "attrs": {
+        "color": "white",
+        "label": "Pump"
+      }
+    },
+    {
+      "type": "wokwi-led",
+      "id": "mill",
+      "top": 200,
+      "left": 470,
+      "attrs": {
+        "color": "white",
+        "label": "Mill"
+      }
+    },
+    {
+      "type": "wokwi-led",
+      "id": "grotto",
+      "top": 250,
+      "left": 470,
+      "attrs": {
+        "color": "white",
+        "label": "Grotto/Lamps"
+      }
+    },
+    {
+      "type": "wokwi-pushbutton",
+      "id": "start",
+      "top": 330,
+      "left": -40,
+      "attrs": {
+        "label": "START/STOP"
+      }
+    },
+    {
+      "type": "wokwi-pushbutton",
+      "id": "next",
+      "top": 330,
+      "left": 80,
+      "attrs": {
+        "label": "NEXT"
+      }
+    },
+    {
+      "type": "wokwi-pushbutton",
+      "id": "test",
+      "top": 330,
+      "left": 190,
+      "attrs": {
+        "label": "TEST"
+      }
+    },
+    {
+      "type": "wokwi-potentiometer",
+      "id": "speed",
+      "top": 330,
+      "left": 340,
+      "attrs": {
+        "value": "512",
+        "label": "Cycle speed"
+      }
+    }
+  ],
+  "connections": [
+    [
+      "mega:2",
+      "r:A",
+      "green",
+      []
+    ],
+    [
+      "r:C",
+      "mega:GND.1",
+      "black",
+      []
+    ],
+    [
+      "mega:3",
+      "g:A",
+      "green",
+      []
+    ],
+    [
+      "g:C",
+      "mega:GND.1",
+      "black",
+      []
+    ],
+    [
+      "mega:4",
+      "b:A",
+      "green",
+      []
+    ],
+    [
+      "b:C",
+      "mega:GND.1",
+      "black",
+      []
+    ],
+    [
+      "mega:5",
+      "stars:A",
+      "green",
+      []
+    ],
+    [
+      "stars:C",
+      "mega:GND.1",
+      "black",
+      []
+    ],
+    [
+      "mega:6",
+      "houses:A",
+      "green",
+      []
+    ],
+    [
+      "houses:C",
+      "mega:GND.1",
+      "black",
+      []
+    ],
+    [
+      "mega:7",
+      "pump:A",
+      "green",
+      []
+    ],
+    [
+      "pump:C",
+      "mega:GND.1",
+      "black",
+      []
+    ],
+    [
+      "mega:8",
+      "mill:A",
+      "green",
+      []
+    ],
+    [
+      "mill:C",
+      "mega:GND.1",
+      "black",
+      []
+    ],
+    [
+      "mega:9",
+      "grotto:A",
+      "green",
+      []
+    ],
+    [
+      "grotto:C",
+      "mega:GND.1",
+      "black",
+      []
+    ],
+    [
+      "mega:22",
+      "start:1.l",
+      "green",
+      []
+    ],
+    [
+      "start:2.l",
+      "mega:GND.1",
+      "black",
+      []
+    ],
+    [
+      "mega:23",
+      "next:1.l",
+      "green",
+      []
+    ],
+    [
+      "next:2.l",
+      "mega:GND.1",
+      "black",
+      []
+    ],
+    [
+      "mega:24",
+      "test:1.l",
+      "green",
+      []
+    ],
+    [
+      "test:2.l",
+      "mega:GND.1",
+      "black",
+      []
+    ],
+    [
+      "speed:VCC",
+      "mega:5V",
+      "red",
+      []
+    ],
+    [
+      "speed:GND",
+      "mega:GND.1",
+      "black",
+      []
+    ],
+    [
+      "speed:SIG",
+      "mega:A0",
+      "green",
+      []
+    ]
+  ]
+}
