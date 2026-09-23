@@ -85,6 +85,20 @@ D6-D9 sono attualmente riservati alla Fase 2; il firmware attuale implementa la 
 
 I pulsanti utilizzano `INPUT_PULLUP`, quindi non richiedono una resistenza di pull-up esterna. Il GND logico di Arduino viene distribuito tramite WAGO agli ingressi `GND1...GND4` dei MOSFET e ai comandi.
 
+## Funzionamento scenografico
+
+Il ciclo automatico coordina la **striscia RGB analogica 12 V**, utilizzata per simulare le variazioni di luce del cielo, con le **50 stelle WS2811 individualmente indirizzabili**.
+
+1. **Giorno:** stelle spente; la striscia RGB crea l'illuminazione diurna.
+2. **Tramonto:** stelle spente; la striscia RGB passa progressivamente dai colori del giorno alle tonalità calde del tramonto.
+3. **Crepuscolo:** le stelle iniziano a comparire **una alla volta in ordine casuale**, mentre il cielo RGB diventa progressivamente più scuro.
+4. Ogni stella ha una **luminosità massima diversa**, per evitare un cielo uniforme e artificiale.
+5. Circa il **18% delle stelle** presenta un leggerissimo **scintillio morbido**, senza lampeggi netti.
+6. **Notte:** il cielo stellato è completo ma non uniforme; le stelle mantengono intensità differenti.
+7. **Alba:** le stelle scompaiono progressivamente mentre la striscia RGB passa dalle tonalità notturne a quelle dell'alba e quindi del giorno.
+8. A ogni nuova notte viene generata una **disposizione differente** delle stelle e delle relative intensità.
+9. Il colore delle stelle è impostato su **bianco caldo**, evitando un effetto RGB multicolore.
+
 ## Firmware
 
 Aprire:
