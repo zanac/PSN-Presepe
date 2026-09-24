@@ -448,7 +448,7 @@ bool inizializzaOled() {
   display.setTextSize(1);
   // Startup splash: PSN-Presepe! by Vanni
   display.setCursor(27,18); display.print(F("PSN-Presepe!"));
-  display.setCursor(30,36); display.print(F("by Vanni 002"));
+  display.setCursor(30,36); display.print(F("by Vanni 003"));
   display.display();
   delay(2000);
   return true;
@@ -547,10 +547,21 @@ void aggiornaScena(float p) {
       b = interpola8(55, 145, t);
       stelle = interpola8(235, 0, t);
 
-      // Alba direzionale dalla striscia destra: compare, raggiunge
-      // il massimo a meta' fase e si fonde nuovamente con il giorno.
+      // Alba direzionale dalla striscia destra: sale dolcemente nella
+      // prima parte della fase, poi cala progressivamente fino a ZERO.
+      // Negli ultimi istanti la dissolvenza rallenta (smoothstep), cosi'
+      // il passaggio ALBA -> GIORNO non produce uno stacco visibile.
       {
-        float arco = 1.0f - fabs(2.0f * t - 1.0f);
+        float arco;
+        if (t < 0.35f) {
+          float x = t / 0.35f;
+          x = x * x * (3.0f - 2.0f * x);
+          arco = x;
+        } else {
+          float x = (t - 0.35f) / 0.65f;
+          x = x * x * (3.0f - 2.0f * x);
+          arco = 1.0f - x;
+        }
         ar = (uint8_t)(255.0f * arco);
         ag = (uint8_t)(135.0f * arco);
         ab = (uint8_t)(45.0f * arco);
