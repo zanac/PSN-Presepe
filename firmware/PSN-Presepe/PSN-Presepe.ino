@@ -437,9 +437,10 @@ bool inizializzaOled() {
   display.clearDisplay();
   display.setTextColor(SSD1306_WHITE);
   display.setTextSize(1);
-  display.setCursor(18,20); display.print(F("PSN-PRESEPE"));
-  display.setCursor(24,36); display.print(F("Avvio..."));
+  display.setCursor(27,18); display.print(F("PSN-Presepe!"));
+  display.setCursor(39,36); display.print(F("by Vanni"));
   display.display();
+  delay(2000);
   return true;
 }
 
