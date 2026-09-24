@@ -70,18 +70,16 @@ const uint8_t PIN_POT   = A0;
 
 
 // -----------------------------------------------------------------------------
-// Reserved outputs for Phase 2 - second 4-channel MOSFET module
-// These pins are already assigned in the hardware specification, but the
-// corresponding loads are not yet driven by the Phase 1 cycle logic.
-// MOSFET #2 PWM1 -> D6  : house lights
-// MOSFET #2 PWM2 -> D7  : 12V pump
-// MOSFET #2 PWM3 -> D8  : mill motor
-// MOSFET #2 PWM4 -> D9  : grotto / lamp posts
+// RELÈ: 4 moduli x 4 canali = 16 uscite ON/OFF predisposte.
+// D25-D40 sono riservati al cablaggio IN1..IN4 dei quattro moduli.
+// La logica scenografica e il livello HIGH/LOW verranno definiti in seguito.
 // -----------------------------------------------------------------------------
-const uint8_t PIN_HOUSES = 6;
-const uint8_t PIN_PUMP = 7;
-const uint8_t PIN_MILL = 8;
-const uint8_t PIN_GROTTO_LAMPS = 9;
+const uint8_t PIN_RELE[16] = {
+  25, 26, 27, 28,
+  29, 30, 31, 32,
+  33, 34, 35, 36,
+  37, 38, 39, 40
+};
 
 const bool PWM_INVERTED = false;
 
