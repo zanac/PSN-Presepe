@@ -29,3 +29,5 @@ La striscia Wokwi WS2812 è un sostituto visivo: **nel montaggio reale le stelle
 Il firmware richiede `Adafruit NeoPixel`, `Adafruit SSD1306` e `Adafruit GFX Library`. L'OLED resta opzionale: se non è presente, il programma prosegue.
 
 La GitHub Action `Arduino Mega Build` compila il firmware, ma **non esegue automaticamente la simulazione Wokwi**. Il file `wokwi.toml` è predisposto per un eventuale futuro test automatizzato.
+
+> **Stelle:** i 50 pixel WS2811 restano fisicamente disponibili, ma a ogni ciclo ne vengono scelte casualmente solo **20**, mantenute a luminosità volutamente bassa. Di queste, esattamente **7** variano dolcemente la luminosità durante la notte per simulare il tremolio. A ogni nuova notte la disposizione viene rigenerata.
