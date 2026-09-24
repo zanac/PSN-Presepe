@@ -730,6 +730,11 @@ void setup() {
   Serial.println(F("D20/D21 = OLED I2C 0x3C (opzionale)"));
   Serial.println(oledPresente ? F("OLED: OK") : F("OLED: non presente, continuo senza display"));
   Serial.println(F("A0  = DURATA CICLO 1-6 minuti"));
+  Serial.print(F("Durata ciclo impostata all\'avvio: "));
+  Serial.print(durataCiclo() / 60000UL);
+  Serial.println(F(" minuto/i"));
+  Serial.print(F("Posizione potenziometro A0: "));
+  Serial.println(analogRead(PIN_POT));
   Serial.println();
 }
 
