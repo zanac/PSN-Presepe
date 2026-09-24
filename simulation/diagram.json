@@ -13,8 +13,8 @@
     {
       "type": "wokwi-ssd1306",
       "id": "oled",
-      "top": 285,
-      "left": 690,
+      "top": -445,
+      "left": 285,
       "attrs": {
         "i2cAddress": "0x3c"
       }
@@ -2658,6 +2658,6 @@
     ]
   ],
   "attrs": {
-    "layout-note": "RGB indicators directly below stars: ALBA - GIORNO - TRAMONTO"
+    "layout-note": "OLED left of stars; RGB indicators directly below stars: ALBA - GIORNO - TRAMONTO"
   }
 }
