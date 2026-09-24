@@ -64,6 +64,8 @@ const uint8_t PIN_ALBA_R = 44;
 const uint8_t PIN_ALBA_G = 45;
 const uint8_t PIN_ALBA_B = 46;
 const uint16_t NUM_STELLE = 50;
+const uint8_t STELLE_ATTIVE = 20;
+const uint8_t STELLE_TREMOLANTI = 7;
 Adafruit_NeoPixel stelle(NUM_STELLE, PIN_STELLE_DATA, NEO_GRB + NEO_KHZ800);
 
 const uint8_t PIN_START = 22;
@@ -123,8 +125,7 @@ enum Fase {
   TRAMONTO,
   CREPUSCOLO,
   NOTTE,
-  ALBA,
-  GIORNO_FINALE
+  ALBA
 };
 
 bool running = true;
@@ -180,19 +181,36 @@ bool cieloGenerato = false;
 Fase ultimaFaseStelle = GIORNO;
 
 void generaCieloStellato() {
+  // Ogni notte scegliamo casualmente solo 20 delle 50 stelle fisiche.
+  // Le altre 30 restano completamente spente.
   for (uint16_t i = 0; i < NUM_STELLE; i++) {
-    stellaLum[i] = random(35, 181);       // luminosita' massima volutamente limitata
+    stellaLum[i] = random(22, 76); // luce volutamente tenue: niente effetto "lampadina"
     stellaOrdine[i] = i;
-    stellaTwinkle[i] = (random(100) < 18); // ~18% scintilla
+    stellaTwinkle[i] = false;
   }
 
-  // Fisher-Yates: ordine casuale di accensione.
+  // Fisher-Yates su tutti i 50 pixel: i primi 20 saranno quelli attivi.
   for (int i = NUM_STELLE - 1; i > 0; i--) {
     int j = random(i + 1);
     uint8_t tmp = stellaOrdine[i];
     stellaOrdine[i] = stellaOrdine[j];
     stellaOrdine[j] = tmp;
   }
+
+  // Esattamente 7 delle 20 stelle attive tremolano.
+  // Poiche' le prime 20 sono gia' in ordine casuale, basta sceglierne
+  // 7 senza ripetizioni con un secondo piccolo shuffle.
+  uint8_t candidati[STELLE_ATTIVE];
+  for (uint8_t i = 0; i < STELLE_ATTIVE; i++) candidati[i] = i;
+  for (int i = STELLE_ATTIVE - 1; i > 0; i--) {
+    int j = random(i + 1);
+    uint8_t tmp = candidati[i];
+    candidati[i] = candidati[j];
+    candidati[j] = tmp;
+  }
+  for (uint8_t n = 0; n < STELLE_TREMOLANTI; n++)
+    stellaTwinkle[stellaOrdine[candidati[n]]] = true;
+
   cieloGenerato = true;
 }
 
@@ -200,24 +218,27 @@ void mostraStelle(float livello) {
   livello = constrain(livello, 0.0f, 1.0f);
   stelle.clear();
 
-  // Numero di stelle visibili cresce progressivamente.
-  uint16_t visibili = (uint16_t)(livello * NUM_STELLE + 0.5f);
+  // Durante il crepuscolo entrano progressivamente le 20 stelle scelte;
+  // durante l'alba scompaiono progressivamente. Mai piu' di 20 accese.
+  uint8_t visibili = (uint8_t)(livello * STELLE_ATTIVE + 0.5f);
+  if (visibili > STELLE_ATTIVE) visibili = STELLE_ATTIVE;
 
-  for (uint16_t pos = 0; pos < visibili; pos++) {
+  for (uint8_t pos = 0; pos < visibili; pos++) {
     uint8_t i = stellaOrdine[pos];
-    float locale = livello * NUM_STELLE - pos;
+    float locale = livello * STELLE_ATTIVE - pos;
     locale = constrain(locale, 0.0f, 1.0f);
 
     uint16_t v = (uint16_t)(stellaLum[i] * locale);
 
-    // Scintillio morbido e limitato, senza lampeggi netti.
-    if (stellaTwinkle[i] && v > 10) {
-      uint8_t onda = (uint8_t)((millis() / (28UL + (i % 17))) & 0x1F);
-      if (onda > 15) onda = 31 - onda;
-      v = (v * (88U + onda)) / 103U;
+    // Esattamente 7 stelle hanno un tremolio morbido durante la notte.
+    // L'oscillazione e' lenta e asincrona: varia la luminosita', non lampeggia.
+    if (stellaTwinkle[i] && v > 5) {
+      uint8_t fase = (uint8_t)((millis() / (38UL + (i % 23))) & 0x3F);
+      if (fase > 31) fase = 63 - fase;
+      v = (v * (68U + fase)) / 99U; // circa 69%-100% della luminosita' nominale
     }
 
-    // Bianco caldo ottenuto miscelando RGB.
+    // Bianco caldo tenue.
     stelle.setPixelColor(i, stelle.Color(
       (uint8_t)v,
       (uint8_t)((v * 72U) / 100U),
