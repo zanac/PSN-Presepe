@@ -130,6 +130,9 @@ enum Fase {
 
 bool running = true;
 bool testInCorso = false;
+uint8_t testIndice = 0;
+bool testEraInMarcia = false;
+unsigned long testPausaMs = 0;
 
 unsigned long cycleStartMs = 0;
 unsigned long pauseStartedMs = 0;
@@ -389,6 +392,27 @@ void oledCentro(const __FlashStringHelper *s, int y, uint8_t size=1) {
   display.print(s);
 }
 
+void mostraOledTest() {
+  if (!oledPresente) return;
+  display.clearDisplay();
+  display.setTextColor(SSD1306_WHITE);
+  display.setTextSize(1);
+  display.setCursor(0,0); display.print(F("MODALITA' TEST"));
+  display.setCursor(0,14); display.print(F("Test ")); display.print(testIndice + 1); display.print(F("/7"));
+  display.setCursor(0,30);
+  switch (testIndice) {
+    case 0: display.print(F("CIELO ROSSO")); break;
+    case 1: display.print(F("CIELO VERDE")); break;
+    case 2: display.print(F("CIELO BLU")); break;
+    case 3: display.print(F("TRAMONTO RGB")); break;
+    case 4: display.print(F("ALBA RGB")); break;
+    case 5: display.print(F("STELLE WS2811")); break;
+    case 6: display.print(F("TUTTO INSIEME")); break;
+  }
+  display.setCursor(0,48); display.print(F("TEST=avanti START=esci"));
+  display.display();
+}
+
 void aggiornaOled(unsigned long durata, float p) {
   if (!oledPresente) return;
   static unsigned long ultimoRefresh=0;
@@ -448,7 +472,7 @@ bool inizializzaOled() {
   display.setTextSize(1);
   // Startup splash: PSN-Presepe! by Vanni
   display.setCursor(27,18); display.print(F("PSN-Presepe!"));
-  display.setCursor(30,36); display.print(F("by Vanni 003"));
+  display.setCursor(30,36); display.print(F("by Vanni 004"));
   display.display();
   delay(2000);
   return true;
@@ -605,6 +629,27 @@ bool pulsantePremuto(uint8_t pin,
 }
 
 void toggleStartStop() {
+  if (testInCorso) {
+    tuttoSpento();
+    testInCorso = false;
+    testIndice = 0;
+
+    // Il tempo passato in TEST non deve far avanzare il ciclo.
+    if (testEraInMarcia) {
+      cycleStartMs += millis() - testPausaMs;
+      running = true;
+    } else {
+      pauseStartedMs = millis();
+      running = false;
+    }
+
+    Serial.println(F("USCITA MODALITA' TEST"));
+    oledPopup = OLED_NESSUNO;
+    aggiornaScena(percentualeCiclo(durataCiclo()));
+    aggiornaOled(durataCiclo(), percentualeCiclo(durataCiclo()));
+    return;
+  }
+
   if (running) {
     pauseStartedMs = millis();
     running = false;
@@ -627,74 +672,70 @@ void toggleStartStop() {
 // TEST
 // ============================================================
 
-void fadeTest(uint8_t pin) {
-  for (int v = 0; v <= 255; v += 5) {
-    pwmWrite(pin, v);
-    delay(8);
+void applicaTestCorrente() {
+  tuttoSpento();
+
+  switch (testIndice) {
+    case 0:
+      setCielo(255, 0, 0);
+      Serial.println(F("TEST 1/7 - CIELO ROSSO"));
+      break;
+    case 1:
+      setCielo(0, 255, 0);
+      Serial.println(F("TEST 2/7 - CIELO VERDE"));
+      break;
+    case 2:
+      setCielo(0, 0, 255);
+      Serial.println(F("TEST 3/7 - CIELO BLU"));
+      break;
+    case 3:
+      setTramonto(255, 72, 12);
+      Serial.println(F("TEST 4/7 - TRAMONTO RGB"));
+      break;
+    case 4:
+      setAlba(255, 135, 45);
+      Serial.println(F("TEST 5/7 - ALBA RGB"));
+      break;
+    case 5:
+      // Accende tutte le 50 stelle per verificare fisicamente ogni pixel.
+      stelle.clear();
+      for (uint16_t i = 0; i < NUM_STELLE; i++)
+        stelle.setPixelColor(i, stelle.Color(70, 50, 27));
+      stelle.show();
+      Serial.println(F("TEST 6/7 - TUTTE LE 50 STELLE"));
+      break;
+    case 6:
+      setCielo(120, 90, 70);
+      setTramonto(180, 50, 8);
+      setAlba(180, 95, 30);
+      stelle.clear();
+      for (uint16_t i = 0; i < NUM_STELLE; i++)
+        stelle.setPixelColor(i, stelle.Color(45, 32, 17));
+      stelle.show();
+      Serial.println(F("TEST 7/7 - TUTTO INSIEME"));
+      break;
   }
 
-  for (int v = 255; v >= 0; v -= 5) {
-    pwmWrite(pin, v);
-    delay(8);
-  }
-
-  pwmWrite(pin, 0);
+  mostraOledTest();
 }
 
 void testUscite() {
-  if (testInCorso) return;
-
-  testInCorso = true;
-  oledMostraPopup(OLED_TEST);
-  if (oledPresente) aggiornaOled(durataCiclo(), percentualeCiclo(durataCiclo()));
-
-  bool eraInMarcia = running;
-  unsigned long tempoPausa = millis();
-
-  running = false;
-  tuttoSpento();
-
-  Serial.println();
-  Serial.println(F("=== TEST FASE 1 ==="));
-
-  Serial.println(F("CH1 / D2 - ROSSO"));
-  fadeTest(PIN_CIELO_R);
-
-  Serial.println(F("CH2 / D3 - VERDE"));
-  fadeTest(PIN_CIELO_G);
-
-  Serial.println(F("CH3 / D4 - BLU"));
-  fadeTest(PIN_CIELO_B);
-
-  Serial.println(F("RGB LATERALE SINISTRA / TRAMONTO"));
-  fadeTest(PIN_TRAMONTO_R);
-  fadeTest(PIN_TRAMONTO_G);
-  fadeTest(PIN_TRAMONTO_B);
-
-  Serial.println(F("RGB LATERALE DESTRA / ALBA"));
-  fadeTest(PIN_ALBA_R);
-  fadeTest(PIN_ALBA_G);
-  fadeTest(PIN_ALBA_B);
-
-  Serial.println(F("D5 DATA - WS2811 STELLE"));
-  for (uint8_t v = 0; v <= 250; v += 10) { setStelle(v); delay(20); }
-  for (int v = 250; v >= 0; v -= 10) { setStelle((uint8_t)v); delay(20); }
-
-  tuttoSpento();
-
-  Serial.println(F("=== FINE TEST ==="));
-  Serial.println();
-
-  // Il tempo trascorso durante il test non deve far avanzare il ciclo.
-  if (eraInMarcia) {
-    cycleStartMs += millis() - tempoPausa;
-    running = true;
-  } else {
-    pauseStartedMs = millis();
+  if (!testInCorso) {
+    testInCorso = true;
+    testIndice = 0;
+    testEraInMarcia = running;
+    testPausaMs = millis();
     running = false;
+    oledPopup = OLED_NESSUNO;
+
+    Serial.println();
+    Serial.println(F("=== MODALITA' TEST ==="));
+    Serial.println(F("TEST = test successivo, START = esci"));
+  } else {
+    testIndice = (testIndice + 1) % 7;
   }
 
-  testInCorso = false;
+  applicaTestCorrente();
 }
 
 // ============================================================
@@ -791,7 +832,7 @@ void loop() {
 
   if (pulsantePremuto(PIN_NEXT,
                       lastNextRead, stableNext, dbNextMs)) {
-    faseAvanti();
+    if (!testInCorso) faseAvanti();
   }
 
   if (pulsantePremuto(PIN_TEST,
