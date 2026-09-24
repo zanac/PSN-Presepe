@@ -42,6 +42,9 @@
 
 #include <Arduino.h>
 #include <Adafruit_NeoPixel.h>
+#include <Wire.h>
+#include <Adafruit_GFX.h>
+#include <Adafruit_SSD1306.h>
 
 // ============================================================
 // CONFIGURAZIONE PIN
@@ -83,6 +86,20 @@ const uint8_t PIN_RELE[16] = {
 
 const bool PWM_INVERTED = false;
 
+// OLED ELEGOO EL-SM-008, 128x64, I2C 0x3C.
+// Il display e' opzionale: se assente il presepe continua normalmente.
+const uint8_t OLED_ADDR = 0x3C;
+const uint8_t OLED_W = 128;
+const uint8_t OLED_H = 64;
+Adafruit_SSD1306 display(OLED_W, OLED_H, &Wire, -1);
+bool oledPresente = false;
+unsigned long oledPopupFino = 0;
+enum OledPopup { OLED_NESSUNO, OLED_PAUSA, OLED_RIPRESA, OLED_AVANTI, OLED_TEST, OLED_VELOCITA };
+OledPopup oledPopup = OLED_NESSUNO;
+int ultimoPotOled = -1;
+const int POT_POPUP_DELTA = 10;
+const unsigned long OLED_POPUP_MS = 1800UL;
+
 // Durata ciclo regolabile con il potenziometro
 const unsigned long MIN_CYCLE_MS = 5UL  * 60UL * 1000UL;
 const unsigned long MAX_CYCLE_MS = 60UL * 60UL * 1000UL;
@@ -122,6 +139,100 @@ bool lastStartRead = HIGH, stableStart = HIGH;
 bool lastNextRead  = HIGH, stableNext  = HIGH;
 bool lastTestRead  = HIGH, stableTest  = HIGH;
 unsigned long dbStartMs = 0, dbNextMs = 0, dbTestMs = 0;
+
+// ============================================================
+// OLED
+// ============================================================
+
+void oledMostraPopup(OledPopup tipo) {
+  if (!oledPresente) return;
+  oledPopup = tipo;
+  oledPopupFino = millis() + OLED_POPUP_MS;
+}
+
+float percentualeFase(float p, Fase f) {
+  float a = inizioFase(f), b = 100.0f;
+  switch (f) {
+    case GIORNO: b = P_TRAMONTO; break;
+    case TRAMONTO: b = P_CREPU; break;
+    case CREPUSCOLO: b = P_NOTTE; break;
+    case NOTTE: b = P_ALBA; break;
+    case ALBA: b = P_GIORNO2; break;
+    case GIORNO_FINALE: b = 100.0f; break;
+  }
+  return constrain((p-a)*100.0f/(b-a),0.0f,100.0f);
+}
+
+void oledCentro(const __FlashStringHelper *s, int y, uint8_t size=1) {
+  display.setTextSize(size);
+  int16_t x1,y1; uint16_t w,h;
+  display.getTextBounds(s,0,y,&x1,&y1,&w,&h);
+  display.setCursor((OLED_W-w)/2,y);
+  display.print(s);
+}
+
+void aggiornaOled(unsigned long durata, float p) {
+  if (!oledPresente) return;
+  static unsigned long ultimoRefresh=0;
+  if (millis()-ultimoRefresh < 120) return;
+  ultimoRefresh=millis();
+
+  if (oledPopup != OLED_NESSUNO && (long)(millis()-oledPopupFino)>=0) oledPopup=OLED_NESSUNO;
+  display.clearDisplay();
+  display.setTextColor(SSD1306_WHITE);
+
+  if (oledPopup != OLED_NESSUNO) {
+    display.setTextSize(2);
+    display.setCursor(8,8);
+    switch(oledPopup) {
+      case OLED_PAUSA: display.print(F("PAUSA")); break;
+      case OLED_RIPRESA: display.print(F("RIPRESA")); break;
+      case OLED_AVANTI: display.print(F("AVANTI")); break;
+      case OLED_TEST: display.print(F("TEST")); break;
+      case OLED_VELOCITA: display.print(F("VELOCITA")); break;
+      default: break;
+    }
+    display.setTextSize(1);
+    display.setCursor(8,38);
+    if (oledPopup==OLED_VELOCITA) {
+      display.print(F("Ciclo: ")); display.print(durata/60000UL); display.print(F(" min"));
+    } else if (oledPopup==OLED_AVANTI) {
+      display.print(F("Fase: ")); display.print(nomeFase(faseDaPercentuale(p)));
+    } else if (oledPopup==OLED_TEST) {
+      display.print(F("Test uscite in corso"));
+    } else {
+      display.print(running ? F("Ciclo in esecuzione") : F("Ciclo fermo"));
+    }
+  } else {
+    Fase f=faseDaPercentuale(p);
+    int pf=(int)(percentualeFase(p,f)+0.5f);
+    display.setTextSize(1);
+    display.setCursor(0,0); display.print(F("PSN-PRESEPE"));
+    display.setCursor(0,14); display.print(nomeFase(f));
+    display.setCursor(94,14); display.print(pf); display.print('%');
+    display.drawRect(0,27,128,11,SSD1306_WHITE);
+    int fill=(pf*124)/100;
+    if(fill>0) display.fillRect(2,29,fill,7,SSD1306_WHITE);
+    display.setCursor(0,47);
+    display.print(running ? F("RUN ") : F("PAUSA "));
+    display.print(F("Ciclo ")); display.print(durata/60000UL); display.print(F(" min"));
+  }
+  display.display();
+}
+
+bool inizializzaOled() {
+  Wire.begin();
+  Wire.beginTransmission(OLED_ADDR);
+  if (Wire.endTransmission()!=0) return false;
+  if (!display.begin(SSD1306_SWITCHCAPVCC, OLED_ADDR)) return false;
+  display.clearDisplay();
+  display.setTextColor(SSD1306_WHITE);
+  display.setTextSize(1);
+  display.setCursor(18,20); display.print(F("PSN-PRESEPE"));
+  display.setCursor(24,36); display.print(F("Avvio..."));
+  display.display();
+  return true;
+}
 
 // ============================================================
 // PWM
@@ -319,6 +430,7 @@ void faseAvanti() {
 
   Serial.print(F("AVANTI -> "));
   Serial.println(nomeFase(nuova));
+  oledMostraPopup(OLED_AVANTI);
 }
 
 // ============================================================
@@ -452,6 +564,7 @@ void toggleStartStop() {
     pauseStartedMs = millis();
     running = false;
     Serial.println(F("PAUSA"));
+    oledMostraPopup(OLED_PAUSA);
   } else {
     unsigned long durataPausa = millis() - pauseStartedMs;
 
@@ -461,6 +574,7 @@ void toggleStartStop() {
 
     running = true;
     Serial.println(F("RIPRESA"));
+    oledMostraPopup(OLED_RIPRESA);
   }
 }
 
@@ -486,6 +600,8 @@ void testUscite() {
   if (testInCorso) return;
 
   testInCorso = true;
+  oledMostraPopup(OLED_TEST);
+  if (oledPresente) aggiornaOled(durataCiclo(), percentualeCiclo(durataCiclo()));
 
   bool eraInMarcia = running;
   unsigned long tempoPausa = millis();
@@ -565,6 +681,7 @@ void stampaStato(unsigned long durata, float p) {
 
 void setup() {
   Serial.begin(115200);
+  oledPresente = inizializzaOled();
   randomSeed(analogRead(A15) ^ micros());
 
   pinMode(PIN_CIELO_R, OUTPUT);
@@ -603,6 +720,8 @@ void setup() {
   Serial.println(F("D22 = START/STOP"));
   Serial.println(F("D23 = AVANTI"));
   Serial.println(F("D24 = TEST"));
+  Serial.println(F("D20/D21 = OLED I2C 0x3C (opzionale)"));
+  Serial.println(oledPresente ? F("OLED: OK") : F("OLED: non presente, continuo senza display"));
   Serial.println(F("A0  = VELOCITA' 5-60 minuti"));
   Serial.println();
 }
@@ -636,7 +755,15 @@ void loop() {
     unsigned long durata = durataCiclo();
     float p = percentualeCiclo(durata);
 
+    int potNow = analogRead(PIN_POT);
+    if (ultimoPotOled < 0) ultimoPotOled = potNow;
+    if (abs(potNow - ultimoPotOled) >= POT_POPUP_DELTA) {
+      ultimoPotOled = potNow;
+      oledMostraPopup(OLED_VELOCITA);
+    }
+
     aggiornaScena(p);
+    aggiornaOled(durata, p);
 
     // ----- diagnostica -----
     if (millis() - lastDebugMs >= DEBUG_INTERVAL_MS) {
