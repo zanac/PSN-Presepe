@@ -11,15 +11,6 @@
       "attrs": {}
     },
     {
-      "type": "wokwi-neopixel-strip",
-      "id": "stars",
-      "top": 50,
-      "left": 490,
-      "attrs": {
-        "pixels": "50"
-      }
-    },
-    {
       "type": "wokwi-ssd1306",
       "id": "oled",
       "top": 70,
@@ -254,27 +245,359 @@
         "common": "cathode",
         "label": "ALBA"
       }
+    },
+    {
+      "type": "wokwi-neopixel",
+      "id": "star1",
+      "top": -330,
+      "left": 500,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-neopixel",
+      "id": "star2",
+      "top": -300,
+      "left": 545,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-neopixel",
+      "id": "star3",
+      "top": -345,
+      "left": 590,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-neopixel",
+      "id": "star4",
+      "top": -310,
+      "left": 640,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-neopixel",
+      "id": "star5",
+      "top": -350,
+      "left": 690,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-neopixel",
+      "id": "star6",
+      "top": -320,
+      "left": 745,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-neopixel",
+      "id": "star7",
+      "top": -355,
+      "left": 800,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-neopixel",
+      "id": "star8",
+      "top": -305,
+      "left": 855,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-neopixel",
+      "id": "star9",
+      "top": -340,
+      "left": 910,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-neopixel",
+      "id": "star10",
+      "top": -315,
+      "left": 965,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-neopixel",
+      "id": "star11",
+      "top": -265,
+      "left": 515,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-neopixel",
+      "id": "star12",
+      "top": -235,
+      "left": 570,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-neopixel",
+      "id": "star13",
+      "top": -275,
+      "left": 625,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-neopixel",
+      "id": "star14",
+      "top": -240,
+      "left": 680,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-neopixel",
+      "id": "star15",
+      "top": -280,
+      "left": 735,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-neopixel",
+      "id": "star16",
+      "top": -245,
+      "left": 790,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-neopixel",
+      "id": "star17",
+      "top": -275,
+      "left": 845,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-neopixel",
+      "id": "star18",
+      "top": -235,
+      "left": 900,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-neopixel",
+      "id": "star19",
+      "top": -270,
+      "left": 950,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-neopixel",
+      "id": "star20",
+      "top": -245,
+      "left": 995,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-neopixel",
+      "id": "star21",
+      "top": -195,
+      "left": 495,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-neopixel",
+      "id": "star22",
+      "top": -165,
+      "left": 550,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-neopixel",
+      "id": "star23",
+      "top": -205,
+      "left": 605,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-neopixel",
+      "id": "star24",
+      "top": -170,
+      "left": 660,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-neopixel",
+      "id": "star25",
+      "top": -210,
+      "left": 715,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-neopixel",
+      "id": "star26",
+      "top": -175,
+      "left": 770,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-neopixel",
+      "id": "star27",
+      "top": -205,
+      "left": 825,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-neopixel",
+      "id": "star28",
+      "top": -165,
+      "left": 880,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-neopixel",
+      "id": "star29",
+      "top": -205,
+      "left": 935,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-neopixel",
+      "id": "star30",
+      "top": -175,
+      "left": 985,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-neopixel",
+      "id": "star31",
+      "top": -125,
+      "left": 520,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-neopixel",
+      "id": "star32",
+      "top": -95,
+      "left": 575,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-neopixel",
+      "id": "star33",
+      "top": -135,
+      "left": 630,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-neopixel",
+      "id": "star34",
+      "top": -100,
+      "left": 685,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-neopixel",
+      "id": "star35",
+      "top": -140,
+      "left": 740,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-neopixel",
+      "id": "star36",
+      "top": -105,
+      "left": 795,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-neopixel",
+      "id": "star37",
+      "top": -135,
+      "left": 850,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-neopixel",
+      "id": "star38",
+      "top": -95,
+      "left": 905,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-neopixel",
+      "id": "star39",
+      "top": -130,
+      "left": 960,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-neopixel",
+      "id": "star40",
+      "top": -105,
+      "left": 1005,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-neopixel",
+      "id": "star41",
+      "top": -55,
+      "left": 500,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-neopixel",
+      "id": "star42",
+      "top": -25,
+      "left": 555,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-neopixel",
+      "id": "star43",
+      "top": -65,
+      "left": 610,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-neopixel",
+      "id": "star44",
+      "top": -30,
+      "left": 665,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-neopixel",
+      "id": "star45",
+      "top": -70,
+      "left": 720,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-neopixel",
+      "id": "star46",
+      "top": -35,
+      "left": 775,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-neopixel",
+      "id": "star47",
+      "top": -65,
+      "left": 830,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-neopixel",
+      "id": "star48",
+      "top": -25,
+      "left": 885,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-neopixel",
+      "id": "star49",
+      "top": -60,
+      "left": 940,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-neopixel",
+      "id": "star50",
+      "top": -35,
+      "left": 990,
+      "attrs": {}
     }
   ],
   "connections": [
-    [
-      "mega:5",
-      "stars:DIN",
-      "green",
-      []
-    ],
-    [
-      "stars:VDD",
-      "mega:5V",
-      "red",
-      []
-    ],
-    [
-      "stars:GND",
-      "mega:GND.1",
-      "black",
-      []
-    ],
     [
       "oled:VCC",
       "mega:5V",
@@ -615,6 +938,906 @@
       "dawnRGB:COM",
       "mega:GND.1",
       "black",
+      []
+    ],
+    [
+      "mega:5",
+      "star1:DIN",
+      "green",
+      []
+    ],
+    [
+      "star1:DOUT",
+      "star2:DIN",
+      "",
+      []
+    ],
+    [
+      "star2:DOUT",
+      "star3:DIN",
+      "",
+      []
+    ],
+    [
+      "star3:DOUT",
+      "star4:DIN",
+      "",
+      []
+    ],
+    [
+      "star4:DOUT",
+      "star5:DIN",
+      "",
+      []
+    ],
+    [
+      "star5:DOUT",
+      "star6:DIN",
+      "",
+      []
+    ],
+    [
+      "star6:DOUT",
+      "star7:DIN",
+      "",
+      []
+    ],
+    [
+      "star7:DOUT",
+      "star8:DIN",
+      "",
+      []
+    ],
+    [
+      "star8:DOUT",
+      "star9:DIN",
+      "",
+      []
+    ],
+    [
+      "star9:DOUT",
+      "star10:DIN",
+      "",
+      []
+    ],
+    [
+      "star10:DOUT",
+      "star11:DIN",
+      "",
+      []
+    ],
+    [
+      "star11:DOUT",
+      "star12:DIN",
+      "",
+      []
+    ],
+    [
+      "star12:DOUT",
+      "star13:DIN",
+      "",
+      []
+    ],
+    [
+      "star13:DOUT",
+      "star14:DIN",
+      "",
+      []
+    ],
+    [
+      "star14:DOUT",
+      "star15:DIN",
+      "",
+      []
+    ],
+    [
+      "star15:DOUT",
+      "star16:DIN",
+      "",
+      []
+    ],
+    [
+      "star16:DOUT",
+      "star17:DIN",
+      "",
+      []
+    ],
+    [
+      "star17:DOUT",
+      "star18:DIN",
+      "",
+      []
+    ],
+    [
+      "star18:DOUT",
+      "star19:DIN",
+      "",
+      []
+    ],
+    [
+      "star19:DOUT",
+      "star20:DIN",
+      "",
+      []
+    ],
+    [
+      "star20:DOUT",
+      "star21:DIN",
+      "",
+      []
+    ],
+    [
+      "star21:DOUT",
+      "star22:DIN",
+      "",
+      []
+    ],
+    [
+      "star22:DOUT",
+      "star23:DIN",
+      "",
+      []
+    ],
+    [
+      "star23:DOUT",
+      "star24:DIN",
+      "",
+      []
+    ],
+    [
+      "star24:DOUT",
+      "star25:DIN",
+      "",
+      []
+    ],
+    [
+      "star25:DOUT",
+      "star26:DIN",
+      "",
+      []
+    ],
+    [
+      "star26:DOUT",
+      "star27:DIN",
+      "",
+      []
+    ],
+    [
+      "star27:DOUT",
+      "star28:DIN",
+      "",
+      []
+    ],
+    [
+      "star28:DOUT",
+      "star29:DIN",
+      "",
+      []
+    ],
+    [
+      "star29:DOUT",
+      "star30:DIN",
+      "",
+      []
+    ],
+    [
+      "star30:DOUT",
+      "star31:DIN",
+      "",
+      []
+    ],
+    [
+      "star31:DOUT",
+      "star32:DIN",
+      "",
+      []
+    ],
+    [
+      "star32:DOUT",
+      "star33:DIN",
+      "",
+      []
+    ],
+    [
+      "star33:DOUT",
+      "star34:DIN",
+      "",
+      []
+    ],
+    [
+      "star34:DOUT",
+      "star35:DIN",
+      "",
+      []
+    ],
+    [
+      "star35:DOUT",
+      "star36:DIN",
+      "",
+      []
+    ],
+    [
+      "star36:DOUT",
+      "star37:DIN",
+      "",
+      []
+    ],
+    [
+      "star37:DOUT",
+      "star38:DIN",
+      "",
+      []
+    ],
+    [
+      "star38:DOUT",
+      "star39:DIN",
+      "",
+      []
+    ],
+    [
+      "star39:DOUT",
+      "star40:DIN",
+      "",
+      []
+    ],
+    [
+      "star40:DOUT",
+      "star41:DIN",
+      "",
+      []
+    ],
+    [
+      "star41:DOUT",
+      "star42:DIN",
+      "",
+      []
+    ],
+    [
+      "star42:DOUT",
+      "star43:DIN",
+      "",
+      []
+    ],
+    [
+      "star43:DOUT",
+      "star44:DIN",
+      "",
+      []
+    ],
+    [
+      "star44:DOUT",
+      "star45:DIN",
+      "",
+      []
+    ],
+    [
+      "star45:DOUT",
+      "star46:DIN",
+      "",
+      []
+    ],
+    [
+      "star46:DOUT",
+      "star47:DIN",
+      "",
+      []
+    ],
+    [
+      "star47:DOUT",
+      "star48:DIN",
+      "",
+      []
+    ],
+    [
+      "star48:DOUT",
+      "star49:DIN",
+      "",
+      []
+    ],
+    [
+      "star49:DOUT",
+      "star50:DIN",
+      "",
+      []
+    ],
+    [
+      "star1:VDD",
+      "mega:5V",
+      "",
+      []
+    ],
+    [
+      "star1:VSS",
+      "mega:GND.1",
+      "",
+      []
+    ],
+    [
+      "star2:VDD",
+      "mega:5V",
+      "",
+      []
+    ],
+    [
+      "star2:VSS",
+      "mega:GND.1",
+      "",
+      []
+    ],
+    [
+      "star3:VDD",
+      "mega:5V",
+      "",
+      []
+    ],
+    [
+      "star3:VSS",
+      "mega:GND.1",
+      "",
+      []
+    ],
+    [
+      "star4:VDD",
+      "mega:5V",
+      "",
+      []
+    ],
+    [
+      "star4:VSS",
+      "mega:GND.1",
+      "",
+      []
+    ],
+    [
+      "star5:VDD",
+      "mega:5V",
+      "",
+      []
+    ],
+    [
+      "star5:VSS",
+      "mega:GND.1",
+      "",
+      []
+    ],
+    [
+      "star6:VDD",
+      "mega:5V",
+      "",
+      []
+    ],
+    [
+      "star6:VSS",
+      "mega:GND.1",
+      "",
+      []
+    ],
+    [
+      "star7:VDD",
+      "mega:5V",
+      "",
+      []
+    ],
+    [
+      "star7:VSS",
+      "mega:GND.1",
+      "",
+      []
+    ],
+    [
+      "star8:VDD",
+      "mega:5V",
+      "",
+      []
+    ],
+    [
+      "star8:VSS",
+      "mega:GND.1",
+      "",
+      []
+    ],
+    [
+      "star9:VDD",
+      "mega:5V",
+      "",
+      []
+    ],
+    [
+      "star9:VSS",
+      "mega:GND.1",
+      "",
+      []
+    ],
+    [
+      "star10:VDD",
+      "mega:5V",
+      "",
+      []
+    ],
+    [
+      "star10:VSS",
+      "mega:GND.1",
+      "",
+      []
+    ],
+    [
+      "star11:VDD",
+      "mega:5V",
+      "",
+      []
+    ],
+    [
+      "star11:VSS",
+      "mega:GND.1",
+      "",
+      []
+    ],
+    [
+      "star12:VDD",
+      "mega:5V",
+      "",
+      []
+    ],
+    [
+      "star12:VSS",
+      "mega:GND.1",
+      "",
+      []
+    ],
+    [
+      "star13:VDD",
+      "mega:5V",
+      "",
+      []
+    ],
+    [
+      "star13:VSS",
+      "mega:GND.1",
+      "",
+      []
+    ],
+    [
+      "star14:VDD",
+      "mega:5V",
+      "",
+      []
+    ],
+    [
+      "star14:VSS",
+      "mega:GND.1",
+      "",
+      []
+    ],
+    [
+      "star15:VDD",
+      "mega:5V",
+      "",
+      []
+    ],
+    [
+      "star15:VSS",
+      "mega:GND.1",
+      "",
+      []
+    ],
+    [
+      "star16:VDD",
+      "mega:5V",
+      "",
+      []
+    ],
+    [
+      "star16:VSS",
+      "mega:GND.1",
+      "",
+      []
+    ],
+    [
+      "star17:VDD",
+      "mega:5V",
+      "",
+      []
+    ],
+    [
+      "star17:VSS",
+      "mega:GND.1",
+      "",
+      []
+    ],
+    [
+      "star18:VDD",
+      "mega:5V",
+      "",
+      []
+    ],
+    [
+      "star18:VSS",
+      "mega:GND.1",
+      "",
+      []
+    ],
+    [
+      "star19:VDD",
+      "mega:5V",
+      "",
+      []
+    ],
+    [
+      "star19:VSS",
+      "mega:GND.1",
+      "",
+      []
+    ],
+    [
+      "star20:VDD",
+      "mega:5V",
+      "",
+      []
+    ],
+    [
+      "star20:VSS",
+      "mega:GND.1",
+      "",
+      []
+    ],
+    [
+      "star21:VDD",
+      "mega:5V",
+      "",
+      []
+    ],
+    [
+      "star21:VSS",
+      "mega:GND.1",
+      "",
+      []
+    ],
+    [
+      "star22:VDD",
+      "mega:5V",
+      "",
+      []
+    ],
+    [
+      "star22:VSS",
+      "mega:GND.1",
+      "",
+      []
+    ],
+    [
+      "star23:VDD",
+      "mega:5V",
+      "",
+      []
+    ],
+    [
+      "star23:VSS",
+      "mega:GND.1",
+      "",
+      []
+    ],
+    [
+      "star24:VDD",
+      "mega:5V",
+      "",
+      []
+    ],
+    [
+      "star24:VSS",
+      "mega:GND.1",
+      "",
+      []
+    ],
+    [
+      "star25:VDD",
+      "mega:5V",
+      "",
+      []
+    ],
+    [
+      "star25:VSS",
+      "mega:GND.1",
+      "",
+      []
+    ],
+    [
+      "star26:VDD",
+      "mega:5V",
+      "",
+      []
+    ],
+    [
+      "star26:VSS",
+      "mega:GND.1",
+      "",
+      []
+    ],
+    [
+      "star27:VDD",
+      "mega:5V",
+      "",
+      []
+    ],
+    [
+      "star27:VSS",
+      "mega:GND.1",
+      "",
+      []
+    ],
+    [
+      "star28:VDD",
+      "mega:5V",
+      "",
+      []
+    ],
+    [
+      "star28:VSS",
+      "mega:GND.1",
+      "",
+      []
+    ],
+    [
+      "star29:VDD",
+      "mega:5V",
+      "",
+      []
+    ],
+    [
+      "star29:VSS",
+      "mega:GND.1",
+      "",
+      []
+    ],
+    [
+      "star30:VDD",
+      "mega:5V",
+      "",
+      []
+    ],
+    [
+      "star30:VSS",
+      "mega:GND.1",
+      "",
+      []
+    ],
+    [
+      "star31:VDD",
+      "mega:5V",
+      "",
+      []
+    ],
+    [
+      "star31:VSS",
+      "mega:GND.1",
+      "",
+      []
+    ],
+    [
+      "star32:VDD",
+      "mega:5V",
+      "",
+      []
+    ],
+    [
+      "star32:VSS",
+      "mega:GND.1",
+      "",
+      []
+    ],
+    [
+      "star33:VDD",
+      "mega:5V",
+      "",
+      []
+    ],
+    [
+      "star33:VSS",
+      "mega:GND.1",
+      "",
+      []
+    ],
+    [
+      "star34:VDD",
+      "mega:5V",
+      "",
+      []
+    ],
+    [
+      "star34:VSS",
+      "mega:GND.1",
+      "",
+      []
+    ],
+    [
+      "star35:VDD",
+      "mega:5V",
+      "",
+      []
+    ],
+    [
+      "star35:VSS",
+      "mega:GND.1",
+      "",
+      []
+    ],
+    [
+      "star36:VDD",
+      "mega:5V",
+      "",
+      []
+    ],
+    [
+      "star36:VSS",
+      "mega:GND.1",
+      "",
+      []
+    ],
+    [
+      "star37:VDD",
+      "mega:5V",
+      "",
+      []
+    ],
+    [
+      "star37:VSS",
+      "mega:GND.1",
+      "",
+      []
+    ],
+    [
+      "star38:VDD",
+      "mega:5V",
+      "",
+      []
+    ],
+    [
+      "star38:VSS",
+      "mega:GND.1",
+      "",
+      []
+    ],
+    [
+      "star39:VDD",
+      "mega:5V",
+      "",
+      []
+    ],
+    [
+      "star39:VSS",
+      "mega:GND.1",
+      "",
+      []
+    ],
+    [
+      "star40:VDD",
+      "mega:5V",
+      "",
+      []
+    ],
+    [
+      "star40:VSS",
+      "mega:GND.1",
+      "",
+      []
+    ],
+    [
+      "star41:VDD",
+      "mega:5V",
+      "",
+      []
+    ],
+    [
+      "star41:VSS",
+      "mega:GND.1",
+      "",
+      []
+    ],
+    [
+      "star42:VDD",
+      "mega:5V",
+      "",
+      []
+    ],
+    [
+      "star42:VSS",
+      "mega:GND.1",
+      "",
+      []
+    ],
+    [
+      "star43:VDD",
+      "mega:5V",
+      "",
+      []
+    ],
+    [
+      "star43:VSS",
+      "mega:GND.1",
+      "",
+      []
+    ],
+    [
+      "star44:VDD",
+      "mega:5V",
+      "",
+      []
+    ],
+    [
+      "star44:VSS",
+      "mega:GND.1",
+      "",
+      []
+    ],
+    [
+      "star45:VDD",
+      "mega:5V",
+      "",
+      []
+    ],
+    [
+      "star45:VSS",
+      "mega:GND.1",
+      "",
+      []
+    ],
+    [
+      "star46:VDD",
+      "mega:5V",
+      "",
+      []
+    ],
+    [
+      "star46:VSS",
+      "mega:GND.1",
+      "",
+      []
+    ],
+    [
+      "star47:VDD",
+      "mega:5V",
+      "",
+      []
+    ],
+    [
+      "star47:VSS",
+      "mega:GND.1",
+      "",
+      []
+    ],
+    [
+      "star48:VDD",
+      "mega:5V",
+      "",
+      []
+    ],
+    [
+      "star48:VSS",
+      "mega:GND.1",
+      "",
+      []
+    ],
+    [
+      "star49:VDD",
+      "mega:5V",
+      "",
+      []
+    ],
+    [
+      "star49:VSS",
+      "mega:GND.1",
+      "",
+      []
+    ],
+    [
+      "star50:VDD",
+      "mega:5V",
+      "",
+      []
+    ],
+    [
+      "star50:VSS",
+      "mega:GND.1",
+      "",
       []
     ]
   ]
