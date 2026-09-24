@@ -61,6 +61,19 @@ With WS2811 pixels, **Arduino GND must share the 12 V PSU 0 V reference** so DAT
 
 Firmware can control each star independently with different brightness and color, progressively introducing random stars at twilight and fading them during dawn. MOSFET #1 channel 4 is now free.
 
+### MOSFET #3 and #4 — Dawn/sunset side RGB strips
+
+Two independent **1 m 12 V analog RGB strips** are added to make dawn and sunset more dynamic:
+
+| Position | Effect | Mega R/G/B | Module |
+|---|---|---|---|
+| Left | Sunset | D10 / D11 / D12 | MOSFET #3, CH1–CH3 |
+| Right | Dawn | D44 / D45 / D46 | MOSFET #4, CH1–CH3 |
+
+Each strip has its common +12 V connected to the protected distribution. R/G/B returns go to the three OUT- terminals of its MOSFET module. Channel 4 of each module remains free. **D13 remains a free PWM output.**
+
+During SUNSET the left strip rises and falls smoothly with warm red/orange tones. During DAWN the right strip performs a similar envelope with a lighter warm tone. The main RGB sky strip continues its global transition at the same time, creating a lateral movement of light.
+
 ### MOSFET #2 — Scenery and movements
 
 | Arduino Mega | MOSFET input | MOSFET output | 12V load | Planned control |
@@ -91,7 +104,7 @@ Open:
 
 with the standard Arduino IDE and select **Arduino Mega or Mega 2560**.
 
-The current firmware implements Phase 1 (RGB sky + stars + controls). D6-D9 are reserved in the source for the Phase 2 second MOSFET and will be activated as the sequence is developed.
+The current firmware implements the main RGB sky, two dawn/sunset side RGB strips, WS2811 stars and controls. D6-D9 are reserved in the source for the Phase 2 second MOSFET and will be activated as the sequence is developed.
 
 ## GitHub Actions
 
