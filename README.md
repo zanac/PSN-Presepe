@@ -76,16 +76,20 @@ Ogni striscia ha il proprio +12 V comune collegato alla distribuzione protetta. 
 
 Nel firmware la striscia sinistra cresce e cala gradualmente durante il TRAMONTO, con tonalità calde rosso/arancio. La striscia destra esegue un andamento analogo durante l'ALBA, con una tonalità più chiara. La striscia RGB principale continua contemporaneamente la transizione generale del cielo: la sovrapposizione crea uno spostamento laterale della luce.
 
-### MOSFET #2 — Scenografia e movimenti
+### Relè ON/OFF — 4 moduli, 16 uscite
 
-| Arduino Mega | Ingresso MOSFET | Uscita MOSFET | Carico 12 V | Controllo previsto |
-|---:|---|---|---|---|
-| D6 | PWM1 | OUT1+ / OUT1- | Luci case | ON/OFF / PWM |
-| D7 | PWM2 | OUT2+ / OUT2- | Pompa | ON/OFF |
-| D8 | PWM3 | OUT3+ / OUT3- | Mulino | ON/OFF |
-| D9 | PWM4 | OUT4+ / OUT4- | Grotta / lampioni | ON/OFF / PWM |
+Luci case, pompe, mulino e gli altri carichi che richiedono soltanto ON/OFF vengono gestiti dai **quattro moduli relè 12 V a 4 canali**. I MOSFET restano dedicati ai carichi che richiedono PWM/dimmer.
 
-D6-D9 sono attualmente riservati alla Fase 2; il firmware attuale implementa la Fase 1 dedicata a cielo e stelle.
+| Uscita | Mega | Modulo / ingresso |
+|---|---:|---|
+| R1–R4 | D25–D28 | RELÈ #1 IN1–IN4 |
+| R5–R8 | D29–D32 | RELÈ #2 IN1–IN4 |
+| R9–R12 | D33–D36 | RELÈ #3 IN1–IN4 |
+| R13–R16 | D37–D40 | RELÈ #4 IN1–IN4 |
+
+Per ogni scheda: **+12 V protetto → DC+**, **0 V comune → DC-**. I morsetti COM/NO/NC restano disponibili per i futuri carichi. Per un carico normalmente spento si useranno normalmente COM + NO.
+
+I jumper S1–S4 permettono di scegliere HIGH/LOW trigger. Prima di abilitare i relè nel firmware verrà verificata la configurazione reale, così da evitare attivazioni involontarie all'avvio.
 
 ### Comandi
 
@@ -221,22 +225,40 @@ PWM4/GND4 e OUT4 restano liberi.
 
 PWM4/GND4 e OUT4 restano liberi. D13 rimane disponibile come uscita PWM di riserva.
 
-### 6. MOSFET #2 — scenografia
+### 6. Quattro moduli relè — cablaggio preventivo dei 16 comandi
 
-Questi collegamenti sono predisposti; prima di collegare fisicamente pompa e mulino verificare tensione, corrente di regime/spunto e protezione dei carichi induttivi.
+I quattro moduli vengono montati e collegati subito al Mega. L'assegnazione scenografica dei singoli relè verrà decisa in seguito.
 
-| Filo | Da | A | Carico |
-|---|---|---|---|
-| 35 | Mega D6 | MOSFET #2 PWM1 | luci case |
-| 36 | Mega GND | MOSFET #2 GND1 | riferimento |
-| 37 | Mega D7 | MOSFET #2 PWM2 | pompa |
-| 38 | Mega GND | MOSFET #2 GND2 | riferimento |
-| 39 | Mega D8 | MOSFET #2 PWM3 | mulino |
-| 40 | Mega GND | MOSFET #2 GND3 | riferimento |
-| 41 | Mega D9 | MOSFET #2 PWM4 | grotta/lampioni |
-| 42 | Mega GND | MOSFET #2 GND4 | riferimento |
+| Uscita | Mega | Modulo / ingresso |
+|---|---:|---|
+| R1 | D25 | RELÈ #1 IN1 |
+| R2 | D26 | RELÈ #1 IN2 |
+| R3 | D27 | RELÈ #1 IN3 |
+| R4 | D28 | RELÈ #1 IN4 |
+| R5 | D29 | RELÈ #2 IN1 |
+| R6 | D30 | RELÈ #2 IN2 |
+| R7 | D31 | RELÈ #2 IN3 |
+| R8 | D32 | RELÈ #2 IN4 |
+| R9 | D33 | RELÈ #3 IN1 |
+| R10 | D34 | RELÈ #3 IN2 |
+| R11 | D35 | RELÈ #3 IN3 |
+| R12 | D36 | RELÈ #3 IN4 |
+| R13 | D37 | RELÈ #4 IN1 |
+| R14 | D38 | RELÈ #4 IN2 |
+| R15 | D39 | RELÈ #4 IN3 |
+| R16 | D40 | RELÈ #4 IN4 |
 
-Per un normale carico 12 V a due fili, collegare il carico alla coppia OUT+/OUT- del canale corrispondente, dopo aver verificato il comportamento del modulo reale. Se il mulino verrà spostato su un modulo relè, D8 verrà riassegnato e questa riga sarà aggiornata.
+Per **ciascuno dei quattro moduli** collegare anche:
+
+| Da | A |
+|---|---|
+| uscita +12 V del portafusibili | DC+ |
+| 0 V comune | DC- |
+| pin Mega indicato sopra | IN1 / IN2 / IN3 / IN4 |
+
+Per ora i morsetti **COM/NO/NC possono rimanere senza carico**. Così tutta la parte di comando R1–R16 è già montata e pronta.
+
+Quando assegneremo un carico 12 V normalmente spento, lo schema tipico sarà: **+12 V protetto → COM → NO → positivo carico**, mentre il negativo del carico torna allo **0 V comune**.
 
 ### 7. Pulsanti
 
@@ -294,6 +316,7 @@ Se il senso di rotazione risulta invertito rispetto a quello desiderato, scambia
 | D22 | START/STOP |
 | D23 | AVANTI |
 | D24 | TEST |
+| D25–D40 | R1–R16, quattro moduli relè |
 | D44 | RGB alba R |
 | D45 | RGB alba G |
 | D46 | RGB alba B |
