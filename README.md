@@ -392,3 +392,128 @@ Con l'introduzione delle stelle WS2811, **Arduino GND e lo 0 V dell'alimentatore
 ---
 
 By **Vanni Brutto**
+
+## 🧪 Provare PSN-Presepe online con Wokwi — guida passo passo
+
+La simulazione permette di provare il firmware **direttamente dal browser**, senza installare Arduino IDE e senza collegare il Mega reale.
+
+> **Importante:** Wokwi serve soprattutto a verificare firmware, pulsanti, potenziometro, OLED e sequenze. Non simula fedelmente la parte elettrica a 12 V, la potenza dei MOSFET o i carichi reali. I 16 relè sono rappresentati da indicatori.
+
+### 1. Apri un nuovo Arduino Mega
+
+Apri questo indirizzo nel browser:
+
+**https://wokwi.com/projects/new/arduino-mega**
+
+Deve comparire un progetto nuovo con un **Arduino Mega 2560**.
+
+### 2. Copia il firmware
+
+Nel repository PSN-Presepe apri:
+
+`firmware/PSN-Presepe/PSN-Presepe.ino`
+
+Premi il pulsante GitHub per copiare tutto il contenuto del file.
+
+Torna su Wokwi, apri il file **sketch.ino**, cancella tutto quello che contiene e incolla il firmware PSN-Presepe.
+
+> Su Wokwi il file si chiama `sketch.ino`; nel repository si chiama `PSN-Presepe.ino`. È normale.
+
+### 3. Installa le tre librerie
+
+Nel pannello del codice di Wokwi apri **Library Manager** e aggiungi:
+
+```text
+Adafruit NeoPixel
+Adafruit SSD1306
+Adafruit GFX Library
+```
+
+Wokwi creerà automaticamente il proprio `libraries.txt`.
+
+Nel repository è presente anche `simulation/libraries.txt` come riferimento aggiornato delle librerie necessarie.
+
+### 4. Carica il nostro schema elettrico virtuale
+
+Nel repository apri:
+
+`simulation/diagram.json`
+
+Copia **tutto** il contenuto.
+
+In Wokwi apri il file **diagram.json**, seleziona tutto, cancella il contenuto esistente e incolla quello del repository.
+
+Dopo pochi istanti il diagramma deve mostrare il Mega e i componenti del PSN-Presepe.
+
+### 5. Avvia
+
+Premi il pulsante verde **▶ Start Simulation**.
+
+Wokwi compilerà il firmware. La prima compilazione può richiedere qualche secondo.
+
+Se tutto è corretto, il Mega virtuale parte e sul display OLED deve apparire l'interfaccia PSN-Presepe.
+
+### 6. Prova il potenziometro
+
+Clicca sul potenziometro **Durata ciclo** e cambiane il valore.
+
+L'OLED deve mostrare temporaneamente **VELOCITA** e la durata del ciclo. Dopo circa 1,8 secondi ritorna alla schermata della fase corrente.
+
+Per fare prove veloci conviene portare il ciclo verso il minimo, circa **5 minuti**.
+
+### 7. Prova i pulsanti
+
+Usa i tre pulsanti virtuali:
+
+| Pulsante | Cosa deve succedere |
+|---|---|
+| START/STOP | mette in pausa e riprende il ciclo; OLED mostra PAUSA/RIPRESA |
+| AVANTI | salta immediatamente alla fase successiva |
+| TEST | avvia la sequenza di prova delle uscite |
+
+Con **AVANTI** puoi quindi controllare rapidamente:
+
+`GIORNO → TRAMONTO → CREPUSCOLO → NOTTE → ALBA → GIORNO`
+
+senza aspettare l'intero ciclo.
+
+### 8. Cosa guardare sull'OLED
+
+Durante il funzionamento normale deve mostrare:
+
+- nome della fase;
+- percentuale **0–100% della fase corrente**;
+- barra di avanzamento;
+- RUN oppure PAUSA;
+- durata impostata del ciclo.
+
+La percentuale riparte da 0 quando cambia fase.
+
+### 9. Apri il Serial Monitor
+
+Durante la simulazione apri **Serial Monitor**.
+
+Il firmware comunica a **115200 baud** e stampa informazioni diagnostiche: fase, percentuale del ciclo, durata, valore A0 e stato RUN/PAUSA.
+
+Se l'OLED virtuale non viene rilevato, il firmware deve comunque continuare a funzionare: è intenzionalmente opzionale.
+
+### 10. Cosa rappresentano i LED virtuali
+
+I LED R/G/B simulano i **segnali di comando PWM** delle tre strisce RGB reali. Non rappresentano direttamente una striscia 12 V.
+
+La striscia NeoPixel virtuale rappresenta le **50 stelle**. Wokwi usa un componente addressable compatibile per visualizzare l'effetto; nel presepe reale utilizziamo la stringa WS2811 a 12 V con il cablaggio documentato.
+
+Gli indicatori R1–R16 rappresentano soltanto i pin D25–D40 destinati ai quattro moduli relè. La logica dei relè verrà implementata successivamente.
+
+### 11. Se Wokwi dà errore
+
+Controlla nell'ordine:
+
+1. di aver scelto **Arduino Mega 2560**;
+2. che `sketch.ino` contenga l'ultima versione del firmware;
+3. che siano installate tutte e tre le librerie;
+4. che `diagram.json` sia stato copiato integralmente da `simulation/diagram.json`;
+5. leggi il messaggio rosso della compilazione o il Serial Monitor.
+
+Se modifichiamo firmware o cablaggio del progetto, anche i file nella cartella `simulation/` devono essere aggiornati insieme.
+
