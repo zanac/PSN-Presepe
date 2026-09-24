@@ -25,7 +25,7 @@
     GIORNO -> TRAMONTO -> CREPUSCOLO -> NOTTE -> ALBA -> GIORNO
 
   Potenziometro:
-    ciclo completo regolabile da 5 a 60 minuti.
+    ciclo completo regolabile da 1 a 6 minuti.
 
   Serial Monitor: 115200 baud
 
@@ -101,8 +101,8 @@ const int POT_POPUP_DELTA = 10;
 const unsigned long OLED_POPUP_MS = 1800UL;
 
 // Durata ciclo regolabile con il potenziometro
-const unsigned long MIN_CYCLE_MS = 5UL  * 60UL * 1000UL;
-const unsigned long MAX_CYCLE_MS = 60UL * 60UL * 1000UL;
+const unsigned long MIN_CYCLE_MS = 1UL * 60UL * 1000UL;
+const unsigned long MAX_CYCLE_MS = 6UL * 60UL * 1000UL;
 
 // Fasi in percentuale
 const float P_TRAMONTO = 35.0f;
@@ -247,8 +247,8 @@ unsigned long durataCiclo() {
   int raw = analogRead(PIN_POT);
 
   // Ruotando verso il massimo elettrico di A0:
-  // ciclo piu' breve = effetto piu' veloce.
-  return map(raw, 0, 1023, MAX_CYCLE_MS, MIN_CYCLE_MS);
+  // ciclo piu' lungo. A0=0 -> 1 minuto (default se il cursore e' a GND), A0=1023 -> 6 minuti.
+  return map(raw, 0, 1023, MIN_CYCLE_MS, MAX_CYCLE_MS);
 }
 
 float percentualeCiclo(unsigned long durata) {
