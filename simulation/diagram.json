@@ -12,89 +12,117 @@
     },
     {
       "type": "wokwi-led",
-      "id": "r",
-      "top": -120,
-      "left": 470,
+      "id": "skyR",
+      "top": -250,
+      "left": 460,
       "attrs": {
         "color": "red",
-        "label": "RGB R"
+        "label": "CIELO R"
       }
     },
     {
       "type": "wokwi-led",
-      "id": "g",
-      "top": -70,
-      "left": 470,
+      "id": "skyG",
+      "top": -205,
+      "left": 460,
       "attrs": {
         "color": "green",
-        "label": "RGB G"
+        "label": "CIELO G"
       }
     },
     {
       "type": "wokwi-led",
-      "id": "b",
-      "top": -20,
-      "left": 470,
+      "id": "skyB",
+      "top": -160,
+      "left": 460,
       "attrs": {
         "color": "blue",
-        "label": "RGB B"
+        "label": "CIELO B"
       }
     },
     {
       "type": "wokwi-led",
+      "id": "sunR",
+      "top": -250,
+      "left": 600,
+      "attrs": {
+        "color": "red",
+        "label": "TRAMONTO R"
+      }
+    },
+    {
+      "type": "wokwi-led",
+      "id": "sunG",
+      "top": -205,
+      "left": 600,
+      "attrs": {
+        "color": "green",
+        "label": "TRAMONTO G"
+      }
+    },
+    {
+      "type": "wokwi-led",
+      "id": "sunB",
+      "top": -160,
+      "left": 600,
+      "attrs": {
+        "color": "blue",
+        "label": "TRAMONTO B"
+      }
+    },
+    {
+      "type": "wokwi-led",
+      "id": "dawnR",
+      "top": -250,
+      "left": 740,
+      "attrs": {
+        "color": "red",
+        "label": "ALBA R"
+      }
+    },
+    {
+      "type": "wokwi-led",
+      "id": "dawnG",
+      "top": -205,
+      "left": 740,
+      "attrs": {
+        "color": "green",
+        "label": "ALBA G"
+      }
+    },
+    {
+      "type": "wokwi-led",
+      "id": "dawnB",
+      "top": -160,
+      "left": 740,
+      "attrs": {
+        "color": "blue",
+        "label": "ALBA B"
+      }
+    },
+    {
+      "type": "wokwi-neopixel-strip",
       "id": "stars",
-      "top": 30,
-      "left": 470,
+      "top": 50,
+      "left": 490,
       "attrs": {
-        "color": "yellow",
-        "label": "Stars"
+        "pixels": "50"
       }
     },
     {
-      "type": "wokwi-led",
-      "id": "houses",
-      "top": 100,
-      "left": 470,
+      "type": "wokwi-ssd1306",
+      "id": "oled",
+      "top": 70,
+      "left": 770,
       "attrs": {
-        "color": "white",
-        "label": "Houses"
-      }
-    },
-    {
-      "type": "wokwi-led",
-      "id": "pump",
-      "top": 150,
-      "left": 470,
-      "attrs": {
-        "color": "white",
-        "label": "Pump"
-      }
-    },
-    {
-      "type": "wokwi-led",
-      "id": "mill",
-      "top": 200,
-      "left": 470,
-      "attrs": {
-        "color": "white",
-        "label": "Mill"
-      }
-    },
-    {
-      "type": "wokwi-led",
-      "id": "grotto",
-      "top": 250,
-      "left": 470,
-      "attrs": {
-        "color": "white",
-        "label": "Grotto/Lamps"
+        "i2cAddress": "0x3c"
       }
     },
     {
       "type": "wokwi-pushbutton",
       "id": "start",
-      "top": 330,
-      "left": -40,
+      "top": 390,
+      "left": -100,
       "attrs": {
         "label": "START/STOP"
       }
@@ -102,17 +130,17 @@
     {
       "type": "wokwi-pushbutton",
       "id": "next",
-      "top": 330,
-      "left": 80,
+      "top": 390,
+      "left": 35,
       "attrs": {
-        "label": "NEXT"
+        "label": "AVANTI"
       }
     },
     {
       "type": "wokwi-pushbutton",
       "id": "test",
-      "top": 330,
-      "left": 190,
+      "top": 390,
+      "left": 170,
       "attrs": {
         "label": "TEST"
       }
@@ -120,109 +148,323 @@
     {
       "type": "wokwi-potentiometer",
       "id": "speed",
-      "top": 330,
-      "left": 340,
+      "top": 390,
+      "left": 315,
       "attrs": {
         "value": "512",
-        "label": "Cycle speed"
+        "label": "Durata ciclo"
+      }
+    },
+    {
+      "type": "wokwi-led",
+      "id": "relay1",
+      "top": 250,
+      "left": 510,
+      "attrs": {
+        "color": "yellow",
+        "label": "R1 D25 (indicatore)"
+      }
+    },
+    {
+      "type": "wokwi-led",
+      "id": "relay2",
+      "top": 293,
+      "left": 510,
+      "attrs": {
+        "color": "yellow",
+        "label": "R2 D26 (indicatore)"
+      }
+    },
+    {
+      "type": "wokwi-led",
+      "id": "relay3",
+      "top": 336,
+      "left": 510,
+      "attrs": {
+        "color": "yellow",
+        "label": "R3 D27 (indicatore)"
+      }
+    },
+    {
+      "type": "wokwi-led",
+      "id": "relay4",
+      "top": 379,
+      "left": 510,
+      "attrs": {
+        "color": "yellow",
+        "label": "R4 D28 (indicatore)"
+      }
+    },
+    {
+      "type": "wokwi-led",
+      "id": "relay5",
+      "top": 250,
+      "left": 630,
+      "attrs": {
+        "color": "yellow",
+        "label": "R5 D29 (indicatore)"
+      }
+    },
+    {
+      "type": "wokwi-led",
+      "id": "relay6",
+      "top": 293,
+      "left": 630,
+      "attrs": {
+        "color": "yellow",
+        "label": "R6 D30 (indicatore)"
+      }
+    },
+    {
+      "type": "wokwi-led",
+      "id": "relay7",
+      "top": 336,
+      "left": 630,
+      "attrs": {
+        "color": "yellow",
+        "label": "R7 D31 (indicatore)"
+      }
+    },
+    {
+      "type": "wokwi-led",
+      "id": "relay8",
+      "top": 379,
+      "left": 630,
+      "attrs": {
+        "color": "yellow",
+        "label": "R8 D32 (indicatore)"
+      }
+    },
+    {
+      "type": "wokwi-led",
+      "id": "relay9",
+      "top": 250,
+      "left": 750,
+      "attrs": {
+        "color": "yellow",
+        "label": "R9 D33 (indicatore)"
+      }
+    },
+    {
+      "type": "wokwi-led",
+      "id": "relay10",
+      "top": 293,
+      "left": 750,
+      "attrs": {
+        "color": "yellow",
+        "label": "R10 D34 (indicatore)"
+      }
+    },
+    {
+      "type": "wokwi-led",
+      "id": "relay11",
+      "top": 336,
+      "left": 750,
+      "attrs": {
+        "color": "yellow",
+        "label": "R11 D35 (indicatore)"
+      }
+    },
+    {
+      "type": "wokwi-led",
+      "id": "relay12",
+      "top": 379,
+      "left": 750,
+      "attrs": {
+        "color": "yellow",
+        "label": "R12 D36 (indicatore)"
+      }
+    },
+    {
+      "type": "wokwi-led",
+      "id": "relay13",
+      "top": 250,
+      "left": 870,
+      "attrs": {
+        "color": "yellow",
+        "label": "R13 D37 (indicatore)"
+      }
+    },
+    {
+      "type": "wokwi-led",
+      "id": "relay14",
+      "top": 293,
+      "left": 870,
+      "attrs": {
+        "color": "yellow",
+        "label": "R14 D38 (indicatore)"
+      }
+    },
+    {
+      "type": "wokwi-led",
+      "id": "relay15",
+      "top": 336,
+      "left": 870,
+      "attrs": {
+        "color": "yellow",
+        "label": "R15 D39 (indicatore)"
+      }
+    },
+    {
+      "type": "wokwi-led",
+      "id": "relay16",
+      "top": 379,
+      "left": 870,
+      "attrs": {
+        "color": "yellow",
+        "label": "R16 D40 (indicatore)"
       }
     }
   ],
   "connections": [
     [
       "mega:2",
-      "r:A",
-      "green",
+      "skyR:A",
+      "red",
       []
     ],
     [
-      "r:C",
+      "skyR:C",
       "mega:GND.1",
       "black",
       []
     ],
     [
       "mega:3",
-      "g:A",
+      "skyG:A",
       "green",
       []
     ],
     [
-      "g:C",
+      "skyG:C",
       "mega:GND.1",
       "black",
       []
     ],
     [
       "mega:4",
-      "b:A",
+      "skyB:A",
+      "blue",
+      []
+    ],
+    [
+      "skyB:C",
+      "mega:GND.1",
+      "black",
+      []
+    ],
+    [
+      "mega:10",
+      "sunR:A",
+      "red",
+      []
+    ],
+    [
+      "sunR:C",
+      "mega:GND.1",
+      "black",
+      []
+    ],
+    [
+      "mega:11",
+      "sunG:A",
       "green",
       []
     ],
     [
-      "b:C",
+      "sunG:C",
+      "mega:GND.1",
+      "black",
+      []
+    ],
+    [
+      "mega:12",
+      "sunB:A",
+      "blue",
+      []
+    ],
+    [
+      "sunB:C",
+      "mega:GND.1",
+      "black",
+      []
+    ],
+    [
+      "mega:44",
+      "dawnR:A",
+      "red",
+      []
+    ],
+    [
+      "dawnR:C",
+      "mega:GND.1",
+      "black",
+      []
+    ],
+    [
+      "mega:45",
+      "dawnG:A",
+      "green",
+      []
+    ],
+    [
+      "dawnG:C",
+      "mega:GND.1",
+      "black",
+      []
+    ],
+    [
+      "mega:46",
+      "dawnB:A",
+      "blue",
+      []
+    ],
+    [
+      "dawnB:C",
       "mega:GND.1",
       "black",
       []
     ],
     [
       "mega:5",
-      "stars:A",
+      "stars:DIN",
       "green",
       []
     ],
     [
-      "stars:C",
+      "stars:VDD",
+      "mega:5V",
+      "red",
+      []
+    ],
+    [
+      "stars:GND",
       "mega:GND.1",
       "black",
       []
     ],
     [
-      "mega:6",
-      "houses:A",
-      "green",
+      "oled:VCC",
+      "mega:5V",
+      "red",
       []
     ],
     [
-      "houses:C",
+      "oled:GND",
       "mega:GND.1",
       "black",
       []
     ],
     [
-      "mega:7",
-      "pump:A",
-      "green",
+      "oled:SDA",
+      "mega:20",
+      "blue",
       []
     ],
     [
-      "pump:C",
-      "mega:GND.1",
-      "black",
-      []
-    ],
-    [
-      "mega:8",
-      "mill:A",
-      "green",
-      []
-    ],
-    [
-      "mill:C",
-      "mega:GND.1",
-      "black",
-      []
-    ],
-    [
-      "mega:9",
-      "grotto:A",
-      "green",
-      []
-    ],
-    [
-      "grotto:C",
-      "mega:GND.1",
-      "black",
+      "oled:SCL",
+      "mega:21",
+      "yellow",
       []
     ],
     [
@@ -277,6 +519,198 @@
       "speed:SIG",
       "mega:A0",
       "green",
+      []
+    ],
+    [
+      "mega:25",
+      "relay1:A",
+      "orange",
+      []
+    ],
+    [
+      "relay1:C",
+      "mega:GND.1",
+      "black",
+      []
+    ],
+    [
+      "mega:26",
+      "relay2:A",
+      "orange",
+      []
+    ],
+    [
+      "relay2:C",
+      "mega:GND.1",
+      "black",
+      []
+    ],
+    [
+      "mega:27",
+      "relay3:A",
+      "orange",
+      []
+    ],
+    [
+      "relay3:C",
+      "mega:GND.1",
+      "black",
+      []
+    ],
+    [
+      "mega:28",
+      "relay4:A",
+      "orange",
+      []
+    ],
+    [
+      "relay4:C",
+      "mega:GND.1",
+      "black",
+      []
+    ],
+    [
+      "mega:29",
+      "relay5:A",
+      "orange",
+      []
+    ],
+    [
+      "relay5:C",
+      "mega:GND.1",
+      "black",
+      []
+    ],
+    [
+      "mega:30",
+      "relay6:A",
+      "orange",
+      []
+    ],
+    [
+      "relay6:C",
+      "mega:GND.1",
+      "black",
+      []
+    ],
+    [
+      "mega:31",
+      "relay7:A",
+      "orange",
+      []
+    ],
+    [
+      "relay7:C",
+      "mega:GND.1",
+      "black",
+      []
+    ],
+    [
+      "mega:32",
+      "relay8:A",
+      "orange",
+      []
+    ],
+    [
+      "relay8:C",
+      "mega:GND.1",
+      "black",
+      []
+    ],
+    [
+      "mega:33",
+      "relay9:A",
+      "orange",
+      []
+    ],
+    [
+      "relay9:C",
+      "mega:GND.1",
+      "black",
+      []
+    ],
+    [
+      "mega:34",
+      "relay10:A",
+      "orange",
+      []
+    ],
+    [
+      "relay10:C",
+      "mega:GND.1",
+      "black",
+      []
+    ],
+    [
+      "mega:35",
+      "relay11:A",
+      "orange",
+      []
+    ],
+    [
+      "relay11:C",
+      "mega:GND.1",
+      "black",
+      []
+    ],
+    [
+      "mega:36",
+      "relay12:A",
+      "orange",
+      []
+    ],
+    [
+      "relay12:C",
+      "mega:GND.1",
+      "black",
+      []
+    ],
+    [
+      "mega:37",
+      "relay13:A",
+      "orange",
+      []
+    ],
+    [
+      "relay13:C",
+      "mega:GND.1",
+      "black",
+      []
+    ],
+    [
+      "mega:38",
+      "relay14:A",
+      "orange",
+      []
+    ],
+    [
+      "relay14:C",
+      "mega:GND.1",
+      "black",
+      []
+    ],
+    [
+      "mega:39",
+      "relay15:A",
+      "orange",
+      []
+    ],
+    [
+      "relay15:C",
+      "mega:GND.1",
+      "black",
+      []
+    ],
+    [
+      "mega:40",
+      "relay16:A",
+      "orange",
+      []
+    ],
+    [
+      "relay16:C",
+      "mega:GND.1",
+      "black",
       []
     ]
   ]
