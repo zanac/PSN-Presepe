@@ -230,12 +230,28 @@ void mostraStelle(float livello) {
 
     uint16_t v = (uint16_t)(stellaLum[i] * locale);
 
-    // Esattamente 7 stelle hanno un tremolio morbido ma ben visibile durante la notte.
-    // L'oscillazione e' lenta e asincrona: varia dallo 0% al 100%, fino a spegnersi dolcemente.
+    // Esattamente 7 stelle scintillano in modo chiaramente visibile.
+    // Ognuna ha un ciclo asincrono: resta accesa, sfuma fino a 0,
+    // rimane spenta per un breve istante e poi torna gradualmente al 100%.
     if (stellaTwinkle[i] && v > 5) {
-      uint8_t fase = (uint8_t)((millis() / (38UL + (i % 23))) & 0x3F);
-      if (fase > 31) fase = 63 - fase;
-      v = (v * fase) / 31U; // 0%-100% della luminosita' nominale
+      const unsigned long periodo = 4000UL + (i % 7) * 450UL; // 4,0-6,7 s
+      const unsigned long faseMs = (millis() + (unsigned long)i * 977UL) % periodo;
+      const unsigned long p = (faseMs * 100UL) / periodo;
+      uint8_t fattore;
+
+      if (p < 35) {
+        fattore = 100;                       // accesa
+      } else if (p < 55) {
+        fattore = (uint8_t)((55UL - p) * 5UL); // 100 -> 0
+      } else if (p < 70) {
+        fattore = 0;                         // chiaramente spenta
+      } else if (p < 90) {
+        fattore = (uint8_t)((p - 70UL) * 5UL); // 0 -> 100
+      } else {
+        fattore = 100;                       // accesa
+      }
+
+      v = (v * fattore) / 100U;
     }
 
     // Bianco caldo tenue.
