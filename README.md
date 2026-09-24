@@ -91,6 +91,21 @@ Per ogni scheda: **+12 V protetto → DC+**, **0 V comune → DC-**. I morsetti 
 
 I jumper S1–S4 permettono di scegliere HIGH/LOW trigger. Prima di abilitare i relè nel firmware verrà verificata la configurazione reale, così da evitare attivazioni involontarie all'avvio.
 
+### Display OLED ELEGOO EL-SM-008
+
+Display di stato OLED **0,96 pollici, 128×64, I²C**, alimentazione 3,3–5 V, indirizzo I²C a 7 bit **0x3C**.
+
+| OLED | Arduino Mega 2560 |
+|---|---|
+| GND | GND |
+| VCC | 5V |
+| SDA | D20 / SDA |
+| SCL | D21 / SCL |
+
+Il display è **opzionale**: il firmware deve continuare a funzionare normalmente anche se l'OLED non è collegato. All'avvio il software verifica la presenza del display all'indirizzo 0x3C; se non risponde, prosegue senza OLED.
+
+> Nota: sul Mega 2560 l'I²C hardware usa **D20=SDA** e **D21=SCL**. Eventuali esempi che indicano D21/D22 si riferiscono ad altre piattaforme, ad esempio ESP32.
+
 ### Comandi
 
 | Arduino Mega | Dispositivo | Collegamento |
@@ -260,7 +275,20 @@ Per ora i morsetti **COM/NO/NC possono rimanere senza carico**. Così tutta la p
 
 Quando assegneremo un carico 12 V normalmente spento, lo schema tipico sarà: **+12 V protetto → COM → NO → positivo carico**, mentre il negativo del carico torna allo **0 V comune**.
 
-### 7. Pulsanti
+### 7. Display OLED EL-SM-008
+
+Collegare i quattro fili:
+
+| Filo | Da | A |
+|---|---|---|
+| OLED 1 | GND | Mega GND |
+| OLED 2 | VCC | Mega 5V |
+| OLED 3 | SCL | Mega D21 / SCL |
+| OLED 4 | SDA | Mega D20 / SDA |
+
+Indirizzo I²C firmware: **0x3C**. Il display è opzionale: se viene scollegato o dimenticato, il controllore del presepe deve continuare a funzionare.
+
+### 8. Pulsanti
 
 I pulsanti sono momentanei NO. Grazie a INPUT_PULLUP non servono resistenze esterne.
 
@@ -315,6 +343,8 @@ Se il senso di rotazione risulta invertito rispetto a quello desiderato, scambia
 | D13 | PWM libero |
 | D22 | START/STOP |
 | D23 | AVANTI |
+| D20 | SDA OLED EL-SM-008 (I²C, opzionale) |
+| D21 | SCL OLED EL-SM-008 (I²C, opzionale) |
 | D24 | TEST |
 | D25–D40 | R1–R16, quattro moduli relè |
 | D44 | RGB alba R |
