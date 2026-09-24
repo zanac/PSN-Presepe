@@ -11,96 +11,6 @@
       "attrs": {}
     },
     {
-      "type": "wokwi-led",
-      "id": "skyR",
-      "top": -250,
-      "left": 460,
-      "attrs": {
-        "color": "red",
-        "label": "CIELO R"
-      }
-    },
-    {
-      "type": "wokwi-led",
-      "id": "skyG",
-      "top": -205,
-      "left": 460,
-      "attrs": {
-        "color": "green",
-        "label": "CIELO G"
-      }
-    },
-    {
-      "type": "wokwi-led",
-      "id": "skyB",
-      "top": -160,
-      "left": 460,
-      "attrs": {
-        "color": "blue",
-        "label": "CIELO B"
-      }
-    },
-    {
-      "type": "wokwi-led",
-      "id": "sunR",
-      "top": -250,
-      "left": 600,
-      "attrs": {
-        "color": "red",
-        "label": "TRAMONTO R"
-      }
-    },
-    {
-      "type": "wokwi-led",
-      "id": "sunG",
-      "top": -205,
-      "left": 600,
-      "attrs": {
-        "color": "green",
-        "label": "TRAMONTO G"
-      }
-    },
-    {
-      "type": "wokwi-led",
-      "id": "sunB",
-      "top": -160,
-      "left": 600,
-      "attrs": {
-        "color": "blue",
-        "label": "TRAMONTO B"
-      }
-    },
-    {
-      "type": "wokwi-led",
-      "id": "dawnR",
-      "top": -250,
-      "left": 740,
-      "attrs": {
-        "color": "red",
-        "label": "ALBA R"
-      }
-    },
-    {
-      "type": "wokwi-led",
-      "id": "dawnG",
-      "top": -205,
-      "left": 740,
-      "attrs": {
-        "color": "green",
-        "label": "ALBA G"
-      }
-    },
-    {
-      "type": "wokwi-led",
-      "id": "dawnB",
-      "top": -160,
-      "left": 740,
-      "attrs": {
-        "color": "blue",
-        "label": "ALBA B"
-      }
-    },
-    {
       "type": "wokwi-neopixel-strip",
       "id": "stars",
       "top": 50,
@@ -314,117 +224,39 @@
         "color": "yellow",
         "label": "R16 D40 (indicatore)"
       }
+    },
+    {
+      "type": "wokwi-rgb-led",
+      "id": "skyRGB",
+      "top": -220,
+      "left": 520,
+      "attrs": {
+        "common": "cathode",
+        "label": "CIELO RGB"
+      }
+    },
+    {
+      "type": "wokwi-rgb-led",
+      "id": "sunRGB",
+      "top": -100,
+      "left": 520,
+      "attrs": {
+        "common": "cathode",
+        "label": "TRAMONTO"
+      }
+    },
+    {
+      "type": "wokwi-rgb-led",
+      "id": "dawnRGB",
+      "top": 20,
+      "left": 520,
+      "attrs": {
+        "common": "cathode",
+        "label": "ALBA"
+      }
     }
   ],
   "connections": [
-    [
-      "mega:2",
-      "skyR:A",
-      "red",
-      []
-    ],
-    [
-      "skyR:C",
-      "mega:GND.1",
-      "black",
-      []
-    ],
-    [
-      "mega:3",
-      "skyG:A",
-      "green",
-      []
-    ],
-    [
-      "skyG:C",
-      "mega:GND.1",
-      "black",
-      []
-    ],
-    [
-      "mega:4",
-      "skyB:A",
-      "blue",
-      []
-    ],
-    [
-      "skyB:C",
-      "mega:GND.1",
-      "black",
-      []
-    ],
-    [
-      "mega:10",
-      "sunR:A",
-      "red",
-      []
-    ],
-    [
-      "sunR:C",
-      "mega:GND.1",
-      "black",
-      []
-    ],
-    [
-      "mega:11",
-      "sunG:A",
-      "green",
-      []
-    ],
-    [
-      "sunG:C",
-      "mega:GND.1",
-      "black",
-      []
-    ],
-    [
-      "mega:12",
-      "sunB:A",
-      "blue",
-      []
-    ],
-    [
-      "sunB:C",
-      "mega:GND.1",
-      "black",
-      []
-    ],
-    [
-      "mega:44",
-      "dawnR:A",
-      "red",
-      []
-    ],
-    [
-      "dawnR:C",
-      "mega:GND.1",
-      "black",
-      []
-    ],
-    [
-      "mega:45",
-      "dawnG:A",
-      "green",
-      []
-    ],
-    [
-      "dawnG:C",
-      "mega:GND.1",
-      "black",
-      []
-    ],
-    [
-      "mega:46",
-      "dawnB:A",
-      "blue",
-      []
-    ],
-    [
-      "dawnB:C",
-      "mega:GND.1",
-      "black",
-      []
-    ],
     [
       "mega:5",
       "stars:DIN",
@@ -709,6 +541,78 @@
     ],
     [
       "relay16:C",
+      "mega:GND.1",
+      "black",
+      []
+    ],
+    [
+      "mega:2",
+      "skyRGB:R",
+      "red",
+      []
+    ],
+    [
+      "mega:3",
+      "skyRGB:G",
+      "green",
+      []
+    ],
+    [
+      "mega:4",
+      "skyRGB:B",
+      "blue",
+      []
+    ],
+    [
+      "skyRGB:COM",
+      "mega:GND.1",
+      "black",
+      []
+    ],
+    [
+      "mega:10",
+      "sunRGB:R",
+      "red",
+      []
+    ],
+    [
+      "mega:11",
+      "sunRGB:G",
+      "green",
+      []
+    ],
+    [
+      "mega:12",
+      "sunRGB:B",
+      "blue",
+      []
+    ],
+    [
+      "sunRGB:COM",
+      "mega:GND.1",
+      "black",
+      []
+    ],
+    [
+      "mega:44",
+      "dawnRGB:R",
+      "red",
+      []
+    ],
+    [
+      "mega:45",
+      "dawnRGB:G",
+      "green",
+      []
+    ],
+    [
+      "mega:46",
+      "dawnRGB:B",
+      "blue",
+      []
+    ],
+    [
+      "dawnRGB:COM",
       "mega:GND.1",
       "black",
       []
