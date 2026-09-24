@@ -459,7 +459,7 @@ Clicca sul potenziometro **Durata ciclo** e cambiane il valore.
 
 L'OLED deve mostrare temporaneamente **VELOCITA** e la durata del ciclo. Dopo circa 1,8 secondi ritorna alla schermata della fase corrente.
 
-Per fare prove veloci conviene portare il ciclo verso il minimo, circa **5 minuti**.
+Per fare prove veloci conviene portare il ciclo verso il minimo, circa **1 minuto**.
 
 ### 7. Prova i pulsanti
 
