@@ -1,5 +1,12 @@
 # PSN-Presepe
 
+## Demo online Wokwi
+
+▶️ [Apri la simulazione interattiva PSN-Presepe su Wokwi](https://wokwi.com/projects/476035349322038273)
+
+La demo permette di provare direttamente dal browser il ciclo giorno/notte, le strisce RGB, il cielo stellato, OLED e comandi senza hardware reale.
+
+
 Controller basato su Arduino Mega 2560 per la gestione modulare di un presepe a 12 V.
 
 **Italiano** | [English](README_EN.md)
