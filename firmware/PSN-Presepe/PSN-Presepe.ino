@@ -87,6 +87,7 @@ const uint8_t PIN_RELE[16] = {
 };
 
 const bool PWM_INVERTED = false;
+const bool RELE_ACTIVE_LOW = false; // Wokwi: HIGH=ON; verificare i moduli reali prima del collegamento
 
 // OLED ELEGOO EL-SM-008, 128x64, I2C 0x3C.
 // Il display e' opzionale: se assente il presepe continua normalmente.
@@ -398,16 +399,28 @@ void mostraOledTest() {
   display.setTextColor(SSD1306_WHITE);
   display.setTextSize(1);
   display.setCursor(0,0); display.print(F("MODALITA' TEST"));
-  display.setCursor(0,14); display.print(F("Test ")); display.print(testIndice + 1); display.print(F("/7"));
+  display.setCursor(0,14); display.print(F("Test ")); display.print(testIndice + 1); display.print(F("/23"));
   display.setCursor(0,30);
-  switch (testIndice) {
-    case 0: display.print(F("CIELO ROSSO")); break;
-    case 1: display.print(F("CIELO VERDE")); break;
-    case 2: display.print(F("CIELO BLU")); break;
-    case 3: display.print(F("TRAMONTO RGB")); break;
-    case 4: display.print(F("ALBA RGB")); break;
-    case 5: display.print(F("STELLE WS2811")); break;
-    case 6: display.print(F("TUTTO INSIEME")); break;
+  if (testIndice < 7) {
+    switch (testIndice) {
+      case 0: display.print(F("CIELO ROSSO")); break;
+      case 1: display.print(F("CIELO VERDE")); break;
+      case 2: display.print(F("CIELO BLU")); break;
+      case 3: display.print(F("TRAMONTO RGB")); break;
+      case 4: display.print(F("ALBA RGB")); break;
+      case 5: display.print(F("STELLE WS2811")); break;
+      case 6: display.print(F("TUTTO INSIEME")); break;
+    }
+  } else {
+    uint8_t n = testIndice - 7;
+    uint8_t gruppo = n / 4 + 1;
+    uint8_t rele = n % 4 + 1;
+    display.print(F("Grp_"));
+    if (gruppo < 10) display.print('0');
+    display.print(gruppo);
+    display.print('_');
+    if (rele < 10) display.print('0');
+    display.print(rele);
   }
   display.setCursor(0,48); display.print(F("TEST=avanti START=esci"));
   display.display();
@@ -472,7 +485,7 @@ bool inizializzaOled() {
   display.setTextSize(1);
   // Startup splash: PSN-Presepe! by Vanni
   display.setCursor(27,18); display.print(F("PSN-Presepe!"));
-  display.setCursor(30,36); display.print(F("by Vanni 004"));
+  display.setCursor(30,36); display.print(F("by Vanni 005"));
   display.display();
   delay(2000);
   return true;
@@ -631,6 +644,7 @@ bool pulsantePremuto(uint8_t pin,
 void toggleStartStop() {
   if (testInCorso) {
     tuttoSpento();
+    spegniRele();
     testInCorso = false;
     testIndice = 0;
 
@@ -672,8 +686,35 @@ void toggleStartStop() {
 // TEST
 // ============================================================
 
+void spegniRele() {
+  for (uint8_t i = 0; i < 16; i++)
+    digitalWrite(PIN_RELE[i], RELE_ACTIVE_LOW ? HIGH : LOW);
+}
+
+void accendiRele(uint8_t indice) {
+  spegniRele();
+  if (indice < 16)
+    digitalWrite(PIN_RELE[indice], RELE_ACTIVE_LOW ? LOW : HIGH);
+}
+
 void applicaTestCorrente() {
   tuttoSpento();
+  spegniRele();
+
+  if (testIndice >= 7) {
+    uint8_t n = testIndice - 7;
+    accendiRele(n);
+    uint8_t gruppo = n / 4 + 1;
+    uint8_t rele = n % 4 + 1;
+    Serial.print(F("TEST "));
+    Serial.print(testIndice + 1);
+    Serial.print(F("/23 - Grp_0"));
+    Serial.print(gruppo);
+    Serial.print(F("_0"));
+    Serial.println(rele);
+    mostraOledTest();
+    return;
+  }
 
   switch (testIndice) {
     case 0:
@@ -732,7 +773,7 @@ void testUscite() {
     Serial.println(F("=== MODALITA' TEST ==="));
     Serial.println(F("TEST = test successivo, START = esci"));
   } else {
-    testIndice = (testIndice + 1) % 7;
+    testIndice = (testIndice + 1) % 23;
   }
 
   applicaTestCorrente();
@@ -787,7 +828,14 @@ void setup() {
   pinMode(PIN_NEXT,  INPUT_PULLUP);
   pinMode(PIN_TEST,  INPUT_PULLUP);
 
+  // Uscite relè predisposte per il test manuale.
+  for (uint8_t i = 0; i < 16; i++) {
+    digitalWrite(PIN_RELE[i], RELE_ACTIVE_LOW ? HIGH : LOW);
+    pinMode(PIN_RELE[i], OUTPUT);
+  }
+
   tuttoSpento();
+  spegniRele();
 
   delay(300);
 
