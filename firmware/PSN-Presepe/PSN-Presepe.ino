@@ -230,12 +230,12 @@ void mostraStelle(float livello) {
 
     uint16_t v = (uint16_t)(stellaLum[i] * locale);
 
-    // Esattamente 7 stelle hanno un tremolio morbido durante la notte.
-    // L'oscillazione e' lenta e asincrona: varia la luminosita', non lampeggia.
+    // Esattamente 7 stelle hanno un tremolio morbido ma ben visibile durante la notte.
+    // L'oscillazione e' lenta e asincrona: varia circa dal 35% al 100%, senza lampeggiare.
     if (stellaTwinkle[i] && v > 5) {
       uint8_t fase = (uint8_t)((millis() / (38UL + (i % 23))) & 0x3F);
       if (fase > 31) fase = 63 - fase;
-      v = (v * (68U + fase)) / 99U; // circa 69%-100% della luminosita' nominale
+      v = (v * (35U + (fase * 65U) / 31U)) / 100U; // circa 35%-100% della luminosita' nominale
     }
 
     // Bianco caldo tenue.
