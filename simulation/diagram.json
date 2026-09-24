@@ -217,36 +217,6 @@
       }
     },
     {
-      "type": "wokwi-rgb-led",
-      "id": "skyRGB",
-      "top": -110,
-      "left": 720,
-      "attrs": {
-        "common": "cathode",
-        "label": "GIORNO"
-      }
-    },
-    {
-      "type": "wokwi-rgb-led",
-      "id": "sunRGB",
-      "top": -110,
-      "left": 920,
-      "attrs": {
-        "common": "cathode",
-        "label": "TRAMONTO"
-      }
-    },
-    {
-      "type": "wokwi-rgb-led",
-      "id": "dawnRGB",
-      "top": -110,
-      "left": 520,
-      "attrs": {
-        "common": "cathode",
-        "label": "ALBA"
-      }
-    },
-    {
       "type": "wokwi-neopixel",
       "id": "star1",
       "top": -512,
@@ -595,6 +565,276 @@
       "top": -320,
       "left": 999,
       "attrs": {}
+    },
+    {
+      "type": "wokwi-rgb-led",
+      "id": "dawnRGB1",
+      "top": 285,
+      "left": 360,
+      "attrs": {
+        "common": "cathode",
+        "label": ""
+      }
+    },
+    {
+      "type": "wokwi-rgb-led",
+      "id": "dawnRGB2",
+      "top": 285,
+      "left": 394,
+      "attrs": {
+        "common": "cathode",
+        "label": ""
+      }
+    },
+    {
+      "type": "wokwi-rgb-led",
+      "id": "dawnRGB3",
+      "top": 285,
+      "left": 428,
+      "attrs": {
+        "common": "cathode",
+        "label": ""
+      }
+    },
+    {
+      "type": "wokwi-rgb-led",
+      "id": "dawnRGB4",
+      "top": 319,
+      "left": 360,
+      "attrs": {
+        "common": "cathode",
+        "label": ""
+      }
+    },
+    {
+      "type": "wokwi-rgb-led",
+      "id": "dawnRGB5",
+      "top": 319,
+      "left": 394,
+      "attrs": {
+        "common": "cathode",
+        "label": ""
+      }
+    },
+    {
+      "type": "wokwi-rgb-led",
+      "id": "dawnRGB6",
+      "top": 319,
+      "left": 428,
+      "attrs": {
+        "common": "cathode",
+        "label": ""
+      }
+    },
+    {
+      "type": "wokwi-rgb-led",
+      "id": "dawnRGB7",
+      "top": 353,
+      "left": 360,
+      "attrs": {
+        "common": "cathode",
+        "label": ""
+      }
+    },
+    {
+      "type": "wokwi-rgb-led",
+      "id": "dawnRGB8",
+      "top": 353,
+      "left": 394,
+      "attrs": {
+        "common": "cathode",
+        "label": "ALBA"
+      }
+    },
+    {
+      "type": "wokwi-rgb-led",
+      "id": "dawnRGB9",
+      "top": 353,
+      "left": 428,
+      "attrs": {
+        "common": "cathode",
+        "label": ""
+      }
+    },
+    {
+      "type": "wokwi-rgb-led",
+      "id": "skyRGB1",
+      "top": 285,
+      "left": 680,
+      "attrs": {
+        "common": "cathode",
+        "label": ""
+      }
+    },
+    {
+      "type": "wokwi-rgb-led",
+      "id": "skyRGB2",
+      "top": 285,
+      "left": 714,
+      "attrs": {
+        "common": "cathode",
+        "label": ""
+      }
+    },
+    {
+      "type": "wokwi-rgb-led",
+      "id": "skyRGB3",
+      "top": 285,
+      "left": 748,
+      "attrs": {
+        "common": "cathode",
+        "label": ""
+      }
+    },
+    {
+      "type": "wokwi-rgb-led",
+      "id": "skyRGB4",
+      "top": 319,
+      "left": 680,
+      "attrs": {
+        "common": "cathode",
+        "label": ""
+      }
+    },
+    {
+      "type": "wokwi-rgb-led",
+      "id": "skyRGB5",
+      "top": 319,
+      "left": 714,
+      "attrs": {
+        "common": "cathode",
+        "label": ""
+      }
+    },
+    {
+      "type": "wokwi-rgb-led",
+      "id": "skyRGB6",
+      "top": 319,
+      "left": 748,
+      "attrs": {
+        "common": "cathode",
+        "label": ""
+      }
+    },
+    {
+      "type": "wokwi-rgb-led",
+      "id": "skyRGB7",
+      "top": 353,
+      "left": 680,
+      "attrs": {
+        "common": "cathode",
+        "label": ""
+      }
+    },
+    {
+      "type": "wokwi-rgb-led",
+      "id": "skyRGB8",
+      "top": 353,
+      "left": 714,
+      "attrs": {
+        "common": "cathode",
+        "label": "GIORNO"
+      }
+    },
+    {
+      "type": "wokwi-rgb-led",
+      "id": "skyRGB9",
+      "top": 353,
+      "left": 748,
+      "attrs": {
+        "common": "cathode",
+        "label": ""
+      }
+    },
+    {
+      "type": "wokwi-rgb-led",
+      "id": "sunRGB1",
+      "top": 285,
+      "left": 1000,
+      "attrs": {
+        "common": "cathode",
+        "label": ""
+      }
+    },
+    {
+      "type": "wokwi-rgb-led",
+      "id": "sunRGB2",
+      "top": 285,
+      "left": 1034,
+      "attrs": {
+        "common": "cathode",
+        "label": ""
+      }
+    },
+    {
+      "type": "wokwi-rgb-led",
+      "id": "sunRGB3",
+      "top": 285,
+      "left": 1068,
+      "attrs": {
+        "common": "cathode",
+        "label": ""
+      }
+    },
+    {
+      "type": "wokwi-rgb-led",
+      "id": "sunRGB4",
+      "top": 319,
+      "left": 1000,
+      "attrs": {
+        "common": "cathode",
+        "label": ""
+      }
+    },
+    {
+      "type": "wokwi-rgb-led",
+      "id": "sunRGB5",
+      "top": 319,
+      "left": 1034,
+      "attrs": {
+        "common": "cathode",
+        "label": ""
+      }
+    },
+    {
+      "type": "wokwi-rgb-led",
+      "id": "sunRGB6",
+      "top": 319,
+      "left": 1068,
+      "attrs": {
+        "common": "cathode",
+        "label": ""
+      }
+    },
+    {
+      "type": "wokwi-rgb-led",
+      "id": "sunRGB7",
+      "top": 353,
+      "left": 1000,
+      "attrs": {
+        "common": "cathode",
+        "label": ""
+      }
+    },
+    {
+      "type": "wokwi-rgb-led",
+      "id": "sunRGB8",
+      "top": 353,
+      "left": 1034,
+      "attrs": {
+        "common": "cathode",
+        "label": "TRAMONTO"
+      }
+    },
+    {
+      "type": "wokwi-rgb-led",
+      "id": "sunRGB9",
+      "top": 353,
+      "left": 1068,
+      "attrs": {
+        "common": "cathode",
+        "label": ""
+      }
     }
   ],
   "connections": [
@@ -864,78 +1104,6 @@
     ],
     [
       "relay16:C",
-      "mega:GND.1",
-      "",
-      []
-    ],
-    [
-      "mega:2",
-      "skyRGB:R",
-      "",
-      []
-    ],
-    [
-      "mega:3",
-      "skyRGB:G",
-      "",
-      []
-    ],
-    [
-      "mega:4",
-      "skyRGB:B",
-      "",
-      []
-    ],
-    [
-      "skyRGB:COM",
-      "mega:GND.1",
-      "",
-      []
-    ],
-    [
-      "mega:10",
-      "sunRGB:R",
-      "",
-      []
-    ],
-    [
-      "mega:11",
-      "sunRGB:G",
-      "",
-      []
-    ],
-    [
-      "mega:12",
-      "sunRGB:B",
-      "",
-      []
-    ],
-    [
-      "sunRGB:COM",
-      "mega:GND.1",
-      "",
-      []
-    ],
-    [
-      "mega:44",
-      "dawnRGB:R",
-      "",
-      []
-    ],
-    [
-      "mega:45",
-      "dawnRGB:G",
-      "",
-      []
-    ],
-    [
-      "mega:46",
-      "dawnRGB:B",
-      "",
-      []
-    ],
-    [
-      "dawnRGB:COM",
       "mega:GND.1",
       "",
       []
@@ -1836,6 +2004,654 @@
     ],
     [
       "star50:VSS",
+      "mega:GND.1",
+      "",
+      []
+    ],
+    [
+      "dawnRGB1:R",
+      "mega:44",
+      "",
+      []
+    ],
+    [
+      "dawnRGB1:G",
+      "mega:45",
+      "",
+      []
+    ],
+    [
+      "dawnRGB1:B",
+      "mega:46",
+      "",
+      []
+    ],
+    [
+      "dawnRGB1:COM",
+      "mega:GND.1",
+      "",
+      []
+    ],
+    [
+      "dawnRGB2:R",
+      "mega:44",
+      "",
+      []
+    ],
+    [
+      "dawnRGB2:G",
+      "mega:45",
+      "",
+      []
+    ],
+    [
+      "dawnRGB2:B",
+      "mega:46",
+      "",
+      []
+    ],
+    [
+      "dawnRGB2:COM",
+      "mega:GND.1",
+      "",
+      []
+    ],
+    [
+      "dawnRGB3:R",
+      "mega:44",
+      "",
+      []
+    ],
+    [
+      "dawnRGB3:G",
+      "mega:45",
+      "",
+      []
+    ],
+    [
+      "dawnRGB3:B",
+      "mega:46",
+      "",
+      []
+    ],
+    [
+      "dawnRGB3:COM",
+      "mega:GND.1",
+      "",
+      []
+    ],
+    [
+      "dawnRGB4:R",
+      "mega:44",
+      "",
+      []
+    ],
+    [
+      "dawnRGB4:G",
+      "mega:45",
+      "",
+      []
+    ],
+    [
+      "dawnRGB4:B",
+      "mega:46",
+      "",
+      []
+    ],
+    [
+      "dawnRGB4:COM",
+      "mega:GND.1",
+      "",
+      []
+    ],
+    [
+      "dawnRGB5:R",
+      "mega:44",
+      "",
+      []
+    ],
+    [
+      "dawnRGB5:G",
+      "mega:45",
+      "",
+      []
+    ],
+    [
+      "dawnRGB5:B",
+      "mega:46",
+      "",
+      []
+    ],
+    [
+      "dawnRGB5:COM",
+      "mega:GND.1",
+      "",
+      []
+    ],
+    [
+      "dawnRGB6:R",
+      "mega:44",
+      "",
+      []
+    ],
+    [
+      "dawnRGB6:G",
+      "mega:45",
+      "",
+      []
+    ],
+    [
+      "dawnRGB6:B",
+      "mega:46",
+      "",
+      []
+    ],
+    [
+      "dawnRGB6:COM",
+      "mega:GND.1",
+      "",
+      []
+    ],
+    [
+      "dawnRGB7:R",
+      "mega:44",
+      "",
+      []
+    ],
+    [
+      "dawnRGB7:G",
+      "mega:45",
+      "",
+      []
+    ],
+    [
+      "dawnRGB7:B",
+      "mega:46",
+      "",
+      []
+    ],
+    [
+      "dawnRGB7:COM",
+      "mega:GND.1",
+      "",
+      []
+    ],
+    [
+      "dawnRGB8:R",
+      "mega:44",
+      "",
+      []
+    ],
+    [
+      "dawnRGB8:G",
+      "mega:45",
+      "",
+      []
+    ],
+    [
+      "dawnRGB8:B",
+      "mega:46",
+      "",
+      []
+    ],
+    [
+      "dawnRGB8:COM",
+      "mega:GND.1",
+      "",
+      []
+    ],
+    [
+      "dawnRGB9:R",
+      "mega:44",
+      "",
+      []
+    ],
+    [
+      "dawnRGB9:G",
+      "mega:45",
+      "",
+      []
+    ],
+    [
+      "dawnRGB9:B",
+      "mega:46",
+      "",
+      []
+    ],
+    [
+      "dawnRGB9:COM",
+      "mega:GND.1",
+      "",
+      []
+    ],
+    [
+      "skyRGB1:R",
+      "mega:2",
+      "",
+      []
+    ],
+    [
+      "skyRGB1:G",
+      "mega:3",
+      "",
+      []
+    ],
+    [
+      "skyRGB1:B",
+      "mega:4",
+      "",
+      []
+    ],
+    [
+      "skyRGB1:COM",
+      "mega:GND.1",
+      "",
+      []
+    ],
+    [
+      "skyRGB2:R",
+      "mega:2",
+      "",
+      []
+    ],
+    [
+      "skyRGB2:G",
+      "mega:3",
+      "",
+      []
+    ],
+    [
+      "skyRGB2:B",
+      "mega:4",
+      "",
+      []
+    ],
+    [
+      "skyRGB2:COM",
+      "mega:GND.1",
+      "",
+      []
+    ],
+    [
+      "skyRGB3:R",
+      "mega:2",
+      "",
+      []
+    ],
+    [
+      "skyRGB3:G",
+      "mega:3",
+      "",
+      []
+    ],
+    [
+      "skyRGB3:B",
+      "mega:4",
+      "",
+      []
+    ],
+    [
+      "skyRGB3:COM",
+      "mega:GND.1",
+      "",
+      []
+    ],
+    [
+      "skyRGB4:R",
+      "mega:2",
+      "",
+      []
+    ],
+    [
+      "skyRGB4:G",
+      "mega:3",
+      "",
+      []
+    ],
+    [
+      "skyRGB4:B",
+      "mega:4",
+      "",
+      []
+    ],
+    [
+      "skyRGB4:COM",
+      "mega:GND.1",
+      "",
+      []
+    ],
+    [
+      "skyRGB5:R",
+      "mega:2",
+      "",
+      []
+    ],
+    [
+      "skyRGB5:G",
+      "mega:3",
+      "",
+      []
+    ],
+    [
+      "skyRGB5:B",
+      "mega:4",
+      "",
+      []
+    ],
+    [
+      "skyRGB5:COM",
+      "mega:GND.1",
+      "",
+      []
+    ],
+    [
+      "skyRGB6:R",
+      "mega:2",
+      "",
+      []
+    ],
+    [
+      "skyRGB6:G",
+      "mega:3",
+      "",
+      []
+    ],
+    [
+      "skyRGB6:B",
+      "mega:4",
+      "",
+      []
+    ],
+    [
+      "skyRGB6:COM",
+      "mega:GND.1",
+      "",
+      []
+    ],
+    [
+      "skyRGB7:R",
+      "mega:2",
+      "",
+      []
+    ],
+    [
+      "skyRGB7:G",
+      "mega:3",
+      "",
+      []
+    ],
+    [
+      "skyRGB7:B",
+      "mega:4",
+      "",
+      []
+    ],
+    [
+      "skyRGB7:COM",
+      "mega:GND.1",
+      "",
+      []
+    ],
+    [
+      "skyRGB8:R",
+      "mega:2",
+      "",
+      []
+    ],
+    [
+      "skyRGB8:G",
+      "mega:3",
+      "",
+      []
+    ],
+    [
+      "skyRGB8:B",
+      "mega:4",
+      "",
+      []
+    ],
+    [
+      "skyRGB8:COM",
+      "mega:GND.1",
+      "",
+      []
+    ],
+    [
+      "skyRGB9:R",
+      "mega:2",
+      "",
+      []
+    ],
+    [
+      "skyRGB9:G",
+      "mega:3",
+      "",
+      []
+    ],
+    [
+      "skyRGB9:B",
+      "mega:4",
+      "",
+      []
+    ],
+    [
+      "skyRGB9:COM",
+      "mega:GND.1",
+      "",
+      []
+    ],
+    [
+      "sunRGB1:R",
+      "mega:10",
+      "",
+      []
+    ],
+    [
+      "sunRGB1:G",
+      "mega:11",
+      "",
+      []
+    ],
+    [
+      "sunRGB1:B",
+      "mega:12",
+      "",
+      []
+    ],
+    [
+      "sunRGB1:COM",
+      "mega:GND.1",
+      "",
+      []
+    ],
+    [
+      "sunRGB2:R",
+      "mega:10",
+      "",
+      []
+    ],
+    [
+      "sunRGB2:G",
+      "mega:11",
+      "",
+      []
+    ],
+    [
+      "sunRGB2:B",
+      "mega:12",
+      "",
+      []
+    ],
+    [
+      "sunRGB2:COM",
+      "mega:GND.1",
+      "",
+      []
+    ],
+    [
+      "sunRGB3:R",
+      "mega:10",
+      "",
+      []
+    ],
+    [
+      "sunRGB3:G",
+      "mega:11",
+      "",
+      []
+    ],
+    [
+      "sunRGB3:B",
+      "mega:12",
+      "",
+      []
+    ],
+    [
+      "sunRGB3:COM",
+      "mega:GND.1",
+      "",
+      []
+    ],
+    [
+      "sunRGB4:R",
+      "mega:10",
+      "",
+      []
+    ],
+    [
+      "sunRGB4:G",
+      "mega:11",
+      "",
+      []
+    ],
+    [
+      "sunRGB4:B",
+      "mega:12",
+      "",
+      []
+    ],
+    [
+      "sunRGB4:COM",
+      "mega:GND.1",
+      "",
+      []
+    ],
+    [
+      "sunRGB5:R",
+      "mega:10",
+      "",
+      []
+    ],
+    [
+      "sunRGB5:G",
+      "mega:11",
+      "",
+      []
+    ],
+    [
+      "sunRGB5:B",
+      "mega:12",
+      "",
+      []
+    ],
+    [
+      "sunRGB5:COM",
+      "mega:GND.1",
+      "",
+      []
+    ],
+    [
+      "sunRGB6:R",
+      "mega:10",
+      "",
+      []
+    ],
+    [
+      "sunRGB6:G",
+      "mega:11",
+      "",
+      []
+    ],
+    [
+      "sunRGB6:B",
+      "mega:12",
+      "",
+      []
+    ],
+    [
+      "sunRGB6:COM",
+      "mega:GND.1",
+      "",
+      []
+    ],
+    [
+      "sunRGB7:R",
+      "mega:10",
+      "",
+      []
+    ],
+    [
+      "sunRGB7:G",
+      "mega:11",
+      "",
+      []
+    ],
+    [
+      "sunRGB7:B",
+      "mega:12",
+      "",
+      []
+    ],
+    [
+      "sunRGB7:COM",
+      "mega:GND.1",
+      "",
+      []
+    ],
+    [
+      "sunRGB8:R",
+      "mega:10",
+      "",
+      []
+    ],
+    [
+      "sunRGB8:G",
+      "mega:11",
+      "",
+      []
+    ],
+    [
+      "sunRGB8:B",
+      "mega:12",
+      "",
+      []
+    ],
+    [
+      "sunRGB8:COM",
+      "mega:GND.1",
+      "",
+      []
+    ],
+    [
+      "sunRGB9:R",
+      "mega:10",
+      "",
+      []
+    ],
+    [
+      "sunRGB9:G",
+      "mega:11",
+      "",
+      []
+    ],
+    [
+      "sunRGB9:B",
+      "mega:12",
+      "",
+      []
+    ],
+    [
+      "sunRGB9:COM",
       "mega:GND.1",
       "",
       []
