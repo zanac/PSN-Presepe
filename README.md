@@ -112,6 +112,168 @@ Il ciclo automatico coordina la **striscia RGB principale**, le **due strisce RG
 8. A ogni nuova notte viene generata una **disposizione differente** delle stelle e delle relative intensità.
 9. Il colore delle stelle è impostato su **bianco caldo**, evitando un effetto RGB multicolore.
 
+## Manuale di montaggio filo per filo
+
+Questa sezione è il riferimento pratico per il cablaggio. **Non lavorare mai sul circuito con l'alimentatore 230 V collegato.** Il Mega è alimentato separatamente via USB 5 V. Il +12 V alimenta soltanto carichi e moduli di potenza. Lo **0 V 12 V e GND Arduino devono essere in comune** per i segnali PWM e per DATA WS2811.
+
+### 1. Distribuzione alimentazione 12 V
+
+Portare il +12 V dell'alimentatore a un portafusibili/distributore. Da questo partire con rami separati verso RGB principale, stelle WS2811, RGB tramonto, RGB alba e gli altri carichi. Portare lo 0 V a una morsettiera/WAGO comune.
+
+| Da | A | Nota |
+|---|---|---|
+| PSU +12 V | ingresso portafusibili +12 V | cavo dimensionato per la corrente totale |
+| PSU 0 V | WAGO/morsettiera 0 V comune | ritorno comune |
+| WAGO 0 V | Mega GND | riferimento logico comune |
+| WAGO 0 V | DC- MOSFET #1 | alimentazione modulo |
+| WAGO 0 V | DC- MOSFET #2 | alimentazione modulo |
+| WAGO 0 V | DC- MOSFET #3 | alimentazione modulo |
+| WAGO 0 V | DC- MOSFET #4 | alimentazione modulo |
+| +12 V protetto | DC+ MOSFET #1 | modulo RGB principale |
+| +12 V protetto | DC+ MOSFET #2 | scenografia |
+| +12 V protetto | DC+ MOSFET #3 | RGB sinistra/tramonto |
+| +12 V protetto | DC+ MOSFET #4 | RGB destra/alba |
+
+### 2. MOSFET #1 — RGB principale
+
+| Filo | Da | A |
+|---|---|---|
+| 1 | Mega D2 | MOSFET #1 PWM1 |
+| 2 | Mega GND | MOSFET #1 GND1 |
+| 3 | Mega D3 | MOSFET #1 PWM2 |
+| 4 | Mega GND | MOSFET #1 GND2 |
+| 5 | Mega D4 | MOSFET #1 PWM3 |
+| 6 | Mega GND | MOSFET #1 GND3 |
+| 7 | +12 V protetto | RGB principale +12V |
+| 8 | RGB principale R | MOSFET #1 OUT1- |
+| 9 | RGB principale G | MOSFET #1 OUT2- |
+| 10 | RGB principale B | MOSFET #1 OUT3- |
+
+PWM4/GND4 e OUT4 restano liberi. Prima del cablaggio definitivo verificare sul modulo reale la continuità tra DC+ e OUT+.
+
+### 3. Stelle WS2811
+
+| Filo | Da | A |
+|---|---|---|
+| 11 | +12 V protetto | WS2811 +12V |
+| 12 | WAGO 0 V comune | WS2811 GND |
+| 13 | Mega D5 | resistenza 330–470 Ω |
+| 14 | uscita resistenza | WS2811 DATA/DIN |
+
+Rispettare la freccia/direzione DATA della stringa. La resistenza va preferibilmente vicino all'ingresso della prima WS2811.
+
+### 4. MOSFET #3 — RGB sinistra / TRAMONTO
+
+| Filo | Da | A |
+|---|---|---|
+| 15 | Mega D10 | MOSFET #3 PWM1 |
+| 16 | Mega GND | MOSFET #3 GND1 |
+| 17 | Mega D11 | MOSFET #3 PWM2 |
+| 18 | Mega GND | MOSFET #3 GND2 |
+| 19 | Mega D12 | MOSFET #3 PWM3 |
+| 20 | Mega GND | MOSFET #3 GND3 |
+| 21 | +12 V protetto | RGB sinistra +12V |
+| 22 | RGB sinistra R | MOSFET #3 OUT1- |
+| 23 | RGB sinistra G | MOSFET #3 OUT2- |
+| 24 | RGB sinistra B | MOSFET #3 OUT3- |
+
+PWM4/GND4 e OUT4 restano liberi.
+
+### 5. MOSFET #4 — RGB destra / ALBA
+
+| Filo | Da | A |
+|---|---|---|
+| 25 | Mega D44 | MOSFET #4 PWM1 |
+| 26 | Mega GND | MOSFET #4 GND1 |
+| 27 | Mega D45 | MOSFET #4 PWM2 |
+| 28 | Mega GND | MOSFET #4 GND2 |
+| 29 | Mega D46 | MOSFET #4 PWM3 |
+| 30 | Mega GND | MOSFET #4 GND3 |
+| 31 | +12 V protetto | RGB destra +12V |
+| 32 | RGB destra R | MOSFET #4 OUT1- |
+| 33 | RGB destra G | MOSFET #4 OUT2- |
+| 34 | RGB destra B | MOSFET #4 OUT3- |
+
+PWM4/GND4 e OUT4 restano liberi. D13 rimane disponibile come uscita PWM di riserva.
+
+### 6. MOSFET #2 — scenografia
+
+Questi collegamenti sono predisposti; prima di collegare fisicamente pompa e mulino verificare tensione, corrente di regime/spunto e protezione dei carichi induttivi.
+
+| Filo | Da | A | Carico |
+|---|---|---|---|
+| 35 | Mega D6 | MOSFET #2 PWM1 | luci case |
+| 36 | Mega GND | MOSFET #2 GND1 | riferimento |
+| 37 | Mega D7 | MOSFET #2 PWM2 | pompa |
+| 38 | Mega GND | MOSFET #2 GND2 | riferimento |
+| 39 | Mega D8 | MOSFET #2 PWM3 | mulino |
+| 40 | Mega GND | MOSFET #2 GND3 | riferimento |
+| 41 | Mega D9 | MOSFET #2 PWM4 | grotta/lampioni |
+| 42 | Mega GND | MOSFET #2 GND4 | riferimento |
+
+Per un normale carico 12 V a due fili, collegare il carico alla coppia OUT+/OUT- del canale corrispondente, dopo aver verificato il comportamento del modulo reale. Se il mulino verrà spostato su un modulo relè, D8 verrà riassegnato e questa riga sarà aggiornata.
+
+### 7. Pulsanti
+
+I pulsanti sono momentanei NO. Grazie a INPUT_PULLUP non servono resistenze esterne.
+
+| Filo | Da | A |
+|---|---|---|
+| 43 | Mega D22 | START/STOP NO |
+| 44 | START/STOP COM | Mega GND |
+| 45 | Mega D23 | AVANTI NO |
+| 46 | AVANTI COM | Mega GND |
+| 47 | Mega D24 | TEST NO |
+| 48 | TEST COM | Mega GND |
+
+Gli eventuali contatti NC dei pulsanti rimangono scollegati.
+
+### 8. Potenziometro B10K
+
+| Filo | Da | A |
+|---|---|---|
+| 49 | Mega +5 V | estremo B10K |
+| 50 | Mega A0 | cursore/centrale B10K |
+| 51 | Mega GND | altro estremo B10K |
+
+Se il senso di rotazione risulta invertito rispetto a quello desiderato, scambiare semplicemente i due fili degli estremi; il cursore A0 resta invariato.
+
+### 9. Controllo prima dell'accensione
+
+1. Mega scollegato dalla USB e alimentatore 12 V scollegato dalla rete.
+2. Verificare che **+12 V non arrivi mai a 5V, A0 o a un pin digitale del Mega**.
+3. Verificare con multimetro polarità +12 V / 0 V.
+4. Verificare la massa comune Mega GND ↔ PSU 0 V.
+5. Verificare i tre +12 V comuni delle strisce RGB.
+6. Verificare che R/G/B vadano agli OUT- corretti.
+7. Verificare DATA WS2811 e relativa resistenza.
+8. Accendere inizialmente senza i carichi di movimento e usare il pulsante TEST.
+9. Collegare poi un gruppo di carichi alla volta.
+
+### Riepilogo pin Mega
+
+| Pin | Funzione |
+|---:|---|
+| D2 | RGB principale R |
+| D3 | RGB principale G |
+| D4 | RGB principale B |
+| D5 | DATA WS2811 |
+| D6 | luci case |
+| D7 | pompa |
+| D8 | mulino (provvisorio, finché non si decide il relè) |
+| D9 | grotta/lampioni |
+| D10 | RGB tramonto R |
+| D11 | RGB tramonto G |
+| D12 | RGB tramonto B |
+| D13 | PWM libero |
+| D22 | START/STOP |
+| D23 | AVANTI |
+| D24 | TEST |
+| D44 | RGB alba R |
+| D45 | RGB alba G |
+| D46 | RGB alba B |
+| A0 | potenziometro B10K |
+
 ## Firmware
 
 Aprire:
