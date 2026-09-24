@@ -7,6 +7,8 @@
     D3 = Cielo RGB Verde
     D4 = Cielo RGB Blu
     D5 = DATA stelle WS2811 (50 pixel, 12 V)
+    D10/D11/D12 = RGB laterale SINISTRA / TRAMONTO (R/G/B)
+    D44/D45/D46 = RGB laterale DESTRA / ALBA (R/G/B)
 
   COMANDI DEFINITIVI
     D22 = START/STOP (pulsante NO verso GND)
@@ -49,6 +51,15 @@ const uint8_t PIN_CIELO_R = 2;
 const uint8_t PIN_CIELO_G = 3;
 const uint8_t PIN_CIELO_B = 4;
 const uint8_t PIN_STELLE_DATA = 5;
+
+// Strisce RGB laterali da 1 m, dedicate agli effetti direzionali.
+// Sinistra = tramonto; destra = alba. D13 resta PWM libero.
+const uint8_t PIN_TRAMONTO_R = 10;
+const uint8_t PIN_TRAMONTO_G = 11;
+const uint8_t PIN_TRAMONTO_B = 12;
+const uint8_t PIN_ALBA_R = 44;
+const uint8_t PIN_ALBA_G = 45;
+const uint8_t PIN_ALBA_B = 46;
 const uint16_t NUM_STELLE = 50;
 Adafruit_NeoPixel stelle(NUM_STELLE, PIN_STELLE_DATA, NEO_GRB + NEO_KHZ800);
 
@@ -128,6 +139,18 @@ void setCielo(uint8_t r, uint8_t g, uint8_t b) {
   pwmWrite(PIN_CIELO_B, b);
 }
 
+void setTramonto(uint8_t r, uint8_t g, uint8_t b) {
+  pwmWrite(PIN_TRAMONTO_R, r);
+  pwmWrite(PIN_TRAMONTO_G, g);
+  pwmWrite(PIN_TRAMONTO_B, b);
+}
+
+void setAlba(uint8_t r, uint8_t g, uint8_t b) {
+  pwmWrite(PIN_ALBA_R, r);
+  pwmWrite(PIN_ALBA_G, g);
+  pwmWrite(PIN_ALBA_B, b);
+}
+
 // ============================================================
 // STELLE WS2811
 // ============================================================
@@ -196,6 +219,8 @@ void setStelle(uint8_t value) {
 
 void tuttoSpento() {
   setCielo(0, 0, 0);
+  setTramonto(0, 0, 0);
+  setAlba(0, 0, 0);
   setStelle(0);
 }
 
@@ -312,6 +337,8 @@ void aggiornaScena(float p) {
   ultimaFaseStelle = fase;
 
   uint8_t r = 0, g = 0, b = 0, stelle = 0;
+  uint8_t tr = 0, tg = 0, tb = 0; // luce laterale tramonto
+  uint8_t ar = 0, ag = 0, ab = 0; // luce laterale alba
 
   switch (fase) {
 
@@ -329,6 +356,16 @@ void aggiornaScena(float p) {
       g = interpola8(210, 65, t);
       b = interpola8(145, 15, t);
       stelle = 0;
+
+      // La luce laterale sinistra entra gradualmente e crea uno
+      // spostamento della luce verso il lato del tramonto.
+      // Sale, raggiunge il massimo a meta' fase e poi cala dolcemente.
+      {
+        float arco = 1.0f - fabs(2.0f * t - 1.0f);
+        tr = (uint8_t)(255.0f * arco);
+        tg = (uint8_t)(72.0f * arco);
+        tb = (uint8_t)(12.0f * arco);
+      }
       break;
     }
 
@@ -356,6 +393,15 @@ void aggiornaScena(float p) {
       g = interpola8(12, 180, t);
       b = interpola8(55, 100, t);
       stelle = interpola8(235, 0, t);
+
+      // Alba direzionale dalla striscia destra: compare, raggiunge
+      // il massimo a meta' fase e si fonde nuovamente con il giorno.
+      {
+        float arco = 1.0f - fabs(2.0f * t - 1.0f);
+        ar = (uint8_t)(255.0f * arco);
+        ag = (uint8_t)(135.0f * arco);
+        ab = (uint8_t)(45.0f * arco);
+      }
       break;
     }
 
@@ -371,6 +417,8 @@ void aggiornaScena(float p) {
   }
 
   setCielo(r, g, b);
+  setTramonto(tr, tg, tb);
+  setAlba(ar, ag, ab);
   setStelle(stelle);
 }
 
@@ -459,6 +507,16 @@ void testUscite() {
   Serial.println(F("CH3 / D4 - BLU"));
   fadeTest(PIN_CIELO_B);
 
+  Serial.println(F("RGB LATERALE SINISTRA / TRAMONTO"));
+  fadeTest(PIN_TRAMONTO_R);
+  fadeTest(PIN_TRAMONTO_G);
+  fadeTest(PIN_TRAMONTO_B);
+
+  Serial.println(F("RGB LATERALE DESTRA / ALBA"));
+  fadeTest(PIN_ALBA_R);
+  fadeTest(PIN_ALBA_G);
+  fadeTest(PIN_ALBA_B);
+
   Serial.println(F("D5 DATA - WS2811 STELLE"));
   for (uint8_t v = 0; v <= 250; v += 10) { setStelle(v); delay(20); }
   for (int v = 250; v >= 0; v -= 10) { setStelle((uint8_t)v); delay(20); }
@@ -514,6 +572,12 @@ void setup() {
   pinMode(PIN_CIELO_R, OUTPUT);
   pinMode(PIN_CIELO_G, OUTPUT);
   pinMode(PIN_CIELO_B, OUTPUT);
+  pinMode(PIN_TRAMONTO_R, OUTPUT);
+  pinMode(PIN_TRAMONTO_G, OUTPUT);
+  pinMode(PIN_TRAMONTO_B, OUTPUT);
+  pinMode(PIN_ALBA_R, OUTPUT);
+  pinMode(PIN_ALBA_G, OUTPUT);
+  pinMode(PIN_ALBA_B, OUTPUT);
   stelle.begin();
   stelle.clear();
   stelle.show();
@@ -536,6 +600,8 @@ void setup() {
   Serial.println(F("D3  = RGB Verde"));
   Serial.println(F("D4  = RGB Blu"));
   Serial.println(F("D5  = DATA WS2811 (50 stelle)"));
+  Serial.println(F("D10/D11/D12 = RGB SINISTRA / TRAMONTO"));
+  Serial.println(F("D44/D45/D46 = RGB DESTRA / ALBA"));
   Serial.println(F("D22 = START/STOP"));
   Serial.println(F("D23 = AVANTI"));
   Serial.println(F("D24 = TEST"));
