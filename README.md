@@ -118,7 +118,32 @@ Questa sezione è il riferimento pratico per il cablaggio. **Non lavorare mai su
 
 ### 1. Distribuzione alimentazione 12 V
 
-Portare il +12 V dell'alimentatore a un portafusibili/distributore. Da questo partire con rami separati verso RGB principale, stelle WS2811, RGB tramonto, RGB alba e gli altri carichi. Portare lo 0 V a una morsettiera/WAGO comune.
+> **Cosa significa “+12 V protetto” in questo manuale?**  
+> Significa semplicemente che il filo **positivo +12 V è passato attraverso un fusibile prima di raggiungere il carico**. Il fusibile va quindi inserito **sul polo positivo (+12 V)** del ramo da proteggere, non sullo 0 V/negativo.
+>
+> Esempio: `alimentatore +12 V → fusibile → striscia LED +12 V`.
+>
+> Se un cavo o un utilizzatore va in cortocircuito, il fusibile di quel ramo interrompe il positivo e protegge soprattutto **cablaggio e connettori** dalla forte corrente che l'alimentatore potrebbe fornire. Quando nelle tabelle seguenti compare la dicitura **“+12 V protetto”**, bisogna quindi leggere: **“+12 V proveniente da un'uscita del portafusibili”**.
+
+Portare il **+12 V** dell'alimentatore all'ingresso positivo del portafusibili/distributore. Ogni uscita del portafusibili avrà il proprio fusibile e alimenterà un singolo ramo: RGB principale, stelle WS2811, RGB tramonto, RGB alba e gli altri carichi. Lo **0 V (negativo)** non passa attraverso questi fusibili di ramo: viene portato alla barra negativa del distributore, se presente, oppure a una morsettiera/WAGO 0 V comune.
+
+```text
+ALIMENTATORE 12 V
+
+ +12 V ──► ingresso + portafusibili
+                │
+                ├─► FUSIBILE 1 ──► +12 V RGB principale
+                ├─► FUSIBILE 2 ──► +12 V WS2811
+                ├─► FUSIBILE 3 ──► +12 V RGB tramonto
+                ├─► FUSIBILE 4 ──► +12 V RGB alba
+                └─► ... altri rami protetti
+
+  0 V ────────────────────────────► barra negativa / WAGO 0 V comune
+                                      ├─► GND/0 V carichi
+                                      └─► GND Arduino (riferimento comune)
+```
+
+**Regola pratica per il montaggio:** ogni volta che nel manuale leggi `+12 V protetto`, **non collegare quel filo direttamente al +12 V dell'alimentatore**: collegalo a una delle uscite positive del portafusibili, dopo il relativo fusibile.
 
 | Da | A | Nota |
 |---|---|---|
