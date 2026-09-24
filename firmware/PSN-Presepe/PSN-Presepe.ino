@@ -109,7 +109,7 @@ const float P_TRAMONTO = 35.0f;
 const float P_CREPU    = 45.0f;
 const float P_NOTTE    = 50.0f;
 const float P_ALBA     = 80.0f;
-const float P_GIORNO2  = 90.0f;
+// ALBA occupa l'ultimo 20% del ciclo e termina direttamente nel nuovo GIORNO.
 
 const unsigned long DEBOUNCE_MS = 40;
 const unsigned long DEBUG_INTERVAL_MS = 5000UL;
@@ -277,8 +277,7 @@ Fase faseDaPercentuale(float p) {
   if (p < P_CREPU)    return TRAMONTO;
   if (p < P_NOTTE)    return CREPUSCOLO;
   if (p < P_ALBA)     return NOTTE;
-  if (p < P_GIORNO2)  return ALBA;
-  return GIORNO_FINALE;
+  return ALBA;
 }
 
 const char* nomeFase(Fase f) {
@@ -288,7 +287,6 @@ const char* nomeFase(Fase f) {
     case CREPUSCOLO:    return "CREPUSCOLO";
     case NOTTE:         return "NOTTE";
     case ALBA:          return "ALBA";
-    case GIORNO_FINALE: return "GIORNO";
   }
   return "?";
 }
@@ -300,7 +298,6 @@ float inizioFase(Fase f) {
     case CREPUSCOLO:    return P_CREPU;
     case NOTTE:         return P_NOTTE;
     case ALBA:          return P_ALBA;
-    case GIORNO_FINALE: return P_GIORNO2;
   }
   return 0.0f;
 }
@@ -311,8 +308,7 @@ Fase faseSuccessiva(Fase f) {
     case TRAMONTO:      return CREPUSCOLO;
     case CREPUSCOLO:    return NOTTE;
     case NOTTE:         return ALBA;
-    case ALBA:          return GIORNO_FINALE;
-    case GIORNO_FINALE: return GIORNO;
+    case ALBA:          return GIORNO;
   }
   return GIORNO;
 }
@@ -334,8 +330,7 @@ float percentualeFase(float p, Fase f) {
     case TRAMONTO: b = P_CREPU; break;
     case CREPUSCOLO: b = P_NOTTE; break;
     case NOTTE: b = P_ALBA; break;
-    case ALBA: b = P_GIORNO2; break;
-    case GIORNO_FINALE: b = 100.0f; break;
+    case ALBA: b = 100.0f; break;
   }
   return constrain((p-a)*100.0f/(b-a),0.0f,100.0f);
 }
@@ -497,11 +492,11 @@ void aggiornaScena(float p) {
       break;
 
     case ALBA: {
-      float t = progresso(p, P_ALBA, P_GIORNO2);
+      float t = progresso(p, P_ALBA, 100.0f);
 
       r = interpola8(8, 255, t);
-      g = interpola8(12, 180, t);
-      b = interpola8(55, 100, t);
+      g = interpola8(12, 210, t);
+      b = interpola8(55, 145, t);
       stelle = interpola8(235, 0, t);
 
       // Alba direzionale dalla striscia destra: compare, raggiunge
@@ -515,15 +510,6 @@ void aggiornaScena(float p) {
       break;
     }
 
-    case GIORNO_FINALE: {
-      float t = progresso(p, P_GIORNO2, 100.0f);
-
-      r = 255;
-      g = interpola8(180, 210, t);
-      b = interpola8(100, 145, t);
-      stelle = 0;
-      break;
-    }
   }
 
   setCielo(r, g, b);
@@ -722,7 +708,7 @@ void setup() {
   Serial.println(F("D24 = TEST"));
   Serial.println(F("D20/D21 = OLED I2C 0x3C (opzionale)"));
   Serial.println(oledPresente ? F("OLED: OK") : F("OLED: non presente, continuo senza display"));
-  Serial.println(F("A0  = VELOCITA' 5-60 minuti"));
+  Serial.println(F("A0  = DURATA CICLO 1-6 minuti"));
   Serial.println();
 }
 
