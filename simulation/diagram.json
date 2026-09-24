@@ -2656,5 +2656,8 @@
       "",
       []
     ]
-  ]
+  ],
+  "attrs": {
+    "layout-note": "RGB indicators directly below stars: ALBA - GIORNO - TRAMONTO"
+  }
 }
