@@ -6,15 +6,15 @@
     {
       "type": "wokwi-arduino-mega",
       "id": "mega",
-      "top": 0,
-      "left": 0,
+      "top": 260,
+      "left": 180,
       "attrs": {}
     },
     {
       "type": "wokwi-ssd1306",
       "id": "oled",
-      "top": 70,
-      "left": 770,
+      "top": 285,
+      "left": 690,
       "attrs": {
         "i2cAddress": "0x3c"
       }
@@ -22,8 +22,8 @@
     {
       "type": "wokwi-pushbutton",
       "id": "start",
-      "top": 390,
-      "left": -100,
+      "top": -40,
+      "left": -190,
       "attrs": {
         "label": "START/STOP"
       }
@@ -31,8 +31,8 @@
     {
       "type": "wokwi-pushbutton",
       "id": "next",
-      "top": 390,
-      "left": 35,
+      "top": 65,
+      "left": -190,
       "attrs": {
         "label": "AVANTI"
       }
@@ -40,8 +40,8 @@
     {
       "type": "wokwi-pushbutton",
       "id": "test",
-      "top": 390,
-      "left": 170,
+      "top": 170,
+      "left": -190,
       "attrs": {
         "label": "TEST"
       }
@@ -49,8 +49,8 @@
     {
       "type": "wokwi-potentiometer",
       "id": "speed",
-      "top": 390,
-      "left": 315,
+      "top": 285,
+      "left": -190,
       "attrs": {
         "value": "512",
         "label": "Durata ciclo"
@@ -59,8 +59,8 @@
     {
       "type": "wokwi-led",
       "id": "relay1",
-      "top": 250,
-      "left": 510,
+      "top": 500,
+      "left": 520,
       "attrs": {
         "color": "yellow",
         "label": "R1 D25 (indicatore)"
@@ -69,8 +69,8 @@
     {
       "type": "wokwi-led",
       "id": "relay2",
-      "top": 293,
-      "left": 510,
+      "top": 500,
+      "left": 665,
       "attrs": {
         "color": "yellow",
         "label": "R2 D26 (indicatore)"
@@ -79,8 +79,8 @@
     {
       "type": "wokwi-led",
       "id": "relay3",
-      "top": 336,
-      "left": 510,
+      "top": 500,
+      "left": 810,
       "attrs": {
         "color": "yellow",
         "label": "R3 D27 (indicatore)"
@@ -89,8 +89,8 @@
     {
       "type": "wokwi-led",
       "id": "relay4",
-      "top": 379,
-      "left": 510,
+      "top": 500,
+      "left": 955,
       "attrs": {
         "color": "yellow",
         "label": "R4 D28 (indicatore)"
@@ -99,8 +99,8 @@
     {
       "type": "wokwi-led",
       "id": "relay5",
-      "top": 250,
-      "left": 630,
+      "top": 548,
+      "left": 520,
       "attrs": {
         "color": "yellow",
         "label": "R5 D29 (indicatore)"
@@ -109,8 +109,8 @@
     {
       "type": "wokwi-led",
       "id": "relay6",
-      "top": 293,
-      "left": 630,
+      "top": 548,
+      "left": 665,
       "attrs": {
         "color": "yellow",
         "label": "R6 D30 (indicatore)"
@@ -119,8 +119,8 @@
     {
       "type": "wokwi-led",
       "id": "relay7",
-      "top": 336,
-      "left": 630,
+      "top": 548,
+      "left": 810,
       "attrs": {
         "color": "yellow",
         "label": "R7 D31 (indicatore)"
@@ -129,8 +129,8 @@
     {
       "type": "wokwi-led",
       "id": "relay8",
-      "top": 379,
-      "left": 630,
+      "top": 548,
+      "left": 955,
       "attrs": {
         "color": "yellow",
         "label": "R8 D32 (indicatore)"
@@ -139,8 +139,8 @@
     {
       "type": "wokwi-led",
       "id": "relay9",
-      "top": 250,
-      "left": 750,
+      "top": 596,
+      "left": 520,
       "attrs": {
         "color": "yellow",
         "label": "R9 D33 (indicatore)"
@@ -149,8 +149,8 @@
     {
       "type": "wokwi-led",
       "id": "relay10",
-      "top": 293,
-      "left": 750,
+      "top": 596,
+      "left": 665,
       "attrs": {
         "color": "yellow",
         "label": "R10 D34 (indicatore)"
@@ -159,8 +159,8 @@
     {
       "type": "wokwi-led",
       "id": "relay11",
-      "top": 336,
-      "left": 750,
+      "top": 596,
+      "left": 810,
       "attrs": {
         "color": "yellow",
         "label": "R11 D35 (indicatore)"
@@ -169,8 +169,8 @@
     {
       "type": "wokwi-led",
       "id": "relay12",
-      "top": 379,
-      "left": 750,
+      "top": 596,
+      "left": 955,
       "attrs": {
         "color": "yellow",
         "label": "R12 D36 (indicatore)"
@@ -179,8 +179,8 @@
     {
       "type": "wokwi-led",
       "id": "relay13",
-      "top": 250,
-      "left": 870,
+      "top": 644,
+      "left": 520,
       "attrs": {
         "color": "yellow",
         "label": "R13 D37 (indicatore)"
@@ -189,8 +189,8 @@
     {
       "type": "wokwi-led",
       "id": "relay14",
-      "top": 293,
-      "left": 870,
+      "top": 644,
+      "left": 665,
       "attrs": {
         "color": "yellow",
         "label": "R14 D38 (indicatore)"
@@ -199,8 +199,8 @@
     {
       "type": "wokwi-led",
       "id": "relay15",
-      "top": 336,
-      "left": 870,
+      "top": 644,
+      "left": 810,
       "attrs": {
         "color": "yellow",
         "label": "R15 D39 (indicatore)"
@@ -209,8 +209,8 @@
     {
       "type": "wokwi-led",
       "id": "relay16",
-      "top": 379,
-      "left": 870,
+      "top": 644,
+      "left": 955,
       "attrs": {
         "color": "yellow",
         "label": "R16 D40 (indicatore)"
@@ -219,18 +219,18 @@
     {
       "type": "wokwi-rgb-led",
       "id": "skyRGB",
-      "top": -220,
-      "left": 520,
+      "top": -110,
+      "left": 720,
       "attrs": {
         "common": "cathode",
-        "label": "CIELO RGB"
+        "label": "GIORNO"
       }
     },
     {
       "type": "wokwi-rgb-led",
       "id": "sunRGB",
-      "top": -100,
-      "left": 520,
+      "top": -110,
+      "left": 920,
       "attrs": {
         "common": "cathode",
         "label": "TRAMONTO"
@@ -239,7 +239,7 @@
     {
       "type": "wokwi-rgb-led",
       "id": "dawnRGB",
-      "top": 20,
+      "top": -110,
       "left": 520,
       "attrs": {
         "common": "cathode",
@@ -249,351 +249,351 @@
     {
       "type": "wokwi-neopixel",
       "id": "star1",
-      "top": -330,
-      "left": 500,
+      "top": -512,
+      "left": 490,
       "attrs": {}
     },
     {
       "type": "wokwi-neopixel",
       "id": "star2",
-      "top": -300,
-      "left": 545,
+      "top": -499,
+      "left": 562,
       "attrs": {}
     },
     {
       "type": "wokwi-neopixel",
       "id": "star3",
-      "top": -345,
-      "left": 590,
+      "top": -511,
+      "left": 613,
       "attrs": {}
     },
     {
       "type": "wokwi-neopixel",
       "id": "star4",
-      "top": -310,
-      "left": 640,
+      "top": -498,
+      "left": 664,
       "attrs": {}
     },
     {
       "type": "wokwi-neopixel",
       "id": "star5",
-      "top": -350,
-      "left": 690,
+      "top": -510,
+      "left": 715,
       "attrs": {}
     },
     {
       "type": "wokwi-neopixel",
       "id": "star6",
-      "top": -320,
-      "left": 745,
+      "top": -497,
+      "left": 766,
       "attrs": {}
     },
     {
       "type": "wokwi-neopixel",
       "id": "star7",
-      "top": -355,
-      "left": 800,
+      "top": -509,
+      "left": 838,
       "attrs": {}
     },
     {
       "type": "wokwi-neopixel",
       "id": "star8",
-      "top": -305,
-      "left": 855,
+      "top": -496,
+      "left": 889,
       "attrs": {}
     },
     {
       "type": "wokwi-neopixel",
       "id": "star9",
-      "top": -340,
-      "left": 910,
+      "top": -508,
+      "left": 940,
       "attrs": {}
     },
     {
       "type": "wokwi-neopixel",
       "id": "star10",
-      "top": -315,
-      "left": 965,
+      "top": -495,
+      "left": 991,
       "attrs": {}
     },
     {
       "type": "wokwi-neopixel",
       "id": "star11",
-      "top": -265,
-      "left": 515,
+      "top": -462,
+      "left": 510,
       "attrs": {}
     },
     {
       "type": "wokwi-neopixel",
       "id": "star12",
-      "top": -235,
-      "left": 570,
+      "top": -449,
+      "left": 582,
       "attrs": {}
     },
     {
       "type": "wokwi-neopixel",
       "id": "star13",
-      "top": -275,
-      "left": 625,
+      "top": -461,
+      "left": 633,
       "attrs": {}
     },
     {
       "type": "wokwi-neopixel",
       "id": "star14",
-      "top": -240,
-      "left": 680,
+      "top": -448,
+      "left": 684,
       "attrs": {}
     },
     {
       "type": "wokwi-neopixel",
       "id": "star15",
-      "top": -280,
+      "top": -460,
       "left": 735,
       "attrs": {}
     },
     {
       "type": "wokwi-neopixel",
       "id": "star16",
-      "top": -245,
-      "left": 790,
+      "top": -447,
+      "left": 786,
       "attrs": {}
     },
     {
       "type": "wokwi-neopixel",
       "id": "star17",
-      "top": -275,
-      "left": 845,
+      "top": -459,
+      "left": 858,
       "attrs": {}
     },
     {
       "type": "wokwi-neopixel",
       "id": "star18",
-      "top": -235,
-      "left": 900,
+      "top": -446,
+      "left": 909,
       "attrs": {}
     },
     {
       "type": "wokwi-neopixel",
       "id": "star19",
-      "top": -270,
-      "left": 950,
+      "top": -458,
+      "left": 960,
       "attrs": {}
     },
     {
       "type": "wokwi-neopixel",
       "id": "star20",
-      "top": -245,
-      "left": 995,
+      "top": -445,
+      "left": 1011,
       "attrs": {}
     },
     {
       "type": "wokwi-neopixel",
       "id": "star21",
-      "top": -195,
-      "left": 495,
+      "top": -412,
+      "left": 494,
       "attrs": {}
     },
     {
       "type": "wokwi-neopixel",
       "id": "star22",
-      "top": -165,
-      "left": 550,
+      "top": -399,
+      "left": 545,
       "attrs": {}
     },
     {
       "type": "wokwi-neopixel",
       "id": "star23",
-      "top": -205,
-      "left": 605,
+      "top": -411,
+      "left": 617,
       "attrs": {}
     },
     {
       "type": "wokwi-neopixel",
       "id": "star24",
-      "top": -170,
-      "left": 660,
+      "top": -398,
+      "left": 668,
       "attrs": {}
     },
     {
       "type": "wokwi-neopixel",
       "id": "star25",
-      "top": -210,
-      "left": 715,
+      "top": -410,
+      "left": 719,
       "attrs": {}
     },
     {
       "type": "wokwi-neopixel",
       "id": "star26",
-      "top": -175,
+      "top": -422,
       "left": 770,
       "attrs": {}
     },
     {
       "type": "wokwi-neopixel",
       "id": "star27",
-      "top": -205,
-      "left": 825,
+      "top": -409,
+      "left": 821,
       "attrs": {}
     },
     {
       "type": "wokwi-neopixel",
       "id": "star28",
-      "top": -165,
-      "left": 880,
+      "top": -421,
+      "left": 893,
       "attrs": {}
     },
     {
       "type": "wokwi-neopixel",
       "id": "star29",
-      "top": -205,
-      "left": 935,
+      "top": -408,
+      "left": 944,
       "attrs": {}
     },
     {
       "type": "wokwi-neopixel",
       "id": "star30",
-      "top": -175,
-      "left": 985,
+      "top": -420,
+      "left": 995,
       "attrs": {}
     },
     {
       "type": "wokwi-neopixel",
       "id": "star31",
-      "top": -125,
-      "left": 520,
+      "top": -362,
+      "left": 514,
       "attrs": {}
     },
     {
       "type": "wokwi-neopixel",
       "id": "star32",
-      "top": -95,
-      "left": 575,
+      "top": -374,
+      "left": 565,
       "attrs": {}
     },
     {
       "type": "wokwi-neopixel",
       "id": "star33",
-      "top": -135,
-      "left": 630,
+      "top": -361,
+      "left": 637,
       "attrs": {}
     },
     {
       "type": "wokwi-neopixel",
       "id": "star34",
-      "top": -100,
-      "left": 685,
+      "top": -373,
+      "left": 688,
       "attrs": {}
     },
     {
       "type": "wokwi-neopixel",
       "id": "star35",
-      "top": -140,
-      "left": 740,
+      "top": -360,
+      "left": 739,
       "attrs": {}
     },
     {
       "type": "wokwi-neopixel",
       "id": "star36",
-      "top": -105,
-      "left": 795,
+      "top": -372,
+      "left": 790,
       "attrs": {}
     },
     {
       "type": "wokwi-neopixel",
       "id": "star37",
-      "top": -135,
-      "left": 850,
+      "top": -359,
+      "left": 841,
       "attrs": {}
     },
     {
       "type": "wokwi-neopixel",
       "id": "star38",
-      "top": -95,
-      "left": 905,
+      "top": -371,
+      "left": 913,
       "attrs": {}
     },
     {
       "type": "wokwi-neopixel",
       "id": "star39",
-      "top": -130,
-      "left": 960,
+      "top": -358,
+      "left": 964,
       "attrs": {}
     },
     {
       "type": "wokwi-neopixel",
       "id": "star40",
-      "top": -105,
-      "left": 1005,
+      "top": -370,
+      "left": 1015,
       "attrs": {}
     },
     {
       "type": "wokwi-neopixel",
       "id": "star41",
-      "top": -55,
-      "left": 500,
+      "top": -312,
+      "left": 498,
       "attrs": {}
     },
     {
       "type": "wokwi-neopixel",
       "id": "star42",
-      "top": -25,
-      "left": 555,
+      "top": -324,
+      "left": 549,
       "attrs": {}
     },
     {
       "type": "wokwi-neopixel",
       "id": "star43",
-      "top": -65,
-      "left": 610,
+      "top": -311,
+      "left": 600,
       "attrs": {}
     },
     {
       "type": "wokwi-neopixel",
       "id": "star44",
-      "top": -30,
-      "left": 665,
+      "top": -323,
+      "left": 672,
       "attrs": {}
     },
     {
       "type": "wokwi-neopixel",
       "id": "star45",
-      "top": -70,
-      "left": 720,
+      "top": -310,
+      "left": 723,
       "attrs": {}
     },
     {
       "type": "wokwi-neopixel",
       "id": "star46",
-      "top": -35,
-      "left": 775,
+      "top": -322,
+      "left": 774,
       "attrs": {}
     },
     {
       "type": "wokwi-neopixel",
       "id": "star47",
-      "top": -65,
-      "left": 830,
+      "top": -309,
+      "left": 825,
       "attrs": {}
     },
     {
       "type": "wokwi-neopixel",
       "id": "star48",
-      "top": -25,
-      "left": 885,
+      "top": -321,
+      "left": 876,
       "attrs": {}
     },
     {
       "type": "wokwi-neopixel",
       "id": "star49",
-      "top": -60,
-      "left": 940,
+      "top": -308,
+      "left": 948,
       "attrs": {}
     },
     {
       "type": "wokwi-neopixel",
       "id": "star50",
-      "top": -35,
-      "left": 990,
+      "top": -320,
+      "left": 999,
       "attrs": {}
     }
   ],
