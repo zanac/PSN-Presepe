@@ -63,7 +63,7 @@
       "left": 520,
       "attrs": {
         "color": "yellow",
-        "label": "Casetta01"
+        "label": "Grp_01_01"
       }
     },
     {
@@ -73,7 +73,7 @@
       "left": 665,
       "attrs": {
         "color": "yellow",
-        "label": "Casetta02"
+        "label": "Grp_01_02"
       }
     },
     {
@@ -83,7 +83,7 @@
       "left": 810,
       "attrs": {
         "color": "yellow",
-        "label": "Casetta03"
+        "label": "Grp_01_03"
       }
     },
     {
@@ -93,7 +93,7 @@
       "left": 955,
       "attrs": {
         "color": "yellow",
-        "label": "Casetta04"
+        "label": "Grp_01_04"
       }
     },
     {
@@ -103,7 +103,7 @@
       "left": 520,
       "attrs": {
         "color": "yellow",
-        "label": "Casetta05"
+        "label": "Grp_02_01"
       }
     },
     {
@@ -113,7 +113,7 @@
       "left": 665,
       "attrs": {
         "color": "yellow",
-        "label": "Casetta06"
+        "label": "Grp_02_02"
       }
     },
     {
@@ -123,7 +123,7 @@
       "left": 810,
       "attrs": {
         "color": "yellow",
-        "label": "Casetta07"
+        "label": "Grp_02_03"
       }
     },
     {
@@ -133,7 +133,7 @@
       "left": 955,
       "attrs": {
         "color": "yellow",
-        "label": "Casetta08"
+        "label": "Grp_02_04"
       }
     },
     {
@@ -143,7 +143,7 @@
       "left": 520,
       "attrs": {
         "color": "yellow",
-        "label": "Casetta09"
+        "label": "Grp_03_01"
       }
     },
     {
@@ -153,7 +153,7 @@
       "left": 665,
       "attrs": {
         "color": "yellow",
-        "label": "Casetta10"
+        "label": "Grp_03_02"
       }
     },
     {
@@ -163,7 +163,7 @@
       "left": 810,
       "attrs": {
         "color": "yellow",
-        "label": "Casetta11"
+        "label": "Grp_03_03"
       }
     },
     {
@@ -173,7 +173,7 @@
       "left": 955,
       "attrs": {
         "color": "yellow",
-        "label": "Casetta12"
+        "label": "Grp_03_04"
       }
     },
     {
@@ -183,7 +183,7 @@
       "left": 520,
       "attrs": {
         "color": "yellow",
-        "label": "Casetta13"
+        "label": "Grp_04_01"
       }
     },
     {
@@ -193,7 +193,7 @@
       "left": 665,
       "attrs": {
         "color": "yellow",
-        "label": "Casetta14"
+        "label": "Grp_04_02"
       }
     },
     {
@@ -203,7 +203,7 @@
       "left": 810,
       "attrs": {
         "color": "yellow",
-        "label": "Casetta15"
+        "label": "Grp_04_03"
       }
     },
     {
@@ -213,7 +213,7 @@
       "left": 955,
       "attrs": {
         "color": "yellow",
-        "label": "Casetta16"
+        "label": "Grp_04_04"
       }
     },
     {
@@ -2659,6 +2659,7 @@
   ],
   "attrs": {
     "layout-note": "OLED left of stars; controls right of stars; RGB indicators directly below stars: ALBA - GIORNO - TRAMONTO",
-    "layout-revision": "2026-09-24-controls-right-v2"
+    "layout-revision": "2026-09-24-controls-right-v2",
+    "relay-label-standard": "Grp_GG_RR: GG=relay board group 01-04, RR=relay channel 01-04"
   }
 }
