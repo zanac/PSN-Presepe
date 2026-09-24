@@ -63,7 +63,7 @@
       "left": 520,
       "attrs": {
         "color": "yellow",
-        "label": "R1 D25 (indicatore)"
+        "label": "Casetta01"
       }
     },
     {
@@ -73,7 +73,7 @@
       "left": 665,
       "attrs": {
         "color": "yellow",
-        "label": "R2 D26 (indicatore)"
+        "label": "Casetta02"
       }
     },
     {
@@ -83,7 +83,7 @@
       "left": 810,
       "attrs": {
         "color": "yellow",
-        "label": "R3 D27 (indicatore)"
+        "label": "Casetta03"
       }
     },
     {
@@ -93,7 +93,7 @@
       "left": 955,
       "attrs": {
         "color": "yellow",
-        "label": "R4 D28 (indicatore)"
+        "label": "Casetta04"
       }
     },
     {
@@ -103,7 +103,7 @@
       "left": 520,
       "attrs": {
         "color": "yellow",
-        "label": "R5 D29 (indicatore)"
+        "label": "Casetta05"
       }
     },
     {
@@ -113,7 +113,7 @@
       "left": 665,
       "attrs": {
         "color": "yellow",
-        "label": "R6 D30 (indicatore)"
+        "label": "Casetta06"
       }
     },
     {
@@ -123,7 +123,7 @@
       "left": 810,
       "attrs": {
         "color": "yellow",
-        "label": "R7 D31 (indicatore)"
+        "label": "Casetta07"
       }
     },
     {
@@ -133,7 +133,7 @@
       "left": 955,
       "attrs": {
         "color": "yellow",
-        "label": "R8 D32 (indicatore)"
+        "label": "Casetta08"
       }
     },
     {
@@ -143,7 +143,7 @@
       "left": 520,
       "attrs": {
         "color": "yellow",
-        "label": "R9 D33 (indicatore)"
+        "label": "Casetta09"
       }
     },
     {
@@ -153,7 +153,7 @@
       "left": 665,
       "attrs": {
         "color": "yellow",
-        "label": "R10 D34 (indicatore)"
+        "label": "Casetta10"
       }
     },
     {
@@ -163,7 +163,7 @@
       "left": 810,
       "attrs": {
         "color": "yellow",
-        "label": "R11 D35 (indicatore)"
+        "label": "Casetta11"
       }
     },
     {
@@ -173,7 +173,7 @@
       "left": 955,
       "attrs": {
         "color": "yellow",
-        "label": "R12 D36 (indicatore)"
+        "label": "Casetta12"
       }
     },
     {
@@ -183,7 +183,7 @@
       "left": 520,
       "attrs": {
         "color": "yellow",
-        "label": "R13 D37 (indicatore)"
+        "label": "Casetta13"
       }
     },
     {
@@ -193,7 +193,7 @@
       "left": 665,
       "attrs": {
         "color": "yellow",
-        "label": "R14 D38 (indicatore)"
+        "label": "Casetta14"
       }
     },
     {
@@ -203,7 +203,7 @@
       "left": 810,
       "attrs": {
         "color": "yellow",
-        "label": "R15 D39 (indicatore)"
+        "label": "Casetta15"
       }
     },
     {
@@ -213,7 +213,7 @@
       "left": 955,
       "attrs": {
         "color": "yellow",
-        "label": "R16 D40 (indicatore)"
+        "label": "Casetta16"
       }
     },
     {
