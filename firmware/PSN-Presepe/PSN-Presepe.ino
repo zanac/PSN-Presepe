@@ -65,7 +65,7 @@ const uint8_t PIN_ALBA_G = 45;
 const uint8_t PIN_ALBA_B = 46;
 const uint16_t NUM_STELLE = 50;
 const uint8_t STELLE_ATTIVE = 20;
-const uint8_t STELLE_TREMOLANTI = 7;
+const uint8_t STELLE_TREMOLANTI = STELLE_ATTIVE; // tutte le 20 stelle attive scintillano
 Adafruit_NeoPixel stelle(NUM_STELLE, PIN_STELLE_DATA, NEO_GRB + NEO_KHZ800);
 
 const uint8_t PIN_START = 22;
@@ -197,7 +197,7 @@ void generaCieloStellato() {
     stellaOrdine[j] = tmp;
   }
 
-  // Esattamente 7 delle 20 stelle attive tremolano.
+  // Tutte le 20 stelle attive tremolano, ciascuna con tempi e fase propri.
   // Poiche' le prime 20 sono gia' in ordine casuale, basta sceglierne
   // 7 senza ripetizioni con un secondo piccolo shuffle.
   uint8_t candidati[STELLE_ATTIVE];
@@ -230,13 +230,16 @@ void mostraStelle(float livello) {
 
     uint16_t v = (uint16_t)(stellaLum[i] * locale);
 
-    // Esattamente 7 stelle scintillano in modo evidente anche nel simulatore.
+    // Tutte le stelle attive scintillano in modo evidente anche nel simulatore.
     // Ogni stella ha un ciclo sfalsato: accesa -> dissolvenza -> SPENTA ->
     // riaccensione. La pausa a zero rende l'effetto inequivocabile in Wokwi.
     if (stellaTwinkle[i] && v > 5) {
-      const unsigned long periodo = 3200UL + (i % 5) * 300UL; // 3,2-4,4 s
-      const unsigned long faseMs =
-          (millis() + (unsigned long)i * 613UL) % periodo;
+      // Durata pseudo-casuale e stabile per ogni pixel: circa 3,2-6,1 s.
+      // Anche l'offset e' diverso per ogni stella, cosi' partono vicine ma non insieme
+      // e col tempo si sfasano sempre di piu'.
+      const unsigned long periodo = 3200UL + ((unsigned long)(i * 37U) % 30UL) * 100UL;
+      const unsigned long offset = ((unsigned long)(i * 173U) % 900UL);
+      const unsigned long faseMs = (millis() + offset) % periodo;
       const unsigned long pTw = (faseMs * 100UL) / periodo;
       uint8_t fattore = 100;
 
@@ -445,7 +448,7 @@ bool inizializzaOled() {
   display.setTextSize(1);
   // Startup splash: PSN-Presepe! by Vanni
   display.setCursor(27,18); display.print(F("PSN-Presepe!"));
-  display.setCursor(30,36); display.print(F("by Vanni 001"));
+  display.setCursor(30,36); display.print(F("by Vanni 002"));
   display.display();
   delay(2000);
   return true;
