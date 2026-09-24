@@ -104,6 +104,15 @@ Display di stato OLED **0,96 pollici, 128×64, I²C**, alimentazione 3,3–5 V, 
 
 Il display è **opzionale**: il firmware deve continuare a funzionare normalmente anche se l'OLED non è collegato. All'avvio il software verifica la presenza del display all'indirizzo 0x3C; se non risponde, prosegue senza OLED.
 
+Il firmware usa il display come interfaccia di stato:
+- schermata normale: **fase corrente**, percentuale di avanzamento della singola fase, barra grafica, RUN/PAUSA e durata totale del ciclo;
+- START/STOP: popup temporaneo **PAUSA** o **RIPRESA**;
+- AVANTI: popup **AVANTI** con la nuova fase;
+- TEST: feedback **TEST**;
+- variazione significativa del B10K: popup **VELOCITA** con la durata effettiva del ciclo in minuti.
+
+I popup durano circa 1,8 secondi e poi il display torna automaticamente alla schermata della fase. L'aggiornamento normale dell'OLED è non bloccante; l'assenza del display non impedisce l'avvio del controllore.
+
 > Nota: sul Mega 2560 l'I²C hardware usa **D20=SDA** e **D21=SCL**. Eventuali esempi che indicano D21/D22 si riferiscono ad altre piattaforme, ad esempio ESP32.
 
 ### Comandi
