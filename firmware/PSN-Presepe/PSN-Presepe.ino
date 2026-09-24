@@ -230,28 +230,34 @@ void mostraStelle(float livello) {
 
     uint16_t v = (uint16_t)(stellaLum[i] * locale);
 
-    // Esattamente 7 stelle scintillano in modo chiaramente visibile.
-    // Ognuna ha un ciclo asincrono: resta accesa, sfuma fino a 0,
-    // rimane spenta per un breve istante e poi torna gradualmente al 100%.
+    // Esattamente 7 stelle scintillano in modo evidente anche nel simulatore.
+    // Ogni stella ha un ciclo sfalsato: accesa -> dissolvenza -> SPENTA ->
+    // riaccensione. La pausa a zero rende l'effetto inequivocabile in Wokwi.
     if (stellaTwinkle[i] && v > 5) {
-      const unsigned long periodo = 4000UL + (i % 7) * 450UL; // 4,0-6,7 s
-      const unsigned long faseMs = (millis() + (unsigned long)i * 977UL) % periodo;
-      const unsigned long p = (faseMs * 100UL) / periodo;
-      uint8_t fattore;
+      const unsigned long periodo = 3200UL + (i % 5) * 300UL; // 3,2-4,4 s
+      const unsigned long faseMs =
+          (millis() + (unsigned long)i * 613UL) % periodo;
+      const unsigned long pTw = (faseMs * 100UL) / periodo;
+      uint8_t fattore = 100;
 
-      if (p < 35) {
-        fattore = 100;                       // accesa
-      } else if (p < 55) {
-        fattore = (uint8_t)((55UL - p) * 5UL); // 100 -> 0
-      } else if (p < 70) {
-        fattore = 0;                         // chiaramente spenta
-      } else if (p < 90) {
-        fattore = (uint8_t)((p - 70UL) * 5UL); // 0 -> 100
+      if (pTw < 45) {
+        fattore = 100;                              // piena luminosita'
+      } else if (pTw < 55) {
+        fattore = (uint8_t)((55UL - pTw) * 10UL);  // 100 -> 0
+      } else if (pTw < 80) {
+        fattore = 0;                                // SPENTA per il 25% del ciclo
+      } else if (pTw < 90) {
+        fattore = (uint8_t)((pTw - 80UL) * 10UL);  // 0 -> 100
       } else {
-        fattore = 100;                       // accesa
+        fattore = 100;
       }
 
-      v = (v * fattore) / 100U;
+      // A fattore zero scriviamo esplicitamente nero sul pixel.
+      if (fattore == 0) {
+        v = 0;
+      } else {
+        v = (v * fattore) / 100U;
+      }
     }
 
     // Bianco caldo tenue.
