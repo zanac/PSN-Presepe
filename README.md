@@ -63,6 +63,19 @@ Con le WS2811 il **GND Arduino deve essere comune allo 0 V dell'alimentatore 12 
 
 Il firmware può comandare ogni stella separatamente, con luminosità e colore differenti, facendo comparire progressivamente stelle casuali durante il crepuscolo e spegnendole durante l'alba. Il canale 4 del MOSFET #1 rimane libero.
 
+### MOSFET #3 e #4 — RGB laterali alba/tramonto
+
+Per rendere alba e tramonto più dinamici vengono aggiunte **due strisce RGB analogiche 12 V da 1 m**, indipendenti dalla striscia principale:
+
+| Posizione | Effetto | Mega R/G/B | Modulo |
+|---|---|---|---|
+| Sinistra | Tramonto | D10 / D11 / D12 | MOSFET #3, CH1–CH3 |
+| Destra | Alba | D44 / D45 / D46 | MOSFET #4, CH1–CH3 |
+
+Ogni striscia ha il proprio +12 V comune collegato alla distribuzione protetta. I ritorni R/G/B vanno ai tre OUT- del relativo modulo MOSFET. Il quarto canale di ciascun modulo resta libero. **D13 rimane PWM libero.**
+
+Nel firmware la striscia sinistra cresce e cala gradualmente durante il TRAMONTO, con tonalità calde rosso/arancio. La striscia destra esegue un andamento analogo durante l'ALBA, con una tonalità più chiara. La striscia RGB principale continua contemporaneamente la transizione generale del cielo: la sovrapposizione crea uno spostamento laterale della luce.
+
 ### MOSFET #2 — Scenografia e movimenti
 
 | Arduino Mega | Ingresso MOSFET | Uscita MOSFET | Carico 12 V | Controllo previsto |
@@ -87,15 +100,15 @@ I pulsanti utilizzano `INPUT_PULLUP`, quindi non richiedono una resistenza di pu
 
 ## Funzionamento scenografico
 
-Il ciclo automatico coordina la **striscia RGB analogica 12 V**, utilizzata per simulare le variazioni di luce del cielo, con le **50 stelle WS2811 individualmente indirizzabili**.
+Il ciclo automatico coordina la **striscia RGB principale**, le **due strisce RGB laterali da 1 m** dedicate ad alba e tramonto e le **50 stelle WS2811 individualmente indirizzabili**.
 
 1. **Giorno:** stelle spente; la striscia RGB crea l'illuminazione diurna.
-2. **Tramonto:** stelle spente; la striscia RGB passa progressivamente dai colori del giorno alle tonalità calde del tramonto.
+2. **Tramonto:** stelle spente; la striscia principale passa progressivamente ai colori caldi mentre la striscia laterale sinistra entra e poi cala gradualmente, creando movimento e direzionalità nella luce.
 3. **Crepuscolo:** le stelle iniziano a comparire **una alla volta in ordine casuale**, mentre il cielo RGB diventa progressivamente più scuro.
 4. Ogni stella ha una **luminosità massima diversa**, per evitare un cielo uniforme e artificiale.
 5. Circa il **18% delle stelle** presenta un leggerissimo **scintillio morbido**, senza lampeggi netti.
 6. **Notte:** il cielo stellato è completo ma non uniforme; le stelle mantengono intensità differenti.
-7. **Alba:** le stelle scompaiono progressivamente mentre la striscia RGB passa dalle tonalità notturne a quelle dell'alba e quindi del giorno.
+7. **Alba:** le stelle scompaiono progressivamente mentre la striscia principale torna verso il giorno e la striscia laterale destra entra e poi cala gradualmente, simulando una sorgente luminosa direzionale.
 8. A ogni nuova notte viene generata una **disposizione differente** delle stelle e delle relative intensità.
 9. Il colore delle stelle è impostato su **bianco caldo**, evitando un effetto RGB multicolore.
 
@@ -107,7 +120,7 @@ Aprire:
 
 con Arduino IDE standard e selezionare **Arduino Mega or Mega 2560**.
 
-Il firmware attuale implementa la Fase 1 (cielo RGB + stelle + comandi). D6-D9 sono riservati nel sorgente al secondo modulo MOSFET della Fase 2.
+Il firmware attuale implementa cielo RGB principale, due RGB laterali alba/tramonto, stelle WS2811 e comandi. D6-D9 sono riservati nel sorgente al secondo modulo MOSFET della Fase 2.
 
 ## GitHub Actions
 
