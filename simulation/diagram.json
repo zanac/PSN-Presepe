@@ -569,8 +569,8 @@
     {
       "type": "wokwi-rgb-led",
       "id": "dawnRGB1",
-      "top": 285,
-      "left": 360,
+      "top": -255,
+      "left": 520,
       "attrs": {
         "common": "cathode",
         "label": ""
@@ -579,8 +579,8 @@
     {
       "type": "wokwi-rgb-led",
       "id": "dawnRGB2",
-      "top": 285,
-      "left": 394,
+      "top": -255,
+      "left": 554,
       "attrs": {
         "common": "cathode",
         "label": ""
@@ -589,8 +589,8 @@
     {
       "type": "wokwi-rgb-led",
       "id": "dawnRGB3",
-      "top": 285,
-      "left": 428,
+      "top": -255,
+      "left": 588,
       "attrs": {
         "common": "cathode",
         "label": ""
@@ -599,8 +599,8 @@
     {
       "type": "wokwi-rgb-led",
       "id": "dawnRGB4",
-      "top": 319,
-      "left": 360,
+      "top": -221,
+      "left": 520,
       "attrs": {
         "common": "cathode",
         "label": ""
@@ -609,8 +609,8 @@
     {
       "type": "wokwi-rgb-led",
       "id": "dawnRGB5",
-      "top": 319,
-      "left": 394,
+      "top": -221,
+      "left": 554,
       "attrs": {
         "common": "cathode",
         "label": ""
@@ -619,8 +619,8 @@
     {
       "type": "wokwi-rgb-led",
       "id": "dawnRGB6",
-      "top": 319,
-      "left": 428,
+      "top": -221,
+      "left": 588,
       "attrs": {
         "common": "cathode",
         "label": ""
@@ -629,8 +629,8 @@
     {
       "type": "wokwi-rgb-led",
       "id": "dawnRGB7",
-      "top": 353,
-      "left": 360,
+      "top": -187,
+      "left": 520,
       "attrs": {
         "common": "cathode",
         "label": ""
@@ -639,8 +639,8 @@
     {
       "type": "wokwi-rgb-led",
       "id": "dawnRGB8",
-      "top": 353,
-      "left": 394,
+      "top": -187,
+      "left": 554,
       "attrs": {
         "common": "cathode",
         "label": "ALBA"
@@ -649,8 +649,8 @@
     {
       "type": "wokwi-rgb-led",
       "id": "dawnRGB9",
-      "top": 353,
-      "left": 428,
+      "top": -187,
+      "left": 588,
       "attrs": {
         "common": "cathode",
         "label": ""
@@ -659,8 +659,8 @@
     {
       "type": "wokwi-rgb-led",
       "id": "skyRGB1",
-      "top": 285,
-      "left": 680,
+      "top": -255,
+      "left": 700,
       "attrs": {
         "common": "cathode",
         "label": ""
@@ -669,8 +669,8 @@
     {
       "type": "wokwi-rgb-led",
       "id": "skyRGB2",
-      "top": 285,
-      "left": 714,
+      "top": -255,
+      "left": 734,
       "attrs": {
         "common": "cathode",
         "label": ""
@@ -679,8 +679,8 @@
     {
       "type": "wokwi-rgb-led",
       "id": "skyRGB3",
-      "top": 285,
-      "left": 748,
+      "top": -255,
+      "left": 768,
       "attrs": {
         "common": "cathode",
         "label": ""
@@ -689,8 +689,8 @@
     {
       "type": "wokwi-rgb-led",
       "id": "skyRGB4",
-      "top": 319,
-      "left": 680,
+      "top": -221,
+      "left": 700,
       "attrs": {
         "common": "cathode",
         "label": ""
@@ -699,8 +699,8 @@
     {
       "type": "wokwi-rgb-led",
       "id": "skyRGB5",
-      "top": 319,
-      "left": 714,
+      "top": -221,
+      "left": 734,
       "attrs": {
         "common": "cathode",
         "label": ""
@@ -709,8 +709,8 @@
     {
       "type": "wokwi-rgb-led",
       "id": "skyRGB6",
-      "top": 319,
-      "left": 748,
+      "top": -221,
+      "left": 768,
       "attrs": {
         "common": "cathode",
         "label": ""
@@ -719,8 +719,8 @@
     {
       "type": "wokwi-rgb-led",
       "id": "skyRGB7",
-      "top": 353,
-      "left": 680,
+      "top": -187,
+      "left": 700,
       "attrs": {
         "common": "cathode",
         "label": ""
@@ -729,8 +729,8 @@
     {
       "type": "wokwi-rgb-led",
       "id": "skyRGB8",
-      "top": 353,
-      "left": 714,
+      "top": -187,
+      "left": 734,
       "attrs": {
         "common": "cathode",
         "label": "GIORNO"
@@ -739,8 +739,8 @@
     {
       "type": "wokwi-rgb-led",
       "id": "skyRGB9",
-      "top": 353,
-      "left": 748,
+      "top": -187,
+      "left": 768,
       "attrs": {
         "common": "cathode",
         "label": ""
@@ -749,8 +749,8 @@
     {
       "type": "wokwi-rgb-led",
       "id": "sunRGB1",
-      "top": 285,
-      "left": 1000,
+      "top": -255,
+      "left": 880,
       "attrs": {
         "common": "cathode",
         "label": ""
@@ -759,8 +759,8 @@
     {
       "type": "wokwi-rgb-led",
       "id": "sunRGB2",
-      "top": 285,
-      "left": 1034,
+      "top": -255,
+      "left": 914,
       "attrs": {
         "common": "cathode",
         "label": ""
@@ -769,8 +769,8 @@
     {
       "type": "wokwi-rgb-led",
       "id": "sunRGB3",
-      "top": 285,
-      "left": 1068,
+      "top": -255,
+      "left": 948,
       "attrs": {
         "common": "cathode",
         "label": ""
@@ -779,8 +779,8 @@
     {
       "type": "wokwi-rgb-led",
       "id": "sunRGB4",
-      "top": 319,
-      "left": 1000,
+      "top": -221,
+      "left": 880,
       "attrs": {
         "common": "cathode",
         "label": ""
@@ -789,8 +789,8 @@
     {
       "type": "wokwi-rgb-led",
       "id": "sunRGB5",
-      "top": 319,
-      "left": 1034,
+      "top": -221,
+      "left": 914,
       "attrs": {
         "common": "cathode",
         "label": ""
@@ -799,8 +799,8 @@
     {
       "type": "wokwi-rgb-led",
       "id": "sunRGB6",
-      "top": 319,
-      "left": 1068,
+      "top": -221,
+      "left": 948,
       "attrs": {
         "common": "cathode",
         "label": ""
@@ -809,8 +809,8 @@
     {
       "type": "wokwi-rgb-led",
       "id": "sunRGB7",
-      "top": 353,
-      "left": 1000,
+      "top": -187,
+      "left": 880,
       "attrs": {
         "common": "cathode",
         "label": ""
@@ -819,8 +819,8 @@
     {
       "type": "wokwi-rgb-led",
       "id": "sunRGB8",
-      "top": 353,
-      "left": 1034,
+      "top": -187,
+      "left": 914,
       "attrs": {
         "common": "cathode",
         "label": "TRAMONTO"
@@ -829,8 +829,8 @@
     {
       "type": "wokwi-rgb-led",
       "id": "sunRGB9",
-      "top": 353,
-      "left": 1068,
+      "top": -187,
+      "left": 948,
       "attrs": {
         "common": "cathode",
         "label": ""
