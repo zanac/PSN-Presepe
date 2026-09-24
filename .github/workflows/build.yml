@@ -35,8 +35,22 @@ jobs:
             --output-dir build \
             firmware/PSN-Presepe
 
+      - name: Build Windows portable flash package
+        run: |
+          mkdir -p portable
+          cp build/PSN-Presepe.ino.hex portable/
+          cp firmware/PSN-Presepe/flash-windows.bat portable/
+          curl -fsSL https://downloads.arduino.cc/arduino-cli/arduino-cli_latest_Windows_64bit.zip -o /tmp/arduino-cli-win.zip
+          unzip -j /tmp/arduino-cli-win.zip arduino-cli.exe -d portable/
+
       - name: Upload compiled firmware artifact
         uses: actions/upload-artifact@v4
         with:
           name: PSN-Presepe-Arduino-Mega
           path: build/
+
+      - name: Upload Windows portable flasher
+        uses: actions/upload-artifact@v4
+        with:
+          name: PSN-Presepe-Windows-Portable
+          path: portable/
