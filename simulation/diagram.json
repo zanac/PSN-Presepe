@@ -601,349 +601,349 @@
     [
       "oled:VCC",
       "mega:5V",
-      "red",
+      "",
       []
     ],
     [
       "oled:GND",
       "mega:GND.1",
-      "black",
+      "",
       []
     ],
     [
       "oled:SDA",
       "mega:20",
-      "blue",
+      "",
       []
     ],
     [
       "oled:SCL",
       "mega:21",
-      "yellow",
+      "",
       []
     ],
     [
       "mega:22",
       "start:1.l",
-      "green",
+      "",
       []
     ],
     [
       "start:2.l",
       "mega:GND.1",
-      "black",
+      "",
       []
     ],
     [
       "mega:23",
       "next:1.l",
-      "green",
+      "",
       []
     ],
     [
       "next:2.l",
       "mega:GND.1",
-      "black",
+      "",
       []
     ],
     [
       "mega:24",
       "test:1.l",
-      "green",
+      "",
       []
     ],
     [
       "test:2.l",
       "mega:GND.1",
-      "black",
+      "",
       []
     ],
     [
       "speed:VCC",
       "mega:5V",
-      "red",
+      "",
       []
     ],
     [
       "speed:GND",
       "mega:GND.1",
-      "black",
+      "",
       []
     ],
     [
       "speed:SIG",
       "mega:A0",
-      "green",
+      "",
       []
     ],
     [
       "mega:25",
       "relay1:A",
-      "orange",
+      "",
       []
     ],
     [
       "relay1:C",
       "mega:GND.1",
-      "black",
+      "",
       []
     ],
     [
       "mega:26",
       "relay2:A",
-      "orange",
+      "",
       []
     ],
     [
       "relay2:C",
       "mega:GND.1",
-      "black",
+      "",
       []
     ],
     [
       "mega:27",
       "relay3:A",
-      "orange",
+      "",
       []
     ],
     [
       "relay3:C",
       "mega:GND.1",
-      "black",
+      "",
       []
     ],
     [
       "mega:28",
       "relay4:A",
-      "orange",
+      "",
       []
     ],
     [
       "relay4:C",
       "mega:GND.1",
-      "black",
+      "",
       []
     ],
     [
       "mega:29",
       "relay5:A",
-      "orange",
+      "",
       []
     ],
     [
       "relay5:C",
       "mega:GND.1",
-      "black",
+      "",
       []
     ],
     [
       "mega:30",
       "relay6:A",
-      "orange",
+      "",
       []
     ],
     [
       "relay6:C",
       "mega:GND.1",
-      "black",
+      "",
       []
     ],
     [
       "mega:31",
       "relay7:A",
-      "orange",
+      "",
       []
     ],
     [
       "relay7:C",
       "mega:GND.1",
-      "black",
+      "",
       []
     ],
     [
       "mega:32",
       "relay8:A",
-      "orange",
+      "",
       []
     ],
     [
       "relay8:C",
       "mega:GND.1",
-      "black",
+      "",
       []
     ],
     [
       "mega:33",
       "relay9:A",
-      "orange",
+      "",
       []
     ],
     [
       "relay9:C",
       "mega:GND.1",
-      "black",
+      "",
       []
     ],
     [
       "mega:34",
       "relay10:A",
-      "orange",
+      "",
       []
     ],
     [
       "relay10:C",
       "mega:GND.1",
-      "black",
+      "",
       []
     ],
     [
       "mega:35",
       "relay11:A",
-      "orange",
+      "",
       []
     ],
     [
       "relay11:C",
       "mega:GND.1",
-      "black",
+      "",
       []
     ],
     [
       "mega:36",
       "relay12:A",
-      "orange",
+      "",
       []
     ],
     [
       "relay12:C",
       "mega:GND.1",
-      "black",
+      "",
       []
     ],
     [
       "mega:37",
       "relay13:A",
-      "orange",
+      "",
       []
     ],
     [
       "relay13:C",
       "mega:GND.1",
-      "black",
+      "",
       []
     ],
     [
       "mega:38",
       "relay14:A",
-      "orange",
+      "",
       []
     ],
     [
       "relay14:C",
       "mega:GND.1",
-      "black",
+      "",
       []
     ],
     [
       "mega:39",
       "relay15:A",
-      "orange",
+      "",
       []
     ],
     [
       "relay15:C",
       "mega:GND.1",
-      "black",
+      "",
       []
     ],
     [
       "mega:40",
       "relay16:A",
-      "orange",
+      "",
       []
     ],
     [
       "relay16:C",
       "mega:GND.1",
-      "black",
+      "",
       []
     ],
     [
       "mega:2",
       "skyRGB:R",
-      "red",
+      "",
       []
     ],
     [
       "mega:3",
       "skyRGB:G",
-      "green",
+      "",
       []
     ],
     [
       "mega:4",
       "skyRGB:B",
-      "blue",
+      "",
       []
     ],
     [
       "skyRGB:COM",
       "mega:GND.1",
-      "black",
+      "",
       []
     ],
     [
       "mega:10",
       "sunRGB:R",
-      "red",
+      "",
       []
     ],
     [
       "mega:11",
       "sunRGB:G",
-      "green",
+      "",
       []
     ],
     [
       "mega:12",
       "sunRGB:B",
-      "blue",
+      "",
       []
     ],
     [
       "sunRGB:COM",
       "mega:GND.1",
-      "black",
+      "",
       []
     ],
     [
       "mega:44",
       "dawnRGB:R",
-      "red",
+      "",
       []
     ],
     [
       "mega:45",
       "dawnRGB:G",
-      "green",
+      "",
       []
     ],
     [
       "mega:46",
       "dawnRGB:B",
-      "blue",
+      "",
       []
     ],
     [
       "dawnRGB:COM",
       "mega:GND.1",
-      "black",
+      "",
       []
     ],
     [
       "mega:5",
       "star1:DIN",
-      "green",
+      "",
       []
     ],
     [
