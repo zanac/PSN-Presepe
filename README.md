@@ -517,3 +517,5 @@ Controlla nell'ordine:
 
 Se modifichiamo firmware o cablaggio del progetto, anche i file nella cartella `simulation/` devono essere aggiornati insieme.
 
+
+> **Stelle:** i 50 pixel WS2811 restano fisicamente disponibili, ma a ogni ciclo ne vengono scelte casualmente solo **20**, mantenute a luminosità volutamente bassa. Di queste, esattamente **7** variano dolcemente la luminosità durante la notte per simulare il tremolio. A ogni nuova notte la disposizione viene rigenerata.
