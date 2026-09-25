@@ -165,6 +165,19 @@ I valori sono quelli logici 0–255 inviati al PWM e permettono di fermare la sc
 
 I pulsanti utilizzano `INPUT_PULLUP`, quindi non richiedono una resistenza di pull-up esterna. Il GND logico di Arduino viene distribuito tramite WAGO agli ingressi `GND1...GND4` dei MOSFET e ai comandi.
 
+## Sequenza di inizializzazione all'accensione
+
+Prima di iniziare il normale ciclo scenografico, il firmware esegue un **autotest visivo di circa 8 secondi**. I relè restano spenti e le uscite vengono provate in sequenza:
+
+1. **ALBA** — striscia RGB alba in bianco brillante per 2 secondi;
+2. **GIORNO** — striscia RGB principale in bianco brillante per 2 secondi;
+3. **TRAMONTO** — striscia RGB tramonto in bianco brillante per 2 secondi;
+4. **STELLE** — tutti i 50 pixel WS2811 in bianco brillante per 2 secondi.
+
+Durante l'intera sequenza l'OLED mostra **Inizializzazione**, il nome dell'uscita in prova, la percentuale complessiva e una progress bar. Al termine tutte le uscite vengono spente, compare brevemente **PRONTO** e il timer del ciclo viene avviato da zero: il presepe entra quindi normalmente nella fase **GIORNO**.
+
+Questa sequenza è visibile anche nella simulazione Wokwi e costituisce un rapido controllo all'accensione di strisce, stelle e relativi collegamenti.
+
 ## Funzionamento scenografico
 
 Il ciclo automatico coordina la **striscia RGB principale**, le **due strisce RGB laterali da 1 m** dedicate ad alba e tramonto e le **50 stelle WS2811 individualmente indirizzabili**.
