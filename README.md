@@ -373,7 +373,7 @@ Gli eventuali contatti NC dei pulsanti rimangono scollegati.
 
 Il buzzer è un accessorio opzionale. Collegare il positivo/filo rosso a **Mega D6** e il negativo/filo nero a **Mega GND**. Deve essere un buzzer/piezo **passivo**, così il firmware può generare note diverse con `tone()`. Se il buzzer non è collegato, il presepe funziona normalmente senza errori.
 
-Durante l'autotest di boot il buzzer riproduce per circa 8 secondi l'incipit di **Astro del ciel**, in contemporanea con ALBA → CIELO → TRAMONTO → STELLE. Al termine viene disattivato con `noTone()`.
+Durante il boot il buzzer riproduce a tempo sostenuto **Astro del ciel** fino alla frase **“mite agnello Redentor”**. La melodia parte insieme all'autotest ALBA → CIELO → TRAMONTO → STELLE; se dura oltre gli 8 secondi del test visivo, le uscite vengono spente e il boot attende la conclusione della melodia prima di mostrare PRONTO. Al termine il buzzer viene disattivato con `noTone()`.
 
 ### 10. Potenziometro B10K
 
