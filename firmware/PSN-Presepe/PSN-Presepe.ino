@@ -8,7 +8,7 @@
     D4 = Cielo RGB Blu
     D5 = DATA stelle WS2811 (50 pixel, 12 V)
     D6 = Buzzer piezo passivo opzionale
-    D10/D11/D12 = RGB laterale SINISTRA / TRAMONTO (R/G/B)
+    D7/D11/D12 = RGB laterale SINISTRA / TRAMONTO (R/G/B)
     D44/D45/D46 = RGB laterale DESTRA / ALBA (R/G/B)
 
   COMANDI DEFINITIVI
@@ -59,7 +59,7 @@ const uint8_t PIN_BUZZER = 6; // piezo passivo opzionale: se assente il firmware
 
 // Strisce RGB laterali da 1 m, dedicate agli effetti direzionali.
 // Sinistra = tramonto; destra = alba. D13 resta PWM libero.
-const uint8_t PIN_TRAMONTO_R = 10;
+const uint8_t PIN_TRAMONTO_R = 7;
 const uint8_t PIN_TRAMONTO_G = 11;
 const uint8_t PIN_TRAMONTO_B = 12;
 const uint8_t PIN_ALBA_R = 44;
@@ -666,7 +666,7 @@ bool inizializzaOled() {
   display.setTextSize(1);
   // Startup splash: PSN-Presepe! by Vanni
   display.setCursor(27,18); display.print(F("PSN-Presepe!"));
-  display.setCursor(30,36); display.print(F("by Vanni 019"));
+  display.setCursor(30,36); display.print(F("by Vanni 020"));
   display.display();
   delay(3000);
   return true;
@@ -1220,7 +1220,7 @@ void setup() {
   Serial.println(F("D4  = RGB Blu"));
   Serial.println(F("D5  = DATA WS2811 (50 stelle)"));
   Serial.println(F("D6  = BUZZER passivo opzionale"));
-  Serial.println(F("D10/D11/D12 = RGB SINISTRA / TRAMONTO"));
+  Serial.println(F("D7/D11/D12 = RGB SINISTRA / TRAMONTO"));
   Serial.println(F("D44/D45/D46 = RGB DESTRA / ALBA"));
   Serial.println(F("D22 = START/STOP"));
   Serial.println(F("D23 = AVANTI"));
