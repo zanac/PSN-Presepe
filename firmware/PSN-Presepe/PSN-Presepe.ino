@@ -703,7 +703,7 @@ bool inizializzaOled() {
   display.setTextSize(1);
   // Startup splash: PSN-Presepe! by Vanni
   display.setCursor(27,18); display.print(F("PSN-Presepe!"));
-  display.setCursor(30,36); display.print(F("by Vanni 023"));
+  display.setCursor(30,36); display.print(F("by Vanni 024"));
   display.display();
   delay(3000);
   return true;
@@ -761,29 +761,35 @@ void aggiornaScena(float p) {
     case TRAMONTO: {
       float t = progresso(p, P_TRAMONTO, P_CREPU);
 
-      r = 255;
-      g = interpola8(210, 65, t);
-      b = interpola8(145, 15, t);
+      // Durante il tramonto il cielo centrale completa gia' la sua
+      // transizione fino al colore notturno. L'ultima luce resta cosi'
+      // concentrata sul lato ovest, sulla striscia TRAMONTO.
+      r = interpola8(255, 8, t);
+      g = interpola8(210, 12, t);
+      b = interpola8(145, 55, t);
       livelloStelle = 0;
 
-      // La luce laterale sinistra entra gradualmente e crea uno
-      // spostamento della luce verso il lato del tramonto.
-      // Sale, raggiunge il massimo a meta' fase e poi cala dolcemente.
-      {
-        float arco = 1.0f - fabs(2.0f * t - 1.0f);
-        tr = (uint8_t)(255.0f * arco);
-        tg = (uint8_t)(72.0f * arco);
-        tb = (uint8_t)(12.0f * arco);
-      }
+      // Il bagliore occidentale cresce progressivamente e raggiunge
+      // il massimo alla fine del TRAMONTO. Il CREPUSCOLO riparte
+      // esattamente da questi valori, senza alcuno stacco.
+      tr = interpola8(0, 255, t);
+      tg = interpola8(0, 72, t);
+      tb = interpola8(0, 12, t);
       break;
     }
 
     case CREPUSCOLO: {
       float t = progresso(p, P_CREPU, P_NOTTE);
 
-      r = interpola8(255, 8, t);
-      g = interpola8(65, 12, t);
-      b = interpola8(15, 55, t);
+      // Il cielo e' gia' al colore della NOTTE. Durante il crepuscolo
+      // si spegne soltanto l'ultimo bagliore a ovest mentre compaiono
+      // progressivamente le stelle.
+      r = 8;
+      g = 12;
+      b = 55;
+      tr = interpola8(255, 0, t);
+      tg = interpola8(72, 0, t);
+      tb = interpola8(12, 0, t);
       livelloStelle = interpola8(0, 235, t);
       break;
     }
