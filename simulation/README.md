@@ -35,7 +35,7 @@ Per evitare questa ambiguità PSN-Presepe usa un componente Wokwi personalizzato
 - `simulation/rgb-strip.chip.c`: logica che legge i tre segnali PWM e disegna la barra tramite framebuffer;
 - `simulation/diagram.json`: contiene tre istanze `chip-rgb-strip`, una per CIELO, TRAMONTO e ALBA.
 
-Il componente misura il duty-cycle dei tre segnali PWM del Mega e visualizza direttamente il colore risultante. Gestisce anche i casi estremi di `analogWrite(0)` e `analogWrite(255)`, che sull'AVR diventano livelli logici statici. Sotto la zona colorata il framebuffer disegna inoltre una fascia nera con il nome **ALBA**, **GIORNO** o **TRAMONTO**; l'istanza seleziona il testo tramite l'attributo numerico `labelId`.
+Il componente misura il duty-cycle dei tre segnali PWM del Mega e visualizza direttamente il colore risultante. Gestisce anche i casi estremi di `analogWrite(0)` e `analogWrite(255)`, che sull'AVR diventano livelli logici statici. Sotto la zona colorata il framebuffer disegna inoltre una fascia nera con il nome **ALBA**, **CIELO** o **TRAMONTO**; l'istanza seleziona il testo tramite l'attributo numerico `labelId`.
 
 La convenzione visiva è quindi volutamente semplice: **nero = striscia spenta**. Per esempio, durante GIORNO le barre ALBA e TRAMONTO sono nere perché il firmware invia `(0,0,0)`; durante le dissolvenze la barra cambia colore e luminosità seguendo il PWM.
 
@@ -58,7 +58,7 @@ La GitHub Action `Arduino Mega Build` compila il firmware, ma **non esegue autom
 
 ## Boot simulato
 
-All'avvio il firmware esegue anche in Wokwi l'autotest reale: **ALBA**, **GIORNO** e **TRAMONTO** diventano bianchi per 2 secondi ciascuno, quindi tutti i 50 pixel delle **STELLE** diventano bianchi per 2 secondi. L'OLED mostra l'avanzamento complessivo con una progress bar. Finito il test, le uscite vengono spente e parte da zero il normale ciclo in GIORNO.
+All'avvio il firmware esegue anche in Wokwi l'autotest reale: **ALBA**, **CIELO** e **TRAMONTO** diventano bianchi per 2 secondi ciascuno, quindi tutti i 50 pixel delle **STELLE** diventano bianchi per 2 secondi. L'OLED mostra l'avanzamento complessivo con una progress bar. Finito il test, le uscite vengono spente, l’OLED mostra **PRONTO** per 900 ms e parte da zero il normale ciclo nella fase GIORNO.
 
 ## Comandi e modalità TEST
 
