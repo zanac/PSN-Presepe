@@ -636,7 +636,7 @@ bool inizializzaOled() {
   display.setTextSize(1);
   // Startup splash: PSN-Presepe! by Vanni
   display.setCursor(27,18); display.print(F("PSN-Presepe!"));
-  display.setCursor(30,36); display.print(F("by Vanni 014"));
+  display.setCursor(30,36); display.print(F("by Vanni 015"));
   display.display();
   delay(3000);
   return true;
@@ -1002,10 +1002,21 @@ void stampaStato(unsigned long durata, float p) {
 const unsigned long BOOT_STEP_MS = 2000UL;
 const uint8_t BOOT_STEP_COUNT = 4;
 
-// Incipit di "Astro del ciel" sul buzzer passivo opzionale.
-// La melodia dura esattamente quanto i quattro passi dell'autotest (8 s).
-const uint16_t BOOT_MELODY_FREQ[] = { 392, 440, 392, 330, 392, 440, 392, 330 };
-const uint16_t BOOT_MELODY_MS[]   = { 700, 700, 900, 1700, 700, 700, 900, 1700 };
+// "Astro del ciel" sul buzzer passivo opzionale, fino a "mite agnello Redentor".
+// Tempo volutamente più sostenuto rispetto alla rev.014.
+// La melodia può proseguire oltre l'autotest visivo: il boot attende la sua conclusione.
+const uint16_t BOOT_MELODY_FREQ[] = {
+  392, 440, 392, 330, 392, 440, 392, 330,
+  587, 587, 494, 523, 523, 392,
+  440, 440, 523, 494, 440, 392, 440, 392, 330,
+  440, 440, 523, 494, 440, 392, 440, 392, 330
+};
+const uint16_t BOOT_MELODY_MS[] = {
+  420, 420, 560, 900, 420, 420, 560, 900,
+  560, 420, 560, 560, 420, 900,
+  420, 420, 560, 420, 420, 560, 420, 420, 900,
+  420, 420, 560, 420, 420, 560, 420, 420, 1100
+};
 const uint8_t BOOT_MELODY_COUNT = sizeof(BOOT_MELODY_FREQ) / sizeof(BOOT_MELODY_FREQ[0]);
 int8_t bootNotaCorrente = -1;
 
@@ -1101,6 +1112,16 @@ void eseguiSequenzaBoot() {
   stelle.show();
   attesaBoot(F("STELLE"), 3);
 
+  // Se la melodia è più lunga degli 8 s dell'autotest visivo, completiamola
+  // a uscite spente prima di mostrare PRONTO e avviare il ciclo.
+  unsigned long durataMelodia = 0;
+  for (uint8_t i = 0; i < BOOT_MELODY_COUNT; i++) durataMelodia += BOOT_MELODY_MS[i];
+  unsigned long tMelodia = BOOT_STEP_MS * BOOT_STEP_COUNT;
+  while (tMelodia < durataMelodia) {
+    aggiornaMelodiaBoot(tMelodia);
+    delay(20);
+    tMelodia += 20;
+  }
   noTone(PIN_BUZZER);
   bootNotaCorrente = -1;
 
