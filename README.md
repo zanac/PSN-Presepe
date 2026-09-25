@@ -212,16 +212,18 @@ ALIMENTATORE 12 V
 
  +12 V ──► ingresso + portafusibili
                 │
-                ├─► FUSIBILE 1 ──► +12 V RGB principale
-                ├─► FUSIBILE 2 ──► +12 V WS2811
-                ├─► FUSIBILE 3 ──► +12 V RGB tramonto
-                ├─► FUSIBILE 4 ──► +12 V RGB alba
-                └─► ... altri rami protetti
+                ├─► F1 CIELO ─────► +12 V RGB principale + DC+ MOSFET #1
+                ├─► F2 ALBA ──────► +12 V RGB alba + DC+ MOSFET #4
+                ├─► F3 TRAMONTO ──► +12 V RGB tramonto + DC+ MOSFET #3
+                ├─► F4 STELLE ────► +12 V WS2811
+                └─► ... futuri rami protetti (relè/carichi)
 
   0 V ────────────────────────────► barra negativa / WAGO 0 V comune
                                       ├─► GND/0 V carichi
                                       └─► GND Arduino (riferimento comune)
 ```
+
+**Scelta progettuale:** CIELO, ALBA, TRAMONTO e STELLE hanno ciascuno un fusibile dedicato. Per le tre strisce RGB, l'uscita del relativo fusibile viene sdoppiata: alimenta sia il +12 V comune della striscia sia il `DC+` della scheda MOSFET che la pilota. Il `DC-` della scheda MOSFET torna allo 0 V comune. Non è previsto un ulteriore fusibile generico separato per le quattro schede MOSFET: la protezione segue il ramo/carico alimentato. Il MOSFET #2, al momento non assegnato a una delle tre RGB, verrà protetto insieme al futuro ramo che utilizzerà.
 
 **Regola pratica per il montaggio:** ogni volta che nel manuale leggi `+12 V protetto`, **non collegare quel filo direttamente al +12 V dell'alimentatore**: collegalo a una delle uscite positive del portafusibili, dopo il relativo fusibile.
 
@@ -230,14 +232,14 @@ ALIMENTATORE 12 V
 | PSU +12 V | ingresso portafusibili +12 V | cavo dimensionato per la corrente totale |
 | PSU 0 V | WAGO/morsettiera 0 V comune | ritorno comune |
 | WAGO 0 V | Mega GND | riferimento logico comune |
-| WAGO 0 V | DC- MOSFET #1 | alimentazione modulo |
-| WAGO 0 V | DC- MOSFET #2 | alimentazione modulo |
-| WAGO 0 V | DC- MOSFET #3 | alimentazione modulo |
-| WAGO 0 V | DC- MOSFET #4 | alimentazione modulo |
-| +12 V protetto | DC+ MOSFET #1 | modulo RGB principale |
-| +12 V protetto | DC+ MOSFET #2 | scenografia |
-| +12 V protetto | DC+ MOSFET #3 | RGB sinistra/tramonto |
-| +12 V protetto | DC+ MOSFET #4 | RGB destra/alba |
+| WAGO 0 V | DC- MOSFET #1 | ritorno comune modulo CIELO |
+| WAGO 0 V | DC- MOSFET #2 | modulo disponibile per futuri carichi |
+| WAGO 0 V | DC- MOSFET #3 | ritorno comune modulo TRAMONTO |
+| WAGO 0 V | DC- MOSFET #4 | ritorno comune modulo ALBA |
+| F1 — CIELO | RGB principale +12 V e DC+ MOSFET #1 | ramo protetto dedicato |
+| F2 — ALBA | RGB alba +12 V e DC+ MOSFET #4 | ramo protetto dedicato |
+| F3 — TRAMONTO | RGB tramonto +12 V e DC+ MOSFET #3 | ramo protetto dedicato |
+| F4 — STELLE | WS2811 +12 V | ramo protetto dedicato |
 
 ### 2. MOSFET #1 — RGB principale
 
