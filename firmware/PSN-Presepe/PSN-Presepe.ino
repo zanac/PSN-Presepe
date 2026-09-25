@@ -634,7 +634,7 @@ bool inizializzaOled() {
   display.setTextSize(1);
   // Startup splash: PSN-Presepe! by Vanni
   display.setCursor(27,18); display.print(F("PSN-Presepe!"));
-  display.setCursor(30,36); display.print(F("by Vanni 009"));
+  display.setCursor(30,36); display.print(F("by Vanni 010"));
   display.display();
   delay(2000);
   return true;
@@ -675,7 +675,7 @@ void aggiornaScena(float p) {
   }
   ultimaFaseStelle = fase;
 
-  uint8_t r = 0, g = 0, b = 0, stelle = 0;
+  uint8_t r = 0, g = 0, b = 0, livelloStelle = 0;
   uint8_t tr = 0, tg = 0, tb = 0; // luce laterale tramonto
   uint8_t ar = 0, ag = 0, ab = 0; // luce laterale alba
 
@@ -685,7 +685,7 @@ void aggiornaScena(float p) {
       r = 255;
       g = 210;
       b = 145;
-      stelle = 0;
+      livelloStelle = 0;
       break;
 
     case TRAMONTO: {
@@ -694,7 +694,7 @@ void aggiornaScena(float p) {
       r = 255;
       g = interpola8(210, 65, t);
       b = interpola8(145, 15, t);
-      stelle = 0;
+      livelloStelle = 0;
 
       // La luce laterale sinistra entra gradualmente e crea uno
       // spostamento della luce verso il lato del tramonto.
@@ -714,7 +714,7 @@ void aggiornaScena(float p) {
       r = interpola8(255, 8, t);
       g = interpola8(65, 12, t);
       b = interpola8(15, 55, t);
-      stelle = interpola8(0, 235, t);
+      livelloStelle = interpola8(0, 235, t);
       break;
     }
 
@@ -722,7 +722,7 @@ void aggiornaScena(float p) {
       r = 8;
       g = 12;
       b = 55;
-      stelle = 235;
+      livelloStelle = 235;
       break;
 
     case ALBA: {
@@ -731,7 +731,7 @@ void aggiornaScena(float p) {
       r = interpola8(8, 255, t);
       g = interpola8(12, 210, t);
       b = interpola8(55, 145, t);
-      stelle = interpola8(235, 0, t);
+      livelloStelle = interpola8(235, 0, t);
 
       // Alba direzionale dalla striscia destra: sale dolcemente nella
       // prima parte della fase, poi cala progressivamente fino a ZERO.
@@ -760,7 +760,7 @@ void aggiornaScena(float p) {
   setCielo(r, g, b);
   setTramonto(tr, tg, tb);
   setAlba(ar, ag, ab);
-  setStelle(stelle);
+  setStelle(livelloStelle);
 }
 
 // ============================================================
@@ -853,7 +853,7 @@ void applicaTestCorrente() {
   spegniRele();
 
   if (testIndice >= 14) {
-    uint8_t n = testIndice - 11;
+    uint8_t n = testIndice - 14;
     accendiRele(n);
     uint8_t gruppo = n / 4 + 1;
     uint8_t rele = n % 4 + 1;
@@ -870,39 +870,39 @@ void applicaTestCorrente() {
   switch (testIndice) {
     case 0:
       setCielo(255, 0, 0);
-      Serial.println(F("TEST 1/27 - CIELO ROSSO"));
+      Serial.println(F("TEST 1/30 - CIELO ROSSO"));
       break;
     case 1:
       setCielo(0, 255, 0);
-      Serial.println(F("TEST 2/27 - CIELO VERDE"));
+      Serial.println(F("TEST 2/30 - CIELO VERDE"));
       break;
     case 2:
       setCielo(0, 0, 255);
-      Serial.println(F("TEST 3/27 - CIELO BLU"));
+      Serial.println(F("TEST 3/30 - CIELO BLU"));
       break;
     case 3:
       setTramonto(255, 0, 0);
-      Serial.println(F("TEST 4/27 - TRAMONTO ROSSO"));
+      Serial.println(F("TEST 4/30 - TRAMONTO ROSSO"));
       break;
     case 4:
       setTramonto(0, 255, 0);
-      Serial.println(F("TEST 5/27 - TRAMONTO VERDE"));
+      Serial.println(F("TEST 5/30 - TRAMONTO VERDE"));
       break;
     case 5:
       setTramonto(0, 0, 255);
-      Serial.println(F("TEST 6/27 - TRAMONTO BLU"));
+      Serial.println(F("TEST 6/30 - TRAMONTO BLU"));
       break;
     case 6:
       setAlba(255, 0, 0);
-      Serial.println(F("TEST 7/27 - ALBA ROSSO"));
+      Serial.println(F("TEST 7/30 - ALBA ROSSO"));
       break;
     case 7:
       setAlba(0, 255, 0);
-      Serial.println(F("TEST 8/27 - ALBA VERDE"));
+      Serial.println(F("TEST 8/30 - ALBA VERDE"));
       break;
     case 8:
       setAlba(0, 0, 255);
-      Serial.println(F("TEST 9/27 - ALBA BLU"));
+      Serial.println(F("TEST 9/30 - ALBA BLU"));
       break;
     case 9:
       // Verifica il canale rosso di tutti i 50 pixel WS2811.
