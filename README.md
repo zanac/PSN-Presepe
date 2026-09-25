@@ -76,7 +76,7 @@ Per rendere alba e tramonto più dinamici vengono aggiunte **due strisce RGB ana
 
 | Posizione | Effetto | Mega R/G/B | Modulo |
 |---|---|---|---|
-| Sinistra | Tramonto | D10 / D11 / D12 | MOSFET #3, CH1–CH3 |
+| Sinistra | Tramonto | D7 / D11 / D12 | MOSFET #3, CH1–CH3 |
 | Destra | Alba | D44 / D45 / D46 | MOSFET #4, CH1–CH3 |
 
 Ogni striscia ha un ramo +12 V protetto dedicato: **F2 ALBA** alimenta sia il +12 V comune della striscia ALBA sia il DC+ del MOSFET #4; **F3 TRAMONTO** alimenta sia il +12 V comune della striscia TRAMONTO sia il DC+ del MOSFET #3. I ritorni R/G/B vanno ai tre OUT- del relativo modulo MOSFET. Il quarto canale di ciascun modulo resta libero. **D13 rimane PWM libero.**
@@ -272,7 +272,7 @@ Rispettare la freccia/direzione DATA della stringa. La resistenza va preferibilm
 
 | Filo | Da | A |
 |---|---|---|
-| 16 | Mega D10 | MOSFET #3 PWM1 |
+| 16 | Mega D7 | MOSFET #3 PWM1 |
 | 17 | Mega GND | MOSFET #3 GND1 |
 | 18 | Mega D11 | MOSFET #3 PWM2 |
 | 19 | Mega GND | MOSFET #3 GND2 |
@@ -375,7 +375,7 @@ Il buzzer è un accessorio opzionale. Collegare il positivo/filo rosso a **Mega 
 
 Durante il boot il buzzer riproduce a tempo sostenuto **Astro del ciel** fino alla frase **“mite agnello Redentor”**. L'autotest ALBA → CIELO → TRAMONTO → STELLE viene esteso alla stessa durata della melodia: ciascuna delle quattro scene occupa circa un quarto del brano, così luci, progress bar OLED e ultima nota terminano insieme prima di PRONTO. Al termine il buzzer viene disattivato con `noTone()`.
 
-Il buzzer fornisce anche feedback acustico durante l'uso: PAUSA ha un doppio tono discendente, RIPRESA un doppio tono ascendente, AVANTI un bip acuto, ingresso/uscita TEST una breve sequenza rispettivamente ascendente/discendente e ogni test successivo un click sonoro. Il potenziometro produce un breve tono quando attraversa uno dei sei gradini 1–6 minuti, con altezza crescente. Questi feedback sono **non bloccanti** e possono essere disabilitati impostando `BUZZER_ENABLED=false`. Anche con buzzer fisicamente assente tutto il controller continua a funzionare normalmente.
+Il buzzer fornisce anche un feedback acustico semplice durante l'uso: **un unico bip breve e uguale** alla pressione di START/STOP, AVANTI e TEST e quando viene variato il potenziometro. Il feedback è non bloccante e può essere disabilitato impostando `BUZZER_ENABLED=false`. Anche con buzzer fisicamente assente tutto il controller continua a funzionare normalmente.
 
 ### 10. Potenziometro B10K
 
@@ -411,7 +411,7 @@ Se il senso di rotazione risulta invertito rispetto a quello desiderato, scambia
 | D5 | DATA WS2811 |
 | D6 | buzzer piezo passivo opzionale |
 | D7–D9 | liberi / riserva |
-| D10 | RGB tramonto R |
+| D7 | RGB tramonto R |
 | D11 | RGB tramonto G |
 | D12 | RGB tramonto B |
 | D13 | PWM libero |

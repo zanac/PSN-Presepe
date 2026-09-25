@@ -24,7 +24,7 @@ Per eseguire il test senza display, copiare il contenuto di `diagram-no-display.
 | RGB cielo tramite MOSFET | barra custom `chip-rgb-strip` | D2/D3/D4 |
 | Stelle WS2811 12 V, 50 pixel | striscia NeoPixel WS2812 **5 V solo nel simulatore** | D5 |
 | Buzzer piezo passivo opzionale | buzzer Wokwi | D6 |
-| RGB tramonto, sinistra | barra custom `chip-rgb-strip` | D10/D11/D12 |
+| RGB tramonto, sinistra | barra custom `chip-rgb-strip` | D7/D11/D12 |
 | RGB alba, destra | barra custom `chip-rgb-strip` | D44/D45/D46 |
 | OLED ELEGOO EL-SM-008 I²C 0x3C | SSD1306 128×64 | SDA D20 / SCL D21 |
 | START/STOP, AVANTI, TEST | 3 pulsanti verso GND | D22/D23/D24 |
@@ -72,7 +72,7 @@ All'avvio il firmware esegue anche in Wokwi l'autotest reale: **ALBA**, **CIELO*
 
 ## Feedback acustico
 
-Il buzzer opzionale su D6 fornisce feedback non bloccante: PAUSA = doppio tono discendente, RIPRESA = doppio tono ascendente, AVANTI = bip acuto, ingresso TEST = sequenza ascendente, test successivo = click breve, uscita TEST = sequenza discendente. Il potenziometro emette un breve tono quando attraversa uno dei sei gradini 1–6 minuti, con frequenza crescente. Impostando `BUZZER_ENABLED=false` tutti questi suoni vengono disabilitati; se il buzzer non è fisicamente collegato il firmware funziona comunque normalmente.
+Il buzzer opzionale su D6 fornisce un feedback non bloccante molto semplice: **un unico bip breve e uguale** alla pressione di START/STOP, AVANTI e TEST e quando viene variato il potenziometro. Impostando `BUZZER_ENABLED=false` i feedback vengono disabilitati; se il buzzer non è fisicamente collegato il firmware funziona comunque normalmente.
 
 ## Comandi e modalità TEST
 
