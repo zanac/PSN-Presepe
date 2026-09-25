@@ -68,7 +68,7 @@ La GitHub Action `Arduino Mega Build` compila il firmware, ma **non esegue autom
 
 ## Boot simulato
 
-All'avvio il firmware esegue anche in Wokwi l'autotest reale: **ALBA**, **CIELO** e **TRAMONTO** diventano bianchi per 2 secondi ciascuno, quindi tutti i 50 pixel delle **STELLE** diventano bianchi per 2 secondi. In contemporanea il buzzer passivo opzionale su **D6** riproduce per circa 8 secondi l'incipit di **Astro del ciel**; se il buzzer reale non è collegato il firmware continua normalmente. L'OLED mostra l'avanzamento complessivo con una progress bar. Finito il test, le uscite vengono spente, l’OLED mostra **PRONTO** per 900 ms e parte da zero il normale ciclo nella fase GIORNO.
+All'avvio il firmware esegue anche in Wokwi l'autotest reale: **ALBA**, **CIELO** e **TRAMONTO** diventano bianchi per 2 secondi ciascuno, quindi tutti i 50 pixel delle **STELLE** diventano bianchi per 2 secondi. In contemporanea il buzzer passivo opzionale su **D6** riproduce, a tempo più sostenuto, **Astro del ciel** fino alla frase **“mite agnello Redentor”**. Se la melodia supera gli 8 secondi dell'autotest visivo, le uscite vengono spente e il boot ne attende la conclusione prima di mostrare PRONTO; se il buzzer reale non è collegato il firmware continua normalmente. L'OLED mostra l'avanzamento complessivo con una progress bar. Finito il test, le uscite vengono spente, l’OLED mostra **PRONTO** per 900 ms e parte da zero il normale ciclo nella fase GIORNO.
 
 ## Comandi e modalità TEST
 
