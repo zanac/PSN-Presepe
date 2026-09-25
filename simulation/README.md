@@ -24,7 +24,7 @@ Per eseguire il test senza display, copiare il contenuto di `diagram-no-display.
 | RGB cielo tramite MOSFET | barra custom `chip-rgb-strip` | D2/D3/D4 |
 | Stelle WS2811 12 V, 50 pixel | striscia NeoPixel WS2812 **5 V solo nel simulatore** | D5 |
 | Buzzer piezo passivo opzionale | buzzer Wokwi | D6 |
-| RGB tramonto, sinistra | barra custom `chip-rgb-strip` | D10/D11/D12 |
+| RGB tramonto, sinistra | barra custom `chip-rgb-strip` | D7/D11/D12 |
 | RGB alba, destra | barra custom `chip-rgb-strip` | D44/D45/D46 |
 | OLED ELEGOO EL-SM-008 I²C 0x3C | SSD1306 128×64 | SDA D20 / SCL D21 |
 | START/STOP, AVANTI, TEST | 3 pulsanti verso GND | D22/D23/D24 |
