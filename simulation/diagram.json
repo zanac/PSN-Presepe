@@ -571,21 +571,27 @@
       "id": "albaStrip",
       "top": -245,
       "left": 520,
-      "attrs": {}
+      "attrs": {
+        "label": "ALBA"
+      }
     },
     {
       "type": "chip-rgb-strip",
       "id": "cieloStrip",
       "top": -245,
       "left": 700,
-      "attrs": {}
+      "attrs": {
+        "label": "GIORNO"
+      }
     },
     {
       "type": "chip-rgb-strip",
       "id": "tramontoStrip",
       "top": -245,
       "left": 880,
-      "attrs": {}
+      "attrs": {
+        "label": "TRAMONTO"
+      }
     }
   ],
   "connections": [
