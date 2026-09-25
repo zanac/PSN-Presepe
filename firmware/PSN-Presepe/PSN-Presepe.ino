@@ -174,6 +174,12 @@ unsigned long cycleStartMs = 0;
 unsigned long pauseStartedMs = 0;
 unsigned long lastDebugMs = 0;
 
+// Ultimi valori RGB realmente richiesti alle tre strisce.
+// Servono anche per mostrarli sul display quando il ciclo viene messo in pausa.
+uint8_t rgbCieloR = 0, rgbCieloG = 0, rgbCieloB = 0;
+uint8_t rgbTramontoR = 0, rgbTramontoG = 0, rgbTramontoB = 0;
+uint8_t rgbAlbaR = 0, rgbAlbaG = 0, rgbAlbaB = 0;
+
 // debounce pulsanti
 bool lastStartRead = HIGH, stableStart = HIGH;
 bool lastNextRead  = HIGH, stableNext  = HIGH;
@@ -189,18 +195,21 @@ void pwmWrite(uint8_t pin, uint8_t value) {
 }
 
 void setCielo(uint8_t r, uint8_t g, uint8_t b) {
+  rgbCieloR = r; rgbCieloG = g; rgbCieloB = b;
   pwmWrite(PIN_CIELO_R, r);
   pwmWrite(PIN_CIELO_G, g);
   pwmWrite(PIN_CIELO_B, b);
 }
 
 void setTramonto(uint8_t r, uint8_t g, uint8_t b) {
+  rgbTramontoR = r; rgbTramontoG = g; rgbTramontoB = b;
   pwmWrite(PIN_TRAMONTO_R, r);
   pwmWrite(PIN_TRAMONTO_G, g);
   pwmWrite(PIN_TRAMONTO_B, b);
 }
 
 void setAlba(uint8_t r, uint8_t g, uint8_t b) {
+  rgbAlbaR = r; rgbAlbaG = g; rgbAlbaB = b;
   pwmWrite(PIN_ALBA_R, r);
   pwmWrite(PIN_ALBA_G, g);
   pwmWrite(PIN_ALBA_B, b);
@@ -515,11 +524,54 @@ void mostraOledTest() {
   display.display();
 }
 
+void mostraOledRgbPausa(float p) {
+  if (!oledPresente) return;
+  Fase f = faseDaPercentuale(p);
+  int pf = (int)(percentualeFase(p, f) + 0.5f);
+
+  display.clearDisplay();
+  display.setTextColor(SSD1306_WHITE);
+  display.setTextSize(1);
+  display.setCursor(0,0);
+  display.print(F("PAUSA "));
+  display.print(nomeFase(f));
+  display.print(' ');
+  display.print(pf);
+  display.print('%');
+
+  display.setCursor(0,16);
+  display.print(F("C "));
+  display.print(rgbCieloR); display.print(',');
+  display.print(rgbCieloG); display.print(',');
+  display.print(rgbCieloB);
+
+  display.setCursor(0,32);
+  display.print(F("T "));
+  display.print(rgbTramontoR); display.print(',');
+  display.print(rgbTramontoG); display.print(',');
+  display.print(rgbTramontoB);
+
+  display.setCursor(0,48);
+  display.print(F("A "));
+  display.print(rgbAlbaR); display.print(',');
+  display.print(rgbAlbaG); display.print(',');
+  display.print(rgbAlbaB);
+
+  display.display();
+}
+
 void aggiornaOled(unsigned long durata, float p) {
   if (!oledPresente) return;
   static unsigned long ultimoRefresh=0;
   if (millis()-ultimoRefresh < 120) return;
   ultimoRefresh=millis();
+
+  // In pausa i valori RGB restano visibili stabilmente, così possono essere
+  // annotati e riutilizzati per tarare i colori della scenografia.
+  if (!running && !testInCorso) {
+    mostraOledRgbPausa(p);
+    return;
+  }
 
   if (oledPopup != OLED_NESSUNO && (long)(millis()-oledPopupFino)>=0) oledPopup=OLED_NESSUNO;
   display.clearDisplay();
@@ -574,7 +626,7 @@ bool inizializzaOled() {
   display.setTextSize(1);
   // Startup splash: PSN-Presepe! by Vanni
   display.setCursor(27,18); display.print(F("PSN-Presepe!"));
-  display.setCursor(30,36); display.print(F("by Vanni 006"));
+  display.setCursor(30,36); display.print(F("by Vanni 007"));
   display.display();
   delay(2000);
   return true;
@@ -759,7 +811,7 @@ void toggleStartStop() {
     pauseStartedMs = millis();
     running = false;
     Serial.println(F("PAUSA"));
-    oledMostraPopup(OLED_PAUSA);
+    oledPopup = OLED_NESSUNO;
   } else {
     unsigned long durataPausa = millis() - pauseStartedMs;
 
