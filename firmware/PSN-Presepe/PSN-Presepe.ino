@@ -497,20 +497,24 @@ void mostraOledTest() {
   display.setTextColor(SSD1306_WHITE);
   display.setTextSize(1);
   display.setCursor(0,0); display.print(F("MODALITA' TEST"));
-  display.setCursor(0,14); display.print(F("Test ")); display.print(testIndice + 1); display.print(F("/23"));
+  display.setCursor(0,14); display.print(F("Test ")); display.print(testIndice + 1); display.print(F("/27"));
   display.setCursor(0,30);
-  if (testIndice < 7) {
+  if (testIndice < 11) {
     switch (testIndice) {
       case 0: display.print(F("CIELO ROSSO")); break;
       case 1: display.print(F("CIELO VERDE")); break;
       case 2: display.print(F("CIELO BLU")); break;
-      case 3: display.print(F("TRAMONTO RGB")); break;
-      case 4: display.print(F("ALBA RGB")); break;
-      case 5: display.print(F("STELLE WS2811")); break;
-      case 6: display.print(F("TUTTO INSIEME")); break;
+      case 3: display.print(F("TRAMONTO ROSSO")); break;
+      case 4: display.print(F("TRAMONTO VERDE")); break;
+      case 5: display.print(F("TRAMONTO BLU")); break;
+      case 6: display.print(F("ALBA ROSSO")); break;
+      case 7: display.print(F("ALBA VERDE")); break;
+      case 8: display.print(F("ALBA BLU")); break;
+      case 9: display.print(F("STELLE WS2811")); break;
+      case 10: display.print(F("TUTTO INSIEME")); break;
     }
   } else {
-    uint8_t n = testIndice - 7;
+    uint8_t n = testIndice - 11;
     uint8_t gruppo = n / 4 + 1;
     uint8_t rele = n % 4 + 1;
     display.print(F("Grp_"));
@@ -626,7 +630,7 @@ bool inizializzaOled() {
   display.setTextSize(1);
   // Startup splash: PSN-Presepe! by Vanni
   display.setCursor(27,18); display.print(F("PSN-Presepe!"));
-  display.setCursor(30,36); display.print(F("by Vanni 007"));
+  display.setCursor(30,36); display.print(F("by Vanni 008"));
   display.display();
   delay(2000);
   return true;
@@ -844,14 +848,14 @@ void applicaTestCorrente() {
   tuttoSpento();
   spegniRele();
 
-  if (testIndice >= 7) {
-    uint8_t n = testIndice - 7;
+  if (testIndice >= 11) {
+    uint8_t n = testIndice - 11;
     accendiRele(n);
     uint8_t gruppo = n / 4 + 1;
     uint8_t rele = n % 4 + 1;
     Serial.print(F("TEST "));
     Serial.print(testIndice + 1);
-    Serial.print(F("/23 - Grp_0"));
+    Serial.print(F("/27 - Grp_0"));
     Serial.print(gruppo);
     Serial.print(F("_0"));
     Serial.println(rele);
@@ -862,33 +866,49 @@ void applicaTestCorrente() {
   switch (testIndice) {
     case 0:
       setCielo(255, 0, 0);
-      Serial.println(F("TEST 1/7 - CIELO ROSSO"));
+      Serial.println(F("TEST 1/27 - CIELO ROSSO"));
       break;
     case 1:
       setCielo(0, 255, 0);
-      Serial.println(F("TEST 2/7 - CIELO VERDE"));
+      Serial.println(F("TEST 2/27 - CIELO VERDE"));
       break;
     case 2:
       setCielo(0, 0, 255);
-      Serial.println(F("TEST 3/7 - CIELO BLU"));
+      Serial.println(F("TEST 3/27 - CIELO BLU"));
       break;
     case 3:
-      setTramonto(255, 72, 12);
-      Serial.println(F("TEST 4/7 - TRAMONTO RGB"));
+      setTramonto(255, 0, 0);
+      Serial.println(F("TEST 4/27 - TRAMONTO ROSSO"));
       break;
     case 4:
-      setAlba(255, 135, 45);
-      Serial.println(F("TEST 5/7 - ALBA RGB"));
+      setTramonto(0, 255, 0);
+      Serial.println(F("TEST 5/27 - TRAMONTO VERDE"));
       break;
     case 5:
+      setTramonto(0, 0, 255);
+      Serial.println(F("TEST 6/27 - TRAMONTO BLU"));
+      break;
+    case 6:
+      setAlba(255, 0, 0);
+      Serial.println(F("TEST 7/27 - ALBA ROSSO"));
+      break;
+    case 7:
+      setAlba(0, 255, 0);
+      Serial.println(F("TEST 8/27 - ALBA VERDE"));
+      break;
+    case 8:
+      setAlba(0, 0, 255);
+      Serial.println(F("TEST 9/27 - ALBA BLU"));
+      break;
+    case 9:
       // Accende tutte le 50 stelle per verificare fisicamente ogni pixel.
       stelle.clear();
       for (uint16_t i = 0; i < NUM_STELLE; i++)
         stelle.setPixelColor(i, stelle.Color(70, 50, 27));
       stelle.show();
-      Serial.println(F("TEST 6/7 - TUTTE LE 50 STELLE"));
+      Serial.println(F("TEST 10/27 - TUTTE LE 50 STELLE"));
       break;
-    case 6:
+    case 10:
       setCielo(120, 90, 70);
       setTramonto(180, 50, 8);
       setAlba(180, 95, 30);
@@ -896,7 +916,7 @@ void applicaTestCorrente() {
       for (uint16_t i = 0; i < NUM_STELLE; i++)
         stelle.setPixelColor(i, stelle.Color(45, 32, 17));
       stelle.show();
-      Serial.println(F("TEST 7/7 - TUTTO INSIEME"));
+      Serial.println(F("TEST 11/27 - TUTTO INSIEME"));
       break;
   }
 
@@ -916,7 +936,7 @@ void testUscite() {
     Serial.println(F("=== MODALITA' TEST ==="));
     Serial.println(F("TEST = test successivo, START = esci"));
   } else {
-    testIndice = (testIndice + 1) % 23;
+    testIndice = (testIndice + 1) % 27;
   }
 
   applicaTestCorrente();
