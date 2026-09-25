@@ -18,11 +18,12 @@ typedef struct {
   uint32_t label_attr;
 } chip_state_t;
 
-// Minimal 5x7 uppercase font: only letters needed by ALBA, GIORNO, TRAMONTO.
+// Minimal 5x7 uppercase font: only letters needed by ALBA, CIELO, TRAMONTO.
 typedef struct { char c; uint8_t col[5]; } glyph_t;
 static const glyph_t FONT[] = {
   {'A',{0x7E,0x11,0x11,0x11,0x7E}},
   {'B',{0x7F,0x49,0x49,0x49,0x36}},
+  {'C',{0x3E,0x41,0x41,0x41,0x22}},
   {'G',{0x3E,0x41,0x49,0x49,0x7A}},
   {'I',{0x00,0x41,0x7F,0x41,0x00}},
   {'L',{0x7F,0x40,0x40,0x40,0x40}},
@@ -99,7 +100,7 @@ static void refresh(void *user_data) {
   }
 
   uint32_t id=attr_read(chip->label_attr);
-  const char *label=id==0 ? "ALBA" : (id==1 ? "GIORNO" : "TRAMONTO");
+  const char *label=id==0 ? "ALBA" : (id==1 ? "CIELO" : "TRAMONTO");
   int text_w=(int)strlen(label)*6-1;
   text5x7(pixels,chip->width,chip->height,((int)chip->width-text_w)/2,41,label);
 
