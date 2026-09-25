@@ -56,6 +56,10 @@ La GitHub Action `Arduino Mega Build` compila il firmware, ma **non esegue autom
 > **Stelle:** i 50 pixel WS2811 restano fisicamente disponibili, ma a ogni ciclo ne vengono scelte casualmente solo **20**, mantenute a luminosità volutamente bassa. Tutte le 20 stelle attive hanno un proprio ciclo asincrono e variano dolcemente la luminosità. A ogni nuova notte la disposizione viene rigenerata.
 
 
+## Boot simulato
+
+All'avvio il firmware esegue anche in Wokwi l'autotest reale: **ALBA**, **GIORNO** e **TRAMONTO** diventano bianchi per 2 secondi ciascuno, quindi tutti i 50 pixel delle **STELLE** diventano bianchi per 2 secondi. L'OLED mostra l'avanzamento complessivo con una progress bar. Finito il test, le uscite vengono spente e parte da zero il normale ciclo in GIORNO.
+
 ## Comandi e modalità TEST
 
 - **START/STOP** mette in pausa e riprende il ciclo. In pausa l'OLED mostra stabilmente fase, percentuale della fase e i valori RGB correnti: `C` = cielo principale, `T` = tramonto, `A` = alba. Alla ripresa compare brevemente `RIPRESA`.
