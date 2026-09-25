@@ -572,7 +572,7 @@
       "top": -245,
       "left": 520,
       "attrs": {
-        "label": "ALBA"
+        "labelId": "0"
       }
     },
     {
@@ -581,7 +581,7 @@
       "top": -245,
       "left": 700,
       "attrs": {
-        "label": "GIORNO"
+        "labelId": "1"
       }
     },
     {
@@ -590,7 +590,7 @@
       "top": -245,
       "left": 880,
       "attrs": {
-        "label": "TRAMONTO"
+        "labelId": "2"
       }
     }
   ],
