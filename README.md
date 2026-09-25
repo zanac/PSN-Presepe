@@ -132,7 +132,7 @@ Il display è **opzionale**: il firmware deve continuare a funzionare normalment
 
 Il firmware usa il display come interfaccia di stato:
 - schermata normale: **fase corrente**, percentuale di avanzamento della singola fase, barra grafica, RUN/PAUSA e durata totale del ciclo;
-- START/STOP: popup temporaneo **PAUSA** o **RIPRESA**;
+- START/STOP: mette in pausa o riprende il ciclo; in **PAUSA** l'OLED mostra stabilmente fase, percentuale della fase e i valori RGB correnti delle tre strisce; alla ripresa mostra brevemente **RIPRESA**;
 - AVANTI: popup **AVANTI** con la nuova fase;
 - TEST: feedback **TEST**;
 - variazione significativa del B10K: popup **VELOCITA** con la durata effettiva del ciclo in minuti.
@@ -503,7 +503,7 @@ Usa i tre pulsanti virtuali:
 
 | Pulsante | Cosa deve succedere |
 |---|---|
-| START/STOP | mette in pausa e riprende il ciclo; OLED mostra PAUSA/RIPRESA |
+| START/STOP | mette in pausa/riprende il ciclo; in PAUSA l'OLED resta sulla schermata con fase, % fase e valori RGB C/T/A; alla ripresa mostra brevemente RIPRESA |
 | AVANTI | salta immediatamente alla fase successiva |
 | TEST | avvia la sequenza di prova delle uscite |
 
@@ -520,7 +520,7 @@ Durante il funzionamento normale deve mostrare:
 - nome della fase;
 - percentuale **0–100% della fase corrente**;
 - barra di avanzamento;
-- RUN oppure PAUSA;
+- RUN durante il ciclo; quando è in PAUSA la schermata viene sostituita dai valori RGB delle tre strisce;
 - durata impostata del ciclo.
 
 La percentuale riparte da 0 quando cambia fase.
