@@ -4,6 +4,16 @@
   "pins": ["R", "G", "B"],
   "display": {
     "width": 120,
-    "height": 36
-  }
+    "height": 52
+  },
+  "controls": [
+    {
+      "id": "labelId",
+      "label": "Label (0=ALBA, 1=GIORNO, 2=TRAMONTO)",
+      "type": "range",
+      "min": 0,
+      "max": 2,
+      "step": 1
+    }
+  ]
 }
