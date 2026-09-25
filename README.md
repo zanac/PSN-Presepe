@@ -369,7 +369,13 @@ I pulsanti sono momentanei NO. Grazie a INPUT_PULLUP non servono resistenze este
 
 Gli eventuali contatti NC dei pulsanti rimangono scollegati.
 
-### 9. Potenziometro B10K
+### 9. Buzzer piezo passivo opzionale
+
+Il buzzer è un accessorio opzionale. Collegare il positivo/filo rosso a **Mega D6** e il negativo/filo nero a **Mega GND**. Deve essere un buzzer/piezo **passivo**, così il firmware può generare note diverse con `tone()`. Se il buzzer non è collegato, il presepe funziona normalmente senza errori.
+
+Durante l'autotest di boot il buzzer riproduce per circa 8 secondi l'incipit di **Astro del ciel**, in contemporanea con ALBA → CIELO → TRAMONTO → STELLE. Al termine viene disattivato con `noTone()`.
+
+### 10. Potenziometro B10K
 
 | Filo | Da | A |
 |---|---|---|
@@ -379,7 +385,7 @@ Gli eventuali contatti NC dei pulsanti rimangono scollegati.
 
 Se il senso di rotazione risulta invertito rispetto a quello desiderato, scambiare semplicemente i due fili degli estremi; il cursore A0 resta invariato.
 
-### 10. Controllo prima dell'accensione
+### 11. Controllo prima dell'accensione
 
 1. Mega scollegato dalla USB e alimentatore 12 V scollegato dalla rete.
 2. Verificare che **+12 V non arrivi mai a 5 V, A0 o a un pin digitale del Mega**.
@@ -401,7 +407,8 @@ Se il senso di rotazione risulta invertito rispetto a quello desiderato, scambia
 | D3 | RGB principale G |
 | D4 | RGB principale B |
 | D5 | DATA WS2811 |
-| D6–D9 | liberi / riserva |
+| D6 | buzzer piezo passivo opzionale |
+| D7–D9 | liberi / riserva |
 | D10 | RGB tramonto R |
 | D11 | RGB tramonto G |
 | D12 | RGB tramonto B |
@@ -425,7 +432,7 @@ Aprire:
 
 con Arduino IDE e selezionare **Arduino Mega or Mega 2560**.
 
-Il firmware attuale implementa cielo RGB principale, due RGB laterali alba/tramonto, stelle WS2811, comandi, OLED e modalità TEST. D6–D9 sono liberi/di riserva. I carichi ON/OFF vengono gestiti tramite i 16 relè D25–D40.
+Il firmware attuale implementa cielo RGB principale, due RGB laterali alba/tramonto, stelle WS2811, comandi, OLED, buzzer piezo passivo opzionale e modalità TEST. D7–D9 restano liberi/di riserva. I carichi ON/OFF vengono gestiti tramite i 16 relè D25–D40.
 
 ## GitHub Actions
 
@@ -437,7 +444,7 @@ I file compilati vengono pubblicati come artifact della GitHub Action. Per le bu
 
 ## Simulazione Wokwi
 
-La simulazione Wokwi riproduce Mega 2560, OLED, pulsanti, potenziometro, 50 stelle indirizzabili, 16 uscite relè e le tre strisce RGB. Il file principale è `simulation/diagram.json`.
+La simulazione Wokwi riproduce Mega 2560, OLED, pulsanti, potenziometro, buzzer, 50 stelle indirizzabili, 16 uscite relè e le tre strisce RGB. Il file principale è `simulation/diagram.json`.
 
 È disponibile anche `simulation/diagram-no-display.json`, variante dedicata ai test **senza OLED**: è mantenuta allineata a `diagram.json` per tutte le modifiche di cablaggio e componenti che non riguardano il display. Serve a verificare che il firmware continui ad avviarsi e funzionare normalmente quando l'OLED opzionale non è presente.
 
