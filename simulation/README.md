@@ -72,7 +72,7 @@ All'avvio il firmware esegue anche in Wokwi l'autotest reale: **ALBA**, **CIELO*
 
 ## Feedback acustico
 
-Il buzzer opzionale su D6 fornisce feedback non bloccante: PAUSA = doppio tono discendente, RIPRESA = doppio tono ascendente, AVANTI = bip acuto, ingresso TEST = sequenza ascendente, test successivo = click breve, uscita TEST = sequenza discendente. Il potenziometro emette un breve tono quando attraversa uno dei sei gradini 1–6 minuti, con frequenza crescente. Impostando `BUZZER_ENABLED=false` tutti questi suoni vengono disabilitati; se il buzzer non è fisicamente collegato il firmware funziona comunque normalmente.
+Il buzzer opzionale su D6 fornisce un feedback non bloccante molto semplice: **un unico bip breve e uguale** alla pressione di START/STOP, AVANTI e TEST e quando viene variato il potenziometro. Impostando `BUZZER_ENABLED=false` i feedback vengono disabilitati; se il buzzer non è fisicamente collegato il firmware funziona comunque normalmente.
 
 ## Comandi e modalità TEST
 
