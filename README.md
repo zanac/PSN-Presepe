@@ -167,10 +167,10 @@ I pulsanti utilizzano `INPUT_PULLUP`, quindi non richiedono una resistenza di pu
 
 Prima di iniziare il normale ciclo scenografico, il firmware esegue un **autotest visivo di circa 8 secondi**. I relè restano spenti e le uscite vengono provate in sequenza:
 
-1. **ALBA** — striscia RGB alba in bianco brillante per 2 secondi;
-2. **CIELO** — striscia RGB principale in bianco brillante per 2 secondi;
-3. **TRAMONTO** — striscia RGB tramonto in bianco brillante per 2 secondi;
-4. **STELLE** — tutti i 50 pixel WS2811 in bianco brillante per 2 secondi.
+1. **ALBA** — striscia RGB alba in bianco brillante per circa 4,325 secondi;
+2. **CIELO** — striscia RGB principale in bianco brillante per circa 4,325 secondi;
+3. **TRAMONTO** — striscia RGB tramonto in bianco brillante per circa 4,325 secondi;
+4. **STELLE** — tutti i 50 pixel WS2811 in bianco brillante per circa 4,325 secondi.
 
 Durante l'intera sequenza l'OLED mostra **Inizializzazione**, il nome dell'uscita in prova, la percentuale complessiva e una progress bar. Al termine tutte le uscite vengono spente, compare **PRONTO** per 900 ms e il timer del ciclo viene avviato da zero: il presepe entra quindi normalmente nella fase **GIORNO**.
 
@@ -184,7 +184,7 @@ Il ciclo automatico coordina la **striscia RGB principale**, le **due strisce RG
 2. **Tramonto:** stelle spente; la striscia principale passa progressivamente ai colori caldi mentre la striscia laterale sinistra entra e poi cala gradualmente, creando movimento e direzionalità nella luce.
 3. **Crepuscolo:** le stelle iniziano a comparire **una alla volta in ordine casuale**, mentre il cielo RGB diventa progressivamente più scuro.
 4. Ogni stella ha una **luminosità massima diversa**, per evitare un cielo uniforme e artificiale.
-5. Circa il **18% delle stelle** presenta un leggerissimo **scintillio morbido**, senza lampeggi netti.
+5. Tutte le **20 stelle attive** hanno un proprio ciclo asincrono di luminosità, con **scintillio morbido** e senza lampeggi netti.
 6. **Notte:** il cielo stellato è completo ma non uniforme; le stelle mantengono intensità differenti.
 7. **Alba:** le stelle scompaiono progressivamente mentre la striscia principale torna verso il giorno e la striscia laterale destra entra e poi cala gradualmente, simulando una sorgente luminosa direzionale.
 8. A ogni nuova notte viene generata una **disposizione differente** delle stelle e delle relative intensità.
@@ -410,7 +410,7 @@ Se il senso di rotazione risulta invertito rispetto a quello desiderato, scambia
 | D4 | RGB principale B |
 | D5 | DATA WS2811 |
 | D6 | buzzer piezo passivo opzionale |
-| D7–D9 | liberi / riserva |
+| D8–D10 | liberi / riserva |
 | D7 | RGB tramonto R |
 | D11 | RGB tramonto G |
 | D12 | RGB tramonto B |
