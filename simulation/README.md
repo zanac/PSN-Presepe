@@ -70,6 +70,10 @@ La GitHub Action `Arduino Mega Build` compila il firmware, ma **non esegue autom
 
 All'avvio il firmware esegue anche in Wokwi l'autotest reale: **ALBA**, **CIELO** e **TRAMONTO** diventano bianchi per 2 secondi ciascuno, quindi tutti i 50 pixel delle **STELLE** diventano bianchi per 2 secondi. In contemporanea il buzzer passivo opzionale su **D6** riproduce, a tempo più sostenuto, **Astro del ciel** fino alla frase **“mite agnello Redentor”**. L'autotest visivo viene esteso alla stessa durata della melodia, dividendo ALBA → CIELO → TRAMONTO → STELLE in quattro intervalli uguali, così progress bar, luci e musica terminano insieme prima di PRONTO; se il buzzer reale non è collegato il firmware continua normalmente. L'OLED mostra l'avanzamento complessivo con una progress bar. Finito il test, le uscite vengono spente, l’OLED mostra **PRONTO** per 900 ms e parte da zero il normale ciclo nella fase GIORNO.
 
+## Feedback acustico
+
+Il buzzer opzionale su D6 fornisce feedback non bloccante: PAUSA = doppio tono discendente, RIPRESA = doppio tono ascendente, AVANTI = bip acuto, ingresso TEST = sequenza ascendente, test successivo = click breve, uscita TEST = sequenza discendente. Il potenziometro emette un breve tono quando attraversa uno dei sei gradini 1–6 minuti, con frequenza crescente. Impostando `BUZZER_ENABLED=false` tutti questi suoni vengono disabilitati; se il buzzer non è fisicamente collegato il firmware funziona comunque normalmente.
+
 ## Comandi e modalità TEST
 
 - **START/STOP** mette in pausa e riprende il ciclo. In pausa l'OLED mostra stabilmente fase, percentuale della fase e i valori RGB correnti: `C` = cielo principale, `T` = tramonto, `A` = alba. Alla ripresa compare brevemente `RIPRESA`.
