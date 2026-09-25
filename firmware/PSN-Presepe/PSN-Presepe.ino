@@ -77,7 +77,7 @@ const uint8_t PIN_POT   = A0;
 // -----------------------------------------------------------------------------
 // RELÈ: 4 moduli x 4 canali = 16 uscite ON/OFF predisposte.
 // D25-D40 sono riservati al cablaggio IN1..IN4 dei quattro moduli.
-// La logica scenografica e il livello HIGH/LOW verranno definiti in seguito.
+// La logica scenografica usa una tabella di schedulazione per fase/percentuale.
 // -----------------------------------------------------------------------------
 const uint8_t PIN_RELE[16] = {
   25, 26, 27, 28,
@@ -128,6 +128,41 @@ enum Fase {
   NOTTE,
   ALBA
 };
+
+// ============================================================
+// SCHEDULAZIONE RELÈ
+// ============================================================
+// Ogni riga: { FASE, RELÈ, STATO, % DELLA FASE }.
+// La tabella descrive eventi persistenti: quando un evento viene raggiunto,
+// il relè mantiene lo stato fino al successivo evento che lo riguarda.
+//
+// Esempio attuale:
+// - Grp_01_03 si accende al 30% del TRAMONTO.
+// - Grp_01_03 si spegne al 50% della NOTTE.
+//
+// Per aggiungere la schedulazione definitiva sarà sufficiente modificare
+// questo array. Le percentuali valide sono 0..100.
+enum ReleNome : uint8_t {
+  Grp_01_01 = 0, Grp_01_02, Grp_01_03, Grp_01_04,
+  Grp_02_01,     Grp_02_02, Grp_02_03, Grp_02_04,
+  Grp_03_01,     Grp_03_02, Grp_03_03, Grp_03_04,
+  Grp_04_01,     Grp_04_02, Grp_04_03, Grp_04_04
+};
+
+struct EventoRele {
+  Fase fase;
+  ReleNome rele;
+  bool acceso;
+  uint8_t percentualeFase;
+};
+
+const EventoRele SCHEDULAZIONE_RELE[] = {
+  { TRAMONTO, Grp_01_03, true,  30 },
+  { NOTTE,    Grp_01_03, false, 50 }
+};
+
+const uint8_t NUM_EVENTI_RELE =
+  sizeof(SCHEDULAZIONE_RELE) / sizeof(SCHEDULAZIONE_RELE[0]);
 
 bool running = true;
 bool testInCorso = false;
@@ -363,6 +398,60 @@ Fase faseSuccessiva(Fase f) {
   return GIORNO;
 }
 
+float fineFase(Fase f) {
+  switch (f) {
+    case GIORNO:     return P_TRAMONTO;
+    case TRAMONTO:   return P_CREPU;
+    case CREPUSCOLO: return P_NOTTE;
+    case NOTTE:      return P_ALBA;
+    case ALBA:       return 100.0f;
+  }
+  return 100.0f;
+}
+
+uint8_t indiceFase(Fase f) {
+  return (uint8_t)f;
+}
+
+void scriviRele(uint8_t indice, bool acceso) {
+  if (indice >= 16) return;
+  digitalWrite(PIN_RELE[indice],
+               acceso ? (RELE_ACTIVE_LOW ? LOW : HIGH)
+                      : (RELE_ACTIVE_LOW ? HIGH : LOW));
+}
+
+// Ricostruisce lo stato dei 16 relè direttamente dalla posizione corrente
+// del ciclo. Questo rende la schedulazione deterministica anche dopo AVANTI,
+// pausa/ripresa o variazioni della durata del ciclo.
+void aggiornaReleSchedulati(float p) {
+  Fase faseAttuale = faseDaPercentuale(p);
+  float inizio = inizioFase(faseAttuale);
+  float fine = fineFase(faseAttuale);
+  float pctFase = (fine > inizio)
+                    ? constrain((p - inizio) * 100.0f / (fine - inizio), 0.0f, 100.0f)
+                    : 0.0f;
+
+  for (uint8_t r = 0; r < 16; r++) {
+    bool stato = false;
+
+    // Trova l'ultimo evento applicabile al relè dall'inizio del ciclo
+    // fino alla posizione corrente.
+    for (uint8_t i = 0; i < NUM_EVENTI_RELE; i++) {
+      const EventoRele &ev = SCHEDULAZIONE_RELE[i];
+      if ((uint8_t)ev.rele != r) continue;
+
+      bool fasePassata = indiceFase(ev.fase) < indiceFase(faseAttuale);
+      bool faseCorrenteRaggiunta =
+        ev.fase == faseAttuale && pctFase >= ev.percentualeFase;
+
+      if (fasePassata || faseCorrenteRaggiunta)
+        stato = ev.acceso;
+    }
+
+    scriviRele(r, stato);
+  }
+}
+
 // ============================================================
 // OLED
 // ============================================================
@@ -485,7 +574,7 @@ bool inizializzaOled() {
   display.setTextSize(1);
   // Startup splash: PSN-Presepe! by Vanni
   display.setCursor(27,18); display.print(F("PSN-Presepe!"));
-  display.setCursor(30,36); display.print(F("by Vanni 005"));
+  display.setCursor(30,36); display.print(F("by Vanni 006"));
   display.display();
   delay(2000);
   return true;
@@ -659,8 +748,10 @@ void toggleStartStop() {
 
     Serial.println(F("USCITA MODALITA' TEST"));
     oledPopup = OLED_NESSUNO;
-    aggiornaScena(percentualeCiclo(durataCiclo()));
-    aggiornaOled(durataCiclo(), percentualeCiclo(durataCiclo()));
+    float p = percentualeCiclo(durataCiclo());
+    aggiornaScena(p);
+    aggiornaReleSchedulati(p);
+    aggiornaOled(durataCiclo(), p);
     return;
   }
 
@@ -688,13 +779,13 @@ void toggleStartStop() {
 
 void spegniRele() {
   for (uint8_t i = 0; i < 16; i++)
-    digitalWrite(PIN_RELE[i], RELE_ACTIVE_LOW ? HIGH : LOW);
+    scriviRele(i, false);
 }
 
 void accendiRele(uint8_t indice) {
   spegniRele();
   if (indice < 16)
-    digitalWrite(PIN_RELE[indice], RELE_ACTIVE_LOW ? LOW : HIGH);
+    scriviRele(indice, true);
 }
 
 void applicaTestCorrente() {
@@ -902,6 +993,7 @@ void loop() {
     }
 
     aggiornaScena(p);
+    aggiornaReleSchedulati(p);
     aggiornaOled(durata, p);
 
     // ----- diagnostica -----
