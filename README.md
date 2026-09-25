@@ -434,6 +434,8 @@ I file compilati vengono pubblicati come artifact della GitHub Action. Per le bu
 
 La simulazione Wokwi riproduce Mega 2560, OLED, pulsanti, potenziometro, 50 stelle indirizzabili, 16 uscite relè e le tre strisce RGB. Il file principale è `simulation/diagram.json`.
 
+È disponibile anche `simulation/diagram-no-display.json`, variante dedicata ai test **senza OLED**: è mantenuta allineata a `diagram.json` per tutte le modifiche di cablaggio e componenti che non riguardano il display. Serve a verificare che il firmware continui ad avviarsi e funzionare normalmente quando l'OLED opzionale non è presente.
+
 Per le strisce CIELO, TRAMONTO e ALBA vengono usati i componenti custom `rgb-strip.chip.json` + `rgb-strip.chip.c`: leggono i tre PWM R/G/B e visualizzano una barra del colore risultante. A differenza del normale LED RGB di Wokwi, una striscia a `(0,0,0)` viene mostrata **completamente nera**, quindi nero significa inequivocabilmente **SPENTO**. Il componente gestisce anche PWM 0 e 255 come livelli statici.
 
 I componenti custom sono esclusivamente visuali: non cambiano il firmware e non simulano la potenza elettrica, i MOSFET o i 12 V reali. La documentazione completa della simulazione e dei file da copiare manualmente nel progetto Wokwi è in `simulation/README.md`.
