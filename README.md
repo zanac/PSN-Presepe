@@ -36,10 +36,11 @@ I pin di Arduino **non alimentano direttamente i carichi a 12 V**. Ogni uscita d
 | D4 | PWM3 | OUT3- | Striscia RGB — ritorno B | PWM / dimmerabile |
 | — | PWM4 | OUT4+ / OUT4- | **Libero** | — |
 
-La striscia RGB è un carico **12 V a positivo comune (anodo comune)**. Il suo unico filo `+12V` viene collegato direttamente alla distribuzione +12 V protetta/WAGO e rimane sempre alimentato. I tre canali MOSFET commutano invece i ritorni R/G/B sul lato negativo:
+La striscia RGB è un carico **12 V a positivo comune (anodo comune)**. Il suo unico filo `+12 V` viene collegato direttamente alla distribuzione +12 V protetta/WAGO e rimane sempre alimentato. I tre canali MOSFET commutano invece i ritorni R/G/B sul lato negativo:
 
 ```text
-+12V alimentatore ──► fusibile/distribuzione ──► +12V comune RGB
++12 V alimentatore ──► F1 CIELO ──┬──► +12 V comune RGB
+                                   └──► DC+ MOSFET #1
 
 RGB R ─────────────────────────────────────────► OUT1-
 RGB G ─────────────────────────────────────────► OUT2-
@@ -49,8 +50,7 @@ Mega D2 ────────────────────────
 Mega D3 ───────────────────────────────────────► PWM2  (Verde)
 Mega D4 ───────────────────────────────────────► PWM3  (Blu)
 
-+12V alimentatore ─────────────────────────────► DC+ MOSFET
-0V alimentatore ───────────────────────────────► DC- MOSFET
+0 V alimentatore ──────────────────────────────► DC- MOSFET
 ```
 
 La striscia RGB **non deve essere cablata come tre carichi indipendenti a due fili**. In questa configurazione `OUT1+`, `OUT2+` e `OUT3+` non sono necessari per la striscia RGB.
@@ -60,15 +60,15 @@ La striscia RGB **non deve essere cablata come tre carichi indipendenti a due fi
 Le stelle sono ora una stringa **WS2811 12 V da 50 pixel individualmente indirizzabili**. Non passano dal MOSFET: D5 è il segnale DATA.
 
 ```text
-+12V alimentatore ──► fusibile/distribuzione ──► WS2811 +12V
-0V alimentatore ───────────────────────────────► WS2811 GND
-Arduino GND ───────────────────────────────────► stesso 0V comune
++12 V alimentatore ──► fusibile/distribuzione ──► WS2811 +12 V
+0 V alimentatore ───────────────────────────────► WS2811 GND
+Arduino GND ───────────────────────────────────► stesso 0 V comune
 Mega D5 ── resistenza 330–470 Ω ──────────────► WS2811 DATA / DIN
 ```
 
-Con le WS2811 il **GND Arduino deve essere comune allo 0 V dell'alimentatore 12 V**, perché il segnale DATA necessita dello stesso riferimento elettrico. Il Mega continua comunque a essere alimentato a 5 V via USB: il +12 V non deve mai essere collegato ai pin 5V o I/O di Arduino.
+Con le WS2811 il **GND Arduino deve essere comune allo 0 V dell'alimentatore 12 V**, perché il segnale DATA necessita dello stesso riferimento elettrico. Il Mega continua comunque a essere alimentato a 5 V via USB: il +12 V non deve mai essere collegato ai pin 5 V o I/O di Arduino.
 
-Il firmware può comandare ogni stella separatamente, con luminosità e colore differenti, facendo comparire progressivamente stelle casuali durante il crepuscolo e spegnendole durante l'alba. Il canale 4 del MOSFET #1 rimane libero.
+Il firmware può comandare ogni stella separatamente, con luminosità e colore differenti. Dei 50 pixel disponibili, a ogni ciclo vengono selezionate casualmente 20 stelle attive, che compaiono progressivamente durante il crepuscolo e si spengono durante l'alba. Il canale 4 del MOSFET #1 rimane libero.
 
 ### MOSFET #3 e #4 — RGB laterali alba/tramonto
 
@@ -79,7 +79,7 @@ Per rendere alba e tramonto più dinamici vengono aggiunte **due strisce RGB ana
 | Sinistra | Tramonto | D10 / D11 / D12 | MOSFET #3, CH1–CH3 |
 | Destra | Alba | D44 / D45 / D46 | MOSFET #4, CH1–CH3 |
 
-Ogni striscia ha il proprio +12 V comune collegato alla distribuzione protetta. I ritorni R/G/B vanno ai tre OUT- del relativo modulo MOSFET. Il quarto canale di ciascun modulo resta libero. **D13 rimane PWM libero.**
+Ogni striscia ha un ramo +12 V protetto dedicato: **F2 ALBA** alimenta sia il +12 V comune della striscia ALBA sia il DC+ del MOSFET #4; **F3 TRAMONTO** alimenta sia il +12 V comune della striscia TRAMONTO sia il DC+ del MOSFET #3. I ritorni R/G/B vanno ai tre OUT- del relativo modulo MOSFET. Il quarto canale di ciascun modulo resta libero. **D13 rimane PWM libero.**
 
 Nel firmware la striscia sinistra cresce e cala gradualmente durante il TRAMONTO, con tonalità calde rosso/arancio. La striscia destra esegue un andamento analogo durante l'ALBA, con una tonalità più chiara. La striscia RGB principale continua contemporaneamente la transizione generale del cielo: la sovrapposizione crea uno spostamento laterale della luce.
 
@@ -94,7 +94,7 @@ Luci case, pompe, mulino e gli altri carichi che richiedono soltanto ON/OFF veng
 | Grp_03_01–Grp_03_04 | D33–D36 | RELÈ #3 IN1–IN4 |
 | Grp_04_01–Grp_04_04 | D37–D40 | RELÈ #4 IN1–IN4 |
 
-Per ogni scheda: **+12 V protetto → DC+**, **0 V comune → DC-**. I morsetti COM/NO/NC restano disponibili per i futuri carichi. Per un carico normalmente spento si useranno normalmente COM + NO.
+Per ogni scheda: **+12 V di alimentazione del ramo relè → DC+**, **0 V comune → DC-**. Il ramo di alimentazione delle schede relè verrà protetto e dimensionato separatamente quando sarà definita la distribuzione definitiva dei carichi. I morsetti COM/NO/NC restano disponibili per i futuri carichi. Per un carico normalmente spento si useranno normalmente COM + NO; la protezione del carico comandato è distinta da quella che alimenta l'elettronica della scheda relè.
 
 I jumper S1–S4 permettono di scegliere HIGH/LOW trigger. Il firmware gestisce già le 16 uscite nella modalità TEST; nel simulatore viene usata la logica HIGH=ON. Prima del collegamento definitivo dei moduli reali va verificata la posizione dei jumper e, se necessario, impostato `RELE_ACTIVE_LOW` nel firmware.
 
@@ -124,7 +124,7 @@ Display di stato OLED **0,96 pollici, 128×64, I²C**, alimentazione 3,3–5 V, 
 | OLED | Arduino Mega 2560 |
 |---|---|
 | GND | GND |
-| VCC | 5V |
+| VCC | 5 V |
 | SDA | D20 / SDA |
 | SCL | D21 / SCL |
 
@@ -142,8 +142,6 @@ I popup durano circa 1,8 secondi e poi il display torna automaticamente alla sch
 > Nota: sul Mega 2560 l'I²C hardware usa **D20=SDA** e **D21=SCL**. Eventuali esempi che indicano D21/D22 si riferiscono ad altre piattaforme, ad esempio ESP32.
 
 
-Il display è opzionale: all'avvio il firmware verifica se risponde all'indirizzo 0x3C; se non viene trovato, il ciclo scenografico continua normalmente senza OLED.
-
 Quando il ciclo viene messo in **PAUSA**, l'OLED mostra stabilmente la fase e la percentuale raggiunta, insieme ai valori RGB correnti delle tre strisce:
 
 - `C R,G,B` = cielo RGB principale;
@@ -159,9 +157,9 @@ I valori sono quelli logici 0–255 inviati al PWM e permettono di fermare la sc
 | D22 | Pulsante START/STOP | D22 ↔ pulsante ↔ GND logica |
 | D23 | Pulsante AVANTI | D23 ↔ pulsante ↔ GND logica |
 | D24 | Pulsante TEST | D24 ↔ pulsante ↔ GND logica |
+| A0 | Potenziometro B10K velocità ciclo | 5 V ↔ esterno, A0 ↔ cursore, GND ↔ esterno |
 
 > **Prova senza potenziometro:** se il potenziometro B10K su A0 viene scollegato, non lasciare A0 flottante: la lettura analogica potrebbe assumere valori casuali e far variare la durata del ciclo. Per una prova stabile, collegare temporaneamente **A0 direttamente a GND**. Il firmware leggerà A0=0, corrispondente alla durata minima del ciclo di **1 minuto**.
-| A0 | Potenziometro B10K velocità ciclo | 5V ↔ esterno, A0 ↔ cursore, GND ↔ esterno |
 
 I pulsanti utilizzano `INPUT_PULLUP`, quindi non richiedono una resistenza di pull-up esterna. Il GND logico di Arduino viene distribuito tramite WAGO agli ingressi `GND1...GND4` dei MOSFET e ai comandi.
 
@@ -251,7 +249,7 @@ ALIMENTATORE 12 V
 | 4 | Mega GND | MOSFET #1 GND2 |
 | 5 | Mega D4 | MOSFET #1 PWM3 |
 | 6 | Mega GND | MOSFET #1 GND3 |
-| 7 | +12 V protetto | RGB principale +12V |
+| 7 | +12 V protetto | RGB principale +12 V |
 | 8 | RGB principale R | MOSFET #1 OUT1- |
 | 9 | RGB principale G | MOSFET #1 OUT2- |
 | 10 | RGB principale B | MOSFET #1 OUT3- |
@@ -262,7 +260,7 @@ PWM4/GND4 e OUT4 restano liberi. Prima del cablaggio definitivo verificare sul m
 
 | Filo | Da | A |
 |---|---|---|
-| 11 | +12 V protetto | WS2811 +12V |
+| 11 | +12 V protetto | WS2811 +12 V |
 | 12 | WAGO 0 V comune | WS2811 GND |
 | 13 | Mega D5 | resistenza 330–470 Ω |
 | 14 | uscita resistenza | WS2811 DATA/DIN |
@@ -279,7 +277,7 @@ Rispettare la freccia/direzione DATA della stringa. La resistenza va preferibilm
 | 18 | Mega GND | MOSFET #3 GND2 |
 | 19 | Mega D12 | MOSFET #3 PWM3 |
 | 20 | Mega GND | MOSFET #3 GND3 |
-| 21 | +12 V protetto | RGB sinistra +12V |
+| 21 | +12 V protetto | RGB sinistra +12 V |
 | 22 | RGB sinistra R | MOSFET #3 OUT1- |
 | 23 | RGB sinistra G | MOSFET #3 OUT2- |
 | 24 | RGB sinistra B | MOSFET #3 OUT3- |
@@ -296,7 +294,7 @@ PWM4/GND4 e OUT4 restano liberi.
 | 28 | Mega GND | MOSFET #4 GND2 |
 | 29 | Mega D46 | MOSFET #4 PWM3 |
 | 30 | Mega GND | MOSFET #4 GND3 |
-| 31 | +12 V protetto | RGB destra +12V |
+| 31 | +12 V protetto | RGB destra +12 V |
 | 32 | RGB destra R | MOSFET #4 OUT1- |
 | 33 | RGB destra G | MOSFET #4 OUT2- |
 | 34 | RGB destra B | MOSFET #4 OUT3- |
@@ -332,13 +330,13 @@ Per **ciascuno dei quattro moduli** collegare anche:
 
 | Da | A |
 |---|---|
-| uscita +12 V del portafusibili | DC+ |
+| +12 V del ramo di alimentazione relè | DC+ |
 | 0 V comune | DC- |
 | pin Mega indicato sopra | IN1 / IN2 / IN3 / IN4 |
 
 Per ora i morsetti **COM/NO/NC possono rimanere senza carico**. Così tutta la parte di comando `Grp_01_01`–`Grp_04_04` è montata e pronta. In modalità TEST le 16 uscite vengono provate una alla volta, una pressione di TEST per ciascun relè. La sequenza completa comprende 30 test: CIELO R/G/B, TRAMONTO R/G/B, ALBA R/G/B, STELLE R/G/B su tutti i 50 pixel, tutte le 50 stelle in bianco caldo, tutto insieme e infine i 16 relè individuali.
 
-Quando assegneremo un carico 12 V normalmente spento, lo schema tipico sarà: **+12 V protetto → COM → NO → positivo carico**, mentre il negativo del carico torna allo **0 V comune**.
+Quando assegneremo un carico 12 V normalmente spento, lo schema tipico sarà: **+12 V protetto del carico → COM → NO → positivo carico**, mentre il negativo del carico torna allo **0 V comune**. Il fusibile del carico sarà dimensionato in funzione del carico e del relativo cablaggio.
 
 ### 7. Display OLED EL-SM-008
 
@@ -347,7 +345,7 @@ Collegare i quattro fili:
 | Filo | Da | A |
 |---|---|---|
 | OLED 1 | GND | Mega GND |
-| OLED 2 | VCC | Mega 5V |
+| OLED 2 | VCC | Mega 5 V |
 | OLED 3 | SCL | Mega D21 / SCL |
 | OLED 4 | SDA | Mega D20 / SDA |
 
@@ -368,7 +366,7 @@ I pulsanti sono momentanei NO. Grazie a INPUT_PULLUP non servono resistenze este
 
 Gli eventuali contatti NC dei pulsanti rimangono scollegati.
 
-### 8. Potenziometro B10K
+### 9. Potenziometro B10K
 
 | Filo | Da | A |
 |---|---|---|
@@ -378,10 +376,10 @@ Gli eventuali contatti NC dei pulsanti rimangono scollegati.
 
 Se il senso di rotazione risulta invertito rispetto a quello desiderato, scambiare semplicemente i due fili degli estremi; il cursore A0 resta invariato.
 
-### 9. Controllo prima dell'accensione
+### 10. Controllo prima dell'accensione
 
 1. Mega scollegato dalla USB e alimentatore 12 V scollegato dalla rete.
-2. Verificare che **+12 V non arrivi mai a 5V, A0 o a un pin digitale del Mega**.
+2. Verificare che **+12 V non arrivi mai a 5 V, A0 o a un pin digitale del Mega**.
 3. Verificare con multimetro polarità +12 V / 0 V.
 4. Verificare la massa comune Mega GND ↔ PSU 0 V.
 5. Verificare i tre +12 V comuni delle strisce RGB.
@@ -403,10 +401,10 @@ Se il senso di rotazione risulta invertito rispetto a quello desiderato, scambia
 | D11 | RGB tramonto G |
 | D12 | RGB tramonto B |
 | D13 | PWM libero |
-| D22 | START/STOP |
-| D23 | AVANTI |
 | D20 | SDA OLED EL-SM-008 (I²C, opzionale) |
 | D21 | SCL OLED EL-SM-008 (I²C, opzionale) |
+| D22 | START/STOP |
+| D23 | AVANTI |
 | D24 | TEST |
 | D25–D40 | Grp_01_01–Grp_04_04, quattro moduli relè |
 | D44 | RGB alba R |
@@ -420,7 +418,7 @@ Aprire:
 
 `firmware/PSN-Presepe/PSN-Presepe.ino`
 
-con Arduino IDE standard e selezionare **Arduino Mega or Mega 2560**.
+con Arduino IDE e selezionare **Arduino Mega or Mega 2560**.
 
 Il firmware attuale implementa cielo RGB principale, due RGB laterali alba/tramonto, stelle WS2811, comandi, OLED e modalità TEST. D6–D9 sono liberi/di riserva. I carichi ON/OFF vengono gestiti tramite i 16 relè D25–D40.
 
@@ -443,14 +441,6 @@ Per le strisce CIELO, TRAMONTO e ALBA vengono usati i componenti custom `rgb-str
 I componenti custom sono esclusivamente visuali: non cambiano il firmware e non simulano la potenza elettrica, i MOSFET o i 12 V reali. La documentazione completa della simulazione e dei file da copiare manualmente nel progetto Wokwi è in `simulation/README.md`.
 
 La CI Wokwi rimane per ora opzionale: la normale compilazione GitHub Actions non richiede token o servizi esterni.
-
-## Nota elettrica
-
-Con l'introduzione delle stelle WS2811, **Arduino GND e lo 0 V dell'alimentatore 12 V sono collegati in comune** per fornire il riferimento al segnale DATA. Il Mega resta alimentato separatamente a 5 V via USB. Prima del cablaggio definitivo verificare con il multimetro la continuità tra `DC+` e gli eventuali `OUT+` utilizzati. Per pompa e mulino devono inoltre essere verificati corrente nominale, corrente di spunto e protezione dei carichi induttivi.
-
----
-
-By **Vanni Brutto**
 
 ## 🧪 Provare PSN-Presepe online con Wokwi — guida passo passo
 
@@ -494,11 +484,12 @@ Nel repository è presente anche `simulation/libraries.txt` come riferimento agg
 
 ### 4. Carica il nostro schema elettrico virtuale
 
-Nel repository apri:
+Nel repository scegli uno dei due diagrammi:
 
-`simulation/diagram.json`
+- `simulation/diagram.json` per la simulazione completa con OLED;
+- `simulation/diagram-no-display.json` per verificare il funzionamento senza display.
 
-Copia **tutto** il contenuto.
+Copia **tutto** il contenuto del diagramma scelto.
 
 In Wokwi apri il file **diagram.json**, seleziona tutto, cancella il contenuto esistente e incolla quello del repository.
 
@@ -510,7 +501,7 @@ Premi il pulsante verde **▶ Start Simulation**.
 
 Wokwi compilerà il firmware. La prima compilazione può richiedere qualche secondo.
 
-Se tutto è corretto, il Mega virtuale parte e sul display OLED deve apparire l'interfaccia PSN-Presepe.
+Se usi `simulation/diagram.json`, il Mega virtuale parte e sul display OLED appare l'interfaccia PSN-Presepe. Se usi `simulation/diagram-no-display.json`, il test è corretto quando il firmware continua ad avviarsi e a gestire normalmente autotest, ciclo, RGB, stelle, pulsanti e relè senza OLED.
 
 ### 6. Prova il potenziometro
 
@@ -538,7 +529,7 @@ senza aspettare l'intero ciclo.
 
 ### 8. Cosa guardare sull'OLED
 
-Durante il funzionamento normale deve mostrare:
+Questa verifica riguarda la simulazione completa con `simulation/diagram.json`. Durante il funzionamento normale l'OLED deve mostrare:
 
 - nome della fase;
 - percentuale **0–100% della fase corrente**;
@@ -556,9 +547,9 @@ Il firmware comunica a **115200 baud** e stampa informazioni diagnostiche: fase,
 
 Se l'OLED virtuale non viene rilevato, il firmware deve comunque continuare a funzionare: è intenzionalmente opzionale.
 
-### 10. Cosa rappresentano i LED virtuali
+### 10. Cosa rappresentano i componenti virtuali
 
-I LED R/G/B simulano i **segnali di comando PWM** delle tre strisce RGB reali. Non rappresentano direttamente una striscia 12 V.
+Le tre barre custom **CIELO**, **TRAMONTO** e **ALBA** rappresentano visivamente le tre strisce RGB analogiche 12 V reali. Leggono i tre segnali PWM R/G/B e mostrano il colore risultante; **nero significa striscia spenta**. Sono una rappresentazione logica e visiva: Wokwi non simula elettricamente l'alimentazione 12 V, i MOSFET, le correnti o la potenza delle strisce.
 
 La striscia NeoPixel virtuale rappresenta le **50 stelle**. Wokwi usa un componente addressable compatibile per visualizzare l'effetto; nel presepe reale utilizziamo la stringa WS2811 a 12 V con il cablaggio documentato.
 
@@ -571,10 +562,18 @@ Controlla nell'ordine:
 1. di aver scelto **Arduino Mega 2560**;
 2. che `sketch.ino` contenga l'ultima versione del firmware;
 3. che siano installate tutte e tre le librerie;
-4. che `diagram.json` sia stato copiato integralmente da `simulation/diagram.json`;
+4. che `diagram.json` sia stato copiato integralmente dal file scelto: `simulation/diagram.json` oppure `simulation/diagram-no-display.json`;
 5. leggi il messaggio rosso della compilazione o il Serial Monitor.
 
 Se modifichiamo firmware o cablaggio del progetto, anche i file nella cartella `simulation/` devono essere aggiornati insieme.
 
 
 > **Stelle:** i 50 pixel WS2811 restano fisicamente disponibili, ma a ogni ciclo ne vengono scelte casualmente solo **20**, mantenute a luminosità volutamente bassa. Tutte le 20 stelle attive hanno un proprio ciclo asincrono e variano dolcemente la luminosità. A ogni nuova notte la disposizione viene rigenerata.
+
+## Nota elettrica
+
+Con l'introduzione delle stelle WS2811, **Arduino GND e lo 0 V dell'alimentatore 12 V sono collegati in comune** per fornire il riferimento al segnale DATA. Il Mega resta alimentato separatamente a 5 V via USB. Prima del cablaggio definitivo verificare con il multimetro la continuità tra `DC+` e gli eventuali `OUT+` utilizzati. Per pompa e mulino devono inoltre essere verificati corrente nominale, corrente di spunto e protezione dei carichi induttivi.
+
+---
+
+By **Vanni Brutto**
