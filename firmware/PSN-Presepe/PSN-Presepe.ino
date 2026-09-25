@@ -189,55 +189,33 @@ bool lastNextRead  = HIGH, stableNext  = HIGH;
 bool lastTestRead  = HIGH, stableTest  = HIGH;
 unsigned long dbStartMs = 0, dbNextMs = 0, dbTestMs = 0;
 
-// Feedback acustico non bloccante. Nessuna logica del presepe dipende dal buzzer.
-struct BuzzerStep { uint16_t hz; uint16_t ms; };
-const BuzzerStep *buzzerSeq = nullptr;
-uint8_t buzzerSeqLen = 0, buzzerSeqPos = 0;
-unsigned long buzzerStepStart = 0;
-bool buzzerStepAttivo = false;
-int8_t ultimoPotBeepStep = -1;
+// Feedback acustico semplice e non bloccante.
+// Tutti i comandi (START/STOP, AVANTI, TEST e potenziometro) usano lo stesso bip.
+const uint16_t BEEP_HZ = 900;
+const uint16_t BEEP_MS = 55;
+unsigned long buzzerFino = 0;
+bool buzzerAttivo = false;
+int ultimoPotBeep = -1;
 
-const BuzzerStep SND_PAUSA[]   = {{880,70},{0,35},{587,110}};
-const BuzzerStep SND_RIPRESA[] = {{587,70},{0,35},{880,110}};
-const BuzzerStep SND_AVANTI[]  = {{1047,90}};
-const BuzzerStep SND_TEST_IN[] = {{523,55},{0,25},{659,55},{0,25},{784,80}};
-const BuzzerStep SND_TEST_NEXT[] = {{900,35}};
-const BuzzerStep SND_TEST_OUT[] = {{784,55},{0,25},{659,55},{0,25},{523,80}};
-
-void buzzerStop() {
-  noTone(PIN_BUZZER);
-  buzzerSeq = nullptr; buzzerSeqLen = 0; buzzerSeqPos = 0; buzzerStepAttivo = false;
-}
-
-void buzzerAvvia(const BuzzerStep *seq, uint8_t len) {
-  if (!BUZZER_ENABLED || !seq || len == 0) return;
-  buzzerSeq = seq; buzzerSeqLen = len; buzzerSeqPos = 0;
-  buzzerStepStart = millis(); buzzerStepAttivo = true;
-  if (seq[0].hz) tone(PIN_BUZZER, seq[0].hz); else noTone(PIN_BUZZER);
+void buzzerBeep() {
+  if (!BUZZER_ENABLED) return;
+  tone(PIN_BUZZER, BEEP_HZ);
+  buzzerFino = millis() + BEEP_MS;
+  buzzerAttivo = true;
 }
 
 void buzzerTick() {
-  if (!BUZZER_ENABLED || !buzzerStepAttivo || !buzzerSeq) return;
-  unsigned long now = millis();
-  if (now - buzzerStepStart < buzzerSeq[buzzerSeqPos].ms) return;
-  buzzerSeqPos++;
-  if (buzzerSeqPos >= buzzerSeqLen) { buzzerStop(); return; }
-  buzzerStepStart = now;
-  if (buzzerSeq[buzzerSeqPos].hz) tone(PIN_BUZZER, buzzerSeq[buzzerSeqPos].hz);
-  else noTone(PIN_BUZZER);
+  if (buzzerAttivo && (long)(millis() - buzzerFino) >= 0) {
+    noTone(PIN_BUZZER);
+    buzzerAttivo = false;
+  }
 }
 
 void buzzerPot(int raw) {
-  if (!BUZZER_ENABLED) return;
-  // Sei gradini coerenti con la regolazione 1..6 minuti.
-  int8_t step = constrain(map(raw, 0, 1023, 0, 5), 0, 5);
-  if (ultimoPotBeepStep < 0) { ultimoPotBeepStep = step; return; }
-  if (step == ultimoPotBeepStep) return;
-  ultimoPotBeepStep = step;
-  static BuzzerStep potStep[1];
-  potStep[0].hz = 440 + step * 110;
-  potStep[0].ms = 45;
-  buzzerAvvia(potStep, 1);
+  if (ultimoPotBeep < 0) { ultimoPotBeep = raw; return; }
+  if (abs(raw - ultimoPotBeep) < POT_POPUP_DELTA) return;
+  ultimoPotBeep = raw;
+  buzzerBeep();
 }
 
 // ============================================================
@@ -688,7 +666,7 @@ bool inizializzaOled() {
   display.setTextSize(1);
   // Startup splash: PSN-Presepe! by Vanni
   display.setCursor(27,18); display.print(F("PSN-Presepe!"));
-  display.setCursor(30,36); display.print(F("by Vanni 017"));
+  display.setCursor(30,36); display.print(F("by Vanni 018"));
   display.display();
   delay(3000);
   return true;
@@ -711,7 +689,7 @@ void faseAvanti() {
 
   saltaAPercentuale(inizioFase(nuova));
 
-  buzzerAvvia(SND_AVANTI, sizeof(SND_AVANTI) / sizeof(SND_AVANTI[0]));
+  buzzerBeep();
   Serial.print(F("AVANTI -> "));
   Serial.println(nomeFase(nuova));
   oledMostraPopup(OLED_AVANTI);
@@ -862,7 +840,7 @@ void toggleStartStop() {
     }
 
     Serial.println(F("USCITA MODALITA' TEST"));
-    buzzerAvvia(SND_TEST_OUT, sizeof(SND_TEST_OUT) / sizeof(SND_TEST_OUT[0]));
+    buzzerBeep();
     oledPopup = OLED_NESSUNO;
     float p = percentualeCiclo(durataCiclo());
     aggiornaScena(p);
@@ -875,7 +853,7 @@ void toggleStartStop() {
     pauseStartedMs = millis();
     running = false;
     Serial.println(F("PAUSA"));
-    buzzerAvvia(SND_PAUSA, sizeof(SND_PAUSA) / sizeof(SND_PAUSA[0]));
+    buzzerBeep();
     oledPopup = OLED_NESSUNO;
   } else {
     unsigned long durataPausa = millis() - pauseStartedMs;
@@ -886,7 +864,7 @@ void toggleStartStop() {
 
     running = true;
     Serial.println(F("RIPRESA"));
-    buzzerAvvia(SND_RIPRESA, sizeof(SND_RIPRESA) / sizeof(SND_RIPRESA[0]));
+    buzzerBeep();
     oledMostraPopup(OLED_RIPRESA);
   }
 }
@@ -1021,10 +999,10 @@ void testUscite() {
     Serial.println();
     Serial.println(F("=== MODALITA' TEST ==="));
     Serial.println(F("TEST = test successivo, START = esci"));
-    buzzerAvvia(SND_TEST_IN, sizeof(SND_TEST_IN) / sizeof(SND_TEST_IN[0]));
+    buzzerBeep();
   } else {
     testIndice = (testIndice + 1) % 30;
-    buzzerAvvia(SND_TEST_NEXT, sizeof(SND_TEST_NEXT) / sizeof(SND_TEST_NEXT[0]));
+    buzzerBeep();
   }
 
   applicaTestCorrente();
