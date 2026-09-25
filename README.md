@@ -159,6 +159,8 @@ I valori sono quelli logici 0–255 inviati al PWM e permettono di fermare la sc
 | D22 | Pulsante START/STOP | D22 ↔ pulsante ↔ GND logica |
 | D23 | Pulsante AVANTI | D23 ↔ pulsante ↔ GND logica |
 | D24 | Pulsante TEST | D24 ↔ pulsante ↔ GND logica |
+
+> **Prova senza potenziometro:** se il potenziometro B10K su A0 viene scollegato, non lasciare A0 flottante: la lettura analogica potrebbe assumere valori casuali e far variare la durata del ciclo. Per una prova stabile, collegare temporaneamente **A0 direttamente a GND**. Il firmware leggerà A0=0, corrispondente alla durata minima del ciclo di **1 minuto**.
 | A0 | Potenziometro B10K velocità ciclo | 5V ↔ esterno, A0 ↔ cursore, GND ↔ esterno |
 
 I pulsanti utilizzano `INPUT_PULLUP`, quindi non richiedono una resistenza di pull-up esterna. Il GND logico di Arduino viene distribuito tramite WAGO agli ingressi `GND1...GND4` dei MOSFET e ai comandi.
