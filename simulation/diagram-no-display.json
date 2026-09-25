@@ -1779,7 +1779,7 @@
     ],
     [
       "tramontoStrip:R",
-      "mega:10",
+      "mega:7",
       "",
       []
     ],
@@ -1814,5 +1814,5 @@
     "relay-label-standard": "Grp_GG_RR: GG=relay board group 01-04, RR=relay channel 01-04",
     "test-variant": "NO DISPLAY - test optional OLED handling"
   },
-  "layoutRevision": "2026-09-25-buzzer-v1"
+  "layoutRevision": "2026-09-25-tramonto-r-d7-v1"
 }
