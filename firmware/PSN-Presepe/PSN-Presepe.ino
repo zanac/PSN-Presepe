@@ -636,7 +636,7 @@ bool inizializzaOled() {
   display.setTextSize(1);
   // Startup splash: PSN-Presepe! by Vanni
   display.setCursor(27,18); display.print(F("PSN-Presepe!"));
-  display.setCursor(30,36); display.print(F("by Vanni 015"));
+  display.setCursor(30,36); display.print(F("by Vanni 016"));
   display.display();
   delay(3000);
   return true;
@@ -999,7 +999,6 @@ void stampaStato(unsigned long durata, float p) {
 // SEQUENZA DI BOOT / AUTOTEST VISIVO
 // ============================================================
 
-const unsigned long BOOT_STEP_MS = 2000UL;
 const uint8_t BOOT_STEP_COUNT = 4;
 
 // "Astro del ciel" sul buzzer passivo opzionale, fino a "mite agnello Redentor".
@@ -1018,6 +1017,8 @@ const uint16_t BOOT_MELODY_MS[] = {
   420, 420, 560, 420, 420, 560, 420, 420, 1100
 };
 const uint8_t BOOT_MELODY_COUNT = sizeof(BOOT_MELODY_FREQ) / sizeof(BOOT_MELODY_FREQ[0]);
+const unsigned long BOOT_TOTAL_MS = 18060UL; // somma esatta delle durate della melodia
+const unsigned long BOOT_STEP_MS = BOOT_TOTAL_MS / BOOT_STEP_COUNT; // ~4,515 s per scena
 int8_t bootNotaCorrente = -1;
 
 void aggiornaMelodiaBoot(unsigned long elapsedTotale) {
@@ -1048,7 +1049,7 @@ void aggiornaMelodiaBoot(unsigned long elapsedTotale) {
 void mostraOledBoot(const __FlashStringHelper *fase, uint8_t step, unsigned long elapsedStep) {
   if (!oledPresente) return;
 
-  // Avanzamento complessivo sui 4 passi da 2 secondi.
+  // Avanzamento complessivo sui 4 passi, sincronizzato alla durata della melodia.
   unsigned long fatto = (unsigned long)step * BOOT_STEP_MS + elapsedStep;
   unsigned long totale = (unsigned long)BOOT_STEP_COUNT * BOOT_STEP_MS;
   uint8_t pct = (uint8_t)min(100UL, (fatto * 100UL) / totale);
@@ -1090,38 +1091,31 @@ void eseguiSequenzaBoot() {
   tuttoSpento();
   spegniRele();
 
-  // 1/4 - ALBA: bianco brillante per 2 secondi.
+  // 1/4 - ALBA: primo quarto della melodia.
   setAlba(255, 255, 255);
   attesaBoot(F("ALBA"), 0);
   setAlba(0, 0, 0);
 
-  // 2/4 - CIELO principale: bianco brillante per 2 secondi.
+  // 2/4 - CIELO principale: secondo quarto della melodia.
   setCielo(255, 255, 255);
   attesaBoot(F("CIELO"), 1);
   setCielo(0, 0, 0);
 
-  // 3/4 - TRAMONTO: bianco brillante per 2 secondi.
+  // 3/4 - TRAMONTO: terzo quarto della melodia.
   setTramonto(255, 255, 255);
   attesaBoot(F("TRAMONTO"), 2);
   setTramonto(0, 0, 0);
 
-  // 4/4 - tutte le 50 stelle: bianco brillante per 2 secondi.
+  // 4/4 - tutte le 50 stelle: ultimo quarto della melodia.
   stelle.clear();
   for (uint16_t i = 0; i < NUM_STELLE; i++)
     stelle.setPixelColor(i, stelle.Color(255, 255, 255));
   stelle.show();
   attesaBoot(F("STELLE"), 3);
 
-  // Se la melodia è più lunga degli 8 s dell'autotest visivo, completiamola
-  // a uscite spente prima di mostrare PRONTO e avviare il ciclo.
-  unsigned long durataMelodia = 0;
-  for (uint8_t i = 0; i < BOOT_MELODY_COUNT; i++) durataMelodia += BOOT_MELODY_MS[i];
-  unsigned long tMelodia = BOOT_STEP_MS * BOOT_STEP_COUNT;
-  while (tMelodia < durataMelodia) {
-    aggiornaMelodiaBoot(tMelodia);
-    delay(20);
-    tMelodia += 20;
-  }
+  // I quattro passi coprono l'intera melodia: luce, progress bar e musica
+  // terminano insieme prima di PRONTO.
+  aggiornaMelodiaBoot(BOOT_TOTAL_MS);
   noTone(PIN_BUZZER);
   bootNotaCorrente = -1;
 
