@@ -1053,12 +1053,6 @@ const uint16_t BOOT_MELODY_MS[] = {
   420, 420, 560, 420, 420, 560, 420, 420, 1100
 };
 const uint8_t BOOT_MELODY_COUNT = sizeof(BOOT_MELODY_FREQ) / sizeof(BOOT_MELODY_FREQ[0]);
-unsigned long durataMelodiaBoot() {
-  unsigned long totale = 0;
-  for (uint8_t i = 0; i < BOOT_MELODY_COUNT; i++) totale += BOOT_MELODY_MS[i];
-  return totale;
-}
-
 const unsigned long BOOT_TOTAL_MS = 17300UL; // somma verificata di BOOT_MELODY_MS[]
 const unsigned long BOOT_STEP_MS = BOOT_TOTAL_MS / BOOT_STEP_COUNT; // 4,325 s per scena
 int8_t bootNotaCorrente = -1;
