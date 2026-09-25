@@ -59,8 +59,8 @@
     {
       "type": "wokwi-led",
       "id": "relay1",
-      "top": 500,
-      "left": 520,
+      "top": -490,
+      "left": 1280,
       "attrs": {
         "color": "yellow",
         "label": "Grp_01_01"
@@ -69,8 +69,8 @@
     {
       "type": "wokwi-led",
       "id": "relay2",
-      "top": 500,
-      "left": 665,
+      "top": -490,
+      "left": 1380,
       "attrs": {
         "color": "yellow",
         "label": "Grp_01_02"
@@ -79,8 +79,8 @@
     {
       "type": "wokwi-led",
       "id": "relay3",
-      "top": 500,
-      "left": 810,
+      "top": -490,
+      "left": 1480,
       "attrs": {
         "color": "yellow",
         "label": "Grp_01_03"
@@ -89,8 +89,8 @@
     {
       "type": "wokwi-led",
       "id": "relay4",
-      "top": 500,
-      "left": 955,
+      "top": -490,
+      "left": 1580,
       "attrs": {
         "color": "yellow",
         "label": "Grp_01_04"
@@ -99,8 +99,8 @@
     {
       "type": "wokwi-led",
       "id": "relay5",
-      "top": 548,
-      "left": 520,
+      "top": -420,
+      "left": 1280,
       "attrs": {
         "color": "yellow",
         "label": "Grp_02_01"
@@ -109,8 +109,8 @@
     {
       "type": "wokwi-led",
       "id": "relay6",
-      "top": 548,
-      "left": 665,
+      "top": -420,
+      "left": 1380,
       "attrs": {
         "color": "yellow",
         "label": "Grp_02_02"
@@ -119,8 +119,8 @@
     {
       "type": "wokwi-led",
       "id": "relay7",
-      "top": 548,
-      "left": 810,
+      "top": -420,
+      "left": 1480,
       "attrs": {
         "color": "yellow",
         "label": "Grp_02_03"
@@ -129,8 +129,8 @@
     {
       "type": "wokwi-led",
       "id": "relay8",
-      "top": 548,
-      "left": 955,
+      "top": -420,
+      "left": 1580,
       "attrs": {
         "color": "yellow",
         "label": "Grp_02_04"
@@ -139,8 +139,8 @@
     {
       "type": "wokwi-led",
       "id": "relay9",
-      "top": 596,
-      "left": 520,
+      "top": -350,
+      "left": 1280,
       "attrs": {
         "color": "yellow",
         "label": "Grp_03_01"
@@ -149,8 +149,8 @@
     {
       "type": "wokwi-led",
       "id": "relay10",
-      "top": 596,
-      "left": 665,
+      "top": -350,
+      "left": 1380,
       "attrs": {
         "color": "yellow",
         "label": "Grp_03_02"
@@ -159,8 +159,8 @@
     {
       "type": "wokwi-led",
       "id": "relay11",
-      "top": 596,
-      "left": 810,
+      "top": -350,
+      "left": 1480,
       "attrs": {
         "color": "yellow",
         "label": "Grp_03_03"
@@ -169,8 +169,8 @@
     {
       "type": "wokwi-led",
       "id": "relay12",
-      "top": 596,
-      "left": 955,
+      "top": -350,
+      "left": 1580,
       "attrs": {
         "color": "yellow",
         "label": "Grp_03_04"
@@ -179,8 +179,8 @@
     {
       "type": "wokwi-led",
       "id": "relay13",
-      "top": 644,
-      "left": 520,
+      "top": -280,
+      "left": 1280,
       "attrs": {
         "color": "yellow",
         "label": "Grp_04_01"
@@ -189,8 +189,8 @@
     {
       "type": "wokwi-led",
       "id": "relay14",
-      "top": 644,
-      "left": 665,
+      "top": -280,
+      "left": 1380,
       "attrs": {
         "color": "yellow",
         "label": "Grp_04_02"
@@ -199,8 +199,8 @@
     {
       "type": "wokwi-led",
       "id": "relay15",
-      "top": 644,
-      "left": 810,
+      "top": -280,
+      "left": 1480,
       "attrs": {
         "color": "yellow",
         "label": "Grp_04_03"
@@ -209,8 +209,8 @@
     {
       "type": "wokwi-led",
       "id": "relay16",
-      "top": 644,
-      "left": 955,
+      "top": -280,
+      "left": 1580,
       "attrs": {
         "color": "yellow",
         "label": "Grp_04_04"
