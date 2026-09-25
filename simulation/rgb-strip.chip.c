@@ -154,10 +154,13 @@ static void refresh(void *user_data) {
   uint8_t *pixels=(uint8_t *)malloc(bytes);
   if(!pixels) return;
 
-  // Top 36 px: actual simulated strip colour. Bottom 16 px: black label area.
+  // The label keeps a fixed 16 px black band at the very bottom.
+  // All remaining vertical space is used by the simulated RGB colour.
+  const uint32_t label_h = 16;
+  const uint32_t colour_h = chip->height > label_h ? chip->height - label_h : 0;
   for(uint32_t y=0;y<chip->height;y++) for(uint32_t x=0;x<chip->width;x++) {
     uint32_t o=(y*chip->width+x)*4;
-    if(y<36) { pixels[o]=chip->value[0]; pixels[o+1]=chip->value[1]; pixels[o+2]=chip->value[2]; }
+    if(y<colour_h) { pixels[o]=chip->value[0]; pixels[o+1]=chip->value[1]; pixels[o+2]=chip->value[2]; }
     else { pixels[o]=0; pixels[o+1]=0; pixels[o+2]=0; }
     pixels[o+3]=255;
   }
@@ -165,7 +168,8 @@ static void refresh(void *user_data) {
   uint32_t id=attr_read(chip->label_attr);
   const char *label=id==0 ? "ALBA" : (id==1 ? "CIELO" : "TRAMONTO");
   int text_w=(int)strlen(label)*6-1;
-  text5x7(pixels,chip->width,chip->height,((int)chip->width-text_w)/2,41,label);
+  int label_y=(int)colour_h + ((int)label_h - 7) / 2;
+  text5x7(pixels,chip->width,chip->height,((int)chip->width-text_w)/2,label_y,label);
 
   buffer_write(chip->framebuffer,0,pixels,bytes);
   free(pixels);
