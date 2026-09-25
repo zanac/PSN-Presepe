@@ -141,6 +141,17 @@ I popup durano circa 1,8 secondi e poi il display torna automaticamente alla sch
 
 > Nota: sul Mega 2560 l'I²C hardware usa **D20=SDA** e **D21=SCL**. Eventuali esempi che indicano D21/D22 si riferiscono ad altre piattaforme, ad esempio ESP32.
 
+
+Il display è opzionale: all'avvio il firmware verifica se risponde all'indirizzo 0x3C; se non viene trovato, il ciclo scenografico continua normalmente senza OLED.
+
+Quando il ciclo viene messo in **PAUSA**, l'OLED mostra stabilmente la fase e la percentuale raggiunta, insieme ai valori RGB correnti delle tre strisce:
+
+- `C R,G,B` = cielo RGB principale;
+- `T R,G,B` = RGB laterale TRAMONTO;
+- `A R,G,B` = RGB laterale ALBA.
+
+I valori sono quelli logici 0–255 inviati al PWM e permettono di fermare la scena su una tonalità interessante, trascriverla e riutilizzarla successivamente per la taratura dei colori.
+
 ### Comandi
 
 | Arduino Mega | Dispositivo | Collegamento |
