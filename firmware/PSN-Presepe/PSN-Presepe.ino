@@ -498,9 +498,9 @@ void mostraOledTest() {
   display.setTextColor(SSD1306_WHITE);
   display.setTextSize(1);
   display.setCursor(0,0); display.print(F("MODALITA' TEST"));
-  display.setCursor(0,14); display.print(F("Test ")); display.print(testIndice + 1); display.print(F("/27"));
+  display.setCursor(0,14); display.print(F("Test ")); display.print(testIndice + 1); display.print(F("/30"));
   display.setCursor(0,30);
-  if (testIndice < 11) {
+  if (testIndice < 14) {
     switch (testIndice) {
       case 0: display.print(F("CIELO ROSSO")); break;
       case 1: display.print(F("CIELO VERDE")); break;
@@ -511,11 +511,14 @@ void mostraOledTest() {
       case 6: display.print(F("ALBA ROSSO")); break;
       case 7: display.print(F("ALBA VERDE")); break;
       case 8: display.print(F("ALBA BLU")); break;
-      case 9: display.print(F("STELLE WS2811")); break;
-      case 10: display.print(F("TUTTO INSIEME")); break;
+      case 9: display.print(F("STELLE ROSSE")); break;
+      case 10: display.print(F("STELLE VERDI")); break;
+      case 11: display.print(F("STELLE BLU")); break;
+      case 12: display.print(F("STELLE WS2811")); break;
+      case 13: display.print(F("TUTTO INSIEME")); break;
     }
   } else {
-    uint8_t n = testIndice - 11;
+    uint8_t n = testIndice - 14;
     uint8_t gruppo = n / 4 + 1;
     uint8_t rele = n % 4 + 1;
     display.print(F("Grp_"));
@@ -631,7 +634,7 @@ bool inizializzaOled() {
   display.setTextSize(1);
   // Startup splash: PSN-Presepe! by Vanni
   display.setCursor(27,18); display.print(F("PSN-Presepe!"));
-  display.setCursor(30,36); display.print(F("by Vanni 008"));
+  display.setCursor(30,36); display.print(F("by Vanni 009"));
   display.display();
   delay(2000);
   return true;
@@ -849,14 +852,14 @@ void applicaTestCorrente() {
   tuttoSpento();
   spegniRele();
 
-  if (testIndice >= 11) {
+  if (testIndice >= 14) {
     uint8_t n = testIndice - 11;
     accendiRele(n);
     uint8_t gruppo = n / 4 + 1;
     uint8_t rele = n % 4 + 1;
     Serial.print(F("TEST "));
     Serial.print(testIndice + 1);
-    Serial.print(F("/27 - Grp_0"));
+    Serial.print(F("/30 - Grp_0"));
     Serial.print(gruppo);
     Serial.print(F("_0"));
     Serial.println(rele);
@@ -902,14 +905,38 @@ void applicaTestCorrente() {
       Serial.println(F("TEST 9/27 - ALBA BLU"));
       break;
     case 9:
-      // Accende tutte le 50 stelle per verificare fisicamente ogni pixel.
+      // Verifica il canale rosso di tutti i 50 pixel WS2811.
+      stelle.clear();
+      for (uint16_t i = 0; i < NUM_STELLE; i++)
+        stelle.setPixelColor(i, stelle.Color(70, 0, 0));
+      stelle.show();
+      Serial.println(F("TEST 10/30 - STELLE ROSSE"));
+      break;
+    case 10:
+      // Verifica il canale verde di tutti i 50 pixel WS2811.
+      stelle.clear();
+      for (uint16_t i = 0; i < NUM_STELLE; i++)
+        stelle.setPixelColor(i, stelle.Color(0, 70, 0));
+      stelle.show();
+      Serial.println(F("TEST 11/30 - STELLE VERDI"));
+      break;
+    case 11:
+      // Verifica il canale blu di tutti i 50 pixel WS2811.
+      stelle.clear();
+      for (uint16_t i = 0; i < NUM_STELLE; i++)
+        stelle.setPixelColor(i, stelle.Color(0, 0, 70));
+      stelle.show();
+      Serial.println(F("TEST 12/30 - STELLE BLU"));
+      break;
+    case 12:
+      // Test scenografico esistente: tutte le 50 stelle in bianco caldo tenue.
       stelle.clear();
       for (uint16_t i = 0; i < NUM_STELLE; i++)
         stelle.setPixelColor(i, stelle.Color(70, 50, 27));
       stelle.show();
-      Serial.println(F("TEST 10/27 - TUTTE LE 50 STELLE"));
+      Serial.println(F("TEST 13/30 - TUTTE LE 50 STELLE"));
       break;
-    case 10:
+    case 13:
       setCielo(120, 90, 70);
       setTramonto(180, 50, 8);
       setAlba(180, 95, 30);
@@ -917,7 +944,7 @@ void applicaTestCorrente() {
       for (uint16_t i = 0; i < NUM_STELLE; i++)
         stelle.setPixelColor(i, stelle.Color(45, 32, 17));
       stelle.show();
-      Serial.println(F("TEST 11/27 - TUTTO INSIEME"));
+      Serial.println(F("TEST 14/30 - TUTTO INSIEME"));
       break;
   }
 
@@ -937,7 +964,7 @@ void testUscite() {
     Serial.println(F("=== MODALITA' TEST ==="));
     Serial.println(F("TEST = test successivo, START = esci"));
   } else {
-    testIndice = (testIndice + 1) % 27;
+    testIndice = (testIndice + 1) % 30;
   }
 
   applicaTestCorrente();
