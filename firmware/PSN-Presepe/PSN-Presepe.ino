@@ -666,7 +666,7 @@ bool inizializzaOled() {
   display.setTextSize(1);
   // Startup splash: PSN-Presepe! by Vanni
   display.setCursor(27,18); display.print(F("PSN-Presepe!"));
-  display.setCursor(30,36); display.print(F("by Vanni 018"));
+  display.setCursor(30,36); display.print(F("by Vanni 019"));
   display.display();
   delay(3000);
   return true;
@@ -1053,8 +1053,14 @@ const uint16_t BOOT_MELODY_MS[] = {
   420, 420, 560, 420, 420, 560, 420, 420, 1100
 };
 const uint8_t BOOT_MELODY_COUNT = sizeof(BOOT_MELODY_FREQ) / sizeof(BOOT_MELODY_FREQ[0]);
-const unsigned long BOOT_TOTAL_MS = 18060UL; // somma esatta delle durate della melodia
-const unsigned long BOOT_STEP_MS = BOOT_TOTAL_MS / BOOT_STEP_COUNT; // ~4,515 s per scena
+unsigned long durataMelodiaBoot() {
+  unsigned long totale = 0;
+  for (uint8_t i = 0; i < BOOT_MELODY_COUNT; i++) totale += BOOT_MELODY_MS[i];
+  return totale;
+}
+
+const unsigned long BOOT_TOTAL_MS = 17300UL; // somma verificata di BOOT_MELODY_MS[]
+const unsigned long BOOT_STEP_MS = BOOT_TOTAL_MS / BOOT_STEP_COUNT; // 4,325 s per scena
 int8_t bootNotaCorrente = -1;
 
 void aggiornaMelodiaBoot(unsigned long elapsedTotale) {
