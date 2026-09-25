@@ -195,7 +195,13 @@ const uint16_t BEEP_HZ = 900;
 const uint16_t BEEP_MS = 55;
 unsigned long buzzerFino = 0;
 bool buzzerAttivo = false;
-int ultimoPotBeep = -1;
+int potBeepRiferimento = -1;
+int potBeepUltimaLettura = -1;
+unsigned long potUltimaVariazioneMs = 0;
+bool potBeepInAttesa = false;
+const int POT_BEEP_DELTA = 80;                 // circa 8% della corsa: ignora piccoli spostamenti/rumore
+const int POT_BEEP_STABILITA_DELTA = 4;        // entro 4 punti ADC consideriamo il pot fermo
+const unsigned long POT_BEEP_SETTLE_MS = 350UL; // bip solo 350 ms dopo l'ultima variazione
 
 void buzzerBeep() {
   if (!BUZZER_ENABLED) return;
@@ -211,11 +217,32 @@ void buzzerTick() {
   }
 }
 
-void buzzerPot(int raw) {
-  if (ultimoPotBeep < 0) { ultimoPotBeep = raw; return; }
-  if (abs(raw - ultimoPotBeep) < POT_POPUP_DELTA) return;
-  ultimoPotBeep = raw;
-  buzzerBeep();
+void buzzerPotTick(int raw) {
+  unsigned long now = millis();
+
+  if (potBeepRiferimento < 0) {
+    potBeepRiferimento = raw;
+    potBeepUltimaLettura = raw;
+    return;
+  }
+
+  // Segui il movimento reale del potenziometro, ignorando il normale rumore ADC.
+  if (abs(raw - potBeepUltimaLettura) >= POT_BEEP_STABILITA_DELTA) {
+    potBeepUltimaLettura = raw;
+    potUltimaVariazioneMs = now;
+
+    // Il bip viene armato solo dopo uno spostamento consistente.
+    if (abs(raw - potBeepRiferimento) >= POT_BEEP_DELTA)
+      potBeepInAttesa = true;
+  }
+
+  // Un solo bip quando la manopola e' rimasta ferma per qualche centinaio di ms.
+  if (potBeepInAttesa && now - potUltimaVariazioneMs >= POT_BEEP_SETTLE_MS) {
+    potBeepInAttesa = false;
+    potBeepRiferimento = raw;
+    potBeepUltimaLettura = raw;
+    buzzerBeep();
+  }
 }
 
 // ============================================================
@@ -666,7 +693,7 @@ bool inizializzaOled() {
   display.setTextSize(1);
   // Startup splash: PSN-Presepe! by Vanni
   display.setCursor(27,18); display.print(F("PSN-Presepe!"));
-  display.setCursor(30,36); display.print(F("by Vanni 020"));
+  display.setCursor(30,36); display.print(F("by Vanni 021"));
   display.display();
   delay(3000);
   return true;
@@ -1272,8 +1299,8 @@ void loop() {
     if (abs(potNow - ultimoPotOled) >= POT_POPUP_DELTA) {
       ultimoPotOled = potNow;
       oledMostraPopup(OLED_VELOCITA);
-      buzzerPot(potNow);
     }
+    buzzerPotTick(potNow);
 
     aggiornaScena(p);
     aggiornaReleSchedulati(p);
