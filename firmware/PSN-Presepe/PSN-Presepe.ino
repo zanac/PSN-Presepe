@@ -862,6 +862,7 @@ void toggleStartStop() {
     }
 
     Serial.println(F("USCITA MODALITA' TEST"));
+    buzzerAvvia(SND_TEST_OUT, sizeof(SND_TEST_OUT) / sizeof(SND_TEST_OUT[0]));
     oledPopup = OLED_NESSUNO;
     float p = percentualeCiclo(durataCiclo());
     aggiornaScena(p);
@@ -1060,7 +1061,7 @@ const uint8_t BOOT_STEP_COUNT = 4;
 
 // "Astro del ciel" sul buzzer passivo opzionale, fino a "mite agnello Redentor".
 // Tempo volutamente più sostenuto rispetto alla rev.014.
-// La melodia può proseguire oltre l'autotest visivo: il boot attende la sua conclusione.
+// Autotest visivo, progress bar e melodia terminano insieme.
 const uint16_t BOOT_MELODY_FREQ[] = {
   392, 440, 392, 330, 392, 440, 392, 330,
   587, 587, 494, 523, 523, 392,
