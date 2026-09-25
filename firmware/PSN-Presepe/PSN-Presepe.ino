@@ -192,9 +192,10 @@ unsigned long dbStartMs = 0, dbNextMs = 0, dbTestMs = 0;
 // Feedback acustico semplice e non bloccante.
 // Tutti i comandi (START/STOP, AVANTI, TEST e potenziometro) usano lo stesso bip.
 const uint16_t BEEP_HZ = 900;
-const uint16_t BEEP_MS = 55;
+const uint16_t BEEP_MS = 90;
 unsigned long buzzerFino = 0;
 bool buzzerAttivo = false;
+bool buzzerPrioritaComando = false;
 int potBeepRiferimento = -1;
 int potBeepUltimaLettura = -1;
 unsigned long potUltimaVariazioneMs = 0;
@@ -203,17 +204,26 @@ const int POT_BEEP_DELTA = 80;                 // circa 8% della corsa: ignora p
 const int POT_BEEP_STABILITA_DELTA = 4;        // entro 4 punti ADC consideriamo il pot fermo
 const unsigned long POT_BEEP_SETTLE_MS = 350UL; // bip solo 350 ms dopo l'ultima variazione
 
-void buzzerBeep() {
+void buzzerBeep(bool comando = true) {
   if (!BUZZER_ENABLED) return;
+
+  // I comandi fisici hanno priorita': il feedback del potenziometro
+  // non puo' troncare o sostituire un bip START/STOP, AVANTI o TEST.
+  if (!comando && buzzerAttivo && buzzerPrioritaComando) return;
+
+  // Ripartenza esplicita: ogni comando riconosciuto ottiene un bip completo.
+  noTone(PIN_BUZZER);
   tone(PIN_BUZZER, BEEP_HZ);
   buzzerFino = millis() + BEEP_MS;
   buzzerAttivo = true;
+  buzzerPrioritaComando = comando;
 }
 
 void buzzerTick() {
   if (buzzerAttivo && (long)(millis() - buzzerFino) >= 0) {
     noTone(PIN_BUZZER);
     buzzerAttivo = false;
+    buzzerPrioritaComando = false;
   }
 }
 
@@ -241,7 +251,7 @@ void buzzerPotTick(int raw) {
     potBeepInAttesa = false;
     potBeepRiferimento = raw;
     potBeepUltimaLettura = raw;
-    buzzerBeep();
+    buzzerBeep(false);
   }
 }
 
@@ -693,7 +703,7 @@ bool inizializzaOled() {
   display.setTextSize(1);
   // Startup splash: PSN-Presepe! by Vanni
   display.setCursor(27,18); display.print(F("PSN-Presepe!"));
-  display.setCursor(30,36); display.print(F("by Vanni 021"));
+  display.setCursor(30,36); display.print(F("by Vanni 022"));
   display.display();
   delay(3000);
   return true;
