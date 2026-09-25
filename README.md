@@ -98,6 +98,25 @@ Per ogni scheda: **+12 V protetto → DC+**, **0 V comune → DC-**. I morsetti 
 
 I jumper S1–S4 permettono di scegliere HIGH/LOW trigger. Il firmware gestisce già le 16 uscite nella modalità TEST; nel simulatore viene usata la logica HIGH=ON. Prima del collegamento definitivo dei moduli reali va verificata la posizione dei jumper e, se necessario, impostato `RELE_ACTIVE_LOW` nel firmware.
 
+#### Schedulazione scenografica dei relè
+
+Le accensioni e gli spegnimenti durante il ciclo sono definiti nel firmware dalla tabella `SCHEDULAZIONE_RELE[]`. Ogni evento contiene:
+
+`{ NOME_FASE, NOME_RELE, ACCESO_SPENTO, PERCENTUALE_FASE }`
+
+La percentuale è **relativa alla singola fase**, non all'intero ciclo. Per esempio:
+
+```cpp
+const EventoRele SCHEDULAZIONE_RELE[] = {
+  { TRAMONTO, Grp_01_03, true,  30 },
+  { NOTTE,    Grp_01_03, false, 50 }
+};
+```
+
+Con questa configurazione `Grp_01_03` si accende al **30% della fase TRAMONTO**, resta acceso durante il resto del tramonto, il crepuscolo e la prima metà della notte, quindi si spegne al **50% della fase NOTTE**.
+
+Lo stato dei relè viene ricostruito dalla posizione corrente del ciclo, quindi rimane coerente anche usando **AVANTI**, pausa/ripresa o modificando la durata con il potenziometro. All'inizio di un nuovo ciclo, prima che siano raggiunti nuovi eventi, i relè partono spenti. In futuro la scenografia ON/OFF può essere modificata semplicemente aggiungendo o cambiando le righe della tabella.
+
 ### Display OLED ELEGOO EL-SM-008
 
 Display di stato OLED **0,96 pollici, 128×64, I²C**, alimentazione 3,3–5 V, indirizzo I²C a 7 bit **0x3C**.
