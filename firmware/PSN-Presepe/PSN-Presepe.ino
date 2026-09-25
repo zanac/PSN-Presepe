@@ -219,8 +219,9 @@ void setAlba(uint8_t r, uint8_t g, uint8_t b) {
 // STELLE WS2811
 // ============================================================
 // Effetto naturale: ogni notte viene generato un cielo diverso.
-// Le stelle hanno luminosita' massima differente e compaiono/scompaiono
-// progressivamente. Una piccola parte scintilla molto lentamente.
+// Ogni notte vengono scelte casualmente 20 stelle su 50, con luminosita'
+// massime differenti. Compaiono nel crepuscolo, restano attive di notte e
+// scompaiono durante l'alba. Tutte le 20 hanno variazioni asincrone individuali.
 
 uint8_t stellaLum[NUM_STELLE];
 uint8_t stellaOrdine[NUM_STELLE];
@@ -245,9 +246,9 @@ void generaCieloStellato() {
     stellaOrdine[j] = tmp;
   }
 
-  // Tutte le 20 stelle attive tremolano, ciascuna con tempi e fase propri.
-  // Poiche' le prime 20 sono gia' in ordine casuale, basta sceglierne
-  // 7 senza ripetizioni con un secondo piccolo shuffle.
+  // Tutte le 20 stelle attive ricevono il comportamento variabile.
+  // Il piccolo shuffle assegna il flag alle stelle gia' selezionate casualmente;
+  // STELLE_TREMOLANTI coincide attualmente con STELLE_ATTIVE, quindi sono tutte.
   uint8_t candidati[STELLE_ATTIVE];
   for (uint8_t i = 0; i < STELLE_ATTIVE; i++) candidati[i] = i;
   for (int i = STELLE_ATTIVE - 1; i > 0; i--) {
@@ -278,9 +279,9 @@ void mostraStelle(float livello) {
 
     uint16_t v = (uint16_t)(stellaLum[i] * locale);
 
-    // Tutte le stelle attive scintillano in modo evidente anche nel simulatore.
-    // Ogni stella ha un ciclo sfalsato: accesa -> dissolvenza -> SPENTA ->
-    // riaccensione. La pausa a zero rende l'effetto inequivocabile in Wokwi.
+    // Ogni stella attiva segue autonomamente un ciclo di luminosita':
+    // livello pieno -> dissolvenza a zero -> pausa spenta -> riaccensione.
+    // Durate e offset differenti evitano che le 20 stelle si muovano insieme.
     if (stellaTwinkle[i] && v > 5) {
       // Durata pseudo-casuale e stabile per ogni pixel: circa 3,2-6,1 s.
       // Anche l'offset e' diverso per ogni stella, cosi' partono vicine ma non insieme
@@ -991,7 +992,8 @@ void setup() {
   pinMode(PIN_NEXT,  INPUT_PULLUP);
   pinMode(PIN_TEST,  INPUT_PULLUP);
 
-  // Uscite relè predisposte per il test manuale.
+  // Inizializza le 16 uscite relè in stato spento.
+  // Sono usate sia dalla schedulazione scenografica sia dal test manuale.
   for (uint8_t i = 0; i < 16; i++) {
     digitalWrite(PIN_RELE[i], RELE_ACTIVE_LOW ? HIGH : LOW);
     pinMode(PIN_RELE[i], OUTPUT);
