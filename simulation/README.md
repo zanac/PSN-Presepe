@@ -39,7 +39,7 @@ La GitHub Action `Arduino Mega Build` compila il firmware, ma **non esegue autom
 - **AVANTI** salta all'inizio della fase successiva.
 - **TEST** entra nella modalità di collaudo e, a ogni pressione, passa al test successivo. **START/STOP** esce dalla modalità TEST e ripristina il punto del ciclo precedente.
 
-La sequenza TEST attuale comprende **27 passaggi**: CIELO R/G/B, TRAMONTO R/G/B, ALBA R/G/B, tutte le 50 stelle, tutto insieme e infine i 16 relè `Grp_01_01`–`Grp_04_04` uno alla volta.
+La sequenza TEST attuale comprende **30 passaggi**: CIELO R/G/B, TRAMONTO R/G/B, ALBA R/G/B, STELLE R/G/B su tutti i 50 pixel, tutte le 50 stelle in bianco caldo, tutto insieme e infine i 16 relè `Grp_01_01`–`Grp_04_04` uno alla volta.
 
 ## Schedulazione relè
 
