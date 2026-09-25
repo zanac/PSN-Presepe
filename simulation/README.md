@@ -4,9 +4,18 @@
 
 La simulazione segue il cablaggio attuale del firmware del branch di lavoro. Per lo sviluppo e i test usare `dev`; `main` resta la versione stabile. Per provarla nel browser, crea un progetto Arduino Mega su Wokwi e copia:
 - `simulation/diagram.json` nel diagramma Wokwi;
+- in alternativa, `simulation/diagram-no-display.json` per provare il sistema senza OLED;
 - `firmware/PSN-Presepe/PSN-Presepe.ino` nel file `sketch.ino`;
 - `simulation/rgb-strip.chip.json` e `simulation/rgb-strip.chip.c` nel progetto Wokwi;
 - `simulation/libraries.txt` nel Library Manager (`libraries.txt`).
+
+## Variante senza display
+
+Il file `simulation/diagram-no-display.json` è una variante del diagramma principale creata appositamente per verificare il comportamento del controller quando l'OLED non è collegato. Contiene lo stesso hardware simulato di `diagram.json`, ad eccezione del display SSD1306 e dei relativi collegamenti VCC, GND, SDA e SCL.
+
+**Regola di manutenzione:** ogni modifica futura a `simulation/diagram.json` che riguarda cablaggio, controlli, stelle, relè, strisce RGB o altri componenti deve essere riportata anche in `simulation/diagram-no-display.json`. Le modifiche che riguardano esclusivamente l'OLED restano invece solo nel diagramma principale.
+
+Per eseguire il test senza display, copiare il contenuto di `diagram-no-display.json` nel `diagram.json` del progetto Wokwi. Il firmware non va modificato: deve rilevare l'assenza dell'OLED e continuare normalmente con autotest, ciclo scenografico, pulsanti, stelle, RGB e relè.
 
 ## Componenti simulati
 
