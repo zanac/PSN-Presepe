@@ -87,16 +87,16 @@ Nel firmware la striscia sinistra cresce e cala gradualmente durante il TRAMONTO
 
 Luci case, pompe, mulino e gli altri carichi che richiedono soltanto ON/OFF vengono gestiti dai **quattro moduli relè 12 V a 4 canali**. I MOSFET restano dedicati ai carichi che richiedono PWM/dimmer.
 
-| Uscita | Mega | Modulo / ingresso |
+| Gruppo | Mega | Modulo / ingresso |
 |---|---:|---|
-| R1–R4 | D25–D28 | RELÈ #1 IN1–IN4 |
-| R5–R8 | D29–D32 | RELÈ #2 IN1–IN4 |
-| R9–R12 | D33–D36 | RELÈ #3 IN1–IN4 |
-| R13–R16 | D37–D40 | RELÈ #4 IN1–IN4 |
+| Grp_01_01–Grp_01_04 | D25–D28 | RELÈ #1 IN1–IN4 |
+| Grp_02_01–Grp_02_04 | D29–D32 | RELÈ #2 IN1–IN4 |
+| Grp_03_01–Grp_03_04 | D33–D36 | RELÈ #3 IN1–IN4 |
+| Grp_04_01–Grp_04_04 | D37–D40 | RELÈ #4 IN1–IN4 |
 
 Per ogni scheda: **+12 V protetto → DC+**, **0 V comune → DC-**. I morsetti COM/NO/NC restano disponibili per i futuri carichi. Per un carico normalmente spento si useranno normalmente COM + NO.
 
-I jumper S1–S4 permettono di scegliere HIGH/LOW trigger. Prima di abilitare i relè nel firmware verrà verificata la configurazione reale, così da evitare attivazioni involontarie all'avvio.
+I jumper S1–S4 permettono di scegliere HIGH/LOW trigger. Il firmware gestisce già le 16 uscite nella modalità TEST; nel simulatore viene usata la logica HIGH=ON. Prima del collegamento definitivo dei moduli reali va verificata la posizione dei jumper e, se necessario, impostato `RELE_ACTIVE_LOW` nel firmware.
 
 ### Display OLED ELEGOO EL-SM-008
 
@@ -256,28 +256,30 @@ PWM4/GND4 e OUT4 restano liberi.
 
 PWM4/GND4 e OUT4 restano liberi. D13 rimane disponibile come uscita PWM di riserva.
 
-### 6. Quattro moduli relè — cablaggio preventivo dei 16 comandi
+### 6. Quattro moduli relè — 16 uscite ON/OFF
 
-I quattro moduli vengono montati e collegati subito al Mega. L'assegnazione scenografica dei singoli relè verrà decisa in seguito.
+I quattro moduli vengono montati e collegati al Mega. Tutti i carichi che richiedono soltanto ON/OFF — casette, pompa, mulino, grotta, lampioni e altri effetti — devono essere assegnati a queste 16 uscite. D6–D9 non sono più riservati a questi carichi.
+
+La nomenclatura standard è `Grp_GG_RR`: `GG` identifica il gruppo/scheda relè (01–04) e `RR` il relè del gruppo (01–04).
 
 | Uscita | Mega | Modulo / ingresso |
 |---|---:|---|
-| R1 | D25 | RELÈ #1 IN1 |
-| R2 | D26 | RELÈ #1 IN2 |
-| R3 | D27 | RELÈ #1 IN3 |
-| R4 | D28 | RELÈ #1 IN4 |
-| R5 | D29 | RELÈ #2 IN1 |
-| R6 | D30 | RELÈ #2 IN2 |
-| R7 | D31 | RELÈ #2 IN3 |
-| R8 | D32 | RELÈ #2 IN4 |
-| R9 | D33 | RELÈ #3 IN1 |
-| R10 | D34 | RELÈ #3 IN2 |
-| R11 | D35 | RELÈ #3 IN3 |
-| R12 | D36 | RELÈ #3 IN4 |
-| R13 | D37 | RELÈ #4 IN1 |
-| R14 | D38 | RELÈ #4 IN2 |
-| R15 | D39 | RELÈ #4 IN3 |
-| R16 | D40 | RELÈ #4 IN4 |
+| Grp_01_01 | D25 | RELÈ #1 IN1 |
+| Grp_01_02 | D26 | RELÈ #1 IN2 |
+| Grp_01_03 | D27 | RELÈ #1 IN3 |
+| Grp_01_04 | D28 | RELÈ #1 IN4 |
+| Grp_02_01 | D29 | RELÈ #2 IN1 |
+| Grp_02_02 | D30 | RELÈ #2 IN2 |
+| Grp_02_03 | D31 | RELÈ #2 IN3 |
+| Grp_02_04 | D32 | RELÈ #2 IN4 |
+| Grp_03_01 | D33 | RELÈ #3 IN1 |
+| Grp_03_02 | D34 | RELÈ #3 IN2 |
+| Grp_03_03 | D35 | RELÈ #3 IN3 |
+| Grp_03_04 | D36 | RELÈ #3 IN4 |
+| Grp_04_01 | D37 | RELÈ #4 IN1 |
+| Grp_04_02 | D38 | RELÈ #4 IN2 |
+| Grp_04_03 | D39 | RELÈ #4 IN3 |
+| Grp_04_04 | D40 | RELÈ #4 IN4 |
 
 Per **ciascuno dei quattro moduli** collegare anche:
 
@@ -287,7 +289,7 @@ Per **ciascuno dei quattro moduli** collegare anche:
 | 0 V comune | DC- |
 | pin Mega indicato sopra | IN1 / IN2 / IN3 / IN4 |
 
-Per ora i morsetti **COM/NO/NC possono rimanere senza carico**. Così tutta la parte di comando R1–R16 è già montata e pronta.
+Per ora i morsetti **COM/NO/NC possono rimanere senza carico**. Così tutta la parte di comando `Grp_01_01`–`Grp_04_04` è montata e pronta. In modalità TEST le 16 uscite vengono provate una alla volta, una pressione di TEST per ciascun relè.
 
 Quando assegneremo un carico 12 V normalmente spento, lo schema tipico sarà: **+12 V protetto → COM → NO → positivo carico**, mentre il negativo del carico torna allo **0 V comune**.
 
@@ -349,10 +351,7 @@ Se il senso di rotazione risulta invertito rispetto a quello desiderato, scambia
 | D3 | RGB principale G |
 | D4 | RGB principale B |
 | D5 | DATA WS2811 |
-| D6 | luci case |
-| D7 | pompa |
-| D8 | mulino (provvisorio, finché non si decide il relè) |
-| D9 | grotta/lampioni |
+| D6–D9 | liberi / riserva |
 | D10 | RGB tramonto R |
 | D11 | RGB tramonto G |
 | D12 | RGB tramonto B |
@@ -362,7 +361,7 @@ Se il senso di rotazione risulta invertito rispetto a quello desiderato, scambia
 | D20 | SDA OLED EL-SM-008 (I²C, opzionale) |
 | D21 | SCL OLED EL-SM-008 (I²C, opzionale) |
 | D24 | TEST |
-| D25–D40 | R1–R16, quattro moduli relè |
+| D25–D40 | Grp_01_01–Grp_04_04, quattro moduli relè |
 | D44 | RGB alba R |
 | D45 | RGB alba G |
 | D46 | RGB alba B |
@@ -376,15 +375,15 @@ Aprire:
 
 con Arduino IDE standard e selezionare **Arduino Mega or Mega 2560**.
 
-Il firmware attuale implementa cielo RGB principale, due RGB laterali alba/tramonto, stelle WS2811 e comandi. D6-D9 sono riservati nel sorgente al secondo modulo MOSFET della Fase 2.
+Il firmware attuale implementa cielo RGB principale, due RGB laterali alba/tramonto, stelle WS2811, comandi, OLED e modalità TEST. D6–D9 sono liberi/di riserva. I carichi ON/OFF vengono gestiti tramite i 16 relè D25–D40.
 
 ## GitHub Actions
 
-Il workflow `.github/workflows/build.yml` può essere avviato manualmente dalla pagina GitHub Actions e compila il firmware per:
+Il workflow `.github/workflows/build.yml` può essere avviato manualmente dalla pagina GitHub Actions e parte automaticamente quando viene pubblicata una nuova GitHub Release associata a un tag. Compila il firmware per:
 
 `arduino:avr:mega`
 
-I file HEX/ELF compilati vengono pubblicati come artifact della GitHub Action.
+I file compilati vengono pubblicati come artifact della GitHub Action. Per le build avviate da una Release vengono inoltre allegati alla Release il firmware `PSN-Presepe.ino.hex` e il pacchetto `PSN-Presepe-Windows-Portable.zip`.
 
 ## Simulazione
 
@@ -510,7 +509,7 @@ I LED R/G/B simulano i **segnali di comando PWM** delle tre strisce RGB reali. N
 
 La striscia NeoPixel virtuale rappresenta le **50 stelle**. Wokwi usa un componente addressable compatibile per visualizzare l'effetto; nel presepe reale utilizziamo la stringa WS2811 a 12 V con il cablaggio documentato.
 
-Gli indicatori R1–R16 rappresentano soltanto i pin D25–D40 destinati ai quattro moduli relè. La logica dei relè verrà implementata successivamente.
+Gli indicatori `Grp_01_01`–`Grp_04_04` rappresentano le 16 uscite dei quattro moduli relè collegate a D25–D40. In modalità TEST vengono accese una alla volta dopo i sette test di cielo/RGB/stelle; dopo `Grp_04_04` la sequenza riparte dal primo test e START esce dalla modalità TEST.
 
 ### 11. Se Wokwi dà errore
 
