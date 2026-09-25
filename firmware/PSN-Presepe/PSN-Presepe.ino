@@ -7,6 +7,7 @@
     D3 = Cielo RGB Verde
     D4 = Cielo RGB Blu
     D5 = DATA stelle WS2811 (50 pixel, 12 V)
+    D6 = Buzzer piezo passivo opzionale
     D10/D11/D12 = RGB laterale SINISTRA / TRAMONTO (R/G/B)
     D44/D45/D46 = RGB laterale DESTRA / ALBA (R/G/B)
 
@@ -54,6 +55,7 @@ const uint8_t PIN_CIELO_R = 2;
 const uint8_t PIN_CIELO_G = 3;
 const uint8_t PIN_CIELO_B = 4;
 const uint8_t PIN_STELLE_DATA = 5;
+const uint8_t PIN_BUZZER = 6; // piezo passivo opzionale: se assente il firmware funziona normalmente
 
 // Strisce RGB laterali da 1 m, dedicate agli effetti direzionali.
 // Sinistra = tramonto; destra = alba. D13 resta PWM libero.
@@ -634,7 +636,7 @@ bool inizializzaOled() {
   display.setTextSize(1);
   // Startup splash: PSN-Presepe! by Vanni
   display.setCursor(27,18); display.print(F("PSN-Presepe!"));
-  display.setCursor(30,36); display.print(F("by Vanni 013"));
+  display.setCursor(30,36); display.print(F("by Vanni 016"));
   display.display();
   delay(3000);
   return true;
@@ -997,13 +999,57 @@ void stampaStato(unsigned long durata, float p) {
 // SEQUENZA DI BOOT / AUTOTEST VISIVO
 // ============================================================
 
-const unsigned long BOOT_STEP_MS = 2000UL;
 const uint8_t BOOT_STEP_COUNT = 4;
+
+// "Astro del ciel" sul buzzer passivo opzionale, fino a "mite agnello Redentor".
+// Tempo volutamente più sostenuto rispetto alla rev.014.
+// La melodia può proseguire oltre l'autotest visivo: il boot attende la sua conclusione.
+const uint16_t BOOT_MELODY_FREQ[] = {
+  392, 440, 392, 330, 392, 440, 392, 330,
+  587, 587, 494, 523, 523, 392,
+  440, 440, 523, 494, 440, 392, 440, 392, 330,
+  440, 440, 523, 494, 440, 392, 440, 392, 330
+};
+const uint16_t BOOT_MELODY_MS[] = {
+  420, 420, 560, 900, 420, 420, 560, 900,
+  560, 420, 560, 560, 420, 900,
+  420, 420, 560, 420, 420, 560, 420, 420, 900,
+  420, 420, 560, 420, 420, 560, 420, 420, 1100
+};
+const uint8_t BOOT_MELODY_COUNT = sizeof(BOOT_MELODY_FREQ) / sizeof(BOOT_MELODY_FREQ[0]);
+const unsigned long BOOT_TOTAL_MS = 18060UL; // somma esatta delle durate della melodia
+const unsigned long BOOT_STEP_MS = BOOT_TOTAL_MS / BOOT_STEP_COUNT; // ~4,515 s per scena
+int8_t bootNotaCorrente = -1;
+
+void aggiornaMelodiaBoot(unsigned long elapsedTotale) {
+  unsigned long limite = 0;
+  uint8_t nota = BOOT_MELODY_COUNT;
+  for (uint8_t i = 0; i < BOOT_MELODY_COUNT; i++) {
+    limite += BOOT_MELODY_MS[i];
+    if (elapsedTotale < limite) {
+      nota = i;
+      break;
+    }
+  }
+
+  if (nota >= BOOT_MELODY_COUNT) {
+    if (bootNotaCorrente != -1) {
+      noTone(PIN_BUZZER);
+      bootNotaCorrente = -1;
+    }
+    return;
+  }
+
+  if (bootNotaCorrente != (int8_t)nota) {
+    tone(PIN_BUZZER, BOOT_MELODY_FREQ[nota]);
+    bootNotaCorrente = nota;
+  }
+}
 
 void mostraOledBoot(const __FlashStringHelper *fase, uint8_t step, unsigned long elapsedStep) {
   if (!oledPresente) return;
 
-  // Avanzamento complessivo sui 4 passi da 2 secondi.
+  // Avanzamento complessivo sui 4 passi, sincronizzato alla durata della melodia.
   unsigned long fatto = (unsigned long)step * BOOT_STEP_MS + elapsedStep;
   unsigned long totale = (unsigned long)BOOT_STEP_COUNT * BOOT_STEP_MS;
   uint8_t pct = (uint8_t)min(100UL, (fatto * 100UL) / totale);
@@ -1034,37 +1080,44 @@ void attesaBoot(const __FlashStringHelper *fase, uint8_t step) {
     elapsed = millis() - start;
     if (elapsed > BOOT_STEP_MS) elapsed = BOOT_STEP_MS;
     mostraOledBoot(fase, step, elapsed);
+    aggiornaMelodiaBoot((unsigned long)step * BOOT_STEP_MS + elapsed);
     delay(40);
   } while (millis() - start < BOOT_STEP_MS);
 }
 
 void eseguiSequenzaBoot() {
-  Serial.println(F("BOOT: autotest visivo uscite"));
+  Serial.println(F("BOOT: autotest visivo uscite + melodia buzzer opzionale"));
 
   tuttoSpento();
   spegniRele();
 
-  // 1/4 - ALBA: bianco brillante per 2 secondi.
+  // 1/4 - ALBA: primo quarto della melodia.
   setAlba(255, 255, 255);
   attesaBoot(F("ALBA"), 0);
   setAlba(0, 0, 0);
 
-  // 2/4 - CIELO principale: bianco brillante per 2 secondi.
+  // 2/4 - CIELO principale: secondo quarto della melodia.
   setCielo(255, 255, 255);
   attesaBoot(F("CIELO"), 1);
   setCielo(0, 0, 0);
 
-  // 3/4 - TRAMONTO: bianco brillante per 2 secondi.
+  // 3/4 - TRAMONTO: terzo quarto della melodia.
   setTramonto(255, 255, 255);
   attesaBoot(F("TRAMONTO"), 2);
   setTramonto(0, 0, 0);
 
-  // 4/4 - tutte le 50 stelle: bianco brillante per 2 secondi.
+  // 4/4 - tutte le 50 stelle: ultimo quarto della melodia.
   stelle.clear();
   for (uint16_t i = 0; i < NUM_STELLE; i++)
     stelle.setPixelColor(i, stelle.Color(255, 255, 255));
   stelle.show();
   attesaBoot(F("STELLE"), 3);
+
+  // I quattro passi coprono l'intera melodia: luce, progress bar e musica
+  // terminano insieme prima di PRONTO.
+  aggiornaMelodiaBoot(BOOT_TOTAL_MS);
+  noTone(PIN_BUZZER);
+  bootNotaCorrente = -1;
 
   // Fine autotest: tutto spento prima dell'avvio del normale ciclo GIORNO.
   stelle.clear();
@@ -1095,6 +1148,8 @@ void setup() {
   pinMode(PIN_ALBA_R, OUTPUT);
   pinMode(PIN_ALBA_G, OUTPUT);
   pinMode(PIN_ALBA_B, OUTPUT);
+  pinMode(PIN_BUZZER, OUTPUT);
+  noTone(PIN_BUZZER);
   stelle.begin();
   stelle.clear();
   stelle.show();
@@ -1128,6 +1183,7 @@ void setup() {
   Serial.println(F("D3  = RGB Verde"));
   Serial.println(F("D4  = RGB Blu"));
   Serial.println(F("D5  = DATA WS2811 (50 stelle)"));
+  Serial.println(F("D6  = BUZZER passivo opzionale"));
   Serial.println(F("D10/D11/D12 = RGB SINISTRA / TRAMONTO"));
   Serial.println(F("D44/D45/D46 = RGB DESTRA / ALBA"));
   Serial.println(F("D22 = START/STOP"));

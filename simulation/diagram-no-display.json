@@ -583,6 +583,15 @@
       "attrs": {
         "labelId": "2"
       }
+    },
+    {
+      "type": "wokwi-buzzer",
+      "id": "buzzer",
+      "top": -120,
+      "left": 1100,
+      "attrs": {
+        "volume": "0.15"
+      }
     }
   ],
   "connections": [
@@ -1785,6 +1794,18 @@
       "mega:12",
       "",
       []
+    ],
+    [
+      "mega:6",
+      "buzzer:1",
+      "",
+      []
+    ],
+    [
+      "buzzer:2",
+      "mega:GND.1",
+      "",
+      []
     ]
   ],
   "attrs": {
@@ -1792,5 +1813,6 @@
     "layout-revision": "2026-09-25-rgb-strips-wide-v1",
     "relay-label-standard": "Grp_GG_RR: GG=relay board group 01-04, RR=relay channel 01-04",
     "test-variant": "NO DISPLAY - test optional OLED handling"
-  }
+  },
+  "layoutRevision": "2026-09-25-buzzer-v1"
 }

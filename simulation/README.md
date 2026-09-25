@@ -23,6 +23,7 @@ Per eseguire il test senza display, copiare il contenuto di `diagram-no-display.
 |---|---|---|
 | RGB cielo tramite MOSFET | barra custom `chip-rgb-strip` | D2/D3/D4 |
 | Stelle WS2811 12 V, 50 pixel | striscia NeoPixel WS2812 **5 V solo nel simulatore** | D5 |
+| Buzzer piezo passivo opzionale | buzzer Wokwi | D6 |
 | RGB tramonto, sinistra | barra custom `chip-rgb-strip` | D10/D11/D12 |
 | RGB alba, destra | barra custom `chip-rgb-strip` | D44/D45/D46 |
 | OLED ELEGOO EL-SM-008 I²C 0x3C | SSD1306 128×64 | SDA D20 / SCL D21 |
@@ -67,7 +68,7 @@ La GitHub Action `Arduino Mega Build` compila il firmware, ma **non esegue autom
 
 ## Boot simulato
 
-All'avvio il firmware esegue anche in Wokwi l'autotest reale: **ALBA**, **CIELO** e **TRAMONTO** diventano bianchi per 2 secondi ciascuno, quindi tutti i 50 pixel delle **STELLE** diventano bianchi per 2 secondi. L'OLED mostra l'avanzamento complessivo con una progress bar. Finito il test, le uscite vengono spente, l’OLED mostra **PRONTO** per 900 ms e parte da zero il normale ciclo nella fase GIORNO.
+All'avvio il firmware esegue anche in Wokwi l'autotest reale: **ALBA**, **CIELO** e **TRAMONTO** diventano bianchi per 2 secondi ciascuno, quindi tutti i 50 pixel delle **STELLE** diventano bianchi per 2 secondi. In contemporanea il buzzer passivo opzionale su **D6** riproduce, a tempo più sostenuto, **Astro del ciel** fino alla frase **“mite agnello Redentor”**. L'autotest visivo viene esteso alla stessa durata della melodia, dividendo ALBA → CIELO → TRAMONTO → STELLE in quattro intervalli uguali, così progress bar, luci e musica terminano insieme prima di PRONTO; se il buzzer reale non è collegato il firmware continua normalmente. L'OLED mostra l'avanzamento complessivo con una progress bar. Finito il test, le uscite vengono spente, l’OLED mostra **PRONTO** per 900 ms e parte da zero il normale ciclo nella fase GIORNO.
 
 ## Comandi e modalità TEST
 
