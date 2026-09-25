@@ -192,7 +192,7 @@ Il ciclo automatico coordina la **striscia RGB principale**, le **due strisce RG
 
 ## Manuale di montaggio filo per filo
 
-Questa sezione è il riferimento pratico per il cablaggio. **Non lavorare mai sul circuito con l'alimentatore 230 V collegato.** Il Mega è alimentato separatamente via USB 5 V. Il +12 V alimenta soltanto carichi e moduli di potenza. Lo **0 V 12 V e GND Arduino devono essere in comune** per i segnali PWM e per DATA WS2811.
+Questa sezione è il riferimento pratico per il cablaggio. **Non lavorare mai sul circuito con l'alimentatore 230 V collegato.** **Il +12 V non deve mai essere collegato direttamente a un pin del Mega, a 5 V, A0, SDA/SCL o DATA:** il Mega lavora a logica 5 V e i pin I/O non sono ingressi a 12 V. Il Mega è alimentato separatamente via USB 5 V. Il +12 V alimenta soltanto carichi e moduli di potenza. Lo **0 V 12 V e GND Arduino devono essere in comune** per i segnali PWM e per DATA WS2811.
 
 ### 1. Distribuzione alimentazione 12 V
 
@@ -249,21 +249,22 @@ ALIMENTATORE 12 V
 | 4 | Mega GND | MOSFET #1 GND2 |
 | 5 | Mega D4 | MOSFET #1 PWM3 |
 | 6 | Mega GND | MOSFET #1 GND3 |
-| 7 | +12 V protetto | RGB principale +12 V |
-| 8 | RGB principale R | MOSFET #1 OUT1- |
-| 9 | RGB principale G | MOSFET #1 OUT2- |
-| 10 | RGB principale B | MOSFET #1 OUT3- |
+| 7 | F1 — CIELO (+12 V protetto) | RGB principale +12 V |
+| 8 | F1 — CIELO (+12 V protetto) | MOSFET #1 DC+ |
+| 9 | RGB principale R | MOSFET #1 OUT1- |
+| 10 | RGB principale G | MOSFET #1 OUT2- |
+| 11 | RGB principale B | MOSFET #1 OUT3- |
 
-PWM4/GND4 e OUT4 restano liberi. Prima del cablaggio definitivo verificare sul modulo reale la continuità tra DC+ e OUT+.
+Il **DC- del MOSFET #1 deve essere collegato allo 0 V comune**, come indicato nella sezione 1. PWM4/GND4 e OUT4 restano liberi. Prima del cablaggio definitivo verificare sul modulo reale la continuità tra DC+ e OUT+; non assumere la topologia del modulo senza questa verifica.
 
 ### 3. Stelle WS2811
 
 | Filo | Da | A |
 |---|---|---|
-| 11 | +12 V protetto | WS2811 +12 V |
-| 12 | WAGO 0 V comune | WS2811 GND |
-| 13 | Mega D5 | resistenza 330–470 Ω |
-| 14 | uscita resistenza | WS2811 DATA/DIN |
+| 12 | F4 — STELLE (+12 V protetto) | WS2811 +12 V |
+| 13 | WAGO 0 V comune | WS2811 GND |
+| 14 | Mega D5 | resistenza 330–470 Ω |
+| 15 | uscita resistenza | WS2811 DATA/DIN |
 
 Rispettare la freccia/direzione DATA della stringa. La resistenza va preferibilmente vicino all'ingresso della prima WS2811.
 
@@ -271,35 +272,37 @@ Rispettare la freccia/direzione DATA della stringa. La resistenza va preferibilm
 
 | Filo | Da | A |
 |---|---|---|
-| 15 | Mega D10 | MOSFET #3 PWM1 |
-| 16 | Mega GND | MOSFET #3 GND1 |
-| 17 | Mega D11 | MOSFET #3 PWM2 |
-| 18 | Mega GND | MOSFET #3 GND2 |
-| 19 | Mega D12 | MOSFET #3 PWM3 |
-| 20 | Mega GND | MOSFET #3 GND3 |
-| 21 | +12 V protetto | RGB sinistra +12 V |
-| 22 | RGB sinistra R | MOSFET #3 OUT1- |
-| 23 | RGB sinistra G | MOSFET #3 OUT2- |
-| 24 | RGB sinistra B | MOSFET #3 OUT3- |
+| 16 | Mega D10 | MOSFET #3 PWM1 |
+| 17 | Mega GND | MOSFET #3 GND1 |
+| 18 | Mega D11 | MOSFET #3 PWM2 |
+| 19 | Mega GND | MOSFET #3 GND2 |
+| 20 | Mega D12 | MOSFET #3 PWM3 |
+| 21 | Mega GND | MOSFET #3 GND3 |
+| 22 | F3 — TRAMONTO (+12 V protetto) | RGB sinistra +12 V |
+| 23 | F3 — TRAMONTO (+12 V protetto) | MOSFET #3 DC+ |
+| 24 | RGB sinistra R | MOSFET #3 OUT1- |
+| 25 | RGB sinistra G | MOSFET #3 OUT2- |
+| 26 | RGB sinistra B | MOSFET #3 OUT3- |
 
-PWM4/GND4 e OUT4 restano liberi.
+Il **DC- del MOSFET #3 deve essere collegato allo 0 V comune**, come indicato nella sezione 1. PWM4/GND4 e OUT4 restano liberi.
 
 ### 5. MOSFET #4 — RGB destra / ALBA
 
 | Filo | Da | A |
 |---|---|---|
-| 25 | Mega D44 | MOSFET #4 PWM1 |
-| 26 | Mega GND | MOSFET #4 GND1 |
-| 27 | Mega D45 | MOSFET #4 PWM2 |
-| 28 | Mega GND | MOSFET #4 GND2 |
-| 29 | Mega D46 | MOSFET #4 PWM3 |
-| 30 | Mega GND | MOSFET #4 GND3 |
-| 31 | +12 V protetto | RGB destra +12 V |
-| 32 | RGB destra R | MOSFET #4 OUT1- |
-| 33 | RGB destra G | MOSFET #4 OUT2- |
-| 34 | RGB destra B | MOSFET #4 OUT3- |
+| 27 | Mega D44 | MOSFET #4 PWM1 |
+| 28 | Mega GND | MOSFET #4 GND1 |
+| 29 | Mega D45 | MOSFET #4 PWM2 |
+| 30 | Mega GND | MOSFET #4 GND2 |
+| 31 | Mega D46 | MOSFET #4 PWM3 |
+| 32 | Mega GND | MOSFET #4 GND3 |
+| 33 | F2 — ALBA (+12 V protetto) | RGB destra +12 V |
+| 34 | F2 — ALBA (+12 V protetto) | MOSFET #4 DC+ |
+| 35 | RGB destra R | MOSFET #4 OUT1- |
+| 36 | RGB destra G | MOSFET #4 OUT2- |
+| 37 | RGB destra B | MOSFET #4 OUT3- |
 
-PWM4/GND4 e OUT4 restano liberi. D13 rimane disponibile come uscita PWM di riserva.
+Il **DC- del MOSFET #4 deve essere collegato allo 0 V comune**, come indicato nella sezione 1. PWM4/GND4 e OUT4 restano liberi. D13 rimane disponibile come uscita PWM di riserva.
 
 ### 6. Quattro moduli relè — 16 uscite ON/OFF
 
@@ -357,12 +360,12 @@ I pulsanti sono momentanei NO. Grazie a INPUT_PULLUP non servono resistenze este
 
 | Filo | Da | A |
 |---|---|---|
-| 43 | Mega D22 | START/STOP NO |
-| 44 | START/STOP COM | Mega GND |
-| 45 | Mega D23 | AVANTI NO |
-| 46 | AVANTI COM | Mega GND |
-| 47 | Mega D24 | TEST NO |
-| 48 | TEST COM | Mega GND |
+| 38 | Mega D22 | START/STOP NO |
+| 39 | START/STOP COM | Mega GND |
+| 40 | Mega D23 | AVANTI NO |
+| 41 | AVANTI COM | Mega GND |
+| 42 | Mega D24 | TEST NO |
+| 43 | TEST COM | Mega GND |
 
 Gli eventuali contatti NC dei pulsanti rimangono scollegati.
 
@@ -370,9 +373,9 @@ Gli eventuali contatti NC dei pulsanti rimangono scollegati.
 
 | Filo | Da | A |
 |---|---|---|
-| 49 | Mega +5 V | estremo B10K |
-| 50 | Mega A0 | cursore/centrale B10K |
-| 51 | Mega GND | altro estremo B10K |
+| 44 | Mega +5 V | estremo B10K |
+| 45 | Mega A0 | cursore/centrale B10K |
+| 46 | Mega GND | altro estremo B10K |
 
 Se il senso di rotazione risulta invertito rispetto a quello desiderato, scambiare semplicemente i due fili degli estremi; il cursore A0 resta invariato.
 
@@ -382,11 +385,13 @@ Se il senso di rotazione risulta invertito rispetto a quello desiderato, scambia
 2. Verificare che **+12 V non arrivi mai a 5 V, A0 o a un pin digitale del Mega**.
 3. Verificare con multimetro polarità +12 V / 0 V.
 4. Verificare la massa comune Mega GND ↔ PSU 0 V.
-5. Verificare i tre +12 V comuni delle strisce RGB.
-6. Verificare che R/G/B vadano agli OUT- corretti.
-7. Verificare DATA WS2811 e relativa resistenza.
-8. Accendere inizialmente senza i carichi di movimento e usare il pulsante TEST.
-9. Collegare poi un gruppo di carichi alla volta.
+5. Verificare a circuito spento che **F1 alimenti soltanto CIELO +12 V e DC+ MOSFET #1**, **F2 soltanto ALBA +12 V e DC+ MOSFET #4**, **F3 soltanto TRAMONTO +12 V e DC+ MOSFET #3**, **F4 soltanto WS2811 +12 V**.
+6. Verificare che i **DC- dei MOSFET #1, #3 e #4** vadano allo 0 V comune.
+7. Verificare che R/G/B delle tre strisce vadano esclusivamente agli **OUT-** corretti e che nessun R/G/B sia collegato direttamente a +12 V o a un pin del Mega.
+8. Verificare DATA WS2811: **Mega D5 → resistenza 330–470 Ω → DIN** della prima stella, rispettando la direzione DATA.
+9. Prima di inserire i fusibili F1–F4, verificare con il multimetro che non ci sia continuità anomala/cortocircuito tra +12 V protetto e 0 V sui relativi rami.
+10. Alla prima accensione inserire **un solo ramo/fusibile alla volta**, iniziando senza carichi di movimento; usare TEST per verificare la corrispondenza tra canale e carico.
+11. Solo dopo aver verificato un ramo, passare al successivo.
 
 ### Riepilogo pin Mega
 
