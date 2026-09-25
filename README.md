@@ -170,11 +170,11 @@ I pulsanti utilizzano `INPUT_PULLUP`, quindi non richiedono una resistenza di pu
 Prima di iniziare il normale ciclo scenografico, il firmware esegue un **autotest visivo di circa 8 secondi**. I relè restano spenti e le uscite vengono provate in sequenza:
 
 1. **ALBA** — striscia RGB alba in bianco brillante per 2 secondi;
-2. **GIORNO** — striscia RGB principale in bianco brillante per 2 secondi;
+2. **CIELO** — striscia RGB principale in bianco brillante per 2 secondi;
 3. **TRAMONTO** — striscia RGB tramonto in bianco brillante per 2 secondi;
 4. **STELLE** — tutti i 50 pixel WS2811 in bianco brillante per 2 secondi.
 
-Durante l'intera sequenza l'OLED mostra **Inizializzazione**, il nome dell'uscita in prova, la percentuale complessiva e una progress bar. Al termine tutte le uscite vengono spente, compare brevemente **PRONTO** e il timer del ciclo viene avviato da zero: il presepe entra quindi normalmente nella fase **GIORNO**.
+Durante l'intera sequenza l'OLED mostra **Inizializzazione**, il nome dell'uscita in prova, la percentuale complessiva e una progress bar. Al termine tutte le uscite vengono spente, compare **PRONTO** per 900 ms e il timer del ciclo viene avviato da zero: il presepe entra quindi normalmente nella fase **GIORNO**.
 
 Questa sequenza è visibile anche nella simulazione Wokwi e costituisce un rapido controllo all'accensione di strisce, stelle e relativi collegamenti.
 
