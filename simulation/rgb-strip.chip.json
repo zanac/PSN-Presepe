@@ -1,0 +1,9 @@
+{
+  "name": "PSN RGB Strip",
+  "author": "Vanni Brutto / PSN-Presepe",
+  "pins": ["R", "G", "B"],
+  "display": {
+    "width": 120,
+    "height": 36
+  }
+}
