@@ -634,9 +634,8 @@ bool inizializzaOled() {
   display.setTextSize(1);
   // Startup splash: PSN-Presepe! by Vanni
   display.setCursor(27,18); display.print(F("PSN-Presepe!"));
-  display.setCursor(30,36); display.print(F("by Vanni 010"));
+  display.setCursor(30,36); display.print(F("by Vanni 011"));
   display.display();
-  delay(2000);
   return true;
 }
 
@@ -994,6 +993,90 @@ void stampaStato(unsigned long durata, float p) {
 }
 
 // ============================================================
+// SEQUENZA DI BOOT / AUTOTEST VISIVO
+// ============================================================
+
+const unsigned long BOOT_STEP_MS = 2000UL;
+const uint8_t BOOT_STEP_COUNT = 4;
+
+void mostraOledBoot(const __FlashStringHelper *fase, uint8_t step, unsigned long elapsedStep) {
+  if (!oledPresente) return;
+
+  // Avanzamento complessivo sui 4 passi da 2 secondi.
+  unsigned long fatto = (unsigned long)step * BOOT_STEP_MS + elapsedStep;
+  unsigned long totale = (unsigned long)BOOT_STEP_COUNT * BOOT_STEP_MS;
+  uint8_t pct = (uint8_t)min(100UL, (fatto * 100UL) / totale);
+
+  display.clearDisplay();
+  display.setTextColor(SSD1306_WHITE);
+  display.setTextSize(1);
+  display.setCursor(0, 0);
+  display.print(F("PSN-PRESEPE"));
+  display.setCursor(0, 15);
+  display.print(F("Inizializzazione"));
+  display.setCursor(0, 29);
+  display.print(fase);
+  display.setCursor(102, 29);
+  display.print(pct);
+  display.print('%');
+
+  display.drawRect(0, 45, 128, 11, SSD1306_WHITE);
+  int fill = (pct * 124) / 100;
+  if (fill > 0) display.fillRect(2, 47, fill, 7, SSD1306_WHITE);
+  display.display();
+}
+
+void attesaBoot(const __FlashStringHelper *fase, uint8_t step) {
+  unsigned long start = millis();
+  unsigned long elapsed = 0;
+  do {
+    elapsed = millis() - start;
+    if (elapsed > BOOT_STEP_MS) elapsed = BOOT_STEP_MS;
+    mostraOledBoot(fase, step, elapsed);
+    delay(40);
+  } while (millis() - start < BOOT_STEP_MS);
+}
+
+void eseguiSequenzaBoot() {
+  Serial.println(F("BOOT: autotest visivo uscite"));
+
+  tuttoSpento();
+  spegniRele();
+
+  // 1/4 - ALBA: bianco brillante per 2 secondi.
+  setAlba(255, 255, 255);
+  attesaBoot(F("ALBA"), 0);
+  setAlba(0, 0, 0);
+
+  // 2/4 - GIORNO / cielo principale: bianco brillante per 2 secondi.
+  setCielo(255, 255, 255);
+  attesaBoot(F("GIORNO"), 1);
+  setCielo(0, 0, 0);
+
+  // 3/4 - TRAMONTO: bianco brillante per 2 secondi.
+  setTramonto(255, 255, 255);
+  attesaBoot(F("TRAMONTO"), 2);
+  setTramonto(0, 0, 0);
+
+  // 4/4 - tutte le 50 stelle: bianco brillante per 2 secondi.
+  stelle.clear();
+  for (uint16_t i = 0; i < NUM_STELLE; i++)
+    stelle.setPixelColor(i, stelle.Color(255, 255, 255));
+  stelle.show();
+  attesaBoot(F("STELLE"), 3);
+
+  // Fine autotest: tutto spento prima dell'avvio del normale ciclo GIORNO.
+  stelle.clear();
+  stelle.show();
+  tuttoSpento();
+  spegniRele();
+  mostraOledBoot(F("PRONTO"), BOOT_STEP_COUNT, 0);
+  delay(150);
+
+  Serial.println(F("BOOT: completato"));
+}
+
+// ============================================================
 // SETUP
 // ============================================================
 
@@ -1029,8 +1112,11 @@ void setup() {
   tuttoSpento();
   spegniRele();
 
-  delay(300);
+  // Autotest di accensione: ALBA -> GIORNO -> TRAMONTO -> STELLE.
+  // Ogni passo dura 2 secondi e l'OLED mostra la progress bar complessiva.
+  eseguiSequenzaBoot();
 
+  // Il tempo dell'autotest non fa parte del ciclo scenografico.
   cycleStartMs = millis();
 
   Serial.println();
