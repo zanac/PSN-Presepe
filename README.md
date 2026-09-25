@@ -417,9 +417,13 @@ Il workflow `.github/workflows/build.yml` può essere avviato manualmente dalla 
 
 I file compilati vengono pubblicati come artifact della GitHub Action. Per le build avviate da una Release vengono inoltre allegati alla Release il firmware `PSN-Presepe.ino.hex` e il pacchetto `PSN-Presepe-Windows-Portable.zip`.
 
-## Simulazione
+## Simulazione Wokwi
 
-`simulation/diagram.json` contiene un modello iniziale per Wokwi. I LED virtuali rappresentano i canali MOSFET reali e permettono di verificare la logica senza collegare l'hardware a 12 V.
+La simulazione Wokwi riproduce Mega 2560, OLED, pulsanti, potenziometro, 50 stelle indirizzabili, 16 uscite relè e le tre strisce RGB. Il file principale è `simulation/diagram.json`.
+
+Per le strisce CIELO, TRAMONTO e ALBA vengono usati i componenti custom `rgb-strip.chip.json` + `rgb-strip.chip.c`: leggono i tre PWM R/G/B e visualizzano una barra del colore risultante. A differenza del normale LED RGB di Wokwi, una striscia a `(0,0,0)` viene mostrata **completamente nera**, quindi nero significa inequivocabilmente **SPENTO**. Il componente gestisce anche PWM 0 e 255 come livelli statici.
+
+I componenti custom sono esclusivamente visuali: non cambiano il firmware e non simulano la potenza elettrica, i MOSFET o i 12 V reali. La documentazione completa della simulazione e dei file da copiare manualmente nel progetto Wokwi è in `simulation/README.md`.
 
 La CI Wokwi rimane per ora opzionale: la normale compilazione GitHub Actions non richiede token o servizi esterni.
 
@@ -556,4 +560,4 @@ Controlla nell'ordine:
 Se modifichiamo firmware o cablaggio del progetto, anche i file nella cartella `simulation/` devono essere aggiornati insieme.
 
 
-> **Stelle:** i 50 pixel WS2811 restano fisicamente disponibili, ma a ogni ciclo ne vengono scelte casualmente solo **20**, mantenute a luminosità volutamente bassa. Di queste, esattamente **7** variano dolcemente la luminosità durante la notte per simulare il tremolio. A ogni nuova notte la disposizione viene rigenerata.
+> **Stelle:** i 50 pixel WS2811 restano fisicamente disponibili, ma a ogni ciclo ne vengono scelte casualmente solo **20**, mantenute a luminosità volutamente bassa. Tutte le 20 stelle attive hanno un proprio ciclo asincrono e variano dolcemente la luminosità. A ogni nuova notte la disposizione viene rigenerata.
