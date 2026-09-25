@@ -117,7 +117,7 @@ const float P_NOTTE    = 50.0f;
 const float P_ALBA     = 80.0f;
 // ALBA occupa l'ultimo 20% del ciclo e termina direttamente nel nuovo GIORNO.
 
-const unsigned long DEBOUNCE_MS = 40;
+const unsigned long DEBOUNCE_MS = 20;
 const unsigned long DEBUG_INTERVAL_MS = 5000UL;
 
 // ============================================================
@@ -703,7 +703,7 @@ bool inizializzaOled() {
   display.setTextSize(1);
   // Startup splash: PSN-Presepe! by Vanni
   display.setCursor(27,18); display.print(F("PSN-Presepe!"));
-  display.setCursor(30,36); display.print(F("by Vanni 022"));
+  display.setCursor(30,36); display.print(F("by Vanni 023"));
   display.display();
   delay(3000);
   return true;
