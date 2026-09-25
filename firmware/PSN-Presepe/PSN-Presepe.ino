@@ -634,7 +634,7 @@ bool inizializzaOled() {
   display.setTextSize(1);
   // Startup splash: PSN-Presepe! by Vanni
   display.setCursor(27,18); display.print(F("PSN-Presepe!"));
-  display.setCursor(30,36); display.print(F("by Vanni 012"));
+  display.setCursor(30,36); display.print(F("by Vanni 013"));
   display.display();
   delay(3000);
   return true;
@@ -1049,9 +1049,9 @@ void eseguiSequenzaBoot() {
   attesaBoot(F("ALBA"), 0);
   setAlba(0, 0, 0);
 
-  // 2/4 - GIORNO / cielo principale: bianco brillante per 2 secondi.
+  // 2/4 - CIELO principale: bianco brillante per 2 secondi.
   setCielo(255, 255, 255);
-  attesaBoot(F("GIORNO"), 1);
+  attesaBoot(F("CIELO"), 1);
   setCielo(0, 0, 0);
 
   // 3/4 - TRAMONTO: bianco brillante per 2 secondi.
@@ -1072,7 +1072,7 @@ void eseguiSequenzaBoot() {
   tuttoSpento();
   spegniRele();
   mostraOledBoot(F("PRONTO"), BOOT_STEP_COUNT, 0);
-  delay(150);
+  delay(900);
 
   Serial.println(F("BOOT: completato"));
 }
