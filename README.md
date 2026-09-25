@@ -375,6 +375,8 @@ Il buzzer è un accessorio opzionale. Collegare il positivo/filo rosso a **Mega 
 
 Durante il boot il buzzer riproduce a tempo sostenuto **Astro del ciel** fino alla frase **“mite agnello Redentor”**. L'autotest ALBA → CIELO → TRAMONTO → STELLE viene esteso alla stessa durata della melodia: ciascuna delle quattro scene occupa circa un quarto del brano, così luci, progress bar OLED e ultima nota terminano insieme prima di PRONTO. Al termine il buzzer viene disattivato con `noTone()`.
 
+Il buzzer fornisce anche feedback acustico durante l'uso: PAUSA ha un doppio tono discendente, RIPRESA un doppio tono ascendente, AVANTI un bip acuto, ingresso/uscita TEST una breve sequenza rispettivamente ascendente/discendente e ogni test successivo un click sonoro. Il potenziometro produce un breve tono quando attraversa uno dei sei gradini 1–6 minuti, con altezza crescente. Questi feedback sono **non bloccanti** e possono essere disabilitati impostando `BUZZER_ENABLED=false`. Anche con buzzer fisicamente assente tutto il controller continua a funzionare normalmente.
+
 ### 10. Potenziometro B10K
 
 | Filo | Da | A |
