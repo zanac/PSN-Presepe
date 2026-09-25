@@ -319,7 +319,7 @@ Per **ciascuno dei quattro moduli** collegare anche:
 | 0 V comune | DC- |
 | pin Mega indicato sopra | IN1 / IN2 / IN3 / IN4 |
 
-Per ora i morsetti **COM/NO/NC possono rimanere senza carico**. Così tutta la parte di comando `Grp_01_01`–`Grp_04_04` è montata e pronta. In modalità TEST le 16 uscite vengono provate una alla volta, una pressione di TEST per ciascun relè. La sequenza completa comprende 27 test: CIELO R/G/B, TRAMONTO R/G/B, ALBA R/G/B, tutte le 50 stelle, tutto insieme e infine i 16 relè individuali.
+Per ora i morsetti **COM/NO/NC possono rimanere senza carico**. Così tutta la parte di comando `Grp_01_01`–`Grp_04_04` è montata e pronta. In modalità TEST le 16 uscite vengono provate una alla volta, una pressione di TEST per ciascun relè. La sequenza completa comprende 30 test: CIELO R/G/B, TRAMONTO R/G/B, ALBA R/G/B, STELLE R/G/B su tutti i 50 pixel, tutte le 50 stelle in bianco caldo, tutto insieme e infine i 16 relè individuali.
 
 Quando assegneremo un carico 12 V normalmente spento, lo schema tipico sarà: **+12 V protetto → COM → NO → positivo carico**, mentre il negativo del carico torna allo **0 V comune**.
 
@@ -539,7 +539,7 @@ I LED R/G/B simulano i **segnali di comando PWM** delle tre strisce RGB reali. N
 
 La striscia NeoPixel virtuale rappresenta le **50 stelle**. Wokwi usa un componente addressable compatibile per visualizzare l'effetto; nel presepe reale utilizziamo la stringa WS2811 a 12 V con il cablaggio documentato.
 
-Gli indicatori `Grp_01_01`–`Grp_04_04` rappresentano le 16 uscite dei quattro moduli relè collegate a D25–D40. In modalità TEST vengono accese una alla volta dopo gli 11 test di cielo/RGB/stelle; dopo `Grp_04_04` la sequenza riparte dal primo test e START esce dalla modalità TEST.
+Gli indicatori `Grp_01_01`–`Grp_04_04` rappresentano le 16 uscite dei quattro moduli relè collegate a D25–D40. In modalità TEST vengono accese una alla volta dopo i 14 test di cielo/RGB/stelle; dopo `Grp_04_04` la sequenza riparte dal primo test e START esce dalla modalità TEST.
 
 ### 11. Se Wokwi dà errore
 
