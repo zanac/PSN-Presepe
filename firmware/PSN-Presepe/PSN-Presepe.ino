@@ -7,6 +7,7 @@
     D3 = Cielo RGB Verde
     D4 = Cielo RGB Blu
     D5 = DATA stelle WS2811 (50 pixel, 12 V)
+    D13 = DATA WS2811 CASETTE (riservato, non ancora pilotato)
     D6 = Buzzer piezo passivo opzionale
     D7/D11/D12 = RGB laterale SINISTRA / TRAMONTO (R/G/B)
     D44/D45/D46 = RGB laterale DESTRA / ALBA (R/G/B)
@@ -55,6 +56,7 @@ const uint8_t PIN_CIELO_R = 2;
 const uint8_t PIN_CIELO_G = 3;
 const uint8_t PIN_CIELO_B = 4;
 const uint8_t PIN_STELLE_DATA = 5;
+const uint8_t PIN_CASETTE_DATA = 13; // seconda catena WS2811: pin riservato, programmazione futura
 const uint8_t PIN_BUZZER = 6; // piezo passivo opzionale: se assente il firmware funziona normalmente
 
 // Strisce RGB laterali da 1 m, dedicate agli effetti direzionali.
@@ -66,9 +68,11 @@ const uint8_t PIN_ALBA_R = 44;
 const uint8_t PIN_ALBA_G = 45;
 const uint8_t PIN_ALBA_B = 46;
 const uint16_t NUM_STELLE = 50;
+const uint16_t NUM_CASETTE = 50; // numero massimo predisposto; ridurre quando sara\' noto il numero reale
 const uint8_t STELLE_ATTIVE = 20;
 const uint8_t STELLE_TREMOLANTI = STELLE_ATTIVE; // tutte le 20 stelle attive scintillano
 Adafruit_NeoPixel stelle(NUM_STELLE, PIN_STELLE_DATA, NEO_GRB + NEO_KHZ800);
+Adafruit_NeoPixel casette(NUM_CASETTE, PIN_CASETTE_DATA, NEO_GRB + NEO_KHZ800);
 
 const uint8_t PIN_START = 22;
 const uint8_t PIN_NEXT  = 23;
@@ -103,12 +107,20 @@ unsigned long oledPopupFino = 0;
 enum OledPopup { OLED_NESSUNO, OLED_PAUSA, OLED_RIPRESA, OLED_AVANTI, OLED_TEST, OLED_VELOCITA };
 OledPopup oledPopup = OLED_NESSUNO;
 int ultimoPotOled = -1;
-const int POT_POPUP_DELTA = 10;
+int potRawOled = 0;
+int potPopupUltimaLettura = -1;
+unsigned long potPopupUltimaVariazioneMs = 0;
+bool potPopupInAttesa = false;
+const int POT_POPUP_DELTA = 60;
+const unsigned long POT_POPUP_SETTLE_MS = 3000UL;
 const unsigned long OLED_POPUP_MS = 1800UL;
 
 // Durata ciclo regolabile con il potenziometro
 const unsigned long MIN_CYCLE_MS = 1UL * 60UL * 1000UL;
 const unsigned long MAX_CYCLE_MS = 6UL * 60UL * 1000UL;
+const int POT_RAW_MAX = 680;
+unsigned long durataCicloStabile = MIN_CYCLE_MS;
+int potRawStabile = 0;
 
 // Fasi in percentuale
 const float P_TRAMONTO = 35.0f;
@@ -200,7 +212,7 @@ int potBeepRiferimento = -1;
 int potBeepUltimaLettura = -1;
 unsigned long potUltimaVariazioneMs = 0;
 bool potBeepInAttesa = false;
-const int POT_BEEP_DELTA = 80;                 // circa 8% della corsa: ignora piccoli spostamenti/rumore
+const int POT_BEEP_DELTA = 60;                 // circa 8% della corsa: ignora piccoli spostamenti/rumore
 const int POT_BEEP_STABILITA_DELTA = 4;        // entro 4 punti ADC consideriamo il pot fermo
 const unsigned long POT_BEEP_SETTLE_MS = 350UL; // bip solo 350 ms dopo l'ultima variazione
 
@@ -352,10 +364,11 @@ void mostraStelle(float livello) {
     // livello pieno -> dissolvenza a zero -> pausa spenta -> riaccensione.
     // Durate e offset differenti evitano che le 20 stelle si muovano insieme.
     if (stellaTwinkle[i] && v > 5) {
-      // Durata pseudo-casuale e stabile per ogni pixel: circa 3,2-6,1 s.
+      // Durata pseudo-casuale e stabile per ogni pixel: circa 6,4-12,2 s.
+      // Rev037: raddoppiata per rendere accensione/spegnimento piu' lento dal vero.
       // Anche l'offset e' diverso per ogni stella, cosi' partono vicine ma non insieme
       // e col tempo si sfasano sempre di piu'.
-      const unsigned long periodo = 3200UL + ((unsigned long)(i * 37U) % 30UL) * 100UL;
+      const unsigned long periodo = 6400UL + ((unsigned long)(i * 37U) % 30UL) * 200UL;
       const unsigned long offset = ((unsigned long)(i * 173U) % 900UL);
       const unsigned long faseMs = (millis() + offset) % periodo;
       const unsigned long pTw = (faseMs * 100UL) / periodo;
@@ -401,18 +414,33 @@ void tuttoSpento() {
   setTramonto(0, 0, 0);
   setAlba(0, 0, 0);
   setStelle(0);
+  casette.clear();
+  casette.show();
 }
 
 // ============================================================
 // TEMPO / POTENZIOMETRO
 // ============================================================
 
-unsigned long durataCiclo() {
-  int raw = analogRead(PIN_POT);
+unsigned long durataDaRaw(int raw) {
+  raw = constrain(raw, 0, POT_RAW_MAX);
+  return map(raw, 0, POT_RAW_MAX, MIN_CYCLE_MS, MAX_CYCLE_MS);
+}
 
-  // Ruotando verso il massimo elettrico di A0:
-  // ciclo piu' lungo. A0=0 -> 1 minuto (default se il cursore e' a GND), A0=1023 -> 6 minuti.
-  return map(raw, 0, 1023, MIN_CYCLE_MS, MAX_CYCLE_MS);
+unsigned long durataCiclo() {
+  // La durata usata dal ciclo NON segue il rumore istantaneo dell'ADC.
+  return durataCicloStabile;
+}
+
+void stampaDurataOled(unsigned long durata) {
+  unsigned long secondi = (durata + 500UL) / 1000UL;
+  unsigned int mm = secondi / 60UL;
+  unsigned int ss = secondi % 60UL;
+  if (mm < 10) display.print('0');
+  display.print(mm);
+  display.print(':');
+  if (ss < 10) display.print('0');
+  display.print(ss);
 }
 
 float percentualeCiclo(unsigned long durata) {
@@ -567,9 +595,9 @@ void mostraOledTest() {
   display.setTextColor(SSD1306_WHITE);
   display.setTextSize(1);
   display.setCursor(0,0); display.print(F("MODALITA' TEST"));
-  display.setCursor(0,14); display.print(F("Test ")); display.print(testIndice + 1); display.print(F("/30"));
-  display.setCursor(0,30);
-  if (testIndice < 14) {
+  display.setCursor(0,18); display.print(F("Test ")); display.print(testIndice + 1); display.print(F("/34"));
+  display.setCursor(0,32);
+  if (testIndice < 18) {
     switch (testIndice) {
       case 0: display.print(F("CIELO ROSSO")); break;
       case 1: display.print(F("CIELO VERDE")); break;
@@ -584,7 +612,11 @@ void mostraOledTest() {
       case 10: display.print(F("STELLE VERDI")); break;
       case 11: display.print(F("STELLE BLU")); break;
       case 12: display.print(F("STELLE WS2811")); break;
-      case 13: display.print(F("TUTTO INSIEME")); break;
+      case 13: display.print(F("CASETTE ROSSE")); break;
+      case 14: display.print(F("CASETTE VERDI")); break;
+      case 15: display.print(F("CASETTE BLU")); break;
+      case 16: display.print(F("CASETTE WS2811")); break;
+      case 17: display.print(F("TUTTO INSIEME")); break;
     }
   } else {
     uint8_t n = testIndice - 14;
@@ -610,25 +642,26 @@ void mostraOledRgbPausa(float p) {
   display.setTextColor(SSD1306_WHITE);
   display.setTextSize(1);
   display.setCursor(0,0);
-  display.print(F("PAUSA "));
+  display.print(F("PAUSA"));
+  display.setCursor(0,18);
   display.print(nomeFase(f));
   display.print(' ');
   display.print(pf);
   display.print('%');
 
-  display.setCursor(0,16);
+  display.setCursor(0,30);
   display.print(F("C "));
   display.print(rgbCieloR); display.print(',');
   display.print(rgbCieloG); display.print(',');
   display.print(rgbCieloB);
 
-  display.setCursor(0,32);
+  display.setCursor(0,41);
   display.print(F("T "));
   display.print(rgbTramontoR); display.print(',');
   display.print(rgbTramontoG); display.print(',');
   display.print(rgbTramontoB);
 
-  display.setCursor(0,48);
+  display.setCursor(0,52);
   display.print(F("A "));
   display.print(rgbAlbaR); display.print(',');
   display.print(rgbAlbaG); display.print(',');
@@ -656,7 +689,7 @@ void aggiornaOled(unsigned long durata, float p) {
 
   if (oledPopup != OLED_NESSUNO) {
     display.setTextSize(2);
-    display.setCursor(8,8);
+    display.setCursor(8,18);
     switch(oledPopup) {
       case OLED_PAUSA: display.print(F("PAUSA")); break;
       case OLED_RIPRESA: display.print(F("RIPRESA")); break;
@@ -666,9 +699,10 @@ void aggiornaOled(unsigned long durata, float p) {
       default: break;
     }
     display.setTextSize(1);
-    display.setCursor(8,38);
+    display.setCursor(8,42);
     if (oledPopup==OLED_VELOCITA) {
-      display.print(F("Ciclo: ")); display.print(durata/60000UL); display.print(F(" min"));
+      stampaDurataOled(durata);
+      display.print(F(" (mm:ss)"));
     } else if (oledPopup==OLED_AVANTI) {
       display.print(F("Fase: ")); display.print(nomeFase(faseDaPercentuale(p)));
     } else if (oledPopup==OLED_TEST) {
@@ -681,14 +715,15 @@ void aggiornaOled(unsigned long durata, float p) {
     int pf=(int)(percentualeFase(p,f)+0.5f);
     display.setTextSize(1);
     display.setCursor(0,0); display.print(F("PSN-PRESEPE"));
-    display.setCursor(0,14); display.print(nomeFase(f));
-    display.setCursor(94,14); display.print(pf); display.print('%');
-    display.drawRect(0,27,128,11,SSD1306_WHITE);
+    display.setCursor(0,18); display.print(nomeFase(f));
+    display.setCursor(94,18); display.print(pf); display.print('%');
+    display.drawRect(0,31,128,11,SSD1306_WHITE);
     int fill=(pf*124)/100;
-    if(fill>0) display.fillRect(2,29,fill,7,SSD1306_WHITE);
-    display.setCursor(0,47);
+    if(fill>0) display.fillRect(2,33,fill,7,SSD1306_WHITE);
+    display.setCursor(0,50);
     display.print(running ? F("RUN ") : F("PAUSA "));
-    display.print(F("Ciclo ")); display.print(durata/60000UL); display.print(F(" min"));
+    stampaDurataOled(durata);
+    display.print(F(" (mm:ss)"));
   }
   display.display();
 }
@@ -703,7 +738,12 @@ bool inizializzaOled() {
   display.setTextSize(1);
   // Startup splash: PSN-Presepe! by Vanni
   display.setCursor(27,18); display.print(F("PSN-Presepe!"));
-  display.setCursor(30,36); display.print(F("by Vanni 024"));
+  display.setCursor(30,30); display.print(F("by Vanni 037"));
+  potRawStabile = constrain(analogRead(PIN_POT), 0, POT_RAW_MAX);
+  durataCicloStabile = durataDaRaw(potRawStabile);
+  display.setCursor(18,46);
+  stampaDurataOled(durataCicloStabile);
+  display.print(F(" (mm:ss)"));
   display.display();
   delay(3000);
   return true;
@@ -738,6 +778,9 @@ void faseAvanti() {
 
 void aggiornaScena(float p) {
   Fase fase = faseDaPercentuale(p);
+  // Le laterali restano completamente spente (PWM=0) quando inattive.
+  // L'hardware reale ha mostrato che questo stato e' stabile; lo sfarfallio
+  // compariva invece durante le precedenti dissolvenze nella zona minima.
 
   // Genera una nuova disposizione a ogni ingresso nel crepuscolo.
   if (fase == CREPUSCOLO && ultimaFaseStelle != CREPUSCOLO) {
@@ -752,9 +795,13 @@ void aggiornaScena(float p) {
   switch (fase) {
 
     case GIORNO:
-      r = 255;
-      g = 210;
-      b = 145;
+      // Luce diurna volutamente calda: sulle strisce reali il blu
+      // risulta molto dominante, quindi viene fortemente ridotto.
+      r = 210;
+      g = 82;
+      b = 18;
+      tr = 0; tg = 0; tb = 0;
+      ar = 0; ag = 0; ab = 0;
       livelloStelle = 0;
       break;
 
@@ -764,17 +811,18 @@ void aggiornaScena(float p) {
       // Durante il tramonto il cielo centrale completa gia' la sua
       // transizione fino al colore notturno. L'ultima luce resta cosi'
       // concentrata sul lato ovest, sulla striscia TRAMONTO.
-      r = interpola8(255, 8, t);
-      g = interpola8(210, 12, t);
-      b = interpola8(145, 55, t);
+      // Escursione volutamente ridotta e molto calda per le strisce reali.
+      r = interpola8(210, 18, t);
+      g = interpola8(82, 8, t);
+      b = interpola8(18, 2, t);
       livelloStelle = 0;
 
-      // Il bagliore occidentale cresce progressivamente e raggiunge
-      // il massimo alla fine del TRAMONTO. Il CREPUSCOLO riparte
-      // esattamente da questi valori, senza alcuno stacco.
-      tr = interpola8(0, 255, t);
-      tg = interpola8(0, 72, t);
-      tb = interpola8(0, 12, t);
+      // La laterale TRAMONTO e' spenta fuori dalla propria fase.
+      // Durante la fase usa un arco diretto 0 -> massimo -> 0.
+      float arco = sin(t * PI);
+      tr = (uint8_t)(190.0f * arco);
+      tg = (uint8_t)(24.0f * arco);
+      tb = 0;
       break;
     }
 
@@ -784,49 +832,65 @@ void aggiornaScena(float p) {
       // Il cielo e' gia' al colore della NOTTE. Durante il crepuscolo
       // si spegne soltanto l'ultimo bagliore a ovest mentre compaiono
       // progressivamente le stelle.
-      r = 8;
-      g = 12;
-      b = 55;
-      tr = interpola8(255, 0, t);
-      tg = interpola8(72, 0, t);
-      tb = interpola8(12, 0, t);
+      r = 0;
+      g = 0;
+      b = 0;
+      // TRAMONTO e ALBA sono inattive: PWM esattamente a zero.
+      tr = 0; tg = 0; tb = 0;
+      ar = 0; ag = 0; ab = 0;
       livelloStelle = interpola8(0, 235, t);
       break;
     }
 
     case NOTTE:
-      r = 8;
-      g = 12;
-      b = 55;
+      // Notte completamente buia sulla striscia CIELO.
+      r = 0;
+      g = 0;
+      b = 0;
+      tr = 0; tg = 0; tb = 0;
+      ar = 0; ag = 0; ab = 0;
       livelloStelle = 235;
       break;
 
     case ALBA: {
       float t = progresso(p, P_ALBA, 100.0f);
 
-      r = interpola8(8, 255, t);
-      g = interpola8(12, 210, t);
-      b = interpola8(55, 145, t);
-      livelloStelle = interpola8(235, 0, t);
+      // Per i primi 3/4 dell'ALBA il CIELO centrale resta spento:
+      // la luce nasce solo sul lato est. Nell'ultimo 25% il CIELO
+      // entra progressivamente fino al colore GIORNO, senza stacco finale.
+      float tGiorno = constrain((t - 0.75f) / 0.25f, 0.0f, 1.0f);
+      tGiorno = tGiorno * tGiorno * (3.0f - 2.0f * tGiorno);
+      r = interpola8(0, 210, tGiorno);
+      g = interpola8(0, 82, tGiorno);
+      b = interpola8(0, 18, tGiorno);
 
-      // Alba direzionale dalla striscia destra: sale dolcemente nella
-      // prima parte della fase, poi cala progressivamente fino a ZERO.
-      // Negli ultimi istanti la dissolvenza rallenta (smoothstep), cosi'
-      // il passaggio ALBA -> GIORNO non produce uno stacco visibile.
+      // Le stelle invece iniziano a dissolversi fin dall'inizio dell'ALBA,
+      // indipendentemente dall'accensione tardiva del CIELO centrale.
+      float tStelle = t * t * (3.0f - 2.0f * t);
+      livelloStelle = interpola8(235, 0, tStelle);
+
+      // Alba direzionale dalla striscia destra: raggiunge presto il massimo
+      // rosso caldo e lo mantiene piu' a lungo. La discesa e' ritardata e
+      // rallentata, cosi' la coda rossastra resta visibile piu' a lungo
+      // prima di spegnersi dolcemente al passaggio ALBA -> GIORNO.
       {
         float arco;
-        if (t < 0.35f) {
-          float x = t / 0.35f;
+        if (t < 0.30f) {
+          float x = t / 0.30f;
           x = x * x * (3.0f - 2.0f * x);
           arco = x;
+        } else if (t < 0.65f) {
+          arco = 1.0f;
         } else {
-          float x = (t - 0.35f) / 0.65f;
+          float x = (t - 0.65f) / 0.35f;
           x = x * x * (3.0f - 2.0f * x);
           arco = 1.0f - x;
         }
-        ar = (uint8_t)(255.0f * arco);
-        ag = (uint8_t)(135.0f * arco);
-        ab = (uint8_t)(45.0f * arco);
+        // ALBA e' spenta fuori dalla propria fase. Durante la fase
+        // usa un arco diretto 0 -> rosso caldo -> 0.
+        ar = (uint8_t)(190.0f * arco);
+        ag = (uint8_t)(20.0f * arco);
+        ab = 0;
       }
       break;
     }
@@ -931,14 +995,14 @@ void applicaTestCorrente() {
   tuttoSpento();
   spegniRele();
 
-  if (testIndice >= 14) {
-    uint8_t n = testIndice - 14;
+  if (testIndice >= 18) {
+    uint8_t n = testIndice - 18;
     accendiRele(n);
     uint8_t gruppo = n / 4 + 1;
     uint8_t rele = n % 4 + 1;
     Serial.print(F("TEST "));
     Serial.print(testIndice + 1);
-    Serial.print(F("/30 - Grp_0"));
+    Serial.print(F("/34 - Grp_0"));
     Serial.print(gruppo);
     Serial.print(F("_0"));
     Serial.println(rele);
@@ -949,39 +1013,39 @@ void applicaTestCorrente() {
   switch (testIndice) {
     case 0:
       setCielo(255, 0, 0);
-      Serial.println(F("TEST 1/30 - CIELO ROSSO"));
+      Serial.println(F("TEST 1/34 - CIELO ROSSO"));
       break;
     case 1:
       setCielo(0, 255, 0);
-      Serial.println(F("TEST 2/30 - CIELO VERDE"));
+      Serial.println(F("TEST 2/34 - CIELO VERDE"));
       break;
     case 2:
       setCielo(0, 0, 255);
-      Serial.println(F("TEST 3/30 - CIELO BLU"));
+      Serial.println(F("TEST 3/34 - CIELO BLU"));
       break;
     case 3:
       setTramonto(255, 0, 0);
-      Serial.println(F("TEST 4/30 - TRAMONTO ROSSO"));
+      Serial.println(F("TEST 4/34 - TRAMONTO ROSSO"));
       break;
     case 4:
       setTramonto(0, 255, 0);
-      Serial.println(F("TEST 5/30 - TRAMONTO VERDE"));
+      Serial.println(F("TEST 5/34 - TRAMONTO VERDE"));
       break;
     case 5:
       setTramonto(0, 0, 255);
-      Serial.println(F("TEST 6/30 - TRAMONTO BLU"));
+      Serial.println(F("TEST 6/34 - TRAMONTO BLU"));
       break;
     case 6:
       setAlba(255, 0, 0);
-      Serial.println(F("TEST 7/30 - ALBA ROSSO"));
+      Serial.println(F("TEST 7/34 - ALBA ROSSO"));
       break;
     case 7:
       setAlba(0, 255, 0);
-      Serial.println(F("TEST 8/30 - ALBA VERDE"));
+      Serial.println(F("TEST 8/34 - ALBA VERDE"));
       break;
     case 8:
       setAlba(0, 0, 255);
-      Serial.println(F("TEST 9/30 - ALBA BLU"));
+      Serial.println(F("TEST 9/34 - ALBA BLU"));
       break;
     case 9:
       // Verifica il canale rosso di tutti i 50 pixel WS2811.
@@ -989,7 +1053,7 @@ void applicaTestCorrente() {
       for (uint16_t i = 0; i < NUM_STELLE; i++)
         stelle.setPixelColor(i, stelle.Color(70, 0, 0));
       stelle.show();
-      Serial.println(F("TEST 10/30 - STELLE ROSSE"));
+      Serial.println(F("TEST 10/34 - STELLE ROSSE"));
       break;
     case 10:
       // Verifica il canale verde di tutti i 50 pixel WS2811.
@@ -997,7 +1061,7 @@ void applicaTestCorrente() {
       for (uint16_t i = 0; i < NUM_STELLE; i++)
         stelle.setPixelColor(i, stelle.Color(0, 70, 0));
       stelle.show();
-      Serial.println(F("TEST 11/30 - STELLE VERDI"));
+      Serial.println(F("TEST 11/34 - STELLE VERDI"));
       break;
     case 11:
       // Verifica il canale blu di tutti i 50 pixel WS2811.
@@ -1005,7 +1069,7 @@ void applicaTestCorrente() {
       for (uint16_t i = 0; i < NUM_STELLE; i++)
         stelle.setPixelColor(i, stelle.Color(0, 0, 70));
       stelle.show();
-      Serial.println(F("TEST 12/30 - STELLE BLU"));
+      Serial.println(F("TEST 12/34 - STELLE BLU"));
       break;
     case 12:
       // Test scenografico esistente: tutte le 50 stelle in bianco caldo tenue.
@@ -1013,9 +1077,37 @@ void applicaTestCorrente() {
       for (uint16_t i = 0; i < NUM_STELLE; i++)
         stelle.setPixelColor(i, stelle.Color(70, 50, 27));
       stelle.show();
-      Serial.println(F("TEST 13/30 - TUTTE LE 50 STELLE"));
+      Serial.println(F("TEST 13/34 - TUTTE LE 50 STELLE"));
       break;
     case 13:
+      casette.clear();
+      for (uint16_t i = 0; i < NUM_CASETTE; i++)
+        casette.setPixelColor(i, casette.Color(70, 0, 0));
+      casette.show();
+      Serial.println(F("TEST 14/34 - CASETTE ROSSE"));
+      break;
+    case 14:
+      casette.clear();
+      for (uint16_t i = 0; i < NUM_CASETTE; i++)
+        casette.setPixelColor(i, casette.Color(0, 70, 0));
+      casette.show();
+      Serial.println(F("TEST 15/34 - CASETTE VERDI"));
+      break;
+    case 15:
+      casette.clear();
+      for (uint16_t i = 0; i < NUM_CASETTE; i++)
+        casette.setPixelColor(i, casette.Color(0, 0, 70));
+      casette.show();
+      Serial.println(F("TEST 16/34 - CASETTE BLU"));
+      break;
+    case 16:
+      casette.clear();
+      for (uint16_t i = 0; i < NUM_CASETTE; i++)
+        casette.setPixelColor(i, casette.Color(70, 50, 27));
+      casette.show();
+      Serial.println(F("TEST 17/34 - TUTTE LE CASETTE"));
+      break;
+    case 17:
       setCielo(120, 90, 70);
       setTramonto(180, 50, 8);
       setAlba(180, 95, 30);
@@ -1023,7 +1115,9 @@ void applicaTestCorrente() {
       for (uint16_t i = 0; i < NUM_STELLE; i++)
         stelle.setPixelColor(i, stelle.Color(45, 32, 17));
       stelle.show();
-      Serial.println(F("TEST 14/30 - TUTTO INSIEME"));
+      for (uint16_t i = 0; i < NUM_CASETTE; i++) casette.setPixelColor(i, casette.Color(45, 32, 17));
+      casette.show();
+      Serial.println(F("TEST 18/34 - TUTTO INSIEME"));
       break;
   }
 
@@ -1044,7 +1138,7 @@ void testUscite() {
     Serial.println(F("TEST = test successivo, START = esci"));
     buzzerBeep();
   } else {
-    testIndice = (testIndice + 1) % 30;
+    testIndice = (testIndice + 1) % 34;
     buzzerBeep();
   }
 
@@ -1078,7 +1172,7 @@ void stampaStato(unsigned long durata, float p) {
 // SEQUENZA DI BOOT / AUTOTEST VISIVO
 // ============================================================
 
-const uint8_t BOOT_STEP_COUNT = 4;
+const uint8_t BOOT_STEP_COUNT = 5;
 
 // "Astro del ciel" sul buzzer passivo opzionale, fino a "mite agnello Redentor".
 // Tempo volutamente più sostenuto rispetto alla rev.014.
@@ -1096,7 +1190,8 @@ const uint16_t BOOT_MELODY_MS[] = {
   420, 420, 560, 420, 420, 560, 420, 420, 1100
 };
 const uint8_t BOOT_MELODY_COUNT = sizeof(BOOT_MELODY_FREQ) / sizeof(BOOT_MELODY_FREQ[0]);
-const unsigned long BOOT_TOTAL_MS = 17300UL; // somma verificata di BOOT_MELODY_MS[]
+const unsigned long BOOT_MELODY_BASE_MS = 17300UL; // somma originale di BOOT_MELODY_MS[]
+const unsigned long BOOT_TOTAL_MS = 21625UL; // +25%: 5 scene alla stessa durata visiva di prima
 const unsigned long BOOT_STEP_MS = BOOT_TOTAL_MS / BOOT_STEP_COUNT; // 4,325 s per scena
 int8_t bootNotaCorrente = -1;
 
@@ -1104,7 +1199,7 @@ void aggiornaMelodiaBoot(unsigned long elapsedTotale) {
   unsigned long limite = 0;
   uint8_t nota = BOOT_MELODY_COUNT;
   for (uint8_t i = 0; i < BOOT_MELODY_COUNT; i++) {
-    limite += BOOT_MELODY_MS[i];
+    limite += ((unsigned long)BOOT_MELODY_MS[i] * BOOT_TOTAL_MS) / BOOT_MELODY_BASE_MS;
     if (elapsedTotale < limite) {
       nota = i;
       break;
@@ -1128,7 +1223,7 @@ void aggiornaMelodiaBoot(unsigned long elapsedTotale) {
 void mostraOledBoot(const __FlashStringHelper *fase, uint8_t step, unsigned long elapsedStep) {
   if (!oledPresente) return;
 
-  // Avanzamento complessivo sui 4 passi, sincronizzato alla durata della melodia.
+  // Avanzamento complessivo sui 5 passi, sincronizzato alla durata della melodia.
   unsigned long fatto = (unsigned long)step * BOOT_STEP_MS + elapsedStep;
   unsigned long totale = (unsigned long)BOOT_STEP_COUNT * BOOT_STEP_MS;
   uint8_t pct = (uint8_t)min(100UL, (fatto * 100UL) / totale);
@@ -1138,11 +1233,11 @@ void mostraOledBoot(const __FlashStringHelper *fase, uint8_t step, unsigned long
   display.setTextSize(1);
   display.setCursor(0, 0);
   display.print(F("PSN-PRESEPE"));
-  display.setCursor(0, 15);
+  display.setCursor(0, 18);
   display.print(F("Inizializzazione"));
-  display.setCursor(0, 29);
+  display.setCursor(0, 30);
   display.print(fase);
-  display.setCursor(102, 29);
+  display.setCursor(102, 30);
   display.print(pct);
   display.print('%');
 
@@ -1170,29 +1265,40 @@ void eseguiSequenzaBoot() {
   tuttoSpento();
   spegniRele();
 
-  // 1/4 - ALBA: primo quarto della melodia.
+  // 1/5 - ALBA: primo quarto della melodia.
   setAlba(255, 255, 255);
   attesaBoot(F("ALBA"), 0);
   setAlba(0, 0, 0);
 
-  // 2/4 - CIELO principale: secondo quarto della melodia.
+  // 2/5 - CIELO principale: secondo quarto della melodia.
   setCielo(255, 255, 255);
   attesaBoot(F("CIELO"), 1);
   setCielo(0, 0, 0);
 
-  // 3/4 - TRAMONTO: terzo quarto della melodia.
+  // 3/5 - TRAMONTO: terzo quarto della melodia.
   setTramonto(255, 255, 255);
   attesaBoot(F("TRAMONTO"), 2);
   setTramonto(0, 0, 0);
 
-  // 4/4 - tutte le 50 stelle: ultimo quarto della melodia.
+  // 4/5 - tutte le 50 stelle: ultimo quarto della melodia.
   stelle.clear();
   for (uint16_t i = 0; i < NUM_STELLE; i++)
     stelle.setPixelColor(i, stelle.Color(255, 255, 255));
   stelle.show();
   attesaBoot(F("STELLE"), 3);
+  stelle.clear();
+  stelle.show();
 
-  // I quattro passi coprono l'intera melodia: luce, progress bar e musica
+  // 5/5 - seconda catena WS2811 CASETTE su D13.
+  casette.clear();
+  for (uint16_t i = 0; i < NUM_CASETTE; i++)
+    casette.setPixelColor(i, casette.Color(255, 255, 255));
+  casette.show();
+  attesaBoot(F("CASETTE"), 4);
+  casette.clear();
+  casette.show();
+
+  // I cinque passi coprono l'intera melodia: luce, progress bar e musica
   // terminano insieme prima di PRONTO.
   aggiornaMelodiaBoot(BOOT_TOTAL_MS);
   noTone(PIN_BUZZER);
@@ -1232,6 +1338,9 @@ void setup() {
   stelle.begin();
   stelle.clear();
   stelle.show();
+  casette.begin();
+  casette.clear();
+  casette.show();
 
   pinMode(PIN_START, INPUT_PULLUP);
   pinMode(PIN_NEXT,  INPUT_PULLUP);
@@ -1247,7 +1356,7 @@ void setup() {
   tuttoSpento();
   spegniRele();
 
-  // Autotest di accensione: ALBA -> GIORNO -> TRAMONTO -> STELLE.
+  // Autotest di accensione: ALBA -> GIORNO -> TRAMONTO -> STELLE -> CASETTE.
   // Ogni passo dura 2 secondi e l'OLED mostra la progress bar complessiva.
   eseguiSequenzaBoot();
 
@@ -1262,6 +1371,7 @@ void setup() {
   Serial.println(F("D3  = RGB Verde"));
   Serial.println(F("D4  = RGB Blu"));
   Serial.println(F("D5  = DATA WS2811 (50 stelle)"));
+  Serial.println(F("D13 = DATA WS2811 CASETTE"));
   Serial.println(F("D6  = BUZZER passivo opzionale"));
   Serial.println(F("D7/D11/D12 = RGB SINISTRA / TRAMONTO"));
   Serial.println(F("D44/D45/D46 = RGB DESTRA / ALBA"));
@@ -1272,8 +1382,8 @@ void setup() {
   Serial.println(oledPresente ? F("OLED: OK") : F("OLED: non presente, continuo senza display"));
   Serial.println(F("A0  = DURATA CICLO 1-6 minuti"));
   Serial.print(F("Durata ciclo impostata all\'avvio: "));
-  Serial.print(durataCiclo() / 60000UL);
-  Serial.println(F(" minuto/i"));
+  Serial.print(durataCiclo() / 1000UL);
+  Serial.println(F(" secondi"));
   Serial.print(F("Posizione potenziometro A0: "));
   Serial.println(analogRead(PIN_POT));
   Serial.println();
@@ -1311,11 +1421,32 @@ void loop() {
     float p = percentualeCiclo(durata);
 
     int potNow = analogRead(PIN_POT);
-    if (ultimoPotOled < 0) ultimoPotOled = potNow;
-    if (abs(potNow - ultimoPotOled) >= POT_POPUP_DELTA) {
-      ultimoPotOled = potNow;
+
+    // Mostra la nuova velocita' solo dopo uno spostamento reale >=15 RAW
+    // e quando il potenziometro e' rimasto stabile per 2 secondi.
+    if (ultimoPotOled < 0) {
+      ultimoPotOled = potRawStabile;
+      potPopupUltimaLettura = potNow;
+    }
+    if (abs(potNow - potPopupUltimaLettura) >= POT_BEEP_STABILITA_DELTA) {
+      potPopupUltimaLettura = potNow;
+      potPopupUltimaVariazioneMs = millis();
+    }
+    if (abs(potNow - potRawStabile) >= POT_POPUP_DELTA)
+      potPopupInAttesa = true;
+    else
+      potPopupInAttesa = false;
+
+    if (potPopupInAttesa &&
+        millis() - potPopupUltimaVariazioneMs >= POT_POPUP_SETTLE_MS) {
+      potPopupInAttesa = false;
+      potRawStabile = constrain(potNow, 0, POT_RAW_MAX);
+      durataCicloStabile = durataDaRaw(potRawStabile);
+      ultimoPotOled = potRawStabile;
+      potRawOled = potRawStabile;
       oledMostraPopup(OLED_VELOCITA);
     }
+
     buzzerPotTick(potNow);
 
     aggiornaScena(p);
