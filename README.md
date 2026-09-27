@@ -79,9 +79,9 @@ Per rendere alba e tramonto più dinamici vengono aggiunte **due strisce RGB ana
 | Sinistra | Tramonto | D7 / D11 / D12 | MOSFET #3, CH1–CH3 |
 | Destra | Alba | D44 / D45 / D46 | MOSFET #4, CH1–CH3 |
 
-Ogni striscia ha un ramo +12 V protetto dedicato: **F2 ALBA** alimenta sia il +12 V comune della striscia ALBA sia il DC+ del MOSFET #4; **F3 TRAMONTO** alimenta sia il +12 V comune della striscia TRAMONTO sia il DC+ del MOSFET #3. I ritorni R/G/B vanno ai tre OUT- del relativo modulo MOSFET. Il quarto canale di ciascun modulo resta libero. **D13 rimane PWM libero.**
+Ogni striscia ha un ramo +12 V protetto dedicato: **F2 ALBA** alimenta sia il +12 V comune della striscia ALBA sia il DC+ del MOSFET #4; **F3 TRAMONTO** alimenta sia il +12 V comune della striscia TRAMONTO sia il DC+ del MOSFET #3. I ritorni R/G/B vanno ai tre OUT- del relativo modulo MOSFET. Il quarto canale di ciascun modulo resta libero. **D13 è dedicato al DATA della seconda catena WS2811 CASETTE.**
 
-Nel firmware la palette RGB è tarata volutamente calda per compensare la dominante fredda osservata sulle strisce reali. Durante il TRAMONTO la striscia RGB principale passa progressivamente dal giorno caldo al colore notturno, mentre la striscia sinistra TRAMONTO produce un bagliore rosso/arancio. Negli ultimi 3 secondi della fase TRAMONTO la laterale viene dissolta fino a zero, così il passaggio al CREPUSCOLO avviene senza lampeggi. La striscia destra è dedicata all'ALBA e viene anch'essa portata dolcemente a zero negli ultimi 3 secondi della fase.
+Nel firmware la palette RGB è tarata volutamente calda per compensare la dominante fredda osservata sulle strisce reali. Durante il TRAMONTO la striscia RGB principale passa progressivamente dal giorno caldo al colore notturno, mentre la striscia sinistra TRAMONTO produce un bagliore rosso/arancio. La laterale TRAMONTO segue un arco 0 → massimo → 0 lungo l'intera fase. La striscia destra è dedicata all'ALBA e segue la propria curva percentuale documentata nella sezione **Funzionamento scenografico**.
 
 ### Relè ON/OFF — 4 moduli, 16 uscite
 
@@ -165,30 +165,41 @@ I pulsanti utilizzano `INPUT_PULLUP`, quindi non richiedono una resistenza di pu
 
 ## Sequenza di inizializzazione all'accensione
 
-Prima di iniziare il normale ciclo scenografico, il firmware esegue un **autotest visivo di circa 8 secondi**. I relè restano spenti e le uscite vengono provate in sequenza:
+Prima di iniziare il normale ciclo scenografico, il firmware esegue un **autotest visivo di circa 21,625 secondi**, seguito dalla schermata **PRONTO** per 900 ms. I relè restano spenti e le uscite luminose vengono provate in sequenza:
 
-1. **ALBA** — striscia RGB alba in bianco brillante per circa 4,325 secondi;
-2. **CIELO** — striscia RGB principale in bianco brillante per circa 4,325 secondi;
-3. **TRAMONTO** — striscia RGB tramonto in bianco brillante per circa 4,325 secondi;
-4. **STELLE** — tutti i 50 pixel WS2811 in bianco brillante per circa 4,325 secondi.
+1. **ALBA** — striscia RGB alba in bianco brillante per circa **4,325 s**;
+2. **CIELO** — striscia RGB principale in bianco brillante per circa **4,325 s**;
+3. **TRAMONTO** — striscia RGB tramonto in bianco brillante per circa **4,325 s**;
+4. **STELLE** — tutti i 50 pixel WS2811 in bianco brillante per circa **4,325 s**;
+5. **CASETTE** — seconda catena WS2811 su D13 in bianco brillante per circa **4,325 s**.
 
-Durante l'intera sequenza l'OLED mostra **Inizializzazione**, il nome dell'uscita in prova, la percentuale complessiva e una progress bar. Al termine tutte le uscite vengono spente, compare **PRONTO** per 900 ms e il timer del ciclo viene avviato da zero: il presepe entra quindi normalmente nella fase **GIORNO**.
+La melodia **Astro del ciel** è stata dilatata a circa **21,625 s** per mantenere sincronizzati i cinque passi dell'autotest, la progress bar OLED e la musica. Al termine tutte le uscite vengono spente, compare **PRONTO** per 900 ms e solo dopo viene azzerato il timer del ciclo: il tempo di boot **non fa parte** del ciclo scenografico.
 
-Questa sequenza è visibile anche nella simulazione Wokwi e costituisce un rapido controllo all'accensione di strisce, stelle e relativi collegamenti.
+Durante l'intera sequenza l'OLED mostra **Inizializzazione**, il nome dell'uscita in prova, la percentuale complessiva e una progress bar.
 
 ## Funzionamento scenografico
 
-Il ciclo automatico coordina la **striscia RGB principale**, le **due strisce RGB laterali da 1 m** dedicate ad alba e tramonto e le **50 stelle WS2811 individualmente indirizzabili**.
+Il ciclo automatico è regolabile con il potenziometro da **1 a 6 minuti**. Le fasi non hanno una durata fissa in secondi: occupano una percentuale precisa del ciclo, quindi tutti i tempi scalano linearmente quando si cambia la durata totale.
 
-1. **Giorno:** stelle spente; la striscia RGB crea l'illuminazione diurna.
-2. **Tramonto:** stelle spente; il cielo principale passa progressivamente dalla luce diurna calda alla notte, mentre la laterale sinistra crea il bagliore occidentale. Negli ultimi 3 secondi della fase la laterale sfuma fino a zero per evitare lampeggi al cambio fase.
-3. **Crepuscolo:** il cielo principale resta al colore notturno e la laterale TRAMONTO resta spenta, mentre le stelle iniziano a comparire **una alla volta in ordine casuale**.
-4. Ogni stella ha una **luminosità massima diversa**, per evitare un cielo uniforme e artificiale.
-5. Tutte le **20 stelle attive** hanno un proprio ciclo asincrono di luminosità, con **scintillio morbido** e senza lampeggi netti.
-6. **Notte:** il cielo stellato è completo ma non uniforme; le stelle mantengono intensità differenti.
-7. **Alba:** le stelle scompaiono progressivamente mentre la striscia principale torna verso il giorno e la striscia laterale destra entra e poi cala gradualmente, simulando una sorgente luminosa direzionale.
-8. A ogni nuova notte viene generata una **disposizione differente** delle stelle e delle relative intensità.
-9. Il colore delle stelle è impostato su **bianco caldo**, evitando un effetto RGB multicolore.
+| Fase | Posizione nel ciclo | Quota ciclo | Ciclo 1 min | Ciclo 6 min |
+|---|---:|---:|---:|---:|
+| **GIORNO** | 0–35% | 35% | 21 s | 126 s |
+| **TRAMONTO** | 35–45% | 10% | 6 s | 36 s |
+| **CREPUSCOLO** | 45–50% | 5% | 3 s | 18 s |
+| **NOTTE** | 50–80% | 30% | 18 s | 108 s |
+| **ALBA** | 80–100% | 20% | 12 s | 72 s |
+
+Questa tabella è il riferimento temporale del firmware. Per una durata intermedia, il tempo di ogni fase è semplicemente la percentuale indicata della durata totale.
+
+1. **GIORNO (0–35%)** — stelle spente; CIELO acceso con luce diurna volutamente calda (RGB logico circa 210/82/18). Le due laterali sono spente.
+2. **TRAMONTO (35–45%)** — il CIELO passa progressivamente dalla luce diurna al nero. La laterale sinistra TRAMONTO segue un arco **0 → massimo → 0** nell'intera fase, con tonalità rosso/arancio. Le stelle restano spente.
+3. **CREPUSCOLO (45–50%)** — CIELO e laterali sono spenti. Viene generata una nuova disposizione casuale e compaiono progressivamente, una alla volta, **20 stelle scelte tra i 50 pixel disponibili**.
+4. **NOTTE (50–80%)** — CIELO e laterali restano completamente spenti. Le 20 stelle rimangono attive con luminosità massime differenti e cicli asincroni individuali di variazione. Il ciclo individuale di ciascuna stella dura circa **6,4–12,2 s**, senza modificare la durata della fase NOTTE.
+5. **ALBA (80–100%)** — le stelle iniziano a dissolversi fin dall'inizio della fase. La laterale destra ALBA sale fino al massimo nel primo **30% dell'ALBA**, resta al massimo fino al **65%**, quindi scende dolcemente a zero. Il CIELO centrale resta invece spento per il primo **75% dell'ALBA** e torna progressivamente alla luce GIORNO soltanto nell'ultimo **25%**, evitando uno stacco al nuovo ciclo.
+
+La seconda catena WS2811 **CASETTE su D13** viene inizializzata dal firmware e verificata durante boot e TEST manuale, ma nel normale ciclo scenografico viene mantenuta spenta finché non saranno definite le sue accensioni.
+
+A ogni nuovo CREPUSCOLO viene generata una nuova selezione delle stelle e delle relative luminosità. Il colore delle stelle è **bianco caldo**.
 
 ## Manuale di montaggio filo per filo
 
@@ -266,7 +277,7 @@ Il **DC- del MOSFET #1 deve essere collegato allo 0 V comune**, come indicato ne
 | 14 | Mega D5 | resistenza 330–470 Ω |
 | 15 | uscita resistenza | WS2811 DATA/DIN |
 
-**Seconda catena WS2811 CASETTE:** il pin **D13** è riservato fin da ora al suo DATA/DIN. La catena avrà alimentazione 12 V e massa comune secondo lo stesso principio delle stelle, ma **non è ancora pilotata dal firmware**: la programmazione degli effetti delle casette verrà aggiunta in seguito.
+**Seconda catena WS2811 CASETTE:** il pin **D13** è riservato fin da ora al suo DATA/DIN. La catena avrà alimentazione 12 V e massa comune secondo lo stesso principio delle stelle, ed è ora **inizializzata e pilotata dal firmware per gli autotest di boot e per la modalità TEST manuale**. Durante il normale ciclo scenografico resta spenta: gli effetti delle casette verranno definiti in seguito.
 
 Rispettare la freccia/direzione DATA della stringa. La resistenza va preferibilmente vicino all'ingresso della prima WS2811.
 
@@ -339,7 +350,7 @@ Per **ciascuno dei quattro moduli** collegare anche:
 | 0 V comune | DC- |
 | pin Mega indicato sopra | IN1 / IN2 / IN3 / IN4 |
 
-Per ora i morsetti **COM/NO/NC possono rimanere senza carico**. Così tutta la parte di comando `Grp_01_01`–`Grp_04_04` è montata e pronta. In modalità TEST le 16 uscite vengono provate una alla volta, una pressione di TEST per ciascun relè. La sequenza completa comprende 30 test: CIELO R/G/B, TRAMONTO R/G/B, ALBA R/G/B, STELLE R/G/B su tutti i 50 pixel, tutte le 50 stelle in bianco caldo, tutto insieme e infine i 16 relè individuali.
+Per ora i morsetti **COM/NO/NC possono rimanere senza carico**. Così tutta la parte di comando `Grp_01_01`–`Grp_04_04` è montata e pronta. In modalità TEST le 16 uscite vengono provate una alla volta, una pressione di TEST per ciascun relè. La sequenza completa comprende **34 test**: CIELO R/G/B, TRAMONTO R/G/B, ALBA R/G/B, STELLE R/G/B, tutte le STELLE in bianco caldo, CASETTE R/G/B, tutte le CASETTE in bianco caldo, TUTTO INSIEME e infine i 16 relè individuali.
 
 Quando assegneremo un carico 12 V normalmente spento, lo schema tipico sarà: **+12 V protetto del carico → COM → NO → positivo carico**, mentre il negativo del carico torna allo **0 V comune**. Il fusibile del carico sarà dimensionato in funzione del carico e del relativo cablaggio.
 
@@ -375,7 +386,7 @@ Gli eventuali contatti NC dei pulsanti rimangono scollegati.
 
 Il buzzer è un accessorio opzionale. Collegare il positivo/filo rosso a **Mega D6** e il negativo/filo nero a **Mega GND**. Deve essere un buzzer/piezo **passivo**, così il firmware può generare note diverse con `tone()`. Se il buzzer non è collegato, il presepe funziona normalmente senza errori.
 
-Durante il boot il buzzer riproduce a tempo sostenuto **Astro del ciel** fino alla frase **“mite agnello Redentor”**. L'autotest ALBA → CIELO → TRAMONTO → STELLE viene esteso alla stessa durata della melodia: ciascuna delle quattro scene occupa circa un quarto del brano, così luci, progress bar OLED e ultima nota terminano insieme prima di PRONTO. Al termine il buzzer viene disattivato con `noTone()`.
+Durante il boot il buzzer riproduce **Astro del ciel** fino alla frase **“mite agnello Redentor”**. La melodia viene riprodotta su circa **21,625 s** ed è sincronizzata con i cinque passi **ALBA → CIELO → TRAMONTO → STELLE → CASETTE**: ogni scena dura circa **4,325 s**, così luci, progress bar OLED e ultima nota terminano insieme prima di PRONTO. Al termine il buzzer viene disattivato con `noTone()`.
 
 Il buzzer fornisce anche un feedback acustico semplice durante l'uso: **un unico bip breve e uguale** alla pressione di START/STOP, AVANTI e TEST e quando viene variato il potenziometro. Il feedback è non bloccante e può essere disabilitato impostando `BUZZER_ENABLED=false`. Anche con buzzer fisicamente assente tutto il controller continua a funzionare normalmente.
 
@@ -416,7 +427,7 @@ Se il senso di rotazione risulta invertito rispetto a quello desiderato, scambia
 | D7 | RGB tramonto R |
 | D11 | RGB tramonto G |
 | D12 | RGB tramonto B |
-| D13 | DATA seconda catena WS2811 CASETTE — riservato, programmazione futura |
+| D13 | DATA seconda catena WS2811 CASETTE — attiva nei test; effetti scenografici futuri |
 | D20 | SDA OLED EL-SM-008 (I²C, opzionale) |
 | D21 | SCL OLED EL-SM-008 (I²C, opzionale) |
 | D22 | START/STOP |
@@ -436,7 +447,7 @@ Aprire:
 
 con Arduino IDE e selezionare **Arduino Mega or Mega 2560**.
 
-Il firmware attuale implementa cielo RGB principale, due RGB laterali alba/tramonto, stelle WS2811, comandi, OLED, buzzer piezo passivo opzionale e modalità TEST. Il potenziometro A0 è temporaneamente tarato sull'hardware reale: 0 corrisponde a 1 minuto e circa 256/1023 ADC (un quarto della scala) corrisponde già a 6 minuti. D8–D10 restano liberi/di riserva; D13 è riservato alla futura seconda catena WS2811 per le CASETTE. I carichi ON/OFF vengono gestiti tramite i 16 relè D25–D40.
+Il firmware attuale implementa cielo RGB principale, due RGB laterali alba/tramonto, stelle WS2811, seconda catena WS2811 CASETTE per autotest, comandi, OLED, buzzer piezo passivo opzionale e modalità TEST. Il potenziometro A0 è temporaneamente tarato sull'hardware reale: 0 corrisponde a 1 minuto e circa 256/1023 ADC (un quarto della scala) corrisponde già a 6 minuti. D8–D10 restano liberi/di riserva; D13 pilota la seconda catena WS2811 CASETTE negli autotest; durante il ciclo normale resta spenta in attesa della futura logica scenografica. I carichi ON/OFF vengono gestiti tramite i 16 relè D25–D40.
 
 ## GitHub Actions
 
@@ -569,7 +580,7 @@ Le tre barre custom **CIELO**, **TRAMONTO** e **ALBA** rappresentano visivamente
 
 La striscia NeoPixel virtuale rappresenta le **50 stelle**. Wokwi usa un componente addressable compatibile per visualizzare l'effetto; nel presepe reale utilizziamo la stringa WS2811 a 12 V con il cablaggio documentato.
 
-Gli indicatori `Grp_01_01`–`Grp_04_04` rappresentano le 16 uscite dei quattro moduli relè collegate a D25–D40. In modalità TEST vengono accese una alla volta dopo i 14 test di cielo/RGB/stelle; dopo `Grp_04_04` la sequenza riparte dal primo test e START esce dalla modalità TEST.
+Gli indicatori `Grp_01_01`–`Grp_04_04` rappresentano le 16 uscite dei quattro moduli relè collegate a D25–D40. In modalità TEST vengono accese una alla volta dopo i 18 test luminosi (RGB, STELLE, CASETTE e TUTTO INSIEME); dopo `Grp_04_04` la sequenza riparte dal primo test e START esce dalla modalità TEST.
 
 ### 11. Se Wokwi dà errore
 
