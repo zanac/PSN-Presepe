@@ -706,7 +706,7 @@ bool inizializzaOled() {
   display.setTextSize(1);
   // Startup splash: PSN-Presepe! by Vanni
   display.setCursor(27,18); display.print(F("PSN-Presepe!"));
-  display.setCursor(30,36); display.print(F("by Vanni 025"));
+  display.setCursor(30,36); display.print(F("by Vanni 026"));
   display.display();
   delay(3000);
   return true;
@@ -742,8 +742,10 @@ void faseAvanti() {
 void aggiornaScena(float p) {
   Fase fase = faseDaPercentuale(p);
   unsigned long durata = durataCiclo();
-  // 3 secondi espressi come percentuale del ciclo corrente.
+  // Dissolvenza finale di 3 secondi; nell'ultimo secondo le laterali
+  // vengono forzate a PWM=0 per evitare valori minimi instabili sui MOSFET reali.
   float fade3sPct = (3000.0f * 100.0f) / (float)durata;
+  float zero1sPct = (1000.0f * 100.0f) / (float)durata;
 
   // Genera una nuova disposizione a ogni ingresso nel crepuscolo.
   if (fase == CREPUSCOLO && ultimaFaseStelle != CREPUSCOLO) {
@@ -787,12 +789,14 @@ void aggiornaScena(float p) {
         tr = interpola8(0, 255, x);
         tg = interpola8(0, 42, x);
         tb = interpola8(0, 2, x);
-      } else {
-        float x = progresso(p, inizioFade, fineFade);
+      } else if (p < fineFade - zero1sPct) {
+        float x = progresso(p, inizioFade, fineFade - zero1sPct);
         x = x * x * (3.0f - 2.0f * x);
         tr = (uint8_t)(255.0f * (1.0f - x));
         tg = (uint8_t)(42.0f * (1.0f - x));
         tb = (uint8_t)(2.0f * (1.0f - x));
+      } else {
+        tr = 0; tg = 0; tb = 0;
       }
       break;
     }
@@ -845,16 +849,18 @@ void aggiornaScena(float p) {
           x = x * x * (3.0f - 2.0f * x);
           arco = 1.0f - x;
         }
-        // Alba calda: quasi niente blu.
+        // Alba volutamente molto rossa sull'hardware reale.
         ar = (uint8_t)(255.0f * arco);
-        ag = (uint8_t)(70.0f * arco);
-        ab = (uint8_t)(8.0f * arco);
+        ag = (uint8_t)(38.0f * arco);
+        ab = (uint8_t)(2.0f * arco);
 
         // Garanzia hardware: negli ultimi 3 secondi ALBA va a zero
         // indipendentemente dalla forma dell'arco precedente.
         float inizioFade = max(P_ALBA, 100.0f - fade3sPct);
-        if (p >= inizioFade) {
-          float x = progresso(p, inizioFade, 100.0f);
+        if (p >= 100.0f - zero1sPct) {
+          ar = 0; ag = 0; ab = 0;
+        } else if (p >= inizioFade) {
+          float x = progresso(p, inizioFade, 100.0f - zero1sPct);
           x = x * x * (3.0f - 2.0f * x);
           ar = (uint8_t)(ar * (1.0f - x));
           ag = (uint8_t)(ag * (1.0f - x));
