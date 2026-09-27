@@ -410,9 +410,12 @@ void tuttoSpento() {
 unsigned long durataCiclo() {
   int raw = analogRead(PIN_POT);
 
-  // Ruotando verso il massimo elettrico di A0:
-  // ciclo piu' lungo. A0=0 -> 1 minuto (default se il cursore e' a GND), A0=1023 -> 6 minuti.
-  return map(raw, 0, 1023, MIN_CYCLE_MS, MAX_CYCLE_MS);
+  // Taratura hardware: la corsa utile osservata sul potenziometro reale
+  // occupa circa il primo quarto della scala ADC.
+  // A0=0 -> 1 minuto; A0>=256 -> 6 minuti.
+  const int POT_RAW_MAX = 256;
+  raw = constrain(raw, 0, POT_RAW_MAX);
+  return map(raw, 0, POT_RAW_MAX, MIN_CYCLE_MS, MAX_CYCLE_MS);
 }
 
 float percentualeCiclo(unsigned long durata) {
@@ -703,7 +706,7 @@ bool inizializzaOled() {
   display.setTextSize(1);
   // Startup splash: PSN-Presepe! by Vanni
   display.setCursor(27,18); display.print(F("PSN-Presepe!"));
-  display.setCursor(30,36); display.print(F("by Vanni 024"));
+  display.setCursor(30,36); display.print(F("by Vanni 025"));
   display.display();
   delay(3000);
   return true;
@@ -738,6 +741,9 @@ void faseAvanti() {
 
 void aggiornaScena(float p) {
   Fase fase = faseDaPercentuale(p);
+  unsigned long durata = durataCiclo();
+  // 3 secondi espressi come percentuale del ciclo corrente.
+  float fade3sPct = (3000.0f * 100.0f) / (float)durata;
 
   // Genera una nuova disposizione a ogni ingresso nel crepuscolo.
   if (fase == CREPUSCOLO && ultimaFaseStelle != CREPUSCOLO) {
@@ -752,9 +758,11 @@ void aggiornaScena(float p) {
   switch (fase) {
 
     case GIORNO:
+      // Luce diurna volutamente calda: sulle strisce reali il blu
+      // risulta molto dominante, quindi viene fortemente ridotto.
       r = 255;
-      g = 210;
-      b = 145;
+      g = 145;
+      b = 45;
       livelloStelle = 0;
       break;
 
@@ -765,16 +773,27 @@ void aggiornaScena(float p) {
       // transizione fino al colore notturno. L'ultima luce resta cosi'
       // concentrata sul lato ovest, sulla striscia TRAMONTO.
       r = interpola8(255, 8, t);
-      g = interpola8(210, 12, t);
-      b = interpola8(145, 55, t);
+      g = interpola8(145, 8, t);
+      b = interpola8(45, 28, t);
       livelloStelle = 0;
 
-      // Il bagliore occidentale cresce progressivamente e raggiunge
-      // il massimo alla fine del TRAMONTO. Il CREPUSCOLO riparte
-      // esattamente da questi valori, senza alcuno stacco.
-      tr = interpola8(0, 255, t);
-      tg = interpola8(0, 72, t);
-      tb = interpola8(0, 12, t);
+      // Bagliore occidentale molto caldo. Cresce nella prima parte,
+      // poi negli ultimi 3 secondi della fase scende dolcemente a zero:
+      // il cambio di fase avviene quindi con la laterale gia' spenta.
+      float fineFade = P_CREPU;
+      float inizioFade = max(P_TRAMONTO, fineFade - fade3sPct);
+      if (p < inizioFade) {
+        float x = progresso(p, P_TRAMONTO, inizioFade);
+        tr = interpola8(0, 255, x);
+        tg = interpola8(0, 42, x);
+        tb = interpola8(0, 2, x);
+      } else {
+        float x = progresso(p, inizioFade, fineFade);
+        x = x * x * (3.0f - 2.0f * x);
+        tr = (uint8_t)(255.0f * (1.0f - x));
+        tg = (uint8_t)(42.0f * (1.0f - x));
+        tb = (uint8_t)(2.0f * (1.0f - x));
+      }
       break;
     }
 
@@ -785,19 +804,21 @@ void aggiornaScena(float p) {
       // si spegne soltanto l'ultimo bagliore a ovest mentre compaiono
       // progressivamente le stelle.
       r = 8;
-      g = 12;
-      b = 55;
-      tr = interpola8(255, 0, t);
-      tg = interpola8(72, 0, t);
-      tb = interpola8(12, 0, t);
+      g = 8;
+      b = 28;
+      // TRAMONTO e' gia' arrivato a zero nei 3 secondi finali
+      // della fase precedente: nessun salto al cambio fase.
+      tr = 0;
+      tg = 0;
+      tb = 0;
       livelloStelle = interpola8(0, 235, t);
       break;
     }
 
     case NOTTE:
       r = 8;
-      g = 12;
-      b = 55;
+      g = 8;
+      b = 28;
       livelloStelle = 235;
       break;
 
@@ -805,8 +826,8 @@ void aggiornaScena(float p) {
       float t = progresso(p, P_ALBA, 100.0f);
 
       r = interpola8(8, 255, t);
-      g = interpola8(12, 210, t);
-      b = interpola8(55, 145, t);
+      g = interpola8(8, 145, t);
+      b = interpola8(28, 45, t);
       livelloStelle = interpola8(235, 0, t);
 
       // Alba direzionale dalla striscia destra: sale dolcemente nella
@@ -824,9 +845,21 @@ void aggiornaScena(float p) {
           x = x * x * (3.0f - 2.0f * x);
           arco = 1.0f - x;
         }
+        // Alba calda: quasi niente blu.
         ar = (uint8_t)(255.0f * arco);
-        ag = (uint8_t)(135.0f * arco);
-        ab = (uint8_t)(45.0f * arco);
+        ag = (uint8_t)(70.0f * arco);
+        ab = (uint8_t)(8.0f * arco);
+
+        // Garanzia hardware: negli ultimi 3 secondi ALBA va a zero
+        // indipendentemente dalla forma dell'arco precedente.
+        float inizioFade = max(P_ALBA, 100.0f - fade3sPct);
+        if (p >= inizioFade) {
+          float x = progresso(p, inizioFade, 100.0f);
+          x = x * x * (3.0f - 2.0f * x);
+          ar = (uint8_t)(ar * (1.0f - x));
+          ag = (uint8_t)(ag * (1.0f - x));
+          ab = (uint8_t)(ab * (1.0f - x));
+        }
       }
       break;
     }
