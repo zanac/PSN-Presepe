@@ -266,6 +266,8 @@ Il **DC- del MOSFET #1 deve essere collegato allo 0 V comune**, come indicato ne
 | 14 | Mega D5 | resistenza 330–470 Ω |
 | 15 | uscita resistenza | WS2811 DATA/DIN |
 
+**Seconda catena WS2811 CASETTE:** il pin **D13** è riservato fin da ora al suo DATA/DIN. La catena avrà alimentazione 12 V e massa comune secondo lo stesso principio delle stelle, ma **non è ancora pilotata dal firmware**: la programmazione degli effetti delle casette verrà aggiunta in seguito.
+
 Rispettare la freccia/direzione DATA della stringa. La resistenza va preferibilmente vicino all'ingresso della prima WS2811.
 
 ### 4. MOSFET #3 — RGB sinistra / TRAMONTO
@@ -414,7 +416,7 @@ Se il senso di rotazione risulta invertito rispetto a quello desiderato, scambia
 | D7 | RGB tramonto R |
 | D11 | RGB tramonto G |
 | D12 | RGB tramonto B |
-| D13 | PWM libero |
+| D13 | DATA seconda catena WS2811 CASETTE — riservato, programmazione futura |
 | D20 | SDA OLED EL-SM-008 (I²C, opzionale) |
 | D21 | SCL OLED EL-SM-008 (I²C, opzionale) |
 | D22 | START/STOP |
@@ -434,7 +436,7 @@ Aprire:
 
 con Arduino IDE e selezionare **Arduino Mega or Mega 2560**.
 
-Il firmware attuale implementa cielo RGB principale, due RGB laterali alba/tramonto, stelle WS2811, comandi, OLED, buzzer piezo passivo opzionale e modalità TEST. Il potenziometro A0 è temporaneamente tarato sull'hardware reale: 0 corrisponde a 1 minuto e circa 256/1023 ADC (un quarto della scala) corrisponde già a 6 minuti. D8–D10 restano liberi/di riserva. I carichi ON/OFF vengono gestiti tramite i 16 relè D25–D40.
+Il firmware attuale implementa cielo RGB principale, due RGB laterali alba/tramonto, stelle WS2811, comandi, OLED, buzzer piezo passivo opzionale e modalità TEST. Il potenziometro A0 è temporaneamente tarato sull'hardware reale: 0 corrisponde a 1 minuto e circa 256/1023 ADC (un quarto della scala) corrisponde già a 6 minuti. D8–D10 restano liberi/di riserva; D13 è riservato alla futura seconda catena WS2811 per le CASETTE. I carichi ON/OFF vengono gestiti tramite i 16 relè D25–D40.
 
 ## GitHub Actions
 
@@ -582,7 +584,7 @@ Controlla nell'ordine:
 Se modifichiamo firmware o cablaggio del progetto, anche i file nella cartella `simulation/` devono essere aggiornati insieme.
 
 
-> **Stelle:** i 50 pixel WS2811 restano fisicamente disponibili, ma a ogni ciclo ne vengono scelte casualmente solo **20**, mantenute a luminosità volutamente bassa. Tutte le 20 stelle attive hanno un proprio ciclo asincrono e variano dolcemente la luminosità. A ogni nuova notte la disposizione viene rigenerata.
+> **Stelle:** i 50 pixel WS2811 restano fisicamente disponibili, ma a ogni ciclo ne vengono scelte casualmente solo **20**, mantenute a luminosità volutamente bassa. Tutte le 20 stelle attive hanno un proprio ciclo asincrono e variano dolcemente la luminosità; dalla rev037 il ciclo individuale di accensione/spegnimento è raddoppiato (circa 6,4–12,2 s), senza modificare la durata delle fasi del presepe. A ogni nuova notte la disposizione viene rigenerata.
 
 ## Nota elettrica
 
