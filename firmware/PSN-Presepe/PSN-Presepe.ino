@@ -7,6 +7,7 @@
     D3 = Cielo RGB Verde
     D4 = Cielo RGB Blu
     D5 = DATA stelle WS2811 (50 pixel, 12 V)
+    D13 = DATA WS2811 CASETTE (riservato, non ancora pilotato)
     D6 = Buzzer piezo passivo opzionale
     D7/D11/D12 = RGB laterale SINISTRA / TRAMONTO (R/G/B)
     D44/D45/D46 = RGB laterale DESTRA / ALBA (R/G/B)
@@ -55,6 +56,7 @@ const uint8_t PIN_CIELO_R = 2;
 const uint8_t PIN_CIELO_G = 3;
 const uint8_t PIN_CIELO_B = 4;
 const uint8_t PIN_STELLE_DATA = 5;
+const uint8_t PIN_CASETTE_DATA = 13; // seconda catena WS2811: pin riservato, programmazione futura
 const uint8_t PIN_BUZZER = 6; // piezo passivo opzionale: se assente il firmware funziona normalmente
 
 // Strisce RGB laterali da 1 m, dedicate agli effetti direzionali.
@@ -360,10 +362,11 @@ void mostraStelle(float livello) {
     // livello pieno -> dissolvenza a zero -> pausa spenta -> riaccensione.
     // Durate e offset differenti evitano che le 20 stelle si muovano insieme.
     if (stellaTwinkle[i] && v > 5) {
-      // Durata pseudo-casuale e stabile per ogni pixel: circa 3,2-6,1 s.
+      // Durata pseudo-casuale e stabile per ogni pixel: circa 6,4-12,2 s.
+      // Rev037: raddoppiata per rendere accensione/spegnimento piu' lento dal vero.
       // Anche l'offset e' diverso per ogni stella, cosi' partono vicine ma non insieme
       // e col tempo si sfasano sempre di piu'.
-      const unsigned long periodo = 3200UL + ((unsigned long)(i * 37U) % 30UL) * 100UL;
+      const unsigned long periodo = 6400UL + ((unsigned long)(i * 37U) % 30UL) * 200UL;
       const unsigned long offset = ((unsigned long)(i * 173U) % 900UL);
       const unsigned long faseMs = (millis() + offset) % periodo;
       const unsigned long pTw = (faseMs * 100UL) / periodo;
@@ -727,7 +730,7 @@ bool inizializzaOled() {
   display.setTextSize(1);
   // Startup splash: PSN-Presepe! by Vanni
   display.setCursor(27,18); display.print(F("PSN-Presepe!"));
-  display.setCursor(30,30); display.print(F("by Vanni 036"));
+  display.setCursor(30,30); display.print(F("by Vanni 037"));
   potRawStabile = constrain(analogRead(PIN_POT), 0, POT_RAW_MAX);
   durataCicloStabile = durataDaRaw(potRawStabile);
   display.setCursor(18,46);
