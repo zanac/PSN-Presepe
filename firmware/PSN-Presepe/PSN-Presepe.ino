@@ -588,8 +588,8 @@ void mostraOledTest() {
   display.setTextColor(SSD1306_WHITE);
   display.setTextSize(1);
   display.setCursor(0,0); display.print(F("MODALITA' TEST"));
-  display.setCursor(0,14); display.print(F("Test ")); display.print(testIndice + 1); display.print(F("/30"));
-  display.setCursor(0,30);
+  display.setCursor(0,18); display.print(F("Test ")); display.print(testIndice + 1); display.print(F("/30"));
+  display.setCursor(0,32);
   if (testIndice < 14) {
     switch (testIndice) {
       case 0: display.print(F("CIELO ROSSO")); break;
@@ -631,25 +631,26 @@ void mostraOledRgbPausa(float p) {
   display.setTextColor(SSD1306_WHITE);
   display.setTextSize(1);
   display.setCursor(0,0);
-  display.print(F("PAUSA "));
+  display.print(F("PAUSA"));
+  display.setCursor(0,18);
   display.print(nomeFase(f));
   display.print(' ');
   display.print(pf);
   display.print('%');
 
-  display.setCursor(0,16);
+  display.setCursor(0,30);
   display.print(F("C "));
   display.print(rgbCieloR); display.print(',');
   display.print(rgbCieloG); display.print(',');
   display.print(rgbCieloB);
 
-  display.setCursor(0,32);
+  display.setCursor(0,41);
   display.print(F("T "));
   display.print(rgbTramontoR); display.print(',');
   display.print(rgbTramontoG); display.print(',');
   display.print(rgbTramontoB);
 
-  display.setCursor(0,48);
+  display.setCursor(0,52);
   display.print(F("A "));
   display.print(rgbAlbaR); display.print(',');
   display.print(rgbAlbaG); display.print(',');
@@ -677,7 +678,7 @@ void aggiornaOled(unsigned long durata, float p) {
 
   if (oledPopup != OLED_NESSUNO) {
     display.setTextSize(2);
-    display.setCursor(8,8);
+    display.setCursor(8,18);
     switch(oledPopup) {
       case OLED_PAUSA: display.print(F("PAUSA")); break;
       case OLED_RIPRESA: display.print(F("RIPRESA")); break;
@@ -687,7 +688,7 @@ void aggiornaOled(unsigned long durata, float p) {
       default: break;
     }
     display.setTextSize(1);
-    display.setCursor(8,38);
+    display.setCursor(8,42);
     if (oledPopup==OLED_VELOCITA) {
       stampaDurataOled(durata);
       display.print(F(" (mm:ss)"));
@@ -703,12 +704,12 @@ void aggiornaOled(unsigned long durata, float p) {
     int pf=(int)(percentualeFase(p,f)+0.5f);
     display.setTextSize(1);
     display.setCursor(0,0); display.print(F("PSN-PRESEPE"));
-    display.setCursor(0,14); display.print(nomeFase(f));
-    display.setCursor(94,14); display.print(pf); display.print('%');
-    display.drawRect(0,27,128,11,SSD1306_WHITE);
+    display.setCursor(0,18); display.print(nomeFase(f));
+    display.setCursor(94,18); display.print(pf); display.print('%');
+    display.drawRect(0,31,128,11,SSD1306_WHITE);
     int fill=(pf*124)/100;
-    if(fill>0) display.fillRect(2,29,fill,7,SSD1306_WHITE);
-    display.setCursor(0,47);
+    if(fill>0) display.fillRect(2,33,fill,7,SSD1306_WHITE);
+    display.setCursor(0,50);
     display.print(running ? F("RUN ") : F("PAUSA "));
     stampaDurataOled(durata);
     display.print(F(" (mm:ss)"));
@@ -726,7 +727,7 @@ bool inizializzaOled() {
   display.setTextSize(1);
   // Startup splash: PSN-Presepe! by Vanni
   display.setCursor(27,18); display.print(F("PSN-Presepe!"));
-  display.setCursor(30,30); display.print(F("by Vanni 034"));
+  display.setCursor(30,30); display.print(F("by Vanni 035"));
   potRawStabile = constrain(analogRead(PIN_POT), 0, POT_RAW_MAX);
   durataCicloStabile = durataDaRaw(potRawStabile);
   display.setCursor(18,46);
@@ -1184,11 +1185,11 @@ void mostraOledBoot(const __FlashStringHelper *fase, uint8_t step, unsigned long
   display.setTextSize(1);
   display.setCursor(0, 0);
   display.print(F("PSN-PRESEPE"));
-  display.setCursor(0, 15);
+  display.setCursor(0, 18);
   display.print(F("Inizializzazione"));
-  display.setCursor(0, 29);
+  display.setCursor(0, 30);
   display.print(fase);
-  display.setCursor(102, 29);
+  display.setCursor(102, 30);
   display.print(pct);
   display.print('%');
 
