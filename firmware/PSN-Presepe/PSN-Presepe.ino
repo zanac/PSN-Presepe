@@ -103,6 +103,7 @@ unsigned long oledPopupFino = 0;
 enum OledPopup { OLED_NESSUNO, OLED_PAUSA, OLED_RIPRESA, OLED_AVANTI, OLED_TEST, OLED_VELOCITA };
 OledPopup oledPopup = OLED_NESSUNO;
 int ultimoPotOled = -1;
+int potRawOled = 0;
 const int POT_POPUP_DELTA = 10;
 const unsigned long OLED_POPUP_MS = 1800UL;
 
@@ -671,6 +672,8 @@ void aggiornaOled(unsigned long durata, float p) {
     display.setTextSize(1);
     display.setCursor(8,38);
     if (oledPopup==OLED_VELOCITA) {
+      display.print(F("RAW A0: ")); display.print(potRawOled);
+      display.setCursor(8,50);
       display.print(F("Ciclo: ")); display.print(durata/60000UL); display.print(F(" min"));
     } else if (oledPopup==OLED_AVANTI) {
       display.print(F("Fase: ")); display.print(nomeFase(faseDaPercentuale(p)));
@@ -706,7 +709,7 @@ bool inizializzaOled() {
   display.setTextSize(1);
   // Startup splash: PSN-Presepe! by Vanni
   display.setCursor(27,18); display.print(F("PSN-Presepe!"));
-  display.setCursor(30,36); display.print(F("by Vanni 029"));
+  display.setCursor(30,36); display.print(F("by Vanni 030"));
   display.display();
   delay(3000);
   return true;
@@ -760,9 +763,9 @@ void aggiornaScena(float p) {
     case GIORNO:
       // Luce diurna volutamente calda: sulle strisce reali il blu
       // risulta molto dominante, quindi viene fortemente ridotto.
-      r = 255;
-      g = 145;
-      b = 45;
+      r = 210;
+      g = 82;
+      b = 18;
       tr = 0; tg = 0; tb = 0;
       ar = 0; ag = 0; ab = 0;
       livelloStelle = 0;
@@ -774,17 +777,18 @@ void aggiornaScena(float p) {
       // Durante il tramonto il cielo centrale completa gia' la sua
       // transizione fino al colore notturno. L'ultima luce resta cosi'
       // concentrata sul lato ovest, sulla striscia TRAMONTO.
-      r = interpola8(255, 8, t);
-      g = interpola8(145, 8, t);
-      b = interpola8(45, 28, t);
+      // Escursione volutamente ridotta e molto calda per le strisce reali.
+      r = interpola8(210, 18, t);
+      g = interpola8(82, 8, t);
+      b = interpola8(18, 2, t);
       livelloStelle = 0;
 
       // La laterale TRAMONTO e' spenta fuori dalla propria fase.
       // Durante la fase usa un arco diretto 0 -> massimo -> 0.
       float arco = sin(t * PI);
-      tr = (uint8_t)(255.0f * arco);
-      tg = (uint8_t)(42.0f * arco);
-      tb = (uint8_t)(2.0f * arco);
+      tr = (uint8_t)(190.0f * arco);
+      tg = (uint8_t)(24.0f * arco);
+      tb = 0;
       break;
     }
 
@@ -794,9 +798,9 @@ void aggiornaScena(float p) {
       // Il cielo e' gia' al colore della NOTTE. Durante il crepuscolo
       // si spegne soltanto l'ultimo bagliore a ovest mentre compaiono
       // progressivamente le stelle.
-      r = 8;
-      g = 8;
-      b = 28;
+      r = 0;
+      g = 0;
+      b = 0;
       // TRAMONTO e ALBA sono inattive: PWM esattamente a zero.
       tr = 0; tg = 0; tb = 0;
       ar = 0; ag = 0; ab = 0;
@@ -805,9 +809,10 @@ void aggiornaScena(float p) {
     }
 
     case NOTTE:
-      r = 8;
-      g = 8;
-      b = 28;
+      // Notte completamente buia sulla striscia CIELO.
+      r = 0;
+      g = 0;
+      b = 0;
       tr = 0; tg = 0; tb = 0;
       ar = 0; ag = 0; ab = 0;
       livelloStelle = 235;
@@ -816,9 +821,10 @@ void aggiornaScena(float p) {
     case ALBA: {
       float t = progresso(p, P_ALBA, 100.0f);
 
-      r = interpola8(8, 255, t);
-      g = interpola8(8, 145, t);
-      b = interpola8(28, 45, t);
+      // Alba molto calda e con escursione contenuta.
+      r = interpola8(18, 210, t);
+      g = interpola8(8, 82, t);
+      b = interpola8(2, 18, t);
       livelloStelle = interpola8(235, 0, t);
 
       // Alba direzionale dalla striscia destra: sale dolcemente nella
@@ -838,9 +844,9 @@ void aggiornaScena(float p) {
         }
         // ALBA e' spenta fuori dalla propria fase. Durante la fase
         // usa un arco diretto 0 -> rosso caldo -> 0.
-        ar = (uint8_t)(255.0f * arco);
-        ag = (uint8_t)(38.0f * arco);
-        ab = (uint8_t)(2.0f * arco);
+        ar = (uint8_t)(190.0f * arco);
+        ag = (uint8_t)(20.0f * arco);
+        ab = 0;
       }
       break;
     }
@@ -1328,6 +1334,9 @@ void loop() {
     if (ultimoPotOled < 0) ultimoPotOled = potNow;
     if (abs(potNow - ultimoPotOled) >= POT_POPUP_DELTA) {
       ultimoPotOled = potNow;
+      potRawOled = potNow;
+      Serial.print(F("POT RAW A0 = "));
+      Serial.println(potNow);
       oledMostraPopup(OLED_VELOCITA);
     }
     buzzerPotTick(potNow);
