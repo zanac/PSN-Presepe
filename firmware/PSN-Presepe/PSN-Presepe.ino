@@ -68,9 +68,11 @@ const uint8_t PIN_ALBA_R = 44;
 const uint8_t PIN_ALBA_G = 45;
 const uint8_t PIN_ALBA_B = 46;
 const uint16_t NUM_STELLE = 50;
+const uint16_t NUM_CASETTE = 50; // numero massimo predisposto; ridurre quando sara\' noto il numero reale
 const uint8_t STELLE_ATTIVE = 20;
 const uint8_t STELLE_TREMOLANTI = STELLE_ATTIVE; // tutte le 20 stelle attive scintillano
 Adafruit_NeoPixel stelle(NUM_STELLE, PIN_STELLE_DATA, NEO_GRB + NEO_KHZ800);
+Adafruit_NeoPixel casette(NUM_CASETTE, PIN_CASETTE_DATA, NEO_GRB + NEO_KHZ800);
 
 const uint8_t PIN_START = 22;
 const uint8_t PIN_NEXT  = 23;
@@ -412,6 +414,8 @@ void tuttoSpento() {
   setTramonto(0, 0, 0);
   setAlba(0, 0, 0);
   setStelle(0);
+  casette.clear();
+  casette.show();
 }
 
 // ============================================================
@@ -591,9 +595,9 @@ void mostraOledTest() {
   display.setTextColor(SSD1306_WHITE);
   display.setTextSize(1);
   display.setCursor(0,0); display.print(F("MODALITA' TEST"));
-  display.setCursor(0,18); display.print(F("Test ")); display.print(testIndice + 1); display.print(F("/30"));
+  display.setCursor(0,18); display.print(F("Test ")); display.print(testIndice + 1); display.print(F("/34"));
   display.setCursor(0,32);
-  if (testIndice < 14) {
+  if (testIndice < 18) {
     switch (testIndice) {
       case 0: display.print(F("CIELO ROSSO")); break;
       case 1: display.print(F("CIELO VERDE")); break;
@@ -608,7 +612,11 @@ void mostraOledTest() {
       case 10: display.print(F("STELLE VERDI")); break;
       case 11: display.print(F("STELLE BLU")); break;
       case 12: display.print(F("STELLE WS2811")); break;
-      case 13: display.print(F("TUTTO INSIEME")); break;
+      case 13: display.print(F("CASETTE ROSSE")); break;
+      case 14: display.print(F("CASETTE VERDI")); break;
+      case 15: display.print(F("CASETTE BLU")); break;
+      case 16: display.print(F("CASETTE WS2811")); break;
+      case 17: display.print(F("TUTTO INSIEME")); break;
     }
   } else {
     uint8_t n = testIndice - 14;
@@ -987,14 +995,14 @@ void applicaTestCorrente() {
   tuttoSpento();
   spegniRele();
 
-  if (testIndice >= 14) {
-    uint8_t n = testIndice - 14;
+  if (testIndice >= 18) {
+    uint8_t n = testIndice - 18;
     accendiRele(n);
     uint8_t gruppo = n / 4 + 1;
     uint8_t rele = n % 4 + 1;
     Serial.print(F("TEST "));
     Serial.print(testIndice + 1);
-    Serial.print(F("/30 - Grp_0"));
+    Serial.print(F("/34 - Grp_0"));
     Serial.print(gruppo);
     Serial.print(F("_0"));
     Serial.println(rele);
@@ -1005,39 +1013,39 @@ void applicaTestCorrente() {
   switch (testIndice) {
     case 0:
       setCielo(255, 0, 0);
-      Serial.println(F("TEST 1/30 - CIELO ROSSO"));
+      Serial.println(F("TEST 1/34 - CIELO ROSSO"));
       break;
     case 1:
       setCielo(0, 255, 0);
-      Serial.println(F("TEST 2/30 - CIELO VERDE"));
+      Serial.println(F("TEST 2/34 - CIELO VERDE"));
       break;
     case 2:
       setCielo(0, 0, 255);
-      Serial.println(F("TEST 3/30 - CIELO BLU"));
+      Serial.println(F("TEST 3/34 - CIELO BLU"));
       break;
     case 3:
       setTramonto(255, 0, 0);
-      Serial.println(F("TEST 4/30 - TRAMONTO ROSSO"));
+      Serial.println(F("TEST 4/34 - TRAMONTO ROSSO"));
       break;
     case 4:
       setTramonto(0, 255, 0);
-      Serial.println(F("TEST 5/30 - TRAMONTO VERDE"));
+      Serial.println(F("TEST 5/34 - TRAMONTO VERDE"));
       break;
     case 5:
       setTramonto(0, 0, 255);
-      Serial.println(F("TEST 6/30 - TRAMONTO BLU"));
+      Serial.println(F("TEST 6/34 - TRAMONTO BLU"));
       break;
     case 6:
       setAlba(255, 0, 0);
-      Serial.println(F("TEST 7/30 - ALBA ROSSO"));
+      Serial.println(F("TEST 7/34 - ALBA ROSSO"));
       break;
     case 7:
       setAlba(0, 255, 0);
-      Serial.println(F("TEST 8/30 - ALBA VERDE"));
+      Serial.println(F("TEST 8/34 - ALBA VERDE"));
       break;
     case 8:
       setAlba(0, 0, 255);
-      Serial.println(F("TEST 9/30 - ALBA BLU"));
+      Serial.println(F("TEST 9/34 - ALBA BLU"));
       break;
     case 9:
       // Verifica il canale rosso di tutti i 50 pixel WS2811.
@@ -1045,7 +1053,7 @@ void applicaTestCorrente() {
       for (uint16_t i = 0; i < NUM_STELLE; i++)
         stelle.setPixelColor(i, stelle.Color(70, 0, 0));
       stelle.show();
-      Serial.println(F("TEST 10/30 - STELLE ROSSE"));
+      Serial.println(F("TEST 10/34 - STELLE ROSSE"));
       break;
     case 10:
       // Verifica il canale verde di tutti i 50 pixel WS2811.
@@ -1053,7 +1061,7 @@ void applicaTestCorrente() {
       for (uint16_t i = 0; i < NUM_STELLE; i++)
         stelle.setPixelColor(i, stelle.Color(0, 70, 0));
       stelle.show();
-      Serial.println(F("TEST 11/30 - STELLE VERDI"));
+      Serial.println(F("TEST 11/34 - STELLE VERDI"));
       break;
     case 11:
       // Verifica il canale blu di tutti i 50 pixel WS2811.
@@ -1061,7 +1069,7 @@ void applicaTestCorrente() {
       for (uint16_t i = 0; i < NUM_STELLE; i++)
         stelle.setPixelColor(i, stelle.Color(0, 0, 70));
       stelle.show();
-      Serial.println(F("TEST 12/30 - STELLE BLU"));
+      Serial.println(F("TEST 12/34 - STELLE BLU"));
       break;
     case 12:
       // Test scenografico esistente: tutte le 50 stelle in bianco caldo tenue.
@@ -1069,9 +1077,37 @@ void applicaTestCorrente() {
       for (uint16_t i = 0; i < NUM_STELLE; i++)
         stelle.setPixelColor(i, stelle.Color(70, 50, 27));
       stelle.show();
-      Serial.println(F("TEST 13/30 - TUTTE LE 50 STELLE"));
+      Serial.println(F("TEST 13/34 - TUTTE LE 50 STELLE"));
       break;
     case 13:
+      casette.clear();
+      for (uint16_t i = 0; i < NUM_CASETTE; i++)
+        casette.setPixelColor(i, casette.Color(70, 0, 0));
+      casette.show();
+      Serial.println(F("TEST 14/34 - CASETTE ROSSE"));
+      break;
+    case 14:
+      casette.clear();
+      for (uint16_t i = 0; i < NUM_CASETTE; i++)
+        casette.setPixelColor(i, casette.Color(0, 70, 0));
+      casette.show();
+      Serial.println(F("TEST 15/34 - CASETTE VERDI"));
+      break;
+    case 15:
+      casette.clear();
+      for (uint16_t i = 0; i < NUM_CASETTE; i++)
+        casette.setPixelColor(i, casette.Color(0, 0, 70));
+      casette.show();
+      Serial.println(F("TEST 16/34 - CASETTE BLU"));
+      break;
+    case 16:
+      casette.clear();
+      for (uint16_t i = 0; i < NUM_CASETTE; i++)
+        casette.setPixelColor(i, casette.Color(70, 50, 27));
+      casette.show();
+      Serial.println(F("TEST 17/34 - TUTTE LE CASETTE"));
+      break;
+    case 17:
       setCielo(120, 90, 70);
       setTramonto(180, 50, 8);
       setAlba(180, 95, 30);
@@ -1079,7 +1115,9 @@ void applicaTestCorrente() {
       for (uint16_t i = 0; i < NUM_STELLE; i++)
         stelle.setPixelColor(i, stelle.Color(45, 32, 17));
       stelle.show();
-      Serial.println(F("TEST 14/30 - TUTTO INSIEME"));
+      for (uint16_t i = 0; i < NUM_CASETTE; i++) casette.setPixelColor(i, casette.Color(45, 32, 17));
+      casette.show();
+      Serial.println(F("TEST 18/34 - TUTTO INSIEME"));
       break;
   }
 
@@ -1100,7 +1138,7 @@ void testUscite() {
     Serial.println(F("TEST = test successivo, START = esci"));
     buzzerBeep();
   } else {
-    testIndice = (testIndice + 1) % 30;
+    testIndice = (testIndice + 1) % 34;
     buzzerBeep();
   }
 
@@ -1134,7 +1172,7 @@ void stampaStato(unsigned long durata, float p) {
 // SEQUENZA DI BOOT / AUTOTEST VISIVO
 // ============================================================
 
-const uint8_t BOOT_STEP_COUNT = 4;
+const uint8_t BOOT_STEP_COUNT = 5;
 
 // "Astro del ciel" sul buzzer passivo opzionale, fino a "mite agnello Redentor".
 // Tempo volutamente più sostenuto rispetto alla rev.014.
@@ -1152,7 +1190,8 @@ const uint16_t BOOT_MELODY_MS[] = {
   420, 420, 560, 420, 420, 560, 420, 420, 1100
 };
 const uint8_t BOOT_MELODY_COUNT = sizeof(BOOT_MELODY_FREQ) / sizeof(BOOT_MELODY_FREQ[0]);
-const unsigned long BOOT_TOTAL_MS = 17300UL; // somma verificata di BOOT_MELODY_MS[]
+const unsigned long BOOT_MELODY_BASE_MS = 17300UL; // somma originale di BOOT_MELODY_MS[]
+const unsigned long BOOT_TOTAL_MS = 21625UL; // +25%: 5 scene alla stessa durata visiva di prima
 const unsigned long BOOT_STEP_MS = BOOT_TOTAL_MS / BOOT_STEP_COUNT; // 4,325 s per scena
 int8_t bootNotaCorrente = -1;
 
@@ -1160,7 +1199,7 @@ void aggiornaMelodiaBoot(unsigned long elapsedTotale) {
   unsigned long limite = 0;
   uint8_t nota = BOOT_MELODY_COUNT;
   for (uint8_t i = 0; i < BOOT_MELODY_COUNT; i++) {
-    limite += BOOT_MELODY_MS[i];
+    limite += ((unsigned long)BOOT_MELODY_MS[i] * BOOT_TOTAL_MS) / BOOT_MELODY_BASE_MS;
     if (elapsedTotale < limite) {
       nota = i;
       break;
@@ -1184,7 +1223,7 @@ void aggiornaMelodiaBoot(unsigned long elapsedTotale) {
 void mostraOledBoot(const __FlashStringHelper *fase, uint8_t step, unsigned long elapsedStep) {
   if (!oledPresente) return;
 
-  // Avanzamento complessivo sui 4 passi, sincronizzato alla durata della melodia.
+  // Avanzamento complessivo sui 5 passi, sincronizzato alla durata della melodia.
   unsigned long fatto = (unsigned long)step * BOOT_STEP_MS + elapsedStep;
   unsigned long totale = (unsigned long)BOOT_STEP_COUNT * BOOT_STEP_MS;
   uint8_t pct = (uint8_t)min(100UL, (fatto * 100UL) / totale);
@@ -1226,29 +1265,40 @@ void eseguiSequenzaBoot() {
   tuttoSpento();
   spegniRele();
 
-  // 1/4 - ALBA: primo quarto della melodia.
+  // 1/5 - ALBA: primo quarto della melodia.
   setAlba(255, 255, 255);
   attesaBoot(F("ALBA"), 0);
   setAlba(0, 0, 0);
 
-  // 2/4 - CIELO principale: secondo quarto della melodia.
+  // 2/5 - CIELO principale: secondo quarto della melodia.
   setCielo(255, 255, 255);
   attesaBoot(F("CIELO"), 1);
   setCielo(0, 0, 0);
 
-  // 3/4 - TRAMONTO: terzo quarto della melodia.
+  // 3/5 - TRAMONTO: terzo quarto della melodia.
   setTramonto(255, 255, 255);
   attesaBoot(F("TRAMONTO"), 2);
   setTramonto(0, 0, 0);
 
-  // 4/4 - tutte le 50 stelle: ultimo quarto della melodia.
+  // 4/5 - tutte le 50 stelle: ultimo quarto della melodia.
   stelle.clear();
   for (uint16_t i = 0; i < NUM_STELLE; i++)
     stelle.setPixelColor(i, stelle.Color(255, 255, 255));
   stelle.show();
   attesaBoot(F("STELLE"), 3);
+  stelle.clear();
+  stelle.show();
 
-  // I quattro passi coprono l'intera melodia: luce, progress bar e musica
+  // 5/5 - seconda catena WS2811 CASETTE su D13.
+  casette.clear();
+  for (uint16_t i = 0; i < NUM_CASETTE; i++)
+    casette.setPixelColor(i, casette.Color(255, 255, 255));
+  casette.show();
+  attesaBoot(F("CASETTE"), 4);
+  casette.clear();
+  casette.show();
+
+  // I cinque passi coprono l'intera melodia: luce, progress bar e musica
   // terminano insieme prima di PRONTO.
   aggiornaMelodiaBoot(BOOT_TOTAL_MS);
   noTone(PIN_BUZZER);
@@ -1288,6 +1338,9 @@ void setup() {
   stelle.begin();
   stelle.clear();
   stelle.show();
+  casette.begin();
+  casette.clear();
+  casette.show();
 
   pinMode(PIN_START, INPUT_PULLUP);
   pinMode(PIN_NEXT,  INPUT_PULLUP);
@@ -1303,7 +1356,7 @@ void setup() {
   tuttoSpento();
   spegniRele();
 
-  // Autotest di accensione: ALBA -> GIORNO -> TRAMONTO -> STELLE.
+  // Autotest di accensione: ALBA -> GIORNO -> TRAMONTO -> STELLE -> CASETTE.
   // Ogni passo dura 2 secondi e l'OLED mostra la progress bar complessiva.
   eseguiSequenzaBoot();
 
@@ -1318,6 +1371,7 @@ void setup() {
   Serial.println(F("D3  = RGB Verde"));
   Serial.println(F("D4  = RGB Blu"));
   Serial.println(F("D5  = DATA WS2811 (50 stelle)"));
+  Serial.println(F("D13 = DATA WS2811 CASETTE"));
   Serial.println(F("D6  = BUZZER passivo opzionale"));
   Serial.println(F("D7/D11/D12 = RGB SINISTRA / TRAMONTO"));
   Serial.println(F("D44/D45/D46 = RGB DESTRA / ALBA"));
