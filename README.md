@@ -81,7 +81,7 @@ Per rendere alba e tramonto più dinamici vengono aggiunte **due strisce RGB ana
 
 Ogni striscia ha un ramo +12 V protetto dedicato: **F2 ALBA** alimenta sia il +12 V comune della striscia ALBA sia il DC+ del MOSFET #4; **F3 TRAMONTO** alimenta sia il +12 V comune della striscia TRAMONTO sia il DC+ del MOSFET #3. I ritorni R/G/B vanno ai tre OUT- del relativo modulo MOSFET. Il quarto canale di ciascun modulo resta libero. **D13 rimane PWM libero.**
 
-Nel firmware, durante il TRAMONTO, la striscia RGB principale passa progressivamente dal colore diurno fino al colore definitivo della NOTTE, mentre la striscia sinistra TRAMONTO cresce con tonalità calde rosso/arancio fino al massimo a ovest. Durante il CREPUSCOLO il cielo principale resta già al colore notturno, mentre l'ultimo bagliore occidentale della striscia TRAMONTO si spegne progressivamente e compaiono le stelle. La striscia destra è invece dedicata all'ALBA.
+Nel firmware la palette RGB è tarata volutamente calda per compensare la dominante fredda osservata sulle strisce reali. Durante il TRAMONTO la striscia RGB principale passa progressivamente dal giorno caldo al colore notturno, mentre la striscia sinistra TRAMONTO produce un bagliore rosso/arancio. Negli ultimi 3 secondi della fase TRAMONTO la laterale viene dissolta fino a zero, così il passaggio al CREPUSCOLO avviene senza lampeggi. La striscia destra è dedicata all'ALBA e viene anch'essa portata dolcemente a zero negli ultimi 3 secondi della fase.
 
 ### Relè ON/OFF — 4 moduli, 16 uscite
 
@@ -181,8 +181,8 @@ Questa sequenza è visibile anche nella simulazione Wokwi e costituisce un rapid
 Il ciclo automatico coordina la **striscia RGB principale**, le **due strisce RGB laterali da 1 m** dedicate ad alba e tramonto e le **50 stelle WS2811 individualmente indirizzabili**.
 
 1. **Giorno:** stelle spente; la striscia RGB crea l'illuminazione diurna.
-2. **Tramonto:** stelle spente; la striscia principale si oscura progressivamente fino a raggiungere già il colore definitivo della NOTTE, mentre la striscia laterale sinistra TRAMONTO cresce con tonalità rosso/arancio fino al massimo sul lato ovest.
-3. **Crepuscolo:** il cielo principale resta al colore notturno; l'ultimo bagliore sulla striscia TRAMONTO a ovest si spegne progressivamente mentre le stelle iniziano a comparire **una alla volta in ordine casuale**.
+2. **Tramonto:** stelle spente; il cielo principale passa progressivamente dalla luce diurna calda alla notte, mentre la laterale sinistra crea il bagliore occidentale. Negli ultimi 3 secondi della fase la laterale sfuma fino a zero per evitare lampeggi al cambio fase.
+3. **Crepuscolo:** il cielo principale resta al colore notturno e la laterale TRAMONTO resta spenta, mentre le stelle iniziano a comparire **una alla volta in ordine casuale**.
 4. Ogni stella ha una **luminosità massima diversa**, per evitare un cielo uniforme e artificiale.
 5. Tutte le **20 stelle attive** hanno un proprio ciclo asincrono di luminosità, con **scintillio morbido** e senza lampeggi netti.
 6. **Notte:** il cielo stellato è completo ma non uniforme; le stelle mantengono intensità differenti.
@@ -434,7 +434,7 @@ Aprire:
 
 con Arduino IDE e selezionare **Arduino Mega or Mega 2560**.
 
-Il firmware attuale implementa cielo RGB principale, due RGB laterali alba/tramonto, stelle WS2811, comandi, OLED, buzzer piezo passivo opzionale e modalità TEST. D8–D10 restano liberi/di riserva. I carichi ON/OFF vengono gestiti tramite i 16 relè D25–D40.
+Il firmware attuale implementa cielo RGB principale, due RGB laterali alba/tramonto, stelle WS2811, comandi, OLED, buzzer piezo passivo opzionale e modalità TEST. Il potenziometro A0 è temporaneamente tarato sull'hardware reale: 0 corrisponde a 1 minuto e circa 256/1023 ADC (un quarto della scala) corrisponde già a 6 minuti. D8–D10 restano liberi/di riserva. I carichi ON/OFF vengono gestiti tramite i 16 relè D25–D40.
 
 ## GitHub Actions
 
