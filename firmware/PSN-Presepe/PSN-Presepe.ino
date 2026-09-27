@@ -271,8 +271,49 @@ void buzzerPotTick(int raw) {
 // PWM
 // ============================================================
 
+// Correzione percettiva sperimentale per le strisce RGB analogiche.
+// La scenografia continua a lavorare 0..255; qui convertiamo il valore logico
+// in un PWM fisico con curva gamma ~2.0 e 4 bit frazionari di dithering.
+// In questo modo, soprattutto vicino al nero, possiamo ottenere livelli medi
+// intermedi tra due gradini del PWM hardware a 8 bit.
+const bool PWM_GAMMA_DITHER = true;
+uint8_t pwmDitherAcc[9] = {0};
+
+int8_t pwmChannelIndex(uint8_t pin) {
+  const uint8_t pins[9] = {
+    PIN_CIELO_R, PIN_CIELO_G, PIN_CIELO_B,
+    PIN_TRAMONTO_R, PIN_TRAMONTO_G, PIN_TRAMONTO_B,
+    PIN_ALBA_R, PIN_ALBA_G, PIN_ALBA_B
+  };
+  for (uint8_t i = 0; i < 9; i++)
+    if (pins[i] == pin) return i;
+  return -1;
+}
+
 void pwmWrite(uint8_t pin, uint8_t value) {
-  analogWrite(pin, PWM_INVERTED ? (255 - value) : value);
+  uint8_t out = value;
+
+  if (PWM_GAMMA_DITHER) {
+    // Gamma 2.0 in fixed point: risultato 0..4080 (= 255 * 16).
+    // I 4 bit bassi rappresentano la frazione del gradino PWM 8-bit.
+    uint32_t squared = (uint32_t)value * (uint32_t)value;
+    uint16_t pwm16 = (uint16_t)((squared * 4080UL + 32512UL) / 65025UL);
+    uint8_t base = pwm16 >> 4;
+    uint8_t frac = pwm16 & 0x0F;
+
+    int8_t idx = pwmChannelIndex(pin);
+    if (idx >= 0 && base < 255) {
+      uint8_t acc = pwmDitherAcc[idx] + frac;
+      if (acc >= 16) {
+        base++;
+        acc -= 16;
+      }
+      pwmDitherAcc[idx] = acc;
+    }
+    out = base;
+  }
+
+  analogWrite(pin, PWM_INVERTED ? (255 - out) : out);
 }
 
 void setCielo(uint8_t r, uint8_t g, uint8_t b) {
