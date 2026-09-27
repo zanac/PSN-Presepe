@@ -706,7 +706,7 @@ bool inizializzaOled() {
   display.setTextSize(1);
   // Startup splash: PSN-Presepe! by Vanni
   display.setCursor(27,18); display.print(F("PSN-Presepe!"));
-  display.setCursor(30,36); display.print(F("by Vanni 026"));
+  display.setCursor(30,36); display.print(F("by Vanni 027"));
   display.display();
   delay(3000);
   return true;
@@ -742,10 +742,9 @@ void faseAvanti() {
 void aggiornaScena(float p) {
   Fase fase = faseDaPercentuale(p);
   unsigned long durata = durataCiclo();
-  // Dissolvenza finale di 3 secondi; nell'ultimo secondo le laterali
-  // vengono forzate a PWM=0 per evitare valori minimi instabili sui MOSFET reali.
-  float fade3sPct = (3000.0f * 100.0f) / (float)durata;
-  float zero1sPct = (1000.0f * 100.0f) / (float)durata;
+  // Le laterali non vengono mai portate a PWM zero durante il ciclo:
+  // convergono al medesimo blu notte del CIELO per evitare la zona
+  // prossima allo spegnimento che sull'hardware reale provoca sfarfallio.
 
   // Genera una nuova disposizione a ogni ingresso nel crepuscolo.
   if (fase == CREPUSCOLO && ultimaFaseStelle != CREPUSCOLO) {
@@ -765,6 +764,8 @@ void aggiornaScena(float p) {
       r = 255;
       g = 145;
       b = 45;
+      tr = 8; tg = 8; tb = 28;
+      ar = 8; ag = 8; ab = 28;
       livelloStelle = 0;
       break;
 
@@ -779,25 +780,14 @@ void aggiornaScena(float p) {
       b = interpola8(45, 28, t);
       livelloStelle = 0;
 
-      // Bagliore occidentale molto caldo. Cresce nella prima parte,
-      // poi negli ultimi 3 secondi della fase scende dolcemente a zero:
-      // il cambio di fase avviene quindi con la laterale gia' spenta.
-      float fineFade = P_CREPU;
-      float inizioFade = max(P_TRAMONTO, fineFade - fade3sPct);
-      if (p < inizioFade) {
-        float x = progresso(p, P_TRAMONTO, inizioFade);
-        tr = interpola8(0, 255, x);
-        tg = interpola8(0, 42, x);
-        tb = interpola8(0, 2, x);
-      } else if (p < fineFade - zero1sPct) {
-        float x = progresso(p, inizioFade, fineFade - zero1sPct);
-        x = x * x * (3.0f - 2.0f * x);
-        tr = (uint8_t)(255.0f * (1.0f - x));
-        tg = (uint8_t)(42.0f * (1.0f - x));
-        tb = (uint8_t)(2.0f * (1.0f - x));
-      } else {
-        tr = 0; tg = 0; tb = 0;
-      }
+      // La laterale TRAMONTO parte dal blu notte, sale verso un
+      // rosso/arancio intenso e poi torna al blu notte. Non raggiunge
+      // mai PWM zero: e' lo stesso principio che sul CIELO reale
+      // non presenta lo sfarfallio osservato in prossimita' dello spegnimento.
+      float arco = sin(t * PI);
+      tr = interpola8(8, 255, arco);
+      tg = interpola8(8, 42, arco);
+      tb = interpola8(28, 2, arco);
       break;
     }
 
@@ -810,11 +800,11 @@ void aggiornaScena(float p) {
       r = 8;
       g = 8;
       b = 28;
-      // TRAMONTO e' gia' arrivato a zero nei 3 secondi finali
-      // della fase precedente: nessun salto al cambio fase.
-      tr = 0;
-      tg = 0;
-      tb = 0;
+      // La laterale resta sullo stesso blu notte del CIELO:
+      // nessun canale viene portato a spegnimento completo.
+      tr = 8;
+      tg = 8;
+      tb = 28;
       livelloStelle = interpola8(0, 235, t);
       break;
     }
@@ -823,6 +813,8 @@ void aggiornaScena(float p) {
       r = 8;
       g = 8;
       b = 28;
+      tr = 8; tg = 8; tb = 28;
+      ar = 8; ag = 8; ab = 28;
       livelloStelle = 235;
       break;
 
@@ -849,23 +841,13 @@ void aggiornaScena(float p) {
           x = x * x * (3.0f - 2.0f * x);
           arco = 1.0f - x;
         }
-        // Alba volutamente molto rossa sull'hardware reale.
-        ar = (uint8_t)(255.0f * arco);
-        ag = (uint8_t)(38.0f * arco);
-        ab = (uint8_t)(2.0f * arco);
-
-        // Garanzia hardware: negli ultimi 3 secondi ALBA va a zero
-        // indipendentemente dalla forma dell'arco precedente.
-        float inizioFade = max(P_ALBA, 100.0f - fade3sPct);
-        if (p >= 100.0f - zero1sPct) {
-          ar = 0; ag = 0; ab = 0;
-        } else if (p >= inizioFade) {
-          float x = progresso(p, inizioFade, 100.0f - zero1sPct);
-          x = x * x * (3.0f - 2.0f * x);
-          ar = (uint8_t)(ar * (1.0f - x));
-          ag = (uint8_t)(ag * (1.0f - x));
-          ab = (uint8_t)(ab * (1.0f - x));
-        }
+        // ALBA resta sempre sopra il minimo PWM: dal blu notte sale
+        // verso un rosso molto caldo e poi torna al blu notte.
+        // Questo evita lo spegnimento completo che sull'hardware reale
+        // provoca il lampo/sfarfallio.
+        ar = interpola8(8, 255, arco);
+        ag = interpola8(8, 38, arco);
+        ab = interpola8(28, 2, arco);
       }
       break;
     }
