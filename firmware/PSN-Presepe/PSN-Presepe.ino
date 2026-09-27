@@ -706,7 +706,7 @@ bool inizializzaOled() {
   display.setTextSize(1);
   // Startup splash: PSN-Presepe! by Vanni
   display.setCursor(27,18); display.print(F("PSN-Presepe!"));
-  display.setCursor(30,36); display.print(F("by Vanni 027"));
+  display.setCursor(30,36); display.print(F("by Vanni 028"));
   display.display();
   delay(3000);
   return true;
@@ -764,8 +764,8 @@ void aggiornaScena(float p) {
       r = 255;
       g = 145;
       b = 45;
-      tr = 8; tg = 8; tb = 28;
-      ar = 8; ag = 8; ab = 28;
+      tr = 2; tg = 2; tb = 5;
+      ar = 2; ag = 2; ab = 5;
       livelloStelle = 0;
       break;
 
@@ -780,14 +780,14 @@ void aggiornaScena(float p) {
       b = interpola8(45, 28, t);
       livelloStelle = 0;
 
-      // La laterale TRAMONTO parte dal blu notte, sale verso un
-      // rosso/arancio intenso e poi torna al blu notte. Non raggiunge
+      // La laterale TRAMONTO parte dal minimo tecnico, sale verso un
+      // rosso/arancio intenso e poi torna al minimo tecnico. Non raggiunge
       // mai PWM zero: e' lo stesso principio che sul CIELO reale
       // non presenta lo sfarfallio osservato in prossimita' dello spegnimento.
       float arco = sin(t * PI);
-      tr = interpola8(8, 255, arco);
-      tg = interpola8(8, 42, arco);
-      tb = interpola8(28, 2, arco);
+      tr = interpola8(2, 255, arco);
+      tg = interpola8(2, 42, arco);
+      tb = interpola8(5, 2, arco);
       break;
     }
 
@@ -800,7 +800,7 @@ void aggiornaScena(float p) {
       r = 8;
       g = 8;
       b = 28;
-      // La laterale resta sullo stesso blu notte del CIELO:
+      // La laterale resta sullo minimo tecnico (2,2,5):
       // nessun canale viene portato a spegnimento completo.
       tr = 8;
       tg = 8;
@@ -813,8 +813,8 @@ void aggiornaScena(float p) {
       r = 8;
       g = 8;
       b = 28;
-      tr = 8; tg = 8; tb = 28;
-      ar = 8; ag = 8; ab = 28;
+      tr = 2; tg = 2; tb = 5;
+      ar = 2; ag = 2; ab = 5;
       livelloStelle = 235;
       break;
 
@@ -841,13 +841,13 @@ void aggiornaScena(float p) {
           x = x * x * (3.0f - 2.0f * x);
           arco = 1.0f - x;
         }
-        // ALBA resta sempre sopra il minimo PWM: dal blu notte sale
-        // verso un rosso molto caldo e poi torna al blu notte.
+        // ALBA resta sempre sopra il minimo PWM: dal minimo tecnico sale
+        // verso un rosso molto caldo e poi torna al minimo tecnico.
         // Questo evita lo spegnimento completo che sull'hardware reale
         // provoca il lampo/sfarfallio.
-        ar = interpola8(8, 255, arco);
-        ag = interpola8(8, 38, arco);
-        ab = interpola8(28, 2, arco);
+        ar = interpola8(2, 255, arco);
+        ag = interpola8(2, 38, arco);
+        ab = interpola8(5, 2, arco);
       }
       break;
     }
