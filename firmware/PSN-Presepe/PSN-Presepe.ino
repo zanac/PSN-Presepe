@@ -727,7 +727,7 @@ bool inizializzaOled() {
   display.setTextSize(1);
   // Startup splash: PSN-Presepe! by Vanni
   display.setCursor(27,18); display.print(F("PSN-Presepe!"));
-  display.setCursor(30,30); display.print(F("by Vanni 035"));
+  display.setCursor(30,30); display.print(F("by Vanni 036"));
   potRawStabile = constrain(analogRead(PIN_POT), 0, POT_RAW_MAX);
   durataCicloStabile = durataDaRaw(potRawStabile);
   display.setCursor(18,46);
@@ -844,28 +844,34 @@ void aggiornaScena(float p) {
     case ALBA: {
       float t = progresso(p, P_ALBA, 100.0f);
 
-      // Alba molto calda. Nell'ultimo 15% della fase il CIELO ha gia'
-      // raggiunto il colore GIORNO: la transizione termina prima del
-      // cambio di fase, evitando uno stacco netto ALBA -> GIORNO.
-      float tGiorno = constrain(t / 0.85f, 0.0f, 1.0f);
+      // Per i primi 3/4 dell'ALBA il CIELO centrale resta spento:
+      // la luce nasce solo sul lato est. Nell'ultimo 25% il CIELO
+      // entra progressivamente fino al colore GIORNO, senza stacco finale.
+      float tGiorno = constrain((t - 0.75f) / 0.25f, 0.0f, 1.0f);
       tGiorno = tGiorno * tGiorno * (3.0f - 2.0f * tGiorno);
-      r = interpola8(18, 210, tGiorno);
-      g = interpola8(8, 82, tGiorno);
-      b = interpola8(2, 18, tGiorno);
-      livelloStelle = interpola8(235, 0, tGiorno);
+      r = interpola8(0, 210, tGiorno);
+      g = interpola8(0, 82, tGiorno);
+      b = interpola8(0, 18, tGiorno);
 
-      // Alba direzionale dalla striscia destra: sale dolcemente nella
-      // prima parte della fase, poi cala progressivamente fino a ZERO.
-      // Negli ultimi istanti la dissolvenza rallenta (smoothstep), cosi'
-      // il passaggio ALBA -> GIORNO non produce uno stacco visibile.
+      // Le stelle invece iniziano a dissolversi fin dall'inizio dell'ALBA,
+      // indipendentemente dall'accensione tardiva del CIELO centrale.
+      float tStelle = t * t * (3.0f - 2.0f * t);
+      livelloStelle = interpola8(235, 0, tStelle);
+
+      // Alba direzionale dalla striscia destra: raggiunge presto il massimo
+      // rosso caldo e lo mantiene piu' a lungo. La discesa e' ritardata e
+      // rallentata, cosi' la coda rossastra resta visibile piu' a lungo
+      // prima di spegnersi dolcemente al passaggio ALBA -> GIORNO.
       {
         float arco;
-        if (t < 0.35f) {
-          float x = t / 0.35f;
+        if (t < 0.30f) {
+          float x = t / 0.30f;
           x = x * x * (3.0f - 2.0f * x);
           arco = x;
+        } else if (t < 0.65f) {
+          arco = 1.0f;
         } else {
-          float x = (t - 0.35f) / 0.65f;
+          float x = (t - 0.65f) / 0.35f;
           x = x * x * (3.0f - 2.0f * x);
           arco = 1.0f - x;
         }
