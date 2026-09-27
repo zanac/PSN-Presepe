@@ -706,7 +706,7 @@ bool inizializzaOled() {
   display.setTextSize(1);
   // Startup splash: PSN-Presepe! by Vanni
   display.setCursor(27,18); display.print(F("PSN-Presepe!"));
-  display.setCursor(30,36); display.print(F("by Vanni 028"));
+  display.setCursor(30,36); display.print(F("by Vanni 029"));
   display.display();
   delay(3000);
   return true;
@@ -741,10 +741,9 @@ void faseAvanti() {
 
 void aggiornaScena(float p) {
   Fase fase = faseDaPercentuale(p);
-  unsigned long durata = durataCiclo();
-  // Le laterali non vengono mai portate a PWM zero durante il ciclo:
-  // convergono al medesimo blu notte del CIELO per evitare la zona
-  // prossima allo spegnimento che sull'hardware reale provoca sfarfallio.
+  // Le laterali restano completamente spente (PWM=0) quando inattive.
+  // L'hardware reale ha mostrato che questo stato e' stabile; lo sfarfallio
+  // compariva invece durante le precedenti dissolvenze nella zona minima.
 
   // Genera una nuova disposizione a ogni ingresso nel crepuscolo.
   if (fase == CREPUSCOLO && ultimaFaseStelle != CREPUSCOLO) {
@@ -764,8 +763,8 @@ void aggiornaScena(float p) {
       r = 255;
       g = 145;
       b = 45;
-      tr = 2; tg = 2; tb = 5;
-      ar = 2; ag = 2; ab = 5;
+      tr = 0; tg = 0; tb = 0;
+      ar = 0; ag = 0; ab = 0;
       livelloStelle = 0;
       break;
 
@@ -780,14 +779,12 @@ void aggiornaScena(float p) {
       b = interpola8(45, 28, t);
       livelloStelle = 0;
 
-      // La laterale TRAMONTO parte dal minimo tecnico, sale verso un
-      // rosso/arancio intenso e poi torna al minimo tecnico. Non raggiunge
-      // mai PWM zero: e' lo stesso principio che sul CIELO reale
-      // non presenta lo sfarfallio osservato in prossimita' dello spegnimento.
+      // La laterale TRAMONTO e' spenta fuori dalla propria fase.
+      // Durante la fase usa un arco diretto 0 -> massimo -> 0.
       float arco = sin(t * PI);
-      tr = interpola8(2, 255, arco);
-      tg = interpola8(2, 42, arco);
-      tb = interpola8(5, 2, arco);
+      tr = (uint8_t)(255.0f * arco);
+      tg = (uint8_t)(42.0f * arco);
+      tb = (uint8_t)(2.0f * arco);
       break;
     }
 
@@ -800,11 +797,9 @@ void aggiornaScena(float p) {
       r = 8;
       g = 8;
       b = 28;
-      // La laterale resta sullo minimo tecnico (2,2,5):
-      // nessun canale viene portato a spegnimento completo.
-      tr = 8;
-      tg = 8;
-      tb = 28;
+      // TRAMONTO e ALBA sono inattive: PWM esattamente a zero.
+      tr = 0; tg = 0; tb = 0;
+      ar = 0; ag = 0; ab = 0;
       livelloStelle = interpola8(0, 235, t);
       break;
     }
@@ -813,8 +808,8 @@ void aggiornaScena(float p) {
       r = 8;
       g = 8;
       b = 28;
-      tr = 2; tg = 2; tb = 5;
-      ar = 2; ag = 2; ab = 5;
+      tr = 0; tg = 0; tb = 0;
+      ar = 0; ag = 0; ab = 0;
       livelloStelle = 235;
       break;
 
@@ -841,13 +836,11 @@ void aggiornaScena(float p) {
           x = x * x * (3.0f - 2.0f * x);
           arco = 1.0f - x;
         }
-        // ALBA resta sempre sopra il minimo PWM: dal minimo tecnico sale
-        // verso un rosso molto caldo e poi torna al minimo tecnico.
-        // Questo evita lo spegnimento completo che sull'hardware reale
-        // provoca il lampo/sfarfallio.
-        ar = interpola8(2, 255, arco);
-        ag = interpola8(2, 38, arco);
-        ab = interpola8(5, 2, arco);
+        // ALBA e' spenta fuori dalla propria fase. Durante la fase
+        // usa un arco diretto 0 -> rosso caldo -> 0.
+        ar = (uint8_t)(255.0f * arco);
+        ag = (uint8_t)(38.0f * arco);
+        ab = (uint8_t)(2.0f * arco);
       }
       break;
     }
