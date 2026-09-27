@@ -104,7 +104,7 @@ enum OledPopup { OLED_NESSUNO, OLED_PAUSA, OLED_RIPRESA, OLED_AVANTI, OLED_TEST,
 OledPopup oledPopup = OLED_NESSUNO;
 int ultimoPotOled = -1;
 int potRawOled = 0;
-const int POT_POPUP_DELTA = 10;
+const int POT_POPUP_DELTA = 1;
 const unsigned long OLED_POPUP_MS = 1800UL;
 
 // Durata ciclo regolabile con il potenziometro
@@ -709,7 +709,7 @@ bool inizializzaOled() {
   display.setTextSize(1);
   // Startup splash: PSN-Presepe! by Vanni
   display.setCursor(27,18); display.print(F("PSN-Presepe!"));
-  display.setCursor(30,36); display.print(F("by Vanni 030"));
+  display.setCursor(30,36); display.print(F("by Vanni 031"));
   display.display();
   delay(3000);
   return true;
