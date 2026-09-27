@@ -79,7 +79,7 @@ Per rendere alba e tramonto più dinamici vengono aggiunte **due strisce RGB ana
 | Sinistra | Tramonto | D7 / D11 / D12 | MOSFET #3, CH1–CH3 |
 | Destra | Alba | D44 / D45 / D46 | MOSFET #4, CH1–CH3 |
 
-Ogni striscia ha un ramo +12 V protetto dedicato: **F2 ALBA** alimenta sia il +12 V comune della striscia ALBA sia il DC+ del MOSFET #4; **F3 TRAMONTO** alimenta sia il +12 V comune della striscia TRAMONTO sia il DC+ del MOSFET #3. I ritorni R/G/B vanno ai tre OUT- del relativo modulo MOSFET. Il quarto canale di ciascun modulo resta libero. **D13 è dedicato al DATA della seconda catena WS2811 CASETTE.**
+Ogni striscia ha un ramo +12 V protetto dedicato: **F2 ALBA** alimenta sia il +12 V comune della striscia ALBA sia il DC+ del MOSFET #4; **F3 TRAMONTO** alimenta sia il +12 V comune della striscia TRAMONTO sia il DC+ del MOSFET #3. I ritorni R/G/B vanno ai tre OUT- del relativo modulo MOSFET. Il quarto canale di ciascun modulo resta libero. **D8 è dedicato al DATA della seconda catena WS2811 CASETTE.**
 
 Nel firmware la palette RGB è tarata volutamente calda per compensare la dominante fredda osservata sulle strisce reali. Durante il TRAMONTO la striscia RGB principale passa progressivamente dal giorno caldo al colore notturno, mentre la striscia sinistra TRAMONTO produce un bagliore rosso/arancio. La laterale TRAMONTO segue un arco 0 → massimo → 0 lungo l'intera fase. La striscia destra è dedicata all'ALBA e segue la propria curva percentuale documentata nella sezione **Funzionamento scenografico**.
 
@@ -171,7 +171,7 @@ Prima di iniziare il normale ciclo scenografico, il firmware esegue un **autotes
 2. **CIELO** — striscia RGB principale in bianco brillante per circa **4,325 s**;
 3. **TRAMONTO** — striscia RGB tramonto in bianco brillante per circa **4,325 s**;
 4. **STELLE** — tutti i 50 pixel WS2811 in bianco brillante per circa **4,325 s**;
-5. **CASETTE** — seconda catena WS2811 su D13 in bianco brillante per circa **4,325 s**.
+5. **CASETTE** — seconda catena WS2811 su D8 in bianco brillante per circa **4,325 s**.
 
 La melodia **Astro del ciel** è stata dilatata a circa **21,625 s** per mantenere sincronizzati i cinque passi dell'autotest, la progress bar OLED e la musica. Al termine tutte le uscite vengono spente, compare **PRONTO** per 900 ms e solo dopo viene azzerato il timer del ciclo: il tempo di boot **non fa parte** del ciclo scenografico.
 
@@ -197,7 +197,7 @@ Questa tabella è il riferimento temporale del firmware. Per una durata intermed
 4. **NOTTE (50–80%)** — CIELO e laterali restano completamente spenti. Le 20 stelle rimangono attive con luminosità massime differenti e cicli asincroni individuali di variazione. Il ciclo individuale di ciascuna stella dura circa **6,4–12,2 s**, senza modificare la durata della fase NOTTE.
 5. **ALBA (80–100%)** — le stelle iniziano a dissolversi fin dall'inizio della fase. La laterale destra ALBA sale fino al massimo nel primo **30% dell'ALBA**, resta al massimo fino al **65%**, quindi scende dolcemente a zero. Il CIELO centrale resta invece spento per il primo **75% dell'ALBA** e torna progressivamente alla luce GIORNO soltanto nell'ultimo **25%**, evitando uno stacco al nuovo ciclo.
 
-La seconda catena WS2811 **CASETTE su D13** viene inizializzata dal firmware e verificata durante boot e TEST manuale, ma nel normale ciclo scenografico viene mantenuta spenta finché non saranno definite le sue accensioni.
+La seconda catena WS2811 **CASETTE su D8** viene inizializzata dal firmware e verificata durante boot e TEST manuale, ma nel normale ciclo scenografico viene mantenuta spenta finché non saranno definite le sue accensioni.
 
 A ogni nuovo CREPUSCOLO viene generata una nuova selezione delle stelle e delle relative luminosità. Il colore delle stelle è **bianco caldo**.
 
@@ -277,7 +277,7 @@ Il **DC- del MOSFET #1 deve essere collegato allo 0 V comune**, come indicato ne
 | 14 | Mega D5 | resistenza 330–470 Ω |
 | 15 | uscita resistenza | WS2811 DATA/DIN |
 
-**Seconda catena WS2811 CASETTE:** il pin **D13** è riservato fin da ora al suo DATA/DIN. La catena avrà alimentazione 12 V e massa comune secondo lo stesso principio delle stelle, ed è ora **inizializzata e pilotata dal firmware per gli autotest di boot e per la modalità TEST manuale**. Durante il normale ciclo scenografico resta spenta: gli effetti delle casette verranno definiti in seguito.
+**Seconda catena WS2811 CASETTE:** il pin **D8** è riservato fin da ora al suo DATA/DIN. La catena avrà alimentazione 12 V e massa comune secondo lo stesso principio delle stelle, ed è ora **inizializzata e pilotata dal firmware per gli autotest di boot e per la modalità TEST manuale**. Durante il normale ciclo scenografico resta spenta: gli effetti delle casette verranno definiti in seguito.
 
 Rispettare la freccia/direzione DATA della stringa. La resistenza va preferibilmente vicino all'ingresso della prima WS2811.
 
@@ -315,7 +315,7 @@ Il **DC- del MOSFET #3 deve essere collegato allo 0 V comune**, come indicato ne
 | 36 | RGB destra G | MOSFET #4 OUT2- |
 | 37 | RGB destra B | MOSFET #4 OUT3- |
 
-Il **DC- del MOSFET #4 deve essere collegato allo 0 V comune**, come indicato nella sezione 1. PWM4/GND4 e OUT4 restano liberi. D13 rimane disponibile come uscita PWM di riserva.
+Il **DC- del MOSFET #4 deve essere collegato allo 0 V comune**, come indicato nella sezione 1. PWM4/GND4 e OUT4 restano liberi. D8 rimane disponibile come uscita PWM di riserva.
 
 ### 6. Quattro moduli relè — 16 uscite ON/OFF
 
@@ -423,11 +423,11 @@ Se il senso di rotazione risulta invertito rispetto a quello desiderato, scambia
 | D4 | RGB principale B |
 | D5 | DATA WS2811 |
 | D6 | buzzer piezo passivo opzionale |
-| D8–D10 | liberi / riserva |
+| D9–D10 | liberi / riserva |
 | D7 | RGB tramonto R |
 | D11 | RGB tramonto G |
 | D12 | RGB tramonto B |
-| D13 | DATA seconda catena WS2811 CASETTE — attiva nei test; effetti scenografici futuri |
+| D8 | DATA seconda catena WS2811 CASETTE — attiva nei test; effetti scenografici futuri |
 | D20 | SDA OLED EL-SM-008 (I²C, opzionale) |
 | D21 | SCL OLED EL-SM-008 (I²C, opzionale) |
 | D22 | START/STOP |
@@ -447,7 +447,7 @@ Aprire:
 
 con Arduino IDE e selezionare **Arduino Mega or Mega 2560**.
 
-Il firmware attuale implementa cielo RGB principale, due RGB laterali alba/tramonto, stelle WS2811, seconda catena WS2811 CASETTE per autotest, comandi, OLED, buzzer piezo passivo opzionale e modalità TEST. Il potenziometro A0 è temporaneamente tarato sull'hardware reale: 0 corrisponde a 1 minuto e circa 256/1023 ADC (un quarto della scala) corrisponde già a 6 minuti. D8–D10 restano liberi/di riserva; D13 pilota la seconda catena WS2811 CASETTE negli autotest; durante il ciclo normale resta spenta in attesa della futura logica scenografica. I carichi ON/OFF vengono gestiti tramite i 16 relè D25–D40.
+Il firmware attuale implementa cielo RGB principale, due RGB laterali alba/tramonto, stelle WS2811, seconda catena WS2811 CASETTE per autotest, comandi, OLED, buzzer piezo passivo opzionale e modalità TEST. Il potenziometro A0 è temporaneamente tarato sull'hardware reale: 0 corrisponde a 1 minuto e circa 256/1023 ADC (un quarto della scala) corrisponde già a 6 minuti. D9–D10 restano liberi/di riserva; D8 pilota la seconda catena WS2811 CASETTE negli autotest; durante il ciclo normale resta spenta in attesa della futura logica scenografica. I carichi ON/OFF vengono gestiti tramite i 16 relè D25–D40.
 
 ## GitHub Actions
 
@@ -501,7 +501,7 @@ Nel pannello del codice di Wokwi apri **Library Manager** e aggiungi:
 
 ```text
 Adafruit NeoPixel
-Adafruit SSD1306
+Adafruit SSD806
 Adafruit GFX Library
 ```
 
