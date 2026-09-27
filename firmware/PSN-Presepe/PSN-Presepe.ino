@@ -104,7 +104,11 @@ enum OledPopup { OLED_NESSUNO, OLED_PAUSA, OLED_RIPRESA, OLED_AVANTI, OLED_TEST,
 OledPopup oledPopup = OLED_NESSUNO;
 int ultimoPotOled = -1;
 int potRawOled = 0;
-const int POT_POPUP_DELTA = 1;
+int potPopupUltimaLettura = -1;
+unsigned long potPopupUltimaVariazioneMs = 0;
+bool potPopupInAttesa = false;
+const int POT_POPUP_DELTA = 15;
+const unsigned long POT_POPUP_SETTLE_MS = 2000UL;
 const unsigned long OLED_POPUP_MS = 1800UL;
 
 // Durata ciclo regolabile con il potenziometro
@@ -411,10 +415,9 @@ void tuttoSpento() {
 unsigned long durataCiclo() {
   int raw = analogRead(PIN_POT);
 
-  // Taratura hardware: la corsa utile osservata sul potenziometro reale
-  // occupa circa il primo quarto della scala ADC.
-  // A0=0 -> 1 minuto; A0>=256 -> 6 minuti.
-  const int POT_RAW_MAX = 256;
+  // Taratura misurata sull'hardware reale: A0 varia da 0 a circa 680.
+  // A0=0 -> 1 minuto; A0>=680 -> 6 minuti.
+  const int POT_RAW_MAX = 680;
   raw = constrain(raw, 0, POT_RAW_MAX);
   return map(raw, 0, POT_RAW_MAX, MIN_CYCLE_MS, MAX_CYCLE_MS);
 }
@@ -693,9 +696,8 @@ void aggiornaOled(unsigned long durata, float p) {
     int fill=(pf*124)/100;
     if(fill>0) display.fillRect(2,29,fill,7,SSD1306_WHITE);
     display.setCursor(0,47);
-    display.print(F("A0 RAW: "));
-    display.print(analogRead(PIN_POT));
-    display.print(F("  TEMP"));
+    display.print(running ? F("RUN ") : F("PAUSA "));
+    display.print(F("Ciclo ")); display.print(durata/60000UL); display.print(F(" min"));
   }
   display.display();
 }
@@ -710,7 +712,7 @@ bool inizializzaOled() {
   display.setTextSize(1);
   // Startup splash: PSN-Presepe! by Vanni
   display.setCursor(27,18); display.print(F("PSN-Presepe!"));
-  display.setCursor(30,36); display.print(F("by Vanni 032"));
+  display.setCursor(30,36); display.print(F("by Vanni 033"));
   display.display();
   delay(3000);
   return true;
@@ -1336,14 +1338,27 @@ void loop() {
     float p = percentualeCiclo(durata);
 
     int potNow = analogRead(PIN_POT);
-    if (ultimoPotOled < 0) ultimoPotOled = potNow;
-    if (abs(potNow - ultimoPotOled) >= POT_POPUP_DELTA) {
+
+    // Mostra la nuova velocita' solo dopo uno spostamento reale >=15 RAW
+    // e quando il potenziometro e' rimasto stabile per 2 secondi.
+    if (ultimoPotOled < 0) {
+      ultimoPotOled = potNow;
+      potPopupUltimaLettura = potNow;
+    }
+    if (abs(potNow - potPopupUltimaLettura) >= POT_BEEP_STABILITA_DELTA) {
+      potPopupUltimaLettura = potNow;
+      potPopupUltimaVariazioneMs = millis();
+      if (abs(potNow - ultimoPotOled) >= POT_POPUP_DELTA)
+        potPopupInAttesa = true;
+    }
+    if (potPopupInAttesa &&
+        millis() - potPopupUltimaVariazioneMs >= POT_POPUP_SETTLE_MS) {
+      potPopupInAttesa = false;
       ultimoPotOled = potNow;
       potRawOled = potNow;
-      Serial.print(F("POT RAW A0 = "));
-      Serial.println(potNow);
       oledMostraPopup(OLED_VELOCITA);
     }
+
     buzzerPotTick(potNow);
 
     aggiornaScena(p);
