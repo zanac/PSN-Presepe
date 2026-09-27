@@ -693,8 +693,9 @@ void aggiornaOled(unsigned long durata, float p) {
     int fill=(pf*124)/100;
     if(fill>0) display.fillRect(2,29,fill,7,SSD1306_WHITE);
     display.setCursor(0,47);
-    display.print(running ? F("RUN ") : F("PAUSA "));
-    display.print(F("Ciclo ")); display.print(durata/60000UL); display.print(F(" min"));
+    display.print(F("A0 RAW: "));
+    display.print(analogRead(PIN_POT));
+    display.print(F("  TEMP"));
   }
   display.display();
 }
@@ -709,7 +710,7 @@ bool inizializzaOled() {
   display.setTextSize(1);
   // Startup splash: PSN-Presepe! by Vanni
   display.setCursor(27,18); display.print(F("PSN-Presepe!"));
-  display.setCursor(30,36); display.print(F("by Vanni 031"));
+  display.setCursor(30,36); display.print(F("by Vanni 032"));
   display.display();
   delay(3000);
   return true;
@@ -821,11 +822,15 @@ void aggiornaScena(float p) {
     case ALBA: {
       float t = progresso(p, P_ALBA, 100.0f);
 
-      // Alba molto calda e con escursione contenuta.
-      r = interpola8(18, 210, t);
-      g = interpola8(8, 82, t);
-      b = interpola8(2, 18, t);
-      livelloStelle = interpola8(235, 0, t);
+      // Alba molto calda. Nell'ultimo 15% della fase il CIELO ha gia'
+      // raggiunto il colore GIORNO: la transizione termina prima del
+      // cambio di fase, evitando uno stacco netto ALBA -> GIORNO.
+      float tGiorno = constrain(t / 0.85f, 0.0f, 1.0f);
+      tGiorno = tGiorno * tGiorno * (3.0f - 2.0f * tGiorno);
+      r = interpola8(18, 210, tGiorno);
+      g = interpola8(8, 82, tGiorno);
+      b = interpola8(2, 18, tGiorno);
+      livelloStelle = interpola8(235, 0, tGiorno);
 
       // Alba direzionale dalla striscia destra: sale dolcemente nella
       // prima parte della fase, poi cala progressivamente fino a ZERO.
