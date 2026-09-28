@@ -27,7 +27,7 @@
     GIORNO -> TRAMONTO -> CREPUSCOLO -> NOTTE -> ALBA -> GIORNO
 
   Potenziometro:
-    ciclo completo regolabile da 1 a 6 minuti.
+    tre velocita' discrete: ciclo completo da 1, 3 o 5 minuti.
 
   Serial Monitor: 115200 baud
 
@@ -273,13 +273,11 @@ void buzzerPotTick(int raw) {
 // PWM
 // ============================================================
 
-// Correzione percettiva sperimentale per le strisce RGB analogiche.
-// La scenografia continua a lavorare 0..255; qui convertiamo il valore logico
-// in un PWM fisico con curva gamma ~2.0 e 4 bit frazionari di dithering.
-// In questo modo, soprattutto vicino al nero, possiamo ottenere livelli medi
-// intermedi tra due gradini del PWM hardware a 8 bit.
-const bool PWM_GAMMA_DITHER = true; // gamma attiva; dithering temporale disabilitato in pwmWrite()
-uint8_t pwmDitherAcc[9] = {0};
+// Correzione percettiva per le strisce RGB analogiche.
+// La scenografia lavora 0..255 e analogWrite() resta PWM hardware a 8 bit.
+// Applichiamo una curva gamma ~2.0 e arrotondiamo al gradino PWM piu' vicino.
+// Nessun dithering temporale: evitiamo l'alternanza tra gradini alle basse luci.
+const bool PWM_GAMMA = true;
 
 int8_t pwmChannelIndex(uint8_t pin) {
   const uint8_t pins[9] = {
@@ -295,7 +293,7 @@ int8_t pwmChannelIndex(uint8_t pin) {
 void pwmWrite(uint8_t pin, uint8_t value) {
   uint8_t out = value;
 
-  if (PWM_GAMMA_DITHER) {
+  if (PWM_GAMMA) {
     // Gamma 2.0 in fixed point: risultato 0..4080 (= 255 * 16).
     // I 4 bit bassi rappresentano la frazione del gradino PWM 8-bit.
     uint32_t squared = (uint32_t)value * (uint32_t)value;
