@@ -278,7 +278,7 @@ void buzzerPotTick(int raw) {
 // in un PWM fisico con curva gamma ~2.0 e 4 bit frazionari di dithering.
 // In questo modo, soprattutto vicino al nero, possiamo ottenere livelli medi
 // intermedi tra due gradini del PWM hardware a 8 bit.
-const bool PWM_GAMMA_DITHER = true;
+const bool PWM_GAMMA_DITHER = true; // gamma attiva; dithering temporale disabilitato in pwmWrite()
 uint8_t pwmDitherAcc[9] = {0};
 
 int8_t pwmChannelIndex(uint8_t pin) {
@@ -303,15 +303,11 @@ void pwmWrite(uint8_t pin, uint8_t value) {
     uint8_t base = pwm16 >> 4;
     uint8_t frac = pwm16 & 0x0F;
 
-    int8_t idx = pwmChannelIndex(pin);
-    if (idx >= 0 && base < 255) {
-      uint8_t acc = pwmDitherAcc[idx] + frac;
-      if (acc >= 16) {
-        base++;
-        acc -= 16;
-      }
-      pwmDitherAcc[idx] = acc;
-    }
+    // Esperimento: niente dithering temporale. Manteniamo la gamma,
+    // ma arrotondiamo semplicemente al gradino PWM 8-bit piu' vicino.
+    // Questo elimina l'alternanza tra gradini che sull'hardware reale
+    // viene percepita come lampeggio alle bassissime luminosita'.
+    if (frac >= 8 && base < 255) base++;
     out = base;
   }
 
@@ -938,14 +934,18 @@ void aggiornaScena(float p) {
     case ALBA: {
       float t = progresso(p, P_ALBA, 100.0f);
 
-      // Per i primi 3/4 dell'ALBA il CIELO centrale resta spento:
-      // la luce nasce solo sul lato est. Nell'ultimo 25% il CIELO
-      // entra progressivamente fino al colore GIORNO, senza stacco finale.
-      float tGiorno = constrain((t - 0.75f) / 0.25f, 0.0f, 1.0f);
-      tGiorno = tGiorno * tGiorno * (3.0f - 2.0f * tGiorno);
-      r = interpola8(0, 210, tGiorno);
-      g = interpola8(0, 82, tGiorno);
-      b = interpola8(0, 18, tGiorno);
+      // Luce di riempimento del CIELO durante tutta l'ALBA.
+      // Parte molto debole e calda/biancastra, per mescolarsi con il
+      // rosso/arancione della laterale senza ricorrere al dithering.
+      // Nell'ultima parte cresce dolcemente fino al normale colore GIORNO.
+      const uint8_t ALBA_FILL_R = 35;
+      const uint8_t ALBA_FILL_G = 22;
+      const uint8_t ALBA_FILL_B = 12;
+
+      float tGiorno = t * t * (3.0f - 2.0f * t);
+      r = interpola8(ALBA_FILL_R, 210, tGiorno);
+      g = interpola8(ALBA_FILL_G, 82, tGiorno);
+      b = interpola8(ALBA_FILL_B, 18, tGiorno);
 
       // Le stelle invece iniziano a dissolversi fin dall'inizio dell'ALBA,
       // indipendentemente dall'accensione tardiva del CIELO centrale.
