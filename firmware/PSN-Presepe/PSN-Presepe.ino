@@ -115,19 +115,21 @@ const int POT_POPUP_DELTA = 60;
 const unsigned long POT_POPUP_SETTLE_MS = 3000UL;
 const unsigned long OLED_POPUP_MS = 1800UL;
 
-// Durata ciclo regolabile con il potenziometro
+// Tre velocita' discrete: 1, 3 o 5 minuti, con potenziometro invertito.
+// La corsa utile rilevata sull'hardware e' 0..680 (non 0..1023).
 const unsigned long MIN_CYCLE_MS = 1UL * 60UL * 1000UL;
-const unsigned long MAX_CYCLE_MS = 6UL * 60UL * 1000UL;
+const unsigned long MID_CYCLE_MS = 3UL * 60UL * 1000UL;
+const unsigned long MAX_CYCLE_MS = 5UL * 60UL * 1000UL;
 const int POT_RAW_MAX = 680;
 unsigned long durataCicloStabile = MIN_CYCLE_MS;
 int potRawStabile = 0;
 
 // Fasi in percentuale
-const float P_TRAMONTO = 35.0f;
-const float P_CREPU    = 45.0f;
-const float P_NOTTE    = 50.0f;
-const float P_ALBA     = 80.0f;
-// ALBA occupa l'ultimo 20% del ciclo e termina direttamente nel nuovo GIORNO.
+const float P_TRAMONTO = 40.0f;
+const float P_CREPU    = 50.0f;
+const float P_NOTTE    = 55.0f;
+const float P_ALBA     = 85.0f;
+// ALBA occupa l'ultimo 15% del ciclo e termina direttamente nel nuovo GIORNO.
 
 const unsigned long DEBOUNCE_MS = 20;
 const unsigned long DEBUG_INTERVAL_MS = 5000UL;
@@ -472,7 +474,14 @@ void tuttoSpento() {
 
 unsigned long durataDaRaw(int raw) {
   raw = constrain(raw, 0, POT_RAW_MAX);
-  return map(raw, 0, POT_RAW_MAX, MIN_CYCLE_MS, MAX_CYCLE_MS);
+
+  // Il potenziometro e' cablato al contrario: raw=0 e' il massimo logico.
+  // Suddivisione in tre intervalli, inclusi entrambi gli estremi:
+  // raw fisico 454..680 -> 1 min; 227..453 -> 3 min; 0..226 -> 5 min.
+  int rawInvertito = POT_RAW_MAX - raw;
+  if (rawInvertito < (POT_RAW_MAX + 1) / 3) return MIN_CYCLE_MS;
+  if (rawInvertito < 2 * (POT_RAW_MAX + 1) / 3) return MID_CYCLE_MS;
+  return MAX_CYCLE_MS;
 }
 
 unsigned long durataCiclo() {
@@ -851,16 +860,33 @@ void aggiornaScena(float p) {
 
   switch (fase) {
 
-    case GIORNO:
-      // Luce diurna volutamente calda: sulle strisce reali il blu
-      // risulta molto dominante, quindi viene fortemente ridotto.
-      r = 210;
-      g = 82;
-      b = 18;
+    case GIORNO: {
+      // Il giorno parte con la tonalita' calda abituale, raggiunge
+      // progressivamente il bianco pieno dell'autotest al 33% della fase,
+      // poi torna alla tonalita' calda entro il 66%. L'ultimo terzo resta
+      // stabile, cosi' l'ingresso nel TRAMONTO rimane invariato.
+      float t = progresso(p, 0.0f, P_TRAMONTO);
+      float mixBianco = 0.0f;
+
+      if (t < (1.0f / 3.0f)) {
+        mixBianco = t * 3.0f;             // caldo -> bianco
+      } else if (t < (2.0f / 3.0f)) {
+        mixBianco = 2.0f - (t * 3.0f);    // bianco -> caldo
+      }
+
+      // Smoothstep per rendere morbidi partenza, inversione e arrivo.
+      mixBianco = constrain(mixBianco, 0.0f, 1.0f);
+      mixBianco = mixBianco * mixBianco * (3.0f - 2.0f * mixBianco);
+
+      r = interpola8(210, 255, mixBianco);
+      g = interpola8(82, 255, mixBianco);
+      b = interpola8(18, 255, mixBianco);
+
       tr = 0; tg = 0; tb = 0;
       ar = 0; ag = 0; ab = 0;
       livelloStelle = 0;
       break;
+    }
 
     case TRAMONTO: {
       float t = progresso(p, P_TRAMONTO, P_CREPU);
@@ -1424,6 +1450,11 @@ void setup() {
   // Cinque passi sincronizzati con la melodia; OLED mostra la progress bar complessiva.
   eseguiSequenzaBoot();
 
+  // Rileggi dopo l'autotest: se il potenziometro e' stato mosso
+  // durante il boot, il ciclo parte gia' nello scaglione corretto.
+  potRawStabile = constrain(analogRead(PIN_POT), 0, POT_RAW_MAX);
+  durataCicloStabile = durataDaRaw(potRawStabile);
+
   // Il tempo dell'autotest non fa parte del ciclo scenografico.
   cycleStartMs = millis();
 
@@ -1487,8 +1518,8 @@ void loop() {
     int potNow = analogRead(PIN_POT);
     int potNowLimitato = constrain(potNow, 0, POT_RAW_MAX);
 
-    // Mostra la nuova velocita' solo dopo uno spostamento reale >=15 RAW
-    // e quando il potenziometro e' rimasto stabile per 2 secondi.
+    // Attendi la stabilizzazione prima di cambiare scaglione.
+    // Anche uno spostamento minimo oltre una soglia deve essere rilevato.
     if (ultimoPotOled < 0) {
       ultimoPotOled = potRawStabile;
       potPopupUltimaLettura = potNowLimitato;
@@ -1497,10 +1528,9 @@ void loop() {
       potPopupUltimaLettura = potNowLimitato;
       potPopupUltimaVariazioneMs = millis();
     }
-    if (abs(potNowLimitato - potRawStabile) >= POT_POPUP_DELTA)
-      potPopupInAttesa = true;
-    else
-      potPopupInAttesa = false;
+    // Non usare una soglia RAW fissa: impedirebbe di riconoscere
+    // il passaggio tra due scaglioni vicino al loro confine.
+    potPopupInAttesa = (durataDaRaw(potNowLimitato) != durataCicloStabile);
 
     if (potPopupInAttesa &&
         millis() - potPopupUltimaVariazioneMs >= POT_POPUP_SETTLE_MS) {
@@ -1523,6 +1553,10 @@ void loop() {
 
     buzzerPotTick(potNowLimitato);
 
+    // Se lo scaglione e' cambiato, usa subito la durata e la
+    // posizione ricalcolate anche per scena, rele' e display.
+    durata = durataCiclo();
+    p = percentualeCiclo(durata);
     aggiornaScena(p);
     aggiornaReleSchedulati(p);
     aggiornaOled(durata, p);
