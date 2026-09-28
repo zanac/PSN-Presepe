@@ -472,7 +472,11 @@ void tuttoSpento() {
 
 unsigned long durataDaRaw(int raw) {
   raw = constrain(raw, 0, POT_RAW_MAX);
-  return map(raw, 0, POT_RAW_MAX, MIN_CYCLE_MS, MAX_CYCLE_MS);
+
+  // Potenziometro montato con verso elettrico invertito:
+  // raw=0 equivale al massimo logico, raw=POT_RAW_MAX equivale a zero.
+  int rawInvertito = POT_RAW_MAX - raw;
+  return map(rawInvertito, 0, POT_RAW_MAX, MIN_CYCLE_MS, MAX_CYCLE_MS);
 }
 
 unsigned long durataCiclo() {
