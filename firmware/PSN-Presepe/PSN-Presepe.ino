@@ -855,16 +855,33 @@ void aggiornaScena(float p) {
 
   switch (fase) {
 
-    case GIORNO:
-      // Luce diurna volutamente calda: sulle strisce reali il blu
-      // risulta molto dominante, quindi viene fortemente ridotto.
-      r = 210;
-      g = 82;
-      b = 18;
+    case GIORNO: {
+      // Il giorno parte con la tonalita' calda abituale, raggiunge
+      // progressivamente il bianco pieno dell'autotest al 33% della fase,
+      // poi torna alla tonalita' calda entro il 66%. L'ultimo terzo resta
+      // stabile, cosi' l'ingresso nel TRAMONTO rimane invariato.
+      float t = progresso(p, 0.0f, P_TRAMONTO);
+      float mixBianco = 0.0f;
+
+      if (t < (1.0f / 3.0f)) {
+        mixBianco = t * 3.0f;             // caldo -> bianco
+      } else if (t < (2.0f / 3.0f)) {
+        mixBianco = 2.0f - (t * 3.0f);    // bianco -> caldo
+      }
+
+      // Smoothstep per rendere morbidi partenza, inversione e arrivo.
+      mixBianco = constrain(mixBianco, 0.0f, 1.0f);
+      mixBianco = mixBianco * mixBianco * (3.0f - 2.0f * mixBianco);
+
+      r = interpola8(210, 255, mixBianco);
+      g = interpola8(82, 255, mixBianco);
+      b = interpola8(18, 255, mixBianco);
+
       tr = 0; tg = 0; tb = 0;
       ar = 0; ag = 0; ab = 0;
       livelloStelle = 0;
       break;
+    }
 
     case TRAMONTO: {
       float t = progresso(p, P_TRAMONTO, P_CREPU);
