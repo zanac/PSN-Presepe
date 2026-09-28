@@ -7,7 +7,7 @@
     D3 = Cielo RGB Verde
     D4 = Cielo RGB Blu
     D5 = DATA stelle WS2811 (50 pixel, 12 V)
-    D13 = DATA WS2811 CASETTE (riservato, non ancora pilotato)
+    D8 = DATA WS2811 CASETTE (riservato, non ancora pilotato)
     D6 = Buzzer piezo passivo opzionale
     D7/D11/D12 = RGB laterale SINISTRA / TRAMONTO (R/G/B)
     D44/D45/D46 = RGB laterale DESTRA / ALBA (R/G/B)
@@ -56,11 +56,11 @@ const uint8_t PIN_CIELO_R = 2;
 const uint8_t PIN_CIELO_G = 3;
 const uint8_t PIN_CIELO_B = 4;
 const uint8_t PIN_STELLE_DATA = 5;
-const uint8_t PIN_CASETTE_DATA = 13; // seconda catena WS2811: pin riservato, programmazione futura
+const uint8_t PIN_CASETTE_DATA = 8; // seconda catena WS2811 CASETTE
 const uint8_t PIN_BUZZER = 6; // piezo passivo opzionale: se assente il firmware funziona normalmente
 
 // Strisce RGB laterali da 1 m, dedicate agli effetti direzionali.
-// Sinistra = tramonto; destra = alba. D13 resta PWM libero.
+// Sinistra = tramonto; destra = alba.
 const uint8_t PIN_TRAMONTO_R = 7;
 const uint8_t PIN_TRAMONTO_G = 11;
 const uint8_t PIN_TRAMONTO_B = 12;
@@ -271,8 +271,49 @@ void buzzerPotTick(int raw) {
 // PWM
 // ============================================================
 
+// Correzione percettiva sperimentale per le strisce RGB analogiche.
+// La scenografia continua a lavorare 0..255; qui convertiamo il valore logico
+// in un PWM fisico con curva gamma ~2.0 e 4 bit frazionari di dithering.
+// In questo modo, soprattutto vicino al nero, possiamo ottenere livelli medi
+// intermedi tra due gradini del PWM hardware a 8 bit.
+const bool PWM_GAMMA_DITHER = true;
+uint8_t pwmDitherAcc[9] = {0};
+
+int8_t pwmChannelIndex(uint8_t pin) {
+  const uint8_t pins[9] = {
+    PIN_CIELO_R, PIN_CIELO_G, PIN_CIELO_B,
+    PIN_TRAMONTO_R, PIN_TRAMONTO_G, PIN_TRAMONTO_B,
+    PIN_ALBA_R, PIN_ALBA_G, PIN_ALBA_B
+  };
+  for (uint8_t i = 0; i < 9; i++)
+    if (pins[i] == pin) return i;
+  return -1;
+}
+
 void pwmWrite(uint8_t pin, uint8_t value) {
-  analogWrite(pin, PWM_INVERTED ? (255 - value) : value);
+  uint8_t out = value;
+
+  if (PWM_GAMMA_DITHER) {
+    // Gamma 2.0 in fixed point: risultato 0..4080 (= 255 * 16).
+    // I 4 bit bassi rappresentano la frazione del gradino PWM 8-bit.
+    uint32_t squared = (uint32_t)value * (uint32_t)value;
+    uint16_t pwm16 = (uint16_t)((squared * 4080UL + 32512UL) / 65025UL);
+    uint8_t base = pwm16 >> 4;
+    uint8_t frac = pwm16 & 0x0F;
+
+    int8_t idx = pwmChannelIndex(pin);
+    if (idx >= 0 && base < 255) {
+      uint8_t acc = pwmDitherAcc[idx] + frac;
+      if (acc >= 16) {
+        base++;
+        acc -= 16;
+      }
+      pwmDitherAcc[idx] = acc;
+    }
+    out = base;
+  }
+
+  analogWrite(pin, PWM_INVERTED ? (255 - out) : out);
 }
 
 void setCielo(uint8_t r, uint8_t g, uint8_t b) {
@@ -401,7 +442,14 @@ void mostraStelle(float livello) {
       (uint8_t)((v * 38U) / 100U)
     ));
   }
-  stelle.show();
+  // NeoPixel disabilita gli interrupt durante la trasmissione.
+  // Limitiamo il refresh a 50 Hz per non alterare millis()/Timer0.
+  static unsigned long ultimoShowStelleUs = 0;
+  unsigned long adessoUs = micros();
+  if ((unsigned long)(adessoUs - ultimoShowStelleUs) >= 20000UL) {
+    stelle.show();
+    ultimoShowStelleUs = adessoUs;
+  }
 }
 
 void setStelle(uint8_t value) {
@@ -540,9 +588,11 @@ void aggiornaReleSchedulati(float p) {
 
   for (uint8_t r = 0; r < 16; r++) {
     bool stato = false;
+    bool trovato = false;
+    uint16_t posizioneMigliore = 0;
 
-    // Trova l'ultimo evento applicabile al relè dall'inizio del ciclo
-    // fino alla posizione corrente.
+    // Sceglie l'evento cronologicamente piu' recente gia' raggiunto,
+    // indipendentemente dall'ordine delle righe nella tabella.
     for (uint8_t i = 0; i < NUM_EVENTI_RELE; i++) {
       const EventoRele &ev = SCHEDULAZIONE_RELE[i];
       if ((uint8_t)ev.rele != r) continue;
@@ -550,9 +600,14 @@ void aggiornaReleSchedulati(float p) {
       bool fasePassata = indiceFase(ev.fase) < indiceFase(faseAttuale);
       bool faseCorrenteRaggiunta =
         ev.fase == faseAttuale && pctFase >= ev.percentualeFase;
+      if (!fasePassata && !faseCorrenteRaggiunta) continue;
 
-      if (fasePassata || faseCorrenteRaggiunta)
+      uint16_t posizione = (uint16_t)indiceFase(ev.fase) * 101U + ev.percentualeFase;
+      if (!trovato || posizione >= posizioneMigliore) {
+        trovato = true;
+        posizioneMigliore = posizione;
         stato = ev.acceso;
+      }
     }
 
     scriviRele(r, stato);
@@ -619,7 +674,7 @@ void mostraOledTest() {
       case 17: display.print(F("TUTTO INSIEME")); break;
     }
   } else {
-    uint8_t n = testIndice - 14;
+    uint8_t n = testIndice - 18;
     uint8_t gruppo = n / 4 + 1;
     uint8_t rele = n % 4 + 1;
     display.print(F("Grp_"));
@@ -730,6 +785,9 @@ void aggiornaOled(unsigned long durata, float p) {
 
 bool inizializzaOled() {
   Wire.begin();
+#if defined(WIRE_HAS_TIMEOUT)
+  Wire.setWireTimeout(25000UL, true);
+#endif
   Wire.beginTransmission(OLED_ADDR);
   if (Wire.endTransmission()!=0) return false;
   if (!display.begin(SSD1306_SWITCHCAPVCC, OLED_ADDR)) return false;
@@ -739,8 +797,6 @@ bool inizializzaOled() {
   // Startup splash: PSN-Presepe! by Vanni
   display.setCursor(27,18); display.print(F("PSN-Presepe!"));
   display.setCursor(30,30); display.print(F("by Vanni 037"));
-  potRawStabile = constrain(analogRead(PIN_POT), 0, POT_RAW_MAX);
-  durataCicloStabile = durataDaRaw(potRawStabile);
   display.setCursor(18,46);
   stampaDurataOled(durataCicloStabile);
   display.print(F(" (mm:ss)"));
@@ -751,12 +807,13 @@ bool inizializzaOled() {
 
 void saltaAPercentuale(float p) {
   unsigned long durata = durataCiclo();
-  unsigned long offset = (unsigned long)(durata * (p / 100.0f));
+  // Arrotonda al millisecondo piu' vicino e entra 1 ms dentro la fase:
+  // evita che il troncamento float lasci AVANTI appena prima del confine.
+  unsigned long offset = (unsigned long)((durata * (p / 100.0f)) + 0.5f);
+  if (p > 0.0f && offset < durata - 1UL) offset++;
 
-  cycleStartMs = millis() - offset;
-
-  if (!running)
-    pauseStartedMs = millis();
+  unsigned long riferimento = running ? millis() : pauseStartedMs;
+  cycleStartMs = riferimento - offset;
 }
 
 void faseAvanti() {
@@ -1321,9 +1378,9 @@ void eseguiSequenzaBoot() {
 
 void setup() {
   Serial.begin(115200);
-  oledPresente = inizializzaOled();
-  randomSeed(analogRead(A15) ^ micros());
 
+  // Prima mettiamo tutte le uscite in uno stato definito: durante lo splash
+  // OLED nessun ingresso MOSFET/rele deve restare flottante.
   pinMode(PIN_CIELO_R, OUTPUT);
   pinMode(PIN_CIELO_G, OUTPUT);
   pinMode(PIN_CIELO_B, OUTPUT);
@@ -1356,8 +1413,15 @@ void setup() {
   tuttoSpento();
   spegniRele();
 
+  // Il potenziometro viene letto sempre, anche quando l'OLED non e' presente.
+  potRawStabile = constrain(analogRead(PIN_POT), 0, POT_RAW_MAX);
+  durataCicloStabile = durataDaRaw(potRawStabile);
+
+  oledPresente = inizializzaOled();
+  randomSeed(analogRead(A15) ^ micros());
+
   // Autotest di accensione: ALBA -> GIORNO -> TRAMONTO -> STELLE -> CASETTE.
-  // Ogni passo dura 2 secondi e l'OLED mostra la progress bar complessiva.
+  // Cinque passi sincronizzati con la melodia; OLED mostra la progress bar complessiva.
   eseguiSequenzaBoot();
 
   // Il tempo dell'autotest non fa parte del ciclo scenografico.
@@ -1371,7 +1435,7 @@ void setup() {
   Serial.println(F("D3  = RGB Verde"));
   Serial.println(F("D4  = RGB Blu"));
   Serial.println(F("D5  = DATA WS2811 (50 stelle)"));
-  Serial.println(F("D13 = DATA WS2811 CASETTE"));
+  Serial.println(F("D8 = DATA WS2811 CASETTE"));
   Serial.println(F("D6  = BUZZER passivo opzionale"));
   Serial.println(F("D7/D11/D12 = RGB SINISTRA / TRAMONTO"));
   Serial.println(F("D44/D45/D46 = RGB DESTRA / ALBA"));
@@ -1421,18 +1485,19 @@ void loop() {
     float p = percentualeCiclo(durata);
 
     int potNow = analogRead(PIN_POT);
+    int potNowLimitato = constrain(potNow, 0, POT_RAW_MAX);
 
     // Mostra la nuova velocita' solo dopo uno spostamento reale >=15 RAW
     // e quando il potenziometro e' rimasto stabile per 2 secondi.
     if (ultimoPotOled < 0) {
       ultimoPotOled = potRawStabile;
-      potPopupUltimaLettura = potNow;
+      potPopupUltimaLettura = potNowLimitato;
     }
-    if (abs(potNow - potPopupUltimaLettura) >= POT_BEEP_STABILITA_DELTA) {
-      potPopupUltimaLettura = potNow;
+    if (abs(potNowLimitato - potPopupUltimaLettura) >= POT_BEEP_STABILITA_DELTA) {
+      potPopupUltimaLettura = potNowLimitato;
       potPopupUltimaVariazioneMs = millis();
     }
-    if (abs(potNow - potRawStabile) >= POT_POPUP_DELTA)
+    if (abs(potNowLimitato - potRawStabile) >= POT_POPUP_DELTA)
       potPopupInAttesa = true;
     else
       potPopupInAttesa = false;
@@ -1440,14 +1505,23 @@ void loop() {
     if (potPopupInAttesa &&
         millis() - potPopupUltimaVariazioneMs >= POT_POPUP_SETTLE_MS) {
       potPopupInAttesa = false;
-      potRawStabile = constrain(potNow, 0, POT_RAW_MAX);
+      // Mantieni la stessa posizione percentuale della scena quando cambia
+      // la durata totale: cambiare velocita' non deve far saltare fase.
+      unsigned long vecchiaDurata = durataCicloStabile;
+      unsigned long riferimento = running ? millis() : pauseStartedMs;
+      unsigned long elapsedVecchio = (riferimento - cycleStartMs) % vecchiaDurata;
+      float posizione = (float)elapsedVecchio / (float)vecchiaDurata;
+
+      potRawStabile = potNowLimitato;
       durataCicloStabile = durataDaRaw(potRawStabile);
+      unsigned long nuovoElapsed = (unsigned long)(posizione * durataCicloStabile + 0.5f);
+      cycleStartMs = riferimento - nuovoElapsed;
       ultimoPotOled = potRawStabile;
       potRawOled = potRawStabile;
       oledMostraPopup(OLED_VELOCITA);
     }
 
-    buzzerPotTick(potNow);
+    buzzerPotTick(potNowLimitato);
 
     aggiornaScena(p);
     aggiornaReleSchedulati(p);
