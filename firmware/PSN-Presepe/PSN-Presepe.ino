@@ -123,10 +123,10 @@ unsigned long durataCicloStabile = MIN_CYCLE_MS;
 int potRawStabile = 0;
 
 // Fasi in percentuale
-const float P_TRAMONTO = 35.0f;
-const float P_CREPU    = 45.0f;
-const float P_NOTTE    = 50.0f;
-const float P_ALBA     = 80.0f;
+const float P_TRAMONTO = 40.0f;
+const float P_CREPU    = 50.0f;
+const float P_NOTTE    = 55.0f;
+const float P_ALBA     = 85.0f;
 // ALBA occupa l'ultimo 20% del ciclo e termina direttamente nel nuovo GIORNO.
 
 const unsigned long DEBOUNCE_MS = 20;
