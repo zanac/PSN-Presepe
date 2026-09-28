@@ -1,11 +1,13 @@
 /*
-  PSN-Presepe - test comparativo PWM TRAMONTO
+  PSN-Presepe - test comparativo PWM CIELO
   Arduino Mega 2560
 
-  Spostare SOLO i tre ingressi del MOSFET della striscia TRAMONTO:
-    R -> D5  (Timer3A)
-    G -> D2  (Timer3B)
-    B -> D3  (Timer3C)
+  Spostare SOLO i tre ingressi del MOSFET della striscia CIELO:
+    R -> D2  (Timer3B) - resta collegato
+    G -> D3  (Timer3C) - resta collegato
+    B -> D5  (Timer3A) - spostare temporaneamente da D4 a D5
+
+  IMPORTANTE: durante il test scollegare la DATA STELLE da D5.
 
   OLED invariato: I2C 0x3C su SDA D20 / SCL D21.
 
@@ -25,9 +27,9 @@
 #include <Adafruit_SSD1306.h>
 #include <math.h>
 
-const uint8_t PIN_R = 5; // OC3A
-const uint8_t PIN_G = 2; // OC3B
-const uint8_t PIN_B = 3; // OC3C
+const uint8_t PIN_R = 2; // OC3B
+const uint8_t PIN_G = 3; // OC3C
+const uint8_t PIN_B = 5; // OC3A - temporaneamente al posto di D4
 
 const uint8_t OLED_ADDR = 0x3C;
 const uint8_t OLED_W = 128;
@@ -63,15 +65,15 @@ void timer3_12bit() {
 }
 
 void scrivi8(uint8_t r, uint8_t g, uint8_t b) {
-  OCR3A = r;
-  OCR3B = g;
-  OCR3C = b;
+  OCR3A = b; // D5
+  OCR3B = r; // D2
+  OCR3C = g; // D3
 }
 
 void scrivi12(uint16_t r, uint16_t g, uint16_t b) {
-  OCR3A = constrain(r, 0, 4095);
-  OCR3B = constrain(g, 0, 4095);
-  OCR3C = constrain(b, 0, 4095);
+  OCR3A = constrain(b, 0, 4095); // D5
+  OCR3B = constrain(r, 0, 4095); // D2
+  OCR3C = constrain(g, 0, 4095); // D3
 }
 
 uint16_t scala12(uint8_t v) {
@@ -102,7 +104,7 @@ void mostraOled(unsigned long trascorso, float livello) {
   display.setTextColor(SSD1306_WHITE);
   display.setTextSize(1);
   display.setCursor(0, 0);
-  display.print(F("TEST TRAMONTO"));
+  display.print(F("TEST CIELO"));
 
   display.setTextSize(2);
   display.setCursor(0, 16);
@@ -148,7 +150,7 @@ void setup() {
     display.setCursor(0, 20);
     display.print(F("PSN PWM TEST"));
     display.setCursor(0, 36);
-    display.print(F("R:D5 G:D2 B:D3"));
+    display.print(F("R:D2 G:D3 B:D5"));
     display.display();
     delay(1500);
   }
