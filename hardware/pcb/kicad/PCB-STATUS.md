@@ -99,3 +99,8 @@ Remaining categories are expected/unresolved work:
 - one legacy non-mirrored back-layer text item in the Mega footprint.
 
 This is a major validation checkpoint but **not fabrication approval**. Routing, final isolation strategy, silkscreen cleanup, library parity, final DRC and Gerber inspection are still required.
+
+## KiCad 9 parser validation
+- KiCad 9.0.9 now loads the complete PCB successfully (`FULL_LOAD_OK`).
+- Board layer IDs were corrected to KiCad 9 canonical IDs.
+- DRC is now executed in GitHub Actions; reports must be interpreted against the exact HEAD commit because placement evolved during parser repair.
