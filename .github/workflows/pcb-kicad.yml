@@ -19,11 +19,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install KiCad CLI
+      - name: Install KiCad 9 CLI
         run: |
+          sudo add-apt-repository --yes ppa:kicad/kicad-9.0-releases
           sudo apt-get update
           sudo apt-get install -y kicad
           kicad-cli version
+          kicad-cli pcb --help
 
       - name: PCB DRC
         run: |
