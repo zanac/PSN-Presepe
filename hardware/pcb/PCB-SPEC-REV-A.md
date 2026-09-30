@@ -35,5 +35,25 @@ La PCB non distribuisce fase o neutro. Ogni relè termina esclusivamente sul pro
 ## RGB
 Ogni canale usa un N-MOSFET logic-level low-side con gate resistor e pulldown. Le tre strisce sono 12 V a positivo comune.
 
+## Corrente e termica
+Il dimensionamento della distribuzione +12 V deve considerare l'intero carico simultaneo.
+
+Per G5Q-1 DC12 SPDT il budget preliminare delle sole bobine è circa 0,53 A / 6,4 W con 16 relè eccitati. A questo si aggiungono RGB, STELLE, CASETTE e alimentazione del Mega.
+
+Il +5V_MEGA è destinato solo a piccoli carichi logici. Con ingresso 12 V su VIN, aumentare il carico 5 V aumenta direttamente la dissipazione del regolatore onboard.
+
+Vedere `POWER-THERMAL-NOTES-REV-A.md` per il budget dettagliato.
+
 ## Vincoli prima dei Gerber
-Footprint esatto relè e morsetti, correnti reali 12 V, protezione ingresso, dimensioni PCB, ERC, regole isolamento, DRC e ispezione Gerber devono essere completati e verificati prima della produzione.
+Devono essere completati/verificati:
+- footprint esatto dei componenti realmente acquistati;
+- verso meccanico di ingresso filo dei morsetti;
+- corrente massima reale dei carichi 12 V e conseguente dimensionamento di piste/morsetto/alimentatore;
+- decisione esplicita sull'eventuale protezione/fusibile di ingresso, attualmente non presente;
+- schema KiCad elettrico vero ed ERC;
+- routing PCB reale;
+- regole di isolamento della zona contatti;
+- DRC KiCad;
+- ispezione Gerber/Excellon e controllo meccanico finale.
+
+La scheda resta **DRAFT - NOT FOR FABRICATION** fino al completamento di questi punti.
