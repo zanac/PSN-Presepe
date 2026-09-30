@@ -81,7 +81,7 @@ Per rendere alba e tramonto più dinamici vengono aggiunte **due strisce RGB ana
 
 Ogni striscia ha un ramo +12 V protetto dedicato: **F2 ALBA** alimenta sia il +12 V comune della striscia ALBA sia il DC+ del MOSFET #4; **F3 TRAMONTO** alimenta sia il +12 V comune della striscia TRAMONTO sia il DC+ del MOSFET #3. I ritorni R/G/B vanno ai tre OUT- del relativo modulo MOSFET. Il quarto canale di ciascun modulo resta libero. **D8 è dedicato al DATA della seconda catena WS2811 CASETTE.**
 
-Nel firmware la palette RGB è tarata volutamente calda per compensare la dominante fredda osservata sulle strisce reali. Durante il TRAMONTO la striscia RGB principale passa progressivamente dal giorno caldo al colore notturno, mentre la striscia sinistra TRAMONTO produce un bagliore rosso/arancio. La laterale TRAMONTO segue un arco 0 → massimo → 0 lungo l'intera fase. La striscia destra è dedicata all'ALBA e segue la propria curva percentuale documentata nella sezione **Funzionamento scenografico**.
+Nel firmware le palette RGB sono tarate per ottenere transizioni calde e progressive. Durante il **TRAMONTO** la laterale sinistra parte tenue, raggiunge al 38% un picco arancio chiaro e poi perde gradualmente saturazione; nell'ultimo 18% usa valori R=G=B e si spegne in bianco neutro. Il CIELO parte dalla tonalità lasciata dal GIORNO (210/82/18), diventa progressivamente bianco tenue e si spegne con R=G=B esattamente al picco del TRAMONTO. Durante l'**ALBA** la laterale destra segue una curva analoga, con picco al 38% leggermente meno arancione; il CIELO resta spento fino a quel picco e da lì cresce dolcemente fino alla tonalità iniziale del GIORNO.
 
 ### Relè ON/OFF — 4 moduli, 16 uscite
 
@@ -179,23 +179,23 @@ Durante l'intera sequenza l'OLED mostra **Inizializzazione**, il nome dell'uscit
 
 ## Funzionamento scenografico
 
-Il ciclo automatico è regolabile con il potenziometro da **1 a 6 minuti**. Le fasi non hanno una durata fissa in secondi: occupano una percentuale precisa del ciclo, quindi tutti i tempi scalano linearmente quando si cambia la durata totale.
+Il ciclo automatico usa tre velocità discrete selezionate dal potenziometro: **1, 3 o 5 minuti**. Le fasi non hanno una durata fissa in secondi: occupano una percentuale precisa del ciclo, quindi tutti i tempi scalano linearmente quando si cambia la durata totale.
 
-| Fase | Posizione nel ciclo | Quota ciclo | Ciclo 1 min | Ciclo 6 min |
-|---|---:|---:|---:|---:|
-| **GIORNO** | 0–35% | 35% | 21 s | 126 s |
-| **TRAMONTO** | 35–45% | 10% | 6 s | 36 s |
-| **CREPUSCOLO** | 45–50% | 5% | 3 s | 18 s |
-| **NOTTE** | 50–80% | 30% | 18 s | 108 s |
-| **ALBA** | 80–100% | 20% | 12 s | 72 s |
+| Fase | Posizione nel ciclo | Quota ciclo | Ciclo 1 min | Ciclo 3 min | Ciclo 5 min |
+|---|---:|---:|---:|---:|---:|
+| **GIORNO** | 0–40% | 40% | 24 s | 72 s | 120 s |
+| **TRAMONTO** | 40–50% | 10% | 6 s | 18 s | 30 s |
+| **CREPUSCOLO** | 50–55% | 5% | 3 s | 9 s | 15 s |
+| **NOTTE** | 55–85% | 30% | 18 s | 54 s | 90 s |
+| **ALBA** | 85–100% | 15% | 9 s | 27 s | 45 s |
 
 Questa tabella è il riferimento temporale del firmware. Per una durata intermedia, il tempo di ogni fase è semplicemente la percentuale indicata della durata totale.
 
-1. **GIORNO (0–35%)** — stelle spente; CIELO acceso con luce diurna volutamente calda (RGB logico circa 210/82/18). Le due laterali sono spente.
-2. **TRAMONTO (35–45%)** — il CIELO passa progressivamente dalla luce diurna al nero. La laterale sinistra TRAMONTO segue un arco **0 → massimo → 0** nell'intera fase, con tonalità rosso/arancio. Le stelle restano spente.
-3. **CREPUSCOLO (45–50%)** — CIELO e laterali sono spenti. Viene generata una nuova disposizione casuale e compaiono progressivamente, una alla volta, **20 stelle scelte tra i 50 pixel disponibili**.
-4. **NOTTE (50–80%)** — CIELO e laterali restano completamente spenti. Le 20 stelle rimangono attive con luminosità massime differenti e cicli asincroni individuali di variazione. Il ciclo individuale di ciascuna stella dura circa **6,4–12,2 s**, senza modificare la durata della fase NOTTE.
-5. **ALBA (80–100%)** — le stelle iniziano a dissolversi fin dall'inizio della fase. La laterale destra ALBA sale fino al massimo nel primo **30% dell'ALBA**, resta al massimo fino al **65%**, quindi scende dolcemente a zero. Il CIELO centrale resta invece spento per il primo **75% dell'ALBA** e torna progressivamente alla luce GIORNO soltanto nell'ultimo **25%**, evitando uno stacco al nuovo ciclo.
+1. **GIORNO (0–40%)** — stelle e laterali spente. Il CIELO parte caldo (210/82/18), raggiunge progressivamente il bianco pieno al 33% della fase, torna alla tonalità calda entro il 66% e la mantiene fino al TRAMONTO.
+2. **TRAMONTO (40–50%)** — la laterale sinistra parte tenue e raggiunge al **38% della fase** un picco arancio chiaro (155/92/16), poi cala perdendo saturazione; nell'ultimo **18%** R=G=B e i tre canali si spengono insieme. Il CIELO parte dalla tonalità finale del GIORNO, si attenua verso un bianco tenue e raggiunge 0/0/0 esattamente al **38%**, cioè al picco della laterale, restando poi spento. Le stelle restano spente.
+3. **CREPUSCOLO (50–55%)** — CIELO e laterali sono spenti. Viene generata una nuova disposizione casuale e compaiono progressivamente, una alla volta, **20 stelle scelte tra i 50 pixel disponibili**.
+4. **NOTTE (55–85%)** — CIELO e laterali restano completamente spenti. Le 20 stelle rimangono attive con luminosità massime differenti e cicli asincroni individuali di variazione. Il ciclo individuale di ciascuna stella dura circa **6,4–12,2 s**, senza modificare la durata della fase NOTTE.
+5. **ALBA (85–100%)** — le stelle iniziano a dissolversi fin dall'inizio. La laterale destra parte con pochissima luce chiara, raggiunge al **38% della fase** un picco arancio chiaro (155/78/22), poi cala perdendo saturazione; nell'ultimo **18%** R=G=B e si spegne in modo simultaneo. Il CIELO resta completamente spento fino al picco dell'ALBA; dal **38%** parte a luminosità molto bassa (10/4/1) e cresce dolcemente fino a 210/82/18, esattamente la tonalità con cui inizia il nuovo GIORNO.
 
 La seconda catena WS2811 **CASETTE su D8** viene inizializzata dal firmware e verificata durante boot e TEST manuale, ma nel normale ciclo scenografico viene mantenuta spenta finché non saranno definite le sue accensioni.
 
@@ -447,7 +447,7 @@ Aprire:
 
 con Arduino IDE e selezionare **Arduino Mega or Mega 2560**.
 
-Il firmware attuale implementa cielo RGB principale, due RGB laterali alba/tramonto, stelle WS2811, seconda catena WS2811 CASETTE per autotest, comandi, OLED, buzzer piezo passivo opzionale e modalità TEST. Il potenziometro A0 è temporaneamente tarato sull'hardware reale: 0 corrisponde a 1 minuto e circa 256/1023 ADC (un quarto della scala) corrisponde già a 6 minuti. D9–D10 restano liberi/di riserva; D8 pilota la seconda catena WS2811 CASETTE negli autotest; durante il ciclo normale resta spenta in attesa della futura logica scenografica. I carichi ON/OFF vengono gestiti tramite i 16 relè D25–D40.
+Il firmware attuale implementa cielo RGB principale, due RGB laterali alba/tramonto, stelle WS2811, seconda catena WS2811 CASETTE per autotest, comandi, OLED, buzzer piezo passivo opzionale e modalità TEST. Il potenziometro A0 è tarato sull'hardware reale (massimo utile circa 680) e, essendo cablato al contrario, seleziona tre durate discrete: raw 454–680 = **1 minuto**, 227–453 = **3 minuti**, 0–226 = **5 minuti**. D9–D10 restano liberi/di riserva; D8 pilota la seconda catena WS2811 CASETTE negli autotest; durante il ciclo normale resta spenta in attesa della futura logica scenografica. I carichi ON/OFF vengono gestiti tramite i 16 relè D25–D40.
 
 ## GitHub Actions
 

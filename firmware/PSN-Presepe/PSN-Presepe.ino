@@ -27,7 +27,7 @@
     GIORNO -> TRAMONTO -> CREPUSCOLO -> NOTTE -> ALBA -> GIORNO
 
   Potenziometro:
-    ciclo completo regolabile da 1 a 6 minuti.
+    tre velocita' discrete: ciclo completo da 1, 3 o 5 minuti.
 
   Serial Monitor: 115200 baud
 
@@ -273,13 +273,11 @@ void buzzerPotTick(int raw) {
 // PWM
 // ============================================================
 
-// Correzione percettiva sperimentale per le strisce RGB analogiche.
-// La scenografia continua a lavorare 0..255; qui convertiamo il valore logico
-// in un PWM fisico con curva gamma ~2.0 e 4 bit frazionari di dithering.
-// In questo modo, soprattutto vicino al nero, possiamo ottenere livelli medi
-// intermedi tra due gradini del PWM hardware a 8 bit.
-const bool PWM_GAMMA_DITHER = true;
-uint8_t pwmDitherAcc[9] = {0};
+// Correzione percettiva per le strisce RGB analogiche.
+// La scenografia lavora 0..255 e analogWrite() resta PWM hardware a 8 bit.
+// Applichiamo una curva gamma ~2.0 e arrotondiamo al gradino PWM piu' vicino.
+// Nessun dithering temporale: evitiamo l'alternanza tra gradini alle basse luci.
+const bool PWM_GAMMA = true;
 
 int8_t pwmChannelIndex(uint8_t pin) {
   const uint8_t pins[9] = {
@@ -295,23 +293,19 @@ int8_t pwmChannelIndex(uint8_t pin) {
 void pwmWrite(uint8_t pin, uint8_t value) {
   uint8_t out = value;
 
-  if (PWM_GAMMA_DITHER) {
-    // Gamma 2.0 in fixed point: risultato 0..4080 (= 255 * 16).
-    // I 4 bit bassi rappresentano la frazione del gradino PWM 8-bit.
+  if (PWM_GAMMA) {
+    // Gamma 2.0 calcolata in fixed point; il risultato viene poi
+    // arrotondato al gradino PWM hardware 8-bit piu' vicino.
     uint32_t squared = (uint32_t)value * (uint32_t)value;
     uint16_t pwm16 = (uint16_t)((squared * 4080UL + 32512UL) / 65025UL);
     uint8_t base = pwm16 >> 4;
     uint8_t frac = pwm16 & 0x0F;
 
-    int8_t idx = pwmChannelIndex(pin);
-    if (idx >= 0 && base < 255) {
-      uint8_t acc = pwmDitherAcc[idx] + frac;
-      if (acc >= 16) {
-        base++;
-        acc -= 16;
-      }
-      pwmDitherAcc[idx] = acc;
-    }
+    // Nessun dithering temporale: manteniamo la gamma e arrotondiamo
+    // semplicemente al gradino PWM 8-bit piu' vicino.
+    // Questo elimina l'alternanza tra gradini che sull'hardware reale
+    // viene percepita come lampeggio alle bassissime luminosita'.
+    if (frac >= 8 && base < 255) base++;
     out = base;
   }
 
@@ -891,21 +885,65 @@ void aggiornaScena(float p) {
     case TRAMONTO: {
       float t = progresso(p, P_TRAMONTO, P_CREPU);
 
-      // Durante il tramonto il cielo centrale completa gia' la sua
-      // transizione fino al colore notturno. L'ultima luce resta cosi'
-      // concentrata sul lato ovest, sulla striscia TRAMONTO.
-      // Escursione volutamente ridotta e molto calda per le strisce reali.
-      r = interpola8(210, 18, t);
-      g = interpola8(82, 8, t);
-      b = interpola8(18, 2, t);
+      // Il CIELO fa il percorso inverso rispetto all'ALBA.
+      // Parte esattamente dal colore lasciato dal GIORNO (210,82,18) e
+      // deve essere completamente spento quando TRAMONTO raggiunge il picco
+      // al 38% della fase. Prima perde gradualmente saturazione fino a un
+      // bianco molto tenue; negli ultimi istanti R=G=B e si spengono insieme.
+      if (t < 0.30f) {
+        float x = t / 0.30f;
+        x = x * x * (3.0f - 2.0f * x);
+        const uint8_t BIANCO_CIELO = 16;
+        r = interpola8(210, BIANCO_CIELO, x);
+        g = interpola8(82,  BIANCO_CIELO, x);
+        b = interpola8(18,  BIANCO_CIELO, x);
+      } else if (t < 0.38f) {
+        float x = (t - 0.30f) / 0.08f;
+        x = constrain(x, 0.0f, 1.0f);
+        x = x * x * (3.0f - 2.0f * x);
+        uint8_t bianco = interpola8(16, 0, x);
+        r = bianco;
+        g = bianco;
+        b = bianco;
+      } else {
+        r = 0; g = 0; b = 0;
+      }
       livelloStelle = 0;
 
-      // La laterale TRAMONTO e' spenta fuori dalla propria fase.
-      // Durante la fase usa un arco diretto 0 -> massimo -> 0.
-      float arco = sin(t * PI);
-      tr = (uint8_t)(190.0f * arco);
-      tg = (uint8_t)(24.0f * arco);
-      tb = 0;
+      // Laterale TRAMONTO: stessa filosofia dell'ALBA, con un picco
+      // leggermente piu' arancione. Parte tenue, raggiunge il colore massimo,
+      // poi perde saturazione fino a un bianco debole. Nell'ultimo tratto
+      // R=G=B e i tre canali si spengono esattamente insieme.
+      const uint8_t TRAMONTO_CHIARO_R = 18;
+      const uint8_t TRAMONTO_CHIARO_G = 10;
+      const uint8_t TRAMONTO_CHIARO_B = 4;
+      const uint8_t TRAMONTO_ARANCIO_R = 155;
+      const uint8_t TRAMONTO_ARANCIO_G = 92;
+      const uint8_t TRAMONTO_ARANCIO_B = 16;
+
+      if (t < 0.38f) {
+        float x = t / 0.38f;
+        x = x * x * (3.0f - 2.0f * x);
+        tr = interpola8(TRAMONTO_CHIARO_R, TRAMONTO_ARANCIO_R, x);
+        tg = interpola8(TRAMONTO_CHIARO_G, TRAMONTO_ARANCIO_G, x);
+        tb = interpola8(TRAMONTO_CHIARO_B, TRAMONTO_ARANCIO_B, x);
+      } else if (t < 0.82f) {
+        float x = (t - 0.38f) / (0.82f - 0.38f);
+        x = constrain(x, 0.0f, 1.0f);
+        x = x * x * (3.0f - 2.0f * x);
+        const uint8_t BIANCO_CODA = 16;
+        tr = interpola8(TRAMONTO_ARANCIO_R, BIANCO_CODA, x);
+        tg = interpola8(TRAMONTO_ARANCIO_G, BIANCO_CODA, x);
+        tb = interpola8(TRAMONTO_ARANCIO_B, BIANCO_CODA, x);
+      } else {
+        float x = (t - 0.82f) / 0.18f;
+        x = constrain(x, 0.0f, 1.0f);
+        x = x * x * (3.0f - 2.0f * x);
+        uint8_t bianco = interpola8(16, 0, x);
+        tr = bianco;
+        tg = bianco;
+        tb = bianco;
+      }
       break;
     }
 
@@ -938,42 +976,67 @@ void aggiornaScena(float p) {
     case ALBA: {
       float t = progresso(p, P_ALBA, 100.0f);
 
-      // Per i primi 3/4 dell'ALBA il CIELO centrale resta spento:
-      // la luce nasce solo sul lato est. Nell'ultimo 25% il CIELO
-      // entra progressivamente fino al colore GIORNO, senza stacco finale.
-      float tGiorno = constrain((t - 0.75f) / 0.25f, 0.0f, 1.0f);
-      tGiorno = tGiorno * tGiorno * (3.0f - 2.0f * tGiorno);
-      r = interpola8(0, 210, tGiorno);
-      g = interpola8(0, 82, tGiorno);
-      b = interpola8(0, 18, tGiorno);
+      // Il CIELO resta completamente spento fino al picco dell'ALBA (38%).
+      // Da quel momento si accende appena e cresce molto dolcemente fino
+      // a raggiungere esattamente il colore iniziale della fase GIORNO.
+      if (t < 0.38f) {
+        r = 0; g = 0; b = 0;
+      } else {
+        const uint8_t CIELO_MIN_R = 10;
+        const uint8_t CIELO_MIN_G = 4;
+        const uint8_t CIELO_MIN_B = 1;
+        float tGiorno = (t - 0.38f) / 0.62f;
+        tGiorno = constrain(tGiorno, 0.0f, 1.0f);
+        tGiorno = tGiorno * tGiorno * (3.0f - 2.0f * tGiorno);
+        r = interpola8(CIELO_MIN_R, 210, tGiorno);
+        g = interpola8(CIELO_MIN_G, 82, tGiorno);
+        b = interpola8(CIELO_MIN_B, 18, tGiorno);
+      }
 
       // Le stelle invece iniziano a dissolversi fin dall'inizio dell'ALBA,
       // indipendentemente dall'accensione tardiva del CIELO centrale.
       float tStelle = t * t * (3.0f - 2.0f * t);
       livelloStelle = interpola8(235, 0, tStelle);
 
-      // Alba direzionale dalla striscia destra: raggiunge presto il massimo
-      // rosso caldo e lo mantiene piu' a lungo. La discesa e' ritardata e
-      // rallentata, cosi' la coda rossastra resta visibile piu' a lungo
-      // prima di spegnersi dolcemente al passaggio ALBA -> GIORNO.
+      // Alba direzionale dalla striscia destra.
+      // Parte con pochissima luce, ma gia' di tonalita' chiara e calda;
+      // cresce verso un arancio chiaro e poi si dissolve lentamente fino
+      // allo spegnimento completo. CIELO e TRAMONTO restano indipendenti.
       {
-        float arco;
-        if (t < 0.30f) {
-          float x = t / 0.30f;
+        const uint8_t ALBA_CHIARA_R = 18;
+        const uint8_t ALBA_CHIARA_G = 12;
+        const uint8_t ALBA_CHIARA_B = 5;
+        const uint8_t ALBA_ARANCIO_R = 155;
+        const uint8_t ALBA_ARANCIO_G = 78;
+        const uint8_t ALBA_ARANCIO_B = 22;
+
+        if (t < 0.38f) {
+          float x = t / 0.38f;
           x = x * x * (3.0f - 2.0f * x);
-          arco = x;
-        } else if (t < 0.65f) {
-          arco = 1.0f;
+          ar = interpola8(ALBA_CHIARA_R, ALBA_ARANCIO_R, x);
+          ag = interpola8(ALBA_CHIARA_G, ALBA_ARANCIO_G, x);
+          ab = interpola8(ALBA_CHIARA_B, ALBA_ARANCIO_B, x);
+        } else if (t < 0.82f) {
+          // Dopo il picco arancio la luce cala e contemporaneamente
+          // perde colore fino a diventare un bianco tenue.
+          float x = (t - 0.38f) / (0.82f - 0.38f);
+          x = constrain(x, 0.0f, 1.0f);
+          x = x * x * (3.0f - 2.0f * x);
+          const uint8_t BIANCO_CODA = 16;
+          ar = interpola8(ALBA_ARANCIO_R, BIANCO_CODA, x);
+          ag = interpola8(ALBA_ARANCIO_G, BIANCO_CODA, x);
+          ab = interpola8(ALBA_ARANCIO_B, BIANCO_CODA, x);
         } else {
-          float x = (t - 0.65f) / 0.35f;
+          // Ultimo tratto rigorosamente neutro: R=G=B in ogni istante.
+          // I tre canali scendono quindi insieme fino allo spegnimento.
+          float x = (t - 0.82f) / 0.18f;
+          x = constrain(x, 0.0f, 1.0f);
           x = x * x * (3.0f - 2.0f * x);
-          arco = 1.0f - x;
+          uint8_t bianco = interpola8(16, 0, x);
+          ar = bianco;
+          ag = bianco;
+          ab = bianco;
         }
-        // ALBA e' spenta fuori dalla propria fase. Durante la fase
-        // usa un arco diretto 0 -> rosso caldo -> 0.
-        ar = (uint8_t)(190.0f * arco);
-        ag = (uint8_t)(20.0f * arco);
-        ab = 0;
       }
       break;
     }
@@ -1372,7 +1435,7 @@ void eseguiSequenzaBoot() {
   stelle.clear();
   stelle.show();
 
-  // 5/5 - seconda catena WS2811 CASETTE su D13.
+  // 5/5 - seconda catena WS2811 CASETTE su D8.
   casette.clear();
   for (uint16_t i = 0; i < NUM_CASETTE; i++)
     casette.setPixelColor(i, casette.Color(255, 255, 255));
