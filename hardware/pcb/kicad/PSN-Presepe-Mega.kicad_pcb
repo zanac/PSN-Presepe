@@ -1,0 +1,87 @@
+(kicad_pcb (version 20240108) (generator pcbnew)
+  (general (thickness 1.6))
+  (paper "A3")
+  (layers
+    (0 "F.Cu" signal)
+    (31 "B.Cu" signal)
+    (36 "B.SilkS" user "b.silkscreen")
+    (37 "F.SilkS" user "f.silkscreen")
+    (44 "Edge.Cuts" user)
+    (46 "B.CrtYd" user "b.courtyard")
+    (47 "F.CrtYd" user "f.courtyard")
+    (48 "B.Fab" user)
+    (49 "F.Fab" user)
+  )
+  (setup
+    (pad_to_mask_clearance 0)
+    (allow_soldermask_bridges_in_footprints no)
+  )
+
+  (gr_rect (start 20 20) (end 240 140)
+    (stroke (width 0.25) (type default)) (fill none) (layer "Edge.Cuts"))
+
+  (gr_text "PSN-PRESEPE MEGA CONTROLLER - REV A"
+    (at 130 24) (layer "F.SilkS")
+    (effects (font (size 2 2) (thickness 0.35))))
+
+  (gr_text "DRAFT - NOT FOR FABRICATION"
+    (at 130 28) (layer "F.SilkS")
+    (effects (font (size 1.5 1.5) (thickness 0.3))))
+
+  (gr_rect (start 25 34) (end 126.52 87.3)
+    (stroke (width 0.3) (type dash)) (fill none) (layer "F.SilkS"))
+  (gr_text "ARDUINO MEGA 2560 ~101.52 x 53.3 mm\nUSB ACCESS -> LEFT"
+    (at 75.76 60.65) (layer "F.SilkS")
+    (effects (font (size 1.3 1.3) (thickness 0.25)) (justify)))
+
+  (gr_rect (start 132 34) (end 158 132)
+    (stroke (width 0.3) (type dash)) (fill none) (layer "F.SilkS"))
+  (gr_text "SELV\nDRIVERS\nU1/U2"
+    (at 145 83) (layer "F.SilkS")
+    (effects (font (size 1.3 1.3) (thickness 0.25))))
+
+  (gr_line (start 162 30) (end 162 136)
+    (stroke (width 0.8) (type dash)) (layer "F.SilkS"))
+  (gr_text "ISOLATION BARRIER - NO SELV COPPER ACROSS"
+    (at 164 83 90) (layer "F.SilkS")
+    (effects (font (size 1.1 1.1) (thickness 0.22))))
+
+  (gr_rect (start 168 34) (end 213 132)
+    (stroke (width 0.3) (type dash)) (fill none) (layer "F.SilkS"))
+  (gr_text "K1..K16\n2 ROWS x 8\nG5Q-1"
+    (at 190.5 83) (layer "F.SilkS")
+    (effects (font (size 1.3 1.3) (thickness 0.25))))
+
+  (gr_rect (start 216 34) (end 236 132)
+    (stroke (width 0.3) (type dash)) (fill none) (layer "F.SilkS"))
+  (gr_text "JR1..JR16\nCOM NO NC"
+    (at 226 83 90) (layer "F.SilkS")
+    (effects (font (size 1.2 1.2) (thickness 0.24))))
+
+  (gr_rect (start 25 94) (end 126 132)
+    (stroke (width 0.3) (type dash)) (fill none) (layer "F.SilkS"))
+  (gr_text "LOW VOLTAGE TERMINALS / RGB MOSFETS\n12V  OLED  START  NEXT  TEST  CIELO  TRAMONTO  ALBA  STELLE  CASETTE"
+    (at 75.5 113) (layer "F.SilkS")
+    (effects (font (size 1.05 1.05) (thickness 0.2))))
+
+  (footprint "MountingHole_3.2mm" (layer "F.Cu") (at 24 24)
+    (attr exclude_from_pos_files exclude_from_bom)
+    (fp_circle (center 0 0) (end 3 0) (stroke (width 0.3) (type default)) (fill none) (layer "F.SilkS"))
+    (pad "" np_thru_hole circle (at 0 0) (size 3.2 3.2) (drill 3.2) (layers "*.Cu" "*.Mask")))
+  (footprint "MountingHole_3.2mm" (layer "F.Cu") (at 236 24)
+    (attr exclude_from_pos_files exclude_from_bom)
+    (fp_circle (center 0 0) (end 3 0) (stroke (width 0.3) (type default)) (fill none) (layer "F.SilkS"))
+    (pad "" np_thru_hole circle (at 0 0) (size 3.2 3.2) (drill 3.2) (layers "*.Cu" "*.Mask")))
+  (footprint "MountingHole_3.2mm" (layer "F.Cu") (at 24 136)
+    (attr exclude_from_pos_files exclude_from_bom)
+    (fp_circle (center 0 0) (end 3 0) (stroke (width 0.3) (type default)) (fill none) (layer "F.SilkS"))
+    (pad "" np_thru_hole circle (at 0 0) (size 3.2 3.2) (drill 3.2) (layers "*.Cu" "*.Mask")))
+  (footprint "MountingHole_3.2mm" (layer "F.Cu") (at 236 136)
+    (attr exclude_from_pos_files exclude_from_bom)
+    (fp_circle (center 0 0) (end 3 0) (stroke (width 0.3) (type default)) (fill none) (layer "F.SilkS"))
+    (pad "" np_thru_hole circle (at 0 0) (size 3.2 3.2) (drill 3.2) (layers "*.Cu" "*.Mask")))
+  (footprint "MountingHole_3.2mm" (layer "F.Cu") (at 130 136)
+    (attr exclude_from_pos_files exclude_from_bom)
+    (fp_circle (center 0 0) (end 3 0) (stroke (width 0.3) (type default)) (fill none) (layer "F.SilkS"))
+    (pad "" np_thru_hole circle (at 0 0) (size 3.2 3.2) (drill 3.2) (layers "*.Cu" "*.Mask")))
+)
