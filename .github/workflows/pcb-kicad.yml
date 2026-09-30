@@ -12,6 +12,10 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: pcb-kicad-dev
+  cancel-in-progress: true
+
 jobs:
   validate-pcb:
     runs-on: ubuntu-24.04
