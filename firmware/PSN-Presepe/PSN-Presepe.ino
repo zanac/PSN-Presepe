@@ -960,18 +960,22 @@ void aggiornaScena(float p) {
     case ALBA: {
       float t = progresso(p, P_ALBA, 100.0f);
 
-      // Luce di riempimento del CIELO durante tutta l'ALBA.
-      // Parte molto debole e calda/biancastra, per mescolarsi con il
-      // rosso/arancione della laterale senza ricorrere al dithering.
-      // Nell'ultima parte cresce dolcemente fino al normale colore GIORNO.
-      const uint8_t ALBA_FILL_R = 35;
-      const uint8_t ALBA_FILL_G = 22;
-      const uint8_t ALBA_FILL_B = 12;
-
-      float tGiorno = t * t * (3.0f - 2.0f * t);
-      r = interpola8(ALBA_FILL_R, 210, tGiorno);
-      g = interpola8(ALBA_FILL_G, 82, tGiorno);
-      b = interpola8(ALBA_FILL_B, 18, tGiorno);
+      // Il CIELO resta completamente spento fino al picco dell'ALBA (38%).
+      // Da quel momento si accende appena e cresce molto dolcemente fino
+      // a raggiungere esattamente il colore iniziale della fase GIORNO.
+      if (t < 0.38f) {
+        r = 0; g = 0; b = 0;
+      } else {
+        const uint8_t CIELO_MIN_R = 10;
+        const uint8_t CIELO_MIN_G = 4;
+        const uint8_t CIELO_MIN_B = 1;
+        float tGiorno = (t - 0.38f) / 0.62f;
+        tGiorno = constrain(tGiorno, 0.0f, 1.0f);
+        tGiorno = tGiorno * tGiorno * (3.0f - 2.0f * tGiorno);
+        r = interpola8(CIELO_MIN_R, 210, tGiorno);
+        g = interpola8(CIELO_MIN_G, 82, tGiorno);
+        b = interpola8(CIELO_MIN_B, 18, tGiorno);
+      }
 
       // Le stelle invece iniziano a dissolversi fin dall'inizio dell'ALBA,
       // indipendentemente dall'accensione tardiva del CIELO centrale.
