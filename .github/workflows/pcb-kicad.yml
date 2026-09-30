@@ -3,7 +3,8 @@ name: PCB KiCad Validation
 on:
   workflow_dispatch:
   push:
-    branches: [dev]
+    branches:
+      - dev
     paths:
       - "hardware/pcb/**"
       - ".github/workflows/pcb-kicad.yml"
@@ -14,10 +15,12 @@ permissions:
 jobs:
   validate-pcb:
     runs-on: ubuntu-24.04
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: PCB source sanity check
+        run: python3 hardware/pcb/tools/pcb_sanity.py hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb
 
       - name: Install KiCad 9 CLI
         run: |
@@ -25,101 +28,26 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y kicad
           kicad-cli version
-          kicad-cli pcb --help
-
-      - name: PCB source sanity check
-        run: python3 hardware/pcb/tools/pcb_sanity.py hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb
 
       - name: PCB DRC
         run: |
           mkdir -p hardware/pcb/build
-          kicad-cli pcb drc             --exit-code-violations             --output hardware/pcb/build/drc-report.txt             hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb
+          kicad-cli pcb drc --exit-code-violations \
+            --output hardware/pcb/build/drc-report.txt \
+            hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb
 
-      - name: Export Gerbers
+      - name: Export Gerbers and drill
         if: success()
         run: |
           mkdir -p hardware/pcb/build/gerbers
-          kicad-cli pcb export gerbers             --output hardware/pcb/build/gerbers/             --layers F.Cu,B.Cu,F.Silkscreen,B.Silkscreen,F.Mask,B.Mask,Edge.Cuts             hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb
-          kicad-cli pcb export drill             --output hardware/pcb/build/gerbers/             --format excellon             --generate-map             hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb
-
-      - name: Package fabrication preview
-        if: success()
-        run: |
-          cd hardware/pcb/build/gerbers
-          zip -9 ../PSN-Presepe-RevA-Gerber-DRAFT.zip ./*
-
-      - name: Upload DRC report
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: PCB-DRC-report
-          path: hardware/pcb/build/drc-report.txt
-          if-no-files-found: warn
-
-      - name: Upload draft Gerbers
-        if: success()
-        uses: actions/upload-artifact@v4
-        with:
-          name: PSN-Presepe-RevA-Gerber-DRAFT
-          path: hardware/pcb/build/PSN-Presepe-RevA-Gerber-DRAFT.zip
-, s, re.M)
-          assert len(global_nets) == 119, f"Expected 119 global nets, got {len(global_nets)}"
-          assert len({n for n, _ in global_nets}) == 119, "Duplicate global net IDs"
-          assert len({name for _, name in global_nets}) == 119, "Duplicate global net names"
-          # A standalone net declaration must never appear after footprints begin.
-          tail = s[s.find("  (footprint "):]
-          embedded = re.findall(r'^\s+\(net \d+ "[^"]+"\)          print("PCB textual sanity check passed")
-          PY
-
-      - name: PCB DRC
-        run: |
-          mkdir -p hardware/pcb/build
-          kicad-cli pcb drc             --exit-code-violations             --output hardware/pcb/build/drc-report.txt             hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb
-
-      - name: Export Gerbers
-        if: success()
-        run: |
-          mkdir -p hardware/pcb/build/gerbers
-          kicad-cli pcb export gerbers             --output hardware/pcb/build/gerbers/             --layers F.Cu,B.Cu,F.Silkscreen,B.Silkscreen,F.Mask,B.Mask,Edge.Cuts             hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb
-          kicad-cli pcb export drill             --output hardware/pcb/build/gerbers/             --format excellon             --generate-map             hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb
-
-      - name: Package fabrication preview
-        if: success()
-        run: |
-          cd hardware/pcb/build/gerbers
-          zip -9 ../PSN-Presepe-RevA-Gerber-DRAFT.zip ./*
-
-      - name: Upload DRC report
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: PCB-DRC-report
-          path: hardware/pcb/build/drc-report.txt
-          if-no-files-found: warn
-
-      - name: Upload draft Gerbers
-        if: success()
-        uses: actions/upload-artifact@v4
-        with:
-          name: PSN-Presepe-RevA-Gerber-DRAFT
-          path: hardware/pcb/build/PSN-Presepe-RevA-Gerber-DRAFT.zip
-, tail, re.M)
-          assert not embedded, f"Embedded net declarations found after footprint section: {len(embedded)}"
-          assert "(segment " not in s, "Draft board unexpectedly contains routed segments"
-          print("PCB textual sanity check passed")
-          PY
-
-      - name: PCB DRC
-        run: |
-          mkdir -p hardware/pcb/build
-          kicad-cli pcb drc             --exit-code-violations             --output hardware/pcb/build/drc-report.txt             hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb
-
-      - name: Export Gerbers
-        if: success()
-        run: |
-          mkdir -p hardware/pcb/build/gerbers
-          kicad-cli pcb export gerbers             --output hardware/pcb/build/gerbers/             --layers F.Cu,B.Cu,F.Silkscreen,B.Silkscreen,F.Mask,B.Mask,Edge.Cuts             hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb
-          kicad-cli pcb export drill             --output hardware/pcb/build/gerbers/             --format excellon             --generate-map             hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb
+          kicad-cli pcb export gerbers \
+            --output hardware/pcb/build/gerbers/ \
+            --layers F.Cu,B.Cu,F.Silkscreen,B.Silkscreen,F.Mask,B.Mask,Edge.Cuts \
+            hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb
+          kicad-cli pcb export drill \
+            --output hardware/pcb/build/gerbers/ \
+            --format excellon --generate-map \
+            hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb
 
       - name: Package fabrication preview
         if: success()
