@@ -15,7 +15,7 @@
 
 ## Electrical/netlist state
 - 119 named nets;
-- 77 unique referenced footprints in the rebuilt PCB source;
+- 77 electrical/component footprints plus 6 M3 NPTH mounting-hole footprints;
 - relay contact mapping verified as G5Q: pins 1/5 coil, 3 COM, 2 NC, 4 NO;
 - each JR1..JR16 is independent COM/NO/NC; no mains L/N bus exists on the PCB;
 - Mega firmware pin mapping is preserved.
@@ -41,6 +41,21 @@ Small connection labels are present near every terminal group:
 - R1..R16: COM / NO / NC.
 
 The final KiCad review must confirm that every label follows the actual terminal wire-entry orientation and does not overlap pads/courtyards.
+
+## Mechanical mounting
+Six 3.2 mm NPTH mounting holes are present:
+- four near the board corners;
+- two intermediate supports near x=135 mm on the top/bottom edges.
+
+Final enclosure/standoff fit still requires physical/mechanical review.
+
+## Netlist audit
+- exactly 119 global net declarations;
+- 119 unique net IDs and names;
+- no duplicate, orphan or unused nets;
+- no one-pad electrical nets;
+- all firmware-required Mega pins are assigned;
+- 46 unassigned Mega pads are intentionally unused headers/functions.
 
 ## Fabrication status
 **DRAFT — NOT FOR FABRICATION.**
