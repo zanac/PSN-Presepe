@@ -1,0 +1,39 @@
+name: PCB KiCad Parser Probe
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [dev]
+    paths:
+      - "hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb"
+      - ".github/workflows/pcb-probe.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install KiCad 9
+        run: |
+          sudo add-apt-repository --yes ppa:kicad/kicad-9.0-releases
+          sudo apt-get update
+          sudo apt-get install -y kicad python3-wxgtk4.0
+      - name: Load through pcbnew Python API
+        run: |
+          python3 - <<'PY'
+          import sys
+          sys.path.append('/usr/lib/python3/dist-packages')
+          import pcbnew
+          p='hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb'
+          print('pcbnew', pcbnew.GetBuildVersion())
+          try:
+              b=pcbnew.LoadBoard(p)
+              print('LOAD_OK', b.GetFileName())
+          except Exception as e:
+              import traceback
+              traceback.print_exc()
+              raise
+          PY
