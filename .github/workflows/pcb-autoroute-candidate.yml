@@ -42,7 +42,7 @@ jobs:
           PY
           # KiCad exports inherited class names as RELAY_CONTACT,Default; normalize
           # the candidate DSN so Freerouting can exclude this class explicitly.
-          sed -i 's/(class RELAY_CONTACT,Default /(class RELAY_CONTACT /' hardware/pcb/route-candidate/PSN-Presepe-Mega.dsn
+          sed -i 's/(class RELAY_CONTACT,Default /(class RELAY_CONTACT /; s/(class SELV_POWER,Default /(class SELV_POWER /' hardware/pcb/route-candidate/PSN-Presepe-Mega.dsn
 
       - name: Download pinned Freerouting 2.2.4
         run: |
@@ -61,7 +61,7 @@ jobs:
       - name: Autoroute
         run: |
           java -jar hardware/pcb/route-candidate/freerouting.jar \
-            --gui.enabled=false -da -dct 0 -mp 300 -inc RELAY_CONTACT \
+            --gui.enabled=false -da -dct 0 -mp 300 -inc RELAY_CONTACT,SELV_POWER \
             -de hardware/pcb/route-candidate/PSN-Presepe-Mega.dsn \
             -do hardware/pcb/route-candidate/PSN-Presepe-Mega.ses
 
