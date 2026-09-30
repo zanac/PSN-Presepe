@@ -9,7 +9,16 @@ Rev A pin mapping used by the PCB:
 - pin 3: COM
 - pin 4: NO
 
-The footprint uses 1.3 mm drills and the mounting geometry transcribed from the Omron PCB drawing. The exact relay part ordered for assembly must still be checked against the manufacturer datasheet before fabrication.
+The footprint uses 1.3 mm drills and the mounting geometry transcribed from the Omron G5Q-1 SPDT PCB mounting-hole drawing (bottom view).
+
+Verified Rev A hole coordinates, using pin 1 as origin:
+- pin 1: (0, 0) — coil
+- pin 5: (0, 7.62) — coil
+- pin 2: (10.16, 0) — NC
+- pin 3: (15.24, 0) — COM
+- pin 4: (15.24, 7.62) — NO
+
+This geometry was corrected after the first real KiCad 9 DRC exposed the earlier invalid same-row layout. The exact relay part ordered for assembly must still be checked against the manufacturer datasheet before fabrication.
 
 ## TerminalBlock_Phoenix_MKDS-1.5-3-5.08.kicad_mod
 Three-pole, 5.08 mm pitch terminal footprint intended for Phoenix Contact MKDS 1,5/3-5,08 / 1715734 geometry.
