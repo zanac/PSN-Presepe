@@ -16,7 +16,7 @@
 ## Electrical/netlist state
 - 119 named nets;
 - 77 electrical/component footprints plus 6 M3 NPTH mounting-hole footprints;
-- relay contact mapping verified as G5Q: pins 1/5 coil, 3 COM, 2 NC, 4 NO;
+- relay contact mapping verified as G5Q: pins 1/5 coil, 2 COM, 3 NC, 4 NO;
 - each JR1..JR16 is independent COM/NO/NC; no mains L/N bus exists on the PCB;
 - Mega firmware pin mapping is preserved.
 
