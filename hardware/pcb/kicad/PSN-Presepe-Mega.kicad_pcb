@@ -986,7 +986,7 @@
     (pad "SCK" thru_hole oval (at 63.627 -27.94) (size 1.7272 1.7272) (drill 1.016) (layers *.Cu *.Mask) (tstamp 49b40249-adaa-4aa0-9f90-a9c91050d5c7))
     (pad "SCL" thru_hole oval (at 18.796 -50.8) (size 1.7272 1.7272) (drill 1.016) (layers *.Cu *.Mask) (tstamp ba5fd440-dac5-4b88-be10-f458cd21b115))
     (pad "SDA" thru_hole oval (at 21.336 -50.8) (size 1.7272 1.7272) (drill 1.016) (layers *.Cu *.Mask) (tstamp fdab7305-3f48-4c88-827a-ac8147d5b392))
-    (pad "VIN" thru_hole oval (at 45.72 -2.54) (size 1.7272 1.7272) (drill 1.016) (layers *.Cu *.Mask (net 2 "+12V")
+    (pad "VIN" thru_hole oval (at 45.72 -2.54) (size 1.7272 1.7272) (drill 1.016) (layers *.Cu *.Mask) (net 2 "+12V")
     (net 72 "R1_NC")
     (net 73 "R1_COM")
     (net 74 "R1_NO")
