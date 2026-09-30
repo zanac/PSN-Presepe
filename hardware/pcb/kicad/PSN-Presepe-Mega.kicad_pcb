@@ -780,12 +780,11 @@
       (pad "1" thru_hole rect (at 0 0) (size 1.8 1.8) (drill .8) (layers "*.Cu" "*.Mask") (net 2 "+12V"))
       (pad "2" thru_hole circle (at 5 0) (size 1.8 1.8) (drill .8) (layers "*.Cu" "*.Mask") (net 1 "GND"))
     )
-  (footprint "PSN_Presep_Custom:Arduino_Mega2560_R3_Shield" (version 20211014) (generator pcbnew)
+  (footprint "PSN_Presep_Custom:Arduino_Mega2560_R3_Shield"
     (layer "F.Cu")
     (at 28 92)
     (property "Reference" "MCU1" (at 2.54 -54.356) (layer "F.SilkS") (effects (font (size 1 1) (thickness 0.15))))
     (property "Value" "Arduino Mega 2560 R3" (at 27.305 -56) (layer "F.Fab") (effects (font (size 1 1) (thickness 0.15))))
-    (tedit 5A8605D3)
     (descr "https://docs.arduino.cc/hardware/mega-2560")
     (attr through_hole)
     (fp_text reference "A**" (at 2.54 -54.356) (layer "B.SilkS")
