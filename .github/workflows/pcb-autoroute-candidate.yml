@@ -2,6 +2,9 @@ name: PCB Autoroute Candidate
 
 on:
   workflow_dispatch:
+  push:
+    branches: [dev]
+    paths: [".github/workflows/pcb-autoroute-candidate.yml"]
 
 permissions:
   contents: read
