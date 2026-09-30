@@ -968,20 +968,26 @@ void aggiornaScena(float p) {
           ar = interpola8(ALBA_CHIARA_R, ALBA_ARANCIO_R, x);
           ag = interpola8(ALBA_CHIARA_G, ALBA_ARANCIO_G, x);
           ab = interpola8(ALBA_CHIARA_B, ALBA_ARANCIO_B, x);
+        } else if (t < 0.82f) {
+          // Dopo il picco arancio la luce cala e contemporaneamente
+          // perde colore fino a diventare un bianco tenue.
+          float x = (t - 0.38f) / (0.82f - 0.38f);
+          x = constrain(x, 0.0f, 1.0f);
+          x = x * x * (3.0f - 2.0f * x);
+          const uint8_t BIANCO_CODA = 16;
+          ar = interpola8(ALBA_ARANCIO_R, BIANCO_CODA, x);
+          ag = interpola8(ALBA_ARANCIO_G, BIANCO_CODA, x);
+          ab = interpola8(ALBA_ARANCIO_B, BIANCO_CODA, x);
         } else {
-          // Nella coda il rosso termina prima (al 92% della fase);
-          // verde e blu continuano invece fino alla fine dell'ALBA.
-          float xGB = (t - 0.38f) / 0.62f;
-          xGB = constrain(xGB, 0.0f, 1.0f);
-          xGB = xGB * xGB * (3.0f - 2.0f * xGB);
-
-          float xR = (t - 0.38f) / (0.92f - 0.38f);
-          xR = constrain(xR, 0.0f, 1.0f);
-          xR = xR * xR * (3.0f - 2.0f * xR);
-
-          ar = interpola8(ALBA_ARANCIO_R, 0, xR);
-          ag = interpola8(ALBA_ARANCIO_G, 0, xGB);
-          ab = interpola8(ALBA_ARANCIO_B, 0, xGB);
+          // Ultimo tratto rigorosamente neutro: R=G=B in ogni istante.
+          // I tre canali scendono quindi insieme fino allo spegnimento.
+          float x = (t - 0.82f) / 0.18f;
+          x = constrain(x, 0.0f, 1.0f);
+          x = x * x * (3.0f - 2.0f * x);
+          uint8_t bianco = interpola8(16, 0, x);
+          ar = bianco;
+          ag = bianco;
+          ab = bianco;
         }
       }
       break;
