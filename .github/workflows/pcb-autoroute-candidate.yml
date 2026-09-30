@@ -40,6 +40,9 @@ jobs:
           assert pcbnew.ExportSpecctraDSN(b,out), 'DSN export failed'
           print('DSN export OK')
           PY
+          # KiCad exports inherited class names as RELAY_CONTACT,Default; normalize
+          # the candidate DSN so Freerouting can exclude this class explicitly.
+          sed -i 's/(class RELAY_CONTACT,Default /(class RELAY_CONTACT /' hardware/pcb/route-candidate/PSN-Presepe-Mega.dsn
 
       - name: Download pinned Freerouting 2.2.4
         run: |
@@ -58,13 +61,15 @@ jobs:
       - name: Autoroute
         run: |
           java -jar hardware/pcb/route-candidate/freerouting.jar \
-            --gui.enabled=false -da -dct 0 -mp 200 \
+            --gui.enabled=false -da -dct 0 -mp 300 -inc RELAY_CONTACT \
             -de hardware/pcb/route-candidate/PSN-Presepe-Mega.dsn \
             -do hardware/pcb/route-candidate/PSN-Presepe-Mega.ses
 
       - name: Import SES into candidate board
         run: |
           cp hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb hardware/pcb/route-candidate/PSN-Presepe-Mega-routed.kicad_pcb
+          cp hardware/pcb/kicad/fp-lib-table hardware/pcb/route-candidate/fp-lib-table
+          cp -a hardware/pcb/kicad/PSN_Presep_Custom.pretty hardware/pcb/route-candidate/
           python3 - <<'PY'
           import sys
           sys.path.append('/usr/lib/python3/dist-packages')
@@ -94,8 +99,8 @@ jobs:
           p=Path('hardware/pcb/route-candidate/PSN-Presepe-Mega-routed.kicad_pcb')
           if p.exists():
               s=p.read_text()
-              print('segments',s.count('(segment '))
-              print('vias',s.count('(via '))
+              print('segments',s.count('(segment'))
+              print('vias',s.count('(via'))
           r=Path('hardware/pcb/route-candidate/drc-routed.txt')
           if r.exists():
               for line in r.read_text().splitlines():
