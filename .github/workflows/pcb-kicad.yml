@@ -12,6 +12,9 @@ on:
 permissions:
   contents: read
 
+env:
+  KICAD9_FOOTPRINT_DIR: /usr/share/kicad/footprints
+
 concurrency:
   group: pcb-kicad-dev
   cancel-in-progress: true
