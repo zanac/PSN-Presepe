@@ -294,15 +294,15 @@ void pwmWrite(uint8_t pin, uint8_t value) {
   uint8_t out = value;
 
   if (PWM_GAMMA) {
-    // Gamma 2.0 in fixed point: risultato 0..4080 (= 255 * 16).
-    // I 4 bit bassi rappresentano la frazione del gradino PWM 8-bit.
+    // Gamma 2.0 calcolata in fixed point; il risultato viene poi
+    // arrotondato al gradino PWM hardware 8-bit piu' vicino.
     uint32_t squared = (uint32_t)value * (uint32_t)value;
     uint16_t pwm16 = (uint16_t)((squared * 4080UL + 32512UL) / 65025UL);
     uint8_t base = pwm16 >> 4;
     uint8_t frac = pwm16 & 0x0F;
 
-    // Esperimento: niente dithering temporale. Manteniamo la gamma,
-    // ma arrotondiamo semplicemente al gradino PWM 8-bit piu' vicino.
+    // Nessun dithering temporale: manteniamo la gamma e arrotondiamo
+    // semplicemente al gradino PWM 8-bit piu' vicino.
     // Questo elimina l'alternanza tra gradini che sull'hardware reale
     // viene percepita come lampeggio alle bassissime luminosita'.
     if (frac >= 8 && base < 255) base++;
@@ -1435,7 +1435,7 @@ void eseguiSequenzaBoot() {
   stelle.clear();
   stelle.show();
 
-  // 5/5 - seconda catena WS2811 CASETTE su D13.
+  // 5/5 - seconda catena WS2811 CASETTE su D8.
   casette.clear();
   for (uint16_t i = 0; i < NUM_CASETTE; i++)
     casette.setPixelColor(i, casette.Color(255, 255, 255));
