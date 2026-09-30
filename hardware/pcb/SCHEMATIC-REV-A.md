@@ -32,6 +32,7 @@ Bobina positiva -> +12V_RELAY; negativa -> uscita ULN; COM clamp ULN -> +12V_REL
 
 ## 8. Relè
 K1..K16: Omron G5Q-1 DC12 candidato, SPDT.
+Pinout verificato sul disegno Omron bottom-view: pin 1/5 bobina, pin 2 COM, pin 3 NC, pin 4 NO.
 Ogni contatto va soltanto al relativo morsetto JRn: COM / NO / NC.
 **Nessuna fase, neutro o barra 230 V comune sulla PCB.**
 
