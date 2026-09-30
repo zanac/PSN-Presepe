@@ -36,8 +36,8 @@ jobs:
         if: success()
         run: |
           mkdir -p hardware/pcb/build/gerbers
-          kicad-cli pcb gerbers             --output hardware/pcb/build/gerbers/             --layers F.Cu,B.Cu,F.Silkscreen,B.Silkscreen,F.Mask,B.Mask,Edge.Cuts             hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb
-          kicad-cli pcb drill             --output hardware/pcb/build/gerbers/             --format excellon             --generate-map             hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb
+          kicad-cli pcb export gerbers             --output hardware/pcb/build/gerbers/             --layers F.Cu,B.Cu,F.Silkscreen,B.Silkscreen,F.Mask,B.Mask,Edge.Cuts             hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb
+          kicad-cli pcb export drill             --output hardware/pcb/build/gerbers/             --format excellon             --generate-map             hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb
 
       - name: Package fabrication preview
         if: success()
