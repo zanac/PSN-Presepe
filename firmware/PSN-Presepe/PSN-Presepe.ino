@@ -885,13 +885,29 @@ void aggiornaScena(float p) {
     case TRAMONTO: {
       float t = progresso(p, P_TRAMONTO, P_CREPU);
 
-      // Durante il tramonto il cielo centrale completa gia' la sua
-      // transizione fino al colore notturno. L'ultima luce resta cosi'
-      // concentrata sul lato ovest, sulla striscia TRAMONTO.
-      // Escursione volutamente ridotta e molto calda per le strisce reali.
-      r = interpola8(210, 18, t);
-      g = interpola8(82, 8, t);
-      b = interpola8(18, 2, t);
+      // Il CIELO fa il percorso inverso rispetto all'ALBA.
+      // Parte esattamente dal colore lasciato dal GIORNO (210,82,18) e
+      // deve essere completamente spento quando TRAMONTO raggiunge il picco
+      // al 38% della fase. Prima perde gradualmente saturazione fino a un
+      // bianco molto tenue; negli ultimi istanti R=G=B e si spengono insieme.
+      if (t < 0.30f) {
+        float x = t / 0.30f;
+        x = x * x * (3.0f - 2.0f * x);
+        const uint8_t BIANCO_CIELO = 16;
+        r = interpola8(210, BIANCO_CIELO, x);
+        g = interpola8(82,  BIANCO_CIELO, x);
+        b = interpola8(18,  BIANCO_CIELO, x);
+      } else if (t < 0.38f) {
+        float x = (t - 0.30f) / 0.08f;
+        x = constrain(x, 0.0f, 1.0f);
+        x = x * x * (3.0f - 2.0f * x);
+        uint8_t bianco = interpola8(16, 0, x);
+        r = bianco;
+        g = bianco;
+        b = bianco;
+      } else {
+        r = 0; g = 0; b = 0;
+      }
       livelloStelle = 0;
 
       // Laterale TRAMONTO: stessa filosofia dell'ALBA, con un picco
