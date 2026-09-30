@@ -5,8 +5,8 @@ Custom through-hole footprint for the **5-pin Omron G5Q-1 SPDT family**.
 
 Rev A pin mapping used by the PCB:
 - pins 1 and 5: coil
-- pin 2: NC
-- pin 3: COM
+- pin 2: COM
+- pin 3: NC
 - pin 4: NO
 
 The footprint uses 1.3 mm drills and the mounting geometry transcribed from the Omron G5Q-1 SPDT PCB mounting-hole drawing (bottom view).
