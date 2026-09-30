@@ -28,24 +28,7 @@ jobs:
           kicad-cli pcb --help
 
       - name: PCB source sanity check
-        run: |
-          python3 - <<'PY'
-          from pathlib import Path
-          p = Path("hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb")
-          s = p.read_text()
-          depth = minimum = 0
-          for ch in s:
-              if ch == "(":
-                  depth += 1
-              elif ch == ")":
-                  depth -= 1
-                  minimum = min(minimum, depth)
-          assert depth == 0 and minimum == 0, f"Unbalanced PCB S-expression: depth={depth}, min={minimum}"
-          import re
-          bad = re.findall(r'\(layers [^)]*\(net \d+ "[^"]+"\)', s)
-          assert not bad, f"Malformed net nested inside layers: {len(bad)} occurrence(s)"
-          global_nets = re.findall(r'^  \(net (\d+) "([^"]+)"\)          print("PCB textual sanity check passed")
-          PY
+        run: python3 hardware/pcb/tools/pcb_sanity.py hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb
 
       - name: PCB DRC
         run: |
