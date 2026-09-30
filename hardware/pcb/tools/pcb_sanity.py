@@ -34,4 +34,20 @@ assert len(set(refs)) == 83, "Duplicate references"
 segments = s.count("(segment ")
 assert segments == 0, f"Draft board unexpectedly contains {segments} routed segment(s)"
 
-print(f"OK: {len(refs)} refs, {len(global_nets)} nets, {segments} segments, balanced S-expression")
+
+# Omron G5Q-1 SPDT contact mapping: 1/5 coil, 2 COM, 3 NC, 4 NO.
+for i in range(1, 17):
+    marker = f'(property "Reference" "K{i}"'
+    ri = s.find(marker)
+    assert ri >= 0, f"Missing relay K{i}"
+    start = s.rfind('(footprint "PSN_Presep_Custom:Relay_Omron_G5Q-1_SPDT"', 0, ri)
+    end = s.find('\n  (footprint ', ri)
+    if end < 0:
+        end = s.find('\n  (gr_', ri)
+    block = s[start:end]
+    expected = {"2": f"R{i}_COM", "3": f"R{i}_NC", "4": f"R{i}_NO"}
+    for pad, net in expected.items():
+        assert re.search(rf'\(pad "{pad}"[^\n]*\(net \d+ "{net}"\)', block), f"K{i} pad {pad} must be {net}"
+    assert re.search(r'\(pad "3"[^\n]*\(at 17\.78 0(?: 90)?\)', block), f"K{i} pad 3 geometry must be x=17.78 mm"
+
+print(f"OK: {len(refs)} refs, {len(global_nets)} nets, {segments} segments, balanced S-expression, G5Q mapping verified")
