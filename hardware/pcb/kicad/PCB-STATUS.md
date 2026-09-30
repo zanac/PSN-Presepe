@@ -76,3 +76,26 @@ Audit result:
 **DRAFT — NOT FOR FABRICATION.**
 
 No ERC/DRC has been run in a real KiCad environment and no Gerber/Excellon set from this revision is approved for manufacture.
+
+
+## KiCad 9 real validation checkpoint — 2026-09-30
+The board is now successfully parsed by **KiCad 9.0.9** in GitHub Actions (`FULL_LOAD_OK`).
+
+The first real DRC exposed malformed legacy board syntax and placement/footprint defects. Corrected items include:
+- KiCad 9 canonical board layer IDs;
+- malformed pad/net syntax;
+- corrupted Mega VIN/embedded-net block;
+- U1/U2 collision with Mega headers;
+- C2/C3 collision with ULN2803 pads;
+- H2 collision with JR9;
+- **Omron G5Q-1 SPDT footprint geometry corrected from the official PCB mounting-hole drawing**.
+
+After these corrections, the latest checked DRC report contains **no remaining shorting-items, electrical clearance, hole-clearance or solder-mask-bridge violations**.
+
+Remaining categories are expected/unresolved work:
+- 194 unconnected items because routing is intentionally still absent;
+- footprint-library parity/configuration warnings;
+- silkscreen text-height/overlap/copper warnings;
+- one legacy non-mirrored back-layer text item in the Mega footprint.
+
+This is a major validation checkpoint but **not fabrication approval**. Routing, final isolation strategy, silkscreen cleanup, library parity, final DRC and Gerber inspection are still required.
