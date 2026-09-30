@@ -63,3 +63,11 @@ Mantenere spazio per dissipatori sui 9 IRLZ44N, ventilazione attorno agli ULN280
 
 ## Produzione
 Nessun Gerber di questa revisione è approvato finché non sono completati routing reale, ERC/DRC, controllo orientamento morsetti, verifica footprint/datasheet e ispezione Gerber.
+
+## Routing current strategy
+- The single +12 V input feeds RGB strips, WS2811 loads, relay coils and Mega VIN.
+- Known RGB strip rating is up to about 60 W total at 12 V (about 5 A) for the 5 m installation before relay/WS2811/Mega current is added.
+- Main +12 V and GND distribution therefore must not be treated as ordinary 1 mm signal/power traces.
+- Project class `HIGH_CURRENT_12V` is a **preliminary** 3.0 mm routing constraint for +12V/GND; wide copper pours are preferred for main distribution where isolation rules allow.
+- 3.0 mm is not a final ampacity guarantee. Final width/pour, copper weight, temperature rise, connector rating and total current budget must be checked before fabrication.
+- No GND pour is allowed to cross into/under the relay-contact isolation region.
