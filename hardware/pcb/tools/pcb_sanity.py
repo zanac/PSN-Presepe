@@ -50,4 +50,63 @@ for i in range(1, 17):
         assert re.search(rf'\(pad "{pad}"[^\n]*\(net \d+ "{net}"\)', block), f"K{i} pad {pad} must be {net}"
     assert re.search(r'\(pad "3"[^\n]*\(at 17\.78 0(?: 90)?\)', block), f"K{i} pad 3 geometry must be x=17.78 mm"
 
-print(f"OK: {len(refs)} refs, {len(global_nets)} nets, {segments} segments, balanced S-expression, G5Q mapping verified")
+
+def footprint_block(ref):
+    marker = f'(property "Reference" "{ref}"'
+    ri = s.find(marker)
+    assert ri >= 0, f"Missing footprint {ref}"
+    start = s.rfind("(footprint ", 0, ri)
+    depth = 0
+    quoted = escaped = False
+    for j in range(start, len(s)):
+        ch = s[j]
+        if quoted:
+            if escaped:
+                escaped = False
+            elif ch == "\\":
+                escaped = True
+            elif ch == '"':
+                quoted = False
+        else:
+            if ch == '"':
+                quoted = True
+            elif ch == "(":
+                depth += 1
+            elif ch == ")":
+                depth -= 1
+                if depth == 0:
+                    return s[start:j+1]
+    raise AssertionError(f"Unclosed footprint {ref}")
+
+def pad_net(ref, pad):
+    b = footprint_block(ref)
+    m = re.search(rf'\(pad "{re.escape(str(pad))}"[^\n]*\(net \d+ "([^"]+)"\)', b)
+    assert m, f"Missing net on {ref} pad {pad}"
+    return m.group(1)
+
+assert pad_net("J1", 1) == "+12V" and pad_net("J1", 2) == "GND"
+assert pad_net("MCU1", "VIN") == "+12V"
+for p5 in ("5V1", "5V2", "5V3", "5V4"):
+    assert pad_net("MCU1", p5) == "+5V_MEGA"
+assert [pad_net("RV1", x) for x in (1,2,3)] == ["GND","A0_POT","+5V_MEGA"]
+for cap in ("C1","C2","C3"):
+    assert [pad_net(cap,x) for x in (1,2)] == ["+12V","GND"]
+
+drains = ["CIELO_R_NEG","CIELO_G_NEG","CIELO_B_NEG","TRAM_R_NEG","TRAM_G_NEG","TRAM_B_NEG","ALBA_R_NEG","ALBA_G_NEG","ALBA_B_NEG"]
+for i, drain in enumerate(drains, 1):
+    assert pad_net(f"Q{i}",1) == f"GATE_Q{i}"
+    assert pad_net(f"Q{i}",2) == drain
+    assert pad_net(f"Q{i}",3) == "GND"
+
+for bank, first in ((1,1),(2,9)):
+    u=f"U{bank}"
+    assert pad_net(u,9) == "GND"
+    assert pad_net(u,10) == "+12V"
+    for ch in range(8):
+        relay=first+ch
+        assert pad_net(u,ch+1) == f"D{24+relay}_RELAY{relay}"
+        assert pad_net(u,18-ch) == f"RELAY{relay}_COIL_LOW"
+        assert pad_net(f"K{relay}",1) == "+12V"
+        assert pad_net(f"K{relay}",5) == f"RELAY{relay}_COIL_LOW"
+
+print(f"OK: {len(refs)} refs, {len(global_nets)} nets, {segments} segments, balanced S-expression, G5Q mapping + power/MOSFET/ULN invariants verified")
