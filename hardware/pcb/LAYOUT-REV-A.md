@@ -1,108 +1,65 @@
 # PSN-Presepe PCB — layout meccanico Rev A
 
-## Riferimenti meccanici verificati
-
-- Arduino Mega 2560 Rev3: circa 101.52 x 53.3 mm; usare il CAD/meccanica ufficiale Arduino per posizione definitiva di header e fori.
-- Omron G5Q-1: ingombro massimo circa 20.3 x 10.3 mm; footprint a 5 pin ricavato esclusivamente dal disegno PCB ufficiale Omron.
-
-## Architettura meccanica
-
-La PCB è una **carrier/shield estesa**: il Mega 2560 si innesta direttamente tramite header femmina e resta completamente sostituibile. USB e connettore di alimentazione del Mega devono rimanere accessibili.
-
-### Outline di lavoro Rev A
-
-Prima ipotesi da validare nel CAD:
-- larghezza: 220 mm
-- altezza: 120 mm
+## Outline corrente
+- **280 x 170 mm**
 - FR-4 1.6 mm
 - 2 layer
 
-L'outline è volutamente abbondante: verrà ridotto solo dopo placement reale e controllo delle distanze.
+La scheda è stata volutamente ingrandita per privilegiare cablaggio, isolamento, dissipazione e accesso con cacciavite ai morsetti.
 
-## Zone funzionali
+## Architettura
+La PCB è una carrier/shield estesa per Arduino Mega 2560. Il Mega resta sostituibile; USB, jack e RESET devono rimanere accessibili.
 
-Vista dall'alto:
+### Zona SELV
+Comprende Mega, B10K, buzzer, 9 MOSFET IRLZ44N, due ULN2803C, alimentazione 12 V e terminali bassa tensione.
 
-```
-  BORDO SINISTRO / USB MEGA
-  +----------------------------------------------------------------------------------+
-  |                                                                                  |
-  |   ARDUINO MEGA 2560             SELV / DRIVER             RELAY CONTACT SIDE      |
-  |   ~101.5 x 53.3                 U1/U2                     K1..K8   JR1..JR8       |
-  |                                                           K9..K16  JR9..JR16      |
-  |   B10K   BUZZER                                                                  |
-  |                                                                                  |
-  | J1  OLED  START NEXT TEST | CIELO | TRAMONTO | ALBA | STELLE | CASETTE           |
-  +----------------------------------------------------------------------------------+
-       BORDO BASSA TENSIONE                                  BORDO MORSETTI RELÈ
-```
+I 9 MOSFET hanno una zona dedicata con spazio per piccoli dissipatori TO-220 e circolazione d'aria. I dissipatori non devono potersi toccare fra loro: il tab dell'IRLZ44N è elettricamente collegato al drain.
 
-## Mega 2560
+### Terminali bassa tensione
+Sono sul perimetro e con ingresso filo rivolto verso l'esterno:
+- J1: 12V / GND
+- J_OLED: 5V / GND / SDA / SCL
+- J_START: START / GND
+- J_NEXT: AVANTI / GND
+- J_TEST: TEST / GND
+- J_CIELO: 12V / R / G / B
+- J_TRAMONTO: 12V / R / G / B
+- J_ALBA: 12V / R / G / B
+- J_STELLE: 12V / GND / DATA
+- J_CASETTE: 12V / GND / DATA
 
-- orientamento con USB rivolto verso il bordo sinistro;
-- nessun componente alto davanti a USB, jack o pulsante RESET;
-- header shield posizionati usando geometria ufficiale, non una griglia 2.54 mm approssimata;
-- ricordare l'offset non standard fra alcuni header Arduino;
-- +12V_BUS raggiunge il percorso VIN del Mega, mai il pin +5V;
-- +5V_MEGA viene usato solo come alimentazione logica per OLED/B10K.
+La serigrafia PCB riporta in piccolo queste funzioni vicino ai morsetti.
 
-## Zona RGB / bassa tensione
+### Relè
+16 Omron G5Q-1, due file da 8, con passo aumentato per facilitare collegamento fili e manutenzione.
 
-I 9 IRLZ44N vengono raggruppati in tre blocchi:
-1. CIELO R/G/B
-2. TRAMONTO R/G/B
-3. ALBA R/G/B
+Pinout verificato:
+- 1, 5: bobina
+- 3: COM
+- 2: NC
+- 4: NO
 
-Ogni blocco è vicino al relativo morsetto +12V/R/G/B per mantenere corti i percorsi di corrente.
-
-Sul bordo inferiore, da sinistra verso destra:
-- J1 +12V/GND
-- J_OLED
-- J_START
-- J_NEXT
-- J_TEST
-- J_CIELO
-- J_TRAMONTO
-- J_ALBA
-- J_STELLE
-- J_CASETTE
-
-STELLE e CASETTE hanno DATA diretto rispettivamente da D5 e D8: nessuna resistenza/buffer onboard.
-
-## Zona relè
-
-16 G5Q-1 in due file da 8.
-
-Orientamento preliminare: asse lungo del relè verso il relativo morsetto, così le piste COM/NO/NC rimangono corte e non devono attraversare la zona bobine.
-
-Ogni relè termina esclusivamente nel proprio morsetto:
+JR1..JR16 espongono ciascuno:
 `COM | NO | NC`
 
-Non esistono bus L/N o ponti 230 V sulla PCB.
+Tutti i morsetti relè sono sul perimetro e devono avere ingresso filo rivolto verso l'esterno. La serigrafia riporta `R1: COM NO NC` ... `R16: COM NO NC`.
 
-U1 e U2 (ULN2803C) restano sul lato bobine/SELV, fra Mega e banco relè.
+## Contatti potenzialmente a 230 VAC
+La PCB **non distribuisce fase o neutro**. I contatti sono puliti e indipendenti, ma possono essere cablati esternamente a 230 VAC.
 
-## Separazione
-
-Anche se la PCB non distribuisce la rete, i morsetti COM/NO/NC possono essere collegati esternamente a 230 VAC.
-
-Pertanto:
-- zona contatti trattata come potenzialmente a tensione di rete;
+Per il routing finale:
 - nessun piano GND SELV sotto la zona contatti;
-- nessuna pista 5/12 V attraversa la zona contatti;
-- barriera continua tra lato bobine/SELV e routing dei contatti;
-- eventuali slot saranno definiti dopo placement del footprint esatto;
-- valori definitivi di creepage/clearance vengono impostati prima del routing finale.
+- nessuna pista SELV deve passare fra i percorsi COM/NO/NC;
+- creepage/clearance devono essere impostati nel DRC in funzione dei requisiti reali;
+- eventuali slot d'isolamento si decidono nel CAD dopo DRC e ispezione meccanica.
 
-## Fori di fissaggio
+## Stato routing
+Il routing testuale preliminare è stato rimosso dopo un audit geometrico che ha rilevato incroci sullo stesso layer fra net diverse.
 
-Prevedere almeno:
-- 4 fori agli angoli della carrier;
-- supporto meccanico vicino al Mega;
-- almeno 2 supporti aggiuntivi nella metà relè se l'outline resta vicino a 220 mm.
+Il placement/netlist/serigrafia sono la base corrente. Il routing definitivo richiede KiCad e DRC reale; non va ricostruito alla cieca con segmenti testuali.
 
-Posizioni definitive solo dopo placement.
+## Vincolo termico
+Mantenere spazio per dissipatori sui 9 IRLZ44N, ventilazione attorno agli ULN2803 e distanza degli elettrolitici dalle principali sorgenti di calore.
 
-## Stato
-
-Questo documento congela l'architettura e l'outline iniziale, non le coordinate finali. Il prossimo passaggio CAD è creare il footprint shield Mega dal riferimento ufficiale e il footprint G5Q-1 dal datasheet, quindi posizionare realmente i 16 relè e i morsetti e ridimensionare l'outline.
+## Produzione
+Nessun Gerber di questa revisione è approvato finché non sono completati routing reale, ERC/DRC, controllo orientamento morsetti, verifica footprint/datasheet e ispezione Gerber.
