@@ -894,12 +894,40 @@ void aggiornaScena(float p) {
       b = interpola8(18, 2, t);
       livelloStelle = 0;
 
-      // La laterale TRAMONTO e' spenta fuori dalla propria fase.
-      // Durante la fase usa un arco diretto 0 -> massimo -> 0.
-      float arco = sin(t * PI);
-      tr = (uint8_t)(190.0f * arco);
-      tg = (uint8_t)(24.0f * arco);
-      tb = 0;
+      // Laterale TRAMONTO: stessa filosofia dell'ALBA, con un picco
+      // leggermente piu' arancione. Parte tenue, raggiunge il colore massimo,
+      // poi perde saturazione fino a un bianco debole. Nell'ultimo tratto
+      // R=G=B e i tre canali si spengono esattamente insieme.
+      const uint8_t TRAMONTO_CHIARO_R = 18;
+      const uint8_t TRAMONTO_CHIARO_G = 10;
+      const uint8_t TRAMONTO_CHIARO_B = 4;
+      const uint8_t TRAMONTO_ARANCIO_R = 155;
+      const uint8_t TRAMONTO_ARANCIO_G = 92;
+      const uint8_t TRAMONTO_ARANCIO_B = 16;
+
+      if (t < 0.38f) {
+        float x = t / 0.38f;
+        x = x * x * (3.0f - 2.0f * x);
+        tr = interpola8(TRAMONTO_CHIARO_R, TRAMONTO_ARANCIO_R, x);
+        tg = interpola8(TRAMONTO_CHIARO_G, TRAMONTO_ARANCIO_G, x);
+        tb = interpola8(TRAMONTO_CHIARO_B, TRAMONTO_ARANCIO_B, x);
+      } else if (t < 0.82f) {
+        float x = (t - 0.38f) / (0.82f - 0.38f);
+        x = constrain(x, 0.0f, 1.0f);
+        x = x * x * (3.0f - 2.0f * x);
+        const uint8_t BIANCO_CODA = 16;
+        tr = interpola8(TRAMONTO_ARANCIO_R, BIANCO_CODA, x);
+        tg = interpola8(TRAMONTO_ARANCIO_G, BIANCO_CODA, x);
+        tb = interpola8(TRAMONTO_ARANCIO_B, BIANCO_CODA, x);
+      } else {
+        float x = (t - 0.82f) / 0.18f;
+        x = constrain(x, 0.0f, 1.0f);
+        x = x * x * (3.0f - 2.0f * x);
+        uint8_t bianco = interpola8(16, 0, x);
+        tr = bianco;
+        tg = bianco;
+        tb = bianco;
+      }
       break;
     }
 
