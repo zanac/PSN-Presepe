@@ -1019,7 +1019,7 @@
   (gr_text "R14: COM NO NC" (at 286 133.08 90) (layer "F.SilkS") (effects (font (size 0.8 0.8) (thickness 0.12)) (justify)))
   (gr_text "R15: COM NO NC" (at 286 149.08 90) (layer "F.SilkS") (effects (font (size 0.8 0.8) (thickness 0.12)) (justify)))
   (gr_text "R16: COM NO NC" (at 286 165.08 90) (layer "F.SilkS") (effects (font (size 0.8 0.8) (thickness 0.12)) (justify)))
-  (gr_text "RELAY CONTACTS: FLOATING - KEEP SEPARATE FROM SELV" (at 100 25) (layer "F.SilkS") (effects (font (size 0.8 0.8) (thickness 0.14))))
+  (gr_text "RELAY CONTACTS: FLOATING - KEEP SEPARATE FROM SELV" (at 180 25) (layer "F.SilkS") (effects (font (size 0.8 0.8) (thickness 0.14))))
   (gr_text "NO GND PLANE UNDER CONTACT ROUTING" (at 100 28) (layer "F.SilkS") (effects (font (size 0.8 0.8) (thickness 0.12))))
   (footprint "MountingHole_1" (layer "F.Cu") (at 27 27)
     (property "Reference" "H1" (at 0 -4 0) (layer "F.Fab") (effects (font (size 0.8 0.8) (thickness 0.12))))
