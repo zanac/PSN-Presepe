@@ -1,0 +1,111 @@
+name: PCB Autoroute Candidate
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  KICAD9_FOOTPRINT_DIR: /usr/share/kicad/footprints
+
+jobs:
+  autoroute:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install KiCad 9 and Java 25
+        run: |
+          sudo add-apt-repository --yes ppa:kicad/kicad-9.0-releases
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends kicad kicad-footprints curl
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '25'
+
+      - name: Export Specctra DSN with KiCad
+        run: |
+          mkdir -p hardware/pcb/route-candidate
+          python3 - <<'PY'
+          import sys
+          sys.path.append('/usr/lib/python3/dist-packages')
+          import pcbnew
+          src='hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb'
+          out='hardware/pcb/route-candidate/PSN-Presepe-Mega.dsn'
+          b=pcbnew.LoadBoard(src)
+          assert b is not None, 'KiCad failed to load board'
+          assert pcbnew.ExportSpecctraDSN(b,out), 'DSN export failed'
+          print('DSN export OK')
+          PY
+
+      - name: Download pinned Freerouting 2.2.4
+        run: |
+          python3 - <<'PY'
+          import json, urllib.request
+          api='https://api.github.com/repos/freerouting/freerouting/releases/tags/v2.2.4'
+          req=urllib.request.Request(api,headers={'User-Agent':'PSN-Presepe-CI'})
+          data=json.load(urllib.request.urlopen(req))
+          assets=[a for a in data['assets'] if a['name'].endswith('.jar') and 'sources' not in a['name'] and 'javadoc' not in a['name']]
+          assert assets, 'No executable JAR in Freerouting v2.2.4 release'
+          a=assets[0]
+          print('Downloading',a['name'])
+          urllib.request.urlretrieve(a['browser_download_url'],'hardware/pcb/route-candidate/freerouting.jar')
+          PY
+
+      - name: Autoroute
+        run: |
+          java -jar hardware/pcb/route-candidate/freerouting.jar \
+            --gui.enabled=false -da -dct 0 -mp 200 \
+            -de hardware/pcb/route-candidate/PSN-Presepe-Mega.dsn \
+            -do hardware/pcb/route-candidate/PSN-Presepe-Mega.ses
+
+      - name: Import SES into candidate board
+        run: |
+          cp hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb hardware/pcb/route-candidate/PSN-Presepe-Mega-routed.kicad_pcb
+          python3 - <<'PY'
+          import sys
+          sys.path.append('/usr/lib/python3/dist-packages')
+          import pcbnew
+          boardfile='hardware/pcb/route-candidate/PSN-Presepe-Mega-routed.kicad_pcb'
+          ses='hardware/pcb/route-candidate/PSN-Presepe-Mega.ses'
+          b=pcbnew.LoadBoard(boardfile)
+          assert b is not None
+          assert pcbnew.ImportSpecctraSES(b,ses), 'SES import failed'
+          assert pcbnew.SaveBoard(boardfile,b), 'Candidate save failed'
+          print('SES import/save OK')
+          PY
+
+      - name: KiCad DRC on routed candidate
+        id: drc
+        continue-on-error: true
+        run: |
+          kicad-cli pcb drc --exit-code-violations \
+            --output hardware/pcb/route-candidate/drc-routed.txt \
+            hardware/pcb/route-candidate/PSN-Presepe-Mega-routed.kicad_pcb
+
+      - name: Candidate statistics
+        if: always()
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('hardware/pcb/route-candidate/PSN-Presepe-Mega-routed.kicad_pcb')
+          if p.exists():
+              s=p.read_text()
+              print('segments',s.count('(segment '))
+              print('vias',s.count('(via '))
+          r=Path('hardware/pcb/route-candidate/drc-routed.txt')
+          if r.exists():
+              for line in r.read_text().splitlines():
+                  if 'Found ' in line:
+                      print(line)
+          PY
+
+      - name: Upload autoroute candidate
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: PSN-Presepe-RevA-Autoroute-Candidate
+          path: hardware/pcb/route-candidate/
