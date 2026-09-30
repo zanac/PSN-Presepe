@@ -63,6 +63,8 @@ jobs:
           head=src[:first]
           tail=src[tail_start:]
           print('pcbnew',pcbnew.GetBuildVersion(),'footprints',len(fps),'tail',len(tail))
+          for name in ('F_Cu','B_Cu','B_SilkS','F_SilkS','Dwgs_User','Edge_Cuts','B_CrtYd','F_CrtYd','B_Fab','F_Fab'):
+              print('LAYER_ID',name,getattr(pcbnew,name,None))
 
           def test(n):
               p=Path('/tmp/probe.kicad_pcb')
