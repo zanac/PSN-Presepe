@@ -3,9 +3,7 @@
 > Configurazione funzionale approvata. Non ancora release di produzione.
 
 ## 1. Alimentazione unica
-J1: pin 1 +12V_IN, pin 2 GND.
-+12V_IN -> F_MAIN/protezione -> +12V_BUS.
-+12V_BUS alimenta RGB, STELLE, CASETTE, bobine relè e VIN del Mega. Il pin 5V del Mega NON riceve 12 V; +5V_MEGA è un'uscita logica usata per OLED/B10K.
+J1: pin 1 +12V, pin 2 GND.\nNella Rev A corrente il +12V di J1 alimenta direttamente RGB, STELLE, CASETTE, bobine relè e VIN del Mega. Il pin 5V del Mega NON riceve 12 V; +5V_MEGA alimenta soltanto OLED/B10K.\n\nLa Rev A corrente non include fusibile o protezione d'ingresso onboard: aggiungerli richiede una revisione esplicita del progetto.
 
 ## 2. MOSFET RGB x9
 PWM Mega -> 100R -> gate IRLZ44N; 100k gate-GND; source GND; drain ritorno R/G/B.
