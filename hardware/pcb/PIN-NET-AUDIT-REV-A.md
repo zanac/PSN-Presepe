@@ -91,83 +91,51 @@ Generated from `PSN-Presepe-Mega.kicad_pcb` on branch `dev`. This is an audit/re
 | JR16 | COM_NO_NC | 2 | R16_NO |
 | JR16 | COM_NO_NC | 3 | R16_NC |
 | K1 | G5Q-1_DC12 | 1 | +12V |
-| K1 | G5Q-1_DC12 | 2 | R1_NC |
-| K1 | G5Q-1_DC12 | 3 | R1_COM |
 | K1 | G5Q-1_DC12 | 4 | R1_NO |
 | K1 | G5Q-1_DC12 | 5 | RELAY1_COIL_LOW |
 | K2 | G5Q-1_DC12 | 1 | +12V |
-| K2 | G5Q-1_DC12 | 2 | R2_NC |
-| K2 | G5Q-1_DC12 | 3 | R2_COM |
 | K2 | G5Q-1_DC12 | 4 | R2_NO |
 | K2 | G5Q-1_DC12 | 5 | RELAY2_COIL_LOW |
 | K3 | G5Q-1_DC12 | 1 | +12V |
-| K3 | G5Q-1_DC12 | 2 | R3_NC |
-| K3 | G5Q-1_DC12 | 3 | R3_COM |
 | K3 | G5Q-1_DC12 | 4 | R3_NO |
 | K3 | G5Q-1_DC12 | 5 | RELAY3_COIL_LOW |
 | K4 | G5Q-1_DC12 | 1 | +12V |
-| K4 | G5Q-1_DC12 | 2 | R4_NC |
-| K4 | G5Q-1_DC12 | 3 | R4_COM |
 | K4 | G5Q-1_DC12 | 4 | R4_NO |
 | K4 | G5Q-1_DC12 | 5 | RELAY4_COIL_LOW |
 | K5 | G5Q-1_DC12 | 1 | +12V |
-| K5 | G5Q-1_DC12 | 2 | R5_NC |
-| K5 | G5Q-1_DC12 | 3 | R5_COM |
 | K5 | G5Q-1_DC12 | 4 | R5_NO |
 | K5 | G5Q-1_DC12 | 5 | RELAY5_COIL_LOW |
 | K6 | G5Q-1_DC12 | 1 | +12V |
-| K6 | G5Q-1_DC12 | 2 | R6_NC |
-| K6 | G5Q-1_DC12 | 3 | R6_COM |
 | K6 | G5Q-1_DC12 | 4 | R6_NO |
 | K6 | G5Q-1_DC12 | 5 | RELAY6_COIL_LOW |
 | K7 | G5Q-1_DC12 | 1 | +12V |
-| K7 | G5Q-1_DC12 | 2 | R7_NC |
-| K7 | G5Q-1_DC12 | 3 | R7_COM |
 | K7 | G5Q-1_DC12 | 4 | R7_NO |
 | K7 | G5Q-1_DC12 | 5 | RELAY7_COIL_LOW |
 | K8 | G5Q-1_DC12 | 1 | +12V |
-| K8 | G5Q-1_DC12 | 2 | R8_NC |
-| K8 | G5Q-1_DC12 | 3 | R8_COM |
 | K8 | G5Q-1_DC12 | 4 | R8_NO |
 | K8 | G5Q-1_DC12 | 5 | RELAY8_COIL_LOW |
 | K9 | G5Q-1_DC12 | 1 | +12V |
-| K9 | G5Q-1_DC12 | 2 | R9_NC |
-| K9 | G5Q-1_DC12 | 3 | R9_COM |
 | K9 | G5Q-1_DC12 | 4 | R9_NO |
 | K9 | G5Q-1_DC12 | 5 | RELAY9_COIL_LOW |
 | K10 | G5Q-1_DC12 | 1 | +12V |
-| K10 | G5Q-1_DC12 | 2 | R10_NC |
-| K10 | G5Q-1_DC12 | 3 | R10_COM |
 | K10 | G5Q-1_DC12 | 4 | R10_NO |
 | K10 | G5Q-1_DC12 | 5 | RELAY10_COIL_LOW |
 | K11 | G5Q-1_DC12 | 1 | +12V |
-| K11 | G5Q-1_DC12 | 2 | R11_NC |
-| K11 | G5Q-1_DC12 | 3 | R11_COM |
 | K11 | G5Q-1_DC12 | 4 | R11_NO |
 | K11 | G5Q-1_DC12 | 5 | RELAY11_COIL_LOW |
 | K12 | G5Q-1_DC12 | 1 | +12V |
-| K12 | G5Q-1_DC12 | 2 | R12_NC |
-| K12 | G5Q-1_DC12 | 3 | R12_COM |
 | K12 | G5Q-1_DC12 | 4 | R12_NO |
 | K12 | G5Q-1_DC12 | 5 | RELAY12_COIL_LOW |
 | K13 | G5Q-1_DC12 | 1 | +12V |
-| K13 | G5Q-1_DC12 | 2 | R13_NC |
-| K13 | G5Q-1_DC12 | 3 | R13_COM |
 | K13 | G5Q-1_DC12 | 4 | R13_NO |
 | K13 | G5Q-1_DC12 | 5 | RELAY13_COIL_LOW |
 | K14 | G5Q-1_DC12 | 1 | +12V |
-| K14 | G5Q-1_DC12 | 2 | R14_NC |
-| K14 | G5Q-1_DC12 | 3 | R14_COM |
 | K14 | G5Q-1_DC12 | 4 | R14_NO |
 | K14 | G5Q-1_DC12 | 5 | RELAY14_COIL_LOW |
 | K15 | G5Q-1_DC12 | 1 | +12V |
-| K15 | G5Q-1_DC12 | 2 | R15_NC |
-| K15 | G5Q-1_DC12 | 3 | R15_COM |
 | K15 | G5Q-1_DC12 | 4 | R15_NO |
 | K15 | G5Q-1_DC12 | 5 | RELAY15_COIL_LOW |
 | K16 | G5Q-1_DC12 | 1 | +12V |
-| K16 | G5Q-1_DC12 | 2 | R16_NC |
-| K16 | G5Q-1_DC12 | 3 | R16_COM |
 | K16 | G5Q-1_DC12 | 4 | R16_NO |
 | K16 | G5Q-1_DC12 | 5 | RELAY16_COIL_LOW |
 | MCU1 | Arduino Mega 2560 R3 | 5V1 | +5V_MEGA |
@@ -317,6 +285,9 @@ Generated from `PSN-Presepe-Mega.kicad_pcb` on branch `dev`. This is an audit/re
 | U2 | ULN2803C | 16 | RELAY11_COIL_LOW |
 | U2 | ULN2803C | 17 | RELAY10_COIL_LOW |
 | U2 | ULN2803C | 18 | RELAY9_COIL_LOW |
+
+## Relay contact convention
+For Omron G5Q-1 SPDT: pads 1/5 = coil, pad 2 = COM, pad 3 = NC, pad 4 = NO. Geometry follows the manufacturer bottom-view PCB mounting-hole drawing.
 
 ## Notes
 - Pads without a net are intentionally omitted from the table.
