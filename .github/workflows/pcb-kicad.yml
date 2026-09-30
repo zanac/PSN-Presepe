@@ -1,0 +1,59 @@
+name: PCB KiCad Validation
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [dev]
+    paths:
+      - "hardware/pcb/**"
+      - ".github/workflows/pcb-kicad.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  validate-pcb:
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install KiCad CLI
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y kicad
+          kicad-cli version
+
+      - name: PCB DRC
+        run: |
+          mkdir -p hardware/pcb/build
+          kicad-cli pcb drc             --exit-code-violations             --output hardware/pcb/build/drc-report.txt             hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb
+
+      - name: Export Gerbers
+        if: success()
+        run: |
+          mkdir -p hardware/pcb/build/gerbers
+          kicad-cli pcb gerbers             --output hardware/pcb/build/gerbers/             --layers F.Cu,B.Cu,F.Silkscreen,B.Silkscreen,F.Mask,B.Mask,Edge.Cuts             hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb
+          kicad-cli pcb drill             --output hardware/pcb/build/gerbers/             --format excellon             --generate-map             hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb
+
+      - name: Package fabrication preview
+        if: success()
+        run: |
+          cd hardware/pcb/build/gerbers
+          zip -9 ../PSN-Presepe-RevA-Gerber-DRAFT.zip ./*
+
+      - name: Upload DRC report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: PCB-DRC-report
+          path: hardware/pcb/build/drc-report.txt
+          if-no-files-found: warn
+
+      - name: Upload draft Gerbers
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: PSN-Presepe-RevA-Gerber-DRAFT
+          path: hardware/pcb/build/PSN-Presepe-RevA-Gerber-DRAFT.zip
