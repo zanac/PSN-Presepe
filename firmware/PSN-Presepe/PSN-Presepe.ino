@@ -958,9 +958,9 @@ void aggiornaScena(float p) {
         const uint8_t ALBA_CHIARA_R = 18;
         const uint8_t ALBA_CHIARA_G = 12;
         const uint8_t ALBA_CHIARA_B = 5;
-        const uint8_t ALBA_ARANCIO_R = 205;
-        const uint8_t ALBA_ARANCIO_G = 105;
-        const uint8_t ALBA_ARANCIO_B = 28;
+        const uint8_t ALBA_ARANCIO_R = 155;
+        const uint8_t ALBA_ARANCIO_G = 78;
+        const uint8_t ALBA_ARANCIO_B = 22;
 
         if (t < 0.38f) {
           float x = t / 0.38f;
@@ -969,11 +969,19 @@ void aggiornaScena(float p) {
           ag = interpola8(ALBA_CHIARA_G, ALBA_ARANCIO_G, x);
           ab = interpola8(ALBA_CHIARA_B, ALBA_ARANCIO_B, x);
         } else {
-          float x = (t - 0.38f) / 0.62f;
-          x = x * x * (3.0f - 2.0f * x);
-          ar = interpola8(ALBA_ARANCIO_R, 0, x);
-          ag = interpola8(ALBA_ARANCIO_G, 0, x);
-          ab = interpola8(ALBA_ARANCIO_B, 0, x);
+          // Nella coda il rosso termina prima (al 92% della fase);
+          // verde e blu continuano invece fino alla fine dell'ALBA.
+          float xGB = (t - 0.38f) / 0.62f;
+          xGB = constrain(xGB, 0.0f, 1.0f);
+          xGB = xGB * xGB * (3.0f - 2.0f * xGB);
+
+          float xR = (t - 0.38f) / (0.92f - 0.38f);
+          xR = constrain(xR, 0.0f, 1.0f);
+          xR = xR * xR * (3.0f - 2.0f * xR);
+
+          ar = interpola8(ALBA_ARANCIO_R, 0, xR);
+          ag = interpola8(ALBA_ARANCIO_G, 0, xGB);
+          ab = interpola8(ALBA_ARANCIO_B, 0, xGB);
         }
       }
       break;
