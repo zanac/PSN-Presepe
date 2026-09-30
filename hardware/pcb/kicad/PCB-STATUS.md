@@ -62,6 +62,16 @@ Final enclosure/standoff fit still requires physical/mechanical review.
 - all firmware-required Mega pins are assigned;
 - 46 unassigned Mega pads are intentionally unused headers/functions.
 
+## Project portability
+The project-local `PSN_Presep_Custom.pretty` library now contains every footprint referenced with the `PSN_Presep_Custom:` prefix in the PCB, including ULN2803 and all dedicated terminal blocks.
+
+A project-local `fp-lib-table` registers that library through `${KIPRJMOD}`, so opening the project does not depend on a separately installed custom footprint library.
+
+Audit result:
+- 14 custom footprint names used by the PCB;
+- 14 corresponding library footprint files present;
+- no board-specific net assignments retained in the extracted library footprints.
+
 ## Fabrication status
 **DRAFT — NOT FOR FABRICATION.**
 
