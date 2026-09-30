@@ -950,28 +950,31 @@ void aggiornaScena(float p) {
       float tStelle = t * t * (3.0f - 2.0f * t);
       livelloStelle = interpola8(235, 0, tStelle);
 
-      // Alba direzionale dalla striscia destra: raggiunge presto il massimo
-      // rosso caldo e lo mantiene piu' a lungo. La discesa e' ritardata e
-      // rallentata, cosi' la coda rossastra resta visibile piu' a lungo
-      // prima di spegnersi dolcemente al passaggio ALBA -> GIORNO.
+      // Alba direzionale dalla striscia destra.
+      // Parte con pochissima luce, ma gia' di tonalita' chiara e calda;
+      // cresce verso un arancio chiaro e poi si dissolve lentamente fino
+      // allo spegnimento completo. CIELO e TRAMONTO restano indipendenti.
       {
-        float arco;
-        if (t < 0.30f) {
-          float x = t / 0.30f;
+        const uint8_t ALBA_CHIARA_R = 18;
+        const uint8_t ALBA_CHIARA_G = 12;
+        const uint8_t ALBA_CHIARA_B = 5;
+        const uint8_t ALBA_ARANCIO_R = 205;
+        const uint8_t ALBA_ARANCIO_G = 105;
+        const uint8_t ALBA_ARANCIO_B = 28;
+
+        if (t < 0.38f) {
+          float x = t / 0.38f;
           x = x * x * (3.0f - 2.0f * x);
-          arco = x;
-        } else if (t < 0.65f) {
-          arco = 1.0f;
+          ar = interpola8(ALBA_CHIARA_R, ALBA_ARANCIO_R, x);
+          ag = interpola8(ALBA_CHIARA_G, ALBA_ARANCIO_G, x);
+          ab = interpola8(ALBA_CHIARA_B, ALBA_ARANCIO_B, x);
         } else {
-          float x = (t - 0.65f) / 0.35f;
+          float x = (t - 0.38f) / 0.62f;
           x = x * x * (3.0f - 2.0f * x);
-          arco = 1.0f - x;
+          ar = interpola8(ALBA_ARANCIO_R, 0, x);
+          ag = interpola8(ALBA_ARANCIO_G, 0, x);
+          ab = interpola8(ALBA_ARANCIO_B, 0, x);
         }
-        // ALBA e' spenta fuori dalla propria fase. Durante la fase
-        // usa un arco diretto 0 -> rosso caldo -> 0.
-        ar = (uint8_t)(190.0f * arco);
-        ag = (uint8_t)(20.0f * arco);
-        ab = 0;
       }
       break;
     }
