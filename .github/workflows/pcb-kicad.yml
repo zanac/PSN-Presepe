@@ -36,12 +36,10 @@ jobs:
           sudo apt-get install -y --no-install-recommends kicad kicad-footprints
           kicad-cli version
 
-      - name: PCB DRC
-        id: drc
-        continue-on-error: true
+      - name: PCB DRC full report
         run: |
           mkdir -p hardware/pcb/build
-          kicad-cli pcb drc --exit-code-violations \
+          kicad-cli pcb drc --severity-all \
             --output hardware/pcb/build/drc-report.txt \
             hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb
 
@@ -49,9 +47,11 @@ jobs:
         if: always()
         run: python3 hardware/pcb/tools/drc_summary.py hardware/pcb/build/drc-report.txt
 
-      - name: Enforce DRC
-        if: steps.drc.outcome == 'failure'
-        run: exit 1
+      - name: PCB DRC error gate
+        run: |
+          kicad-cli pcb drc --severity-error --exit-code-violations \
+            --output hardware/pcb/build/drc-errors.txt \
+            hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb
 
       - name: Export Gerbers and drill
         if: success()
@@ -77,7 +77,9 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: PCB-DRC-report
-          path: hardware/pcb/build/drc-report.txt
+          path: |
+            hardware/pcb/build/drc-report.txt
+            hardware/pcb/build/drc-errors.txt
           if-no-files-found: warn
 
       - name: Upload draft Gerbers
