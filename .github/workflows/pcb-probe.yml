@@ -21,19 +21,70 @@ jobs:
           sudo add-apt-repository --yes ppa:kicad/kicad-9.0-releases
           sudo apt-get update
           sudo apt-get install -y kicad python3-wxgtk4.0
-      - name: Load through pcbnew Python API
+      - name: Bisect board parser
         run: |
-          python3 - <<'PY'
-          import sys
+          cat > /tmp/probe.py <<'PY'
+          import sys,re
+          from pathlib import Path
           sys.path.append('/usr/lib/python3/dist-packages')
           import pcbnew
-          p='hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb'
-          print('pcbnew', pcbnew.GetBuildVersion())
-          try:
-              b=pcbnew.LoadBoard(p)
-              print('LOAD_OK', b.GetFileName())
-          except Exception as e:
-              import traceback
-              traceback.print_exc()
-              raise
+          src=Path('hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb').read_text()
+
+          def blocks(s, token):
+              out=[]; pos=0
+              while True:
+                  i=s.find(token,pos)
+                  if i<0: break
+                  d=0; q=False; esc=False; j=i
+                  while j<len(s):
+                      ch=s[j]
+                      if q:
+                          if esc: esc=False
+                          elif ch=='\\': esc=True
+                          elif ch=='"': q=False
+                      else:
+                          if ch=='"': q=True
+                          elif ch=='(': d+=1
+                          elif ch==')':
+                              d-=1
+                              if d==0:
+                                  j+=1; break
+                      j+=1
+                  out.append((i,j,s[i:j])); pos=j
+              return out
+
+          fps=blocks(src,'  (footprint ')
+          graphics=[]
+          for tok in ('  (gr_rect ','  (gr_text ','  (gr_line ','  (gr_arc ','  (gr_circle '):
+              graphics += blocks(src,tok)
+          graphics.sort()
+          first=fps[0][0]
+          tail_start=min([x[0] for x in graphics], default=src.rfind(')'))
+          head=src[:first]
+          tail=src[tail_start:]
+          print('pcbnew',pcbnew.GetBuildVersion(),'footprints',len(fps),'tail',len(tail))
+
+          def test(n):
+              p=Path('/tmp/probe.kicad_pcb')
+              p.write_text(head+''.join(x[2] for x in fps[:n])+tail)
+              b=pcbnew.LoadBoard(str(p))
+              return b is not None
+
+          print('head_only',test(0))
+          lo,hi=0,len(fps)
+          if test(hi):
+              print('FULL_LOAD_OK')
+              raise SystemExit(0)
+          while lo+1<hi:
+              mid=(lo+hi)//2
+              ok=test(mid)
+              print('prefix',mid,'OK' if ok else 'FAIL')
+              if ok: lo=mid
+              else: hi=mid
+          bad=fps[hi-1][2]
+          m=re.search(r'\(property "Reference" "([^"]+)"',bad)
+          print('FIRST_BAD_INDEX',hi,'REF',m.group(1) if m else '?')
+          print(bad[:1200])
+          raise SystemExit(1)
           PY
+          python3 /tmp/probe.py
