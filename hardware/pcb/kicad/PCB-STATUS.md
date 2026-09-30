@@ -100,6 +100,19 @@ Remaining categories are expected/unresolved work:
 
 This is a major validation checkpoint but **not fabrication approval**. Routing, final isolation strategy, silkscreen cleanup, library parity, final DRC and Gerber inspection are still required.
 
+## Latest real DRC checkpoint
+
+On KiCad 9.0.9 the board parses completely. The latest checked report after the relay-footprint and silkscreen cleanup has:
+- **0 shorting-items**;
+- **0 electrical-clearance violations**;
+- **0 hole-clearance violations**;
+- **0 solder-mask-bridge violations**;
+- 66 `lib_footprint_mismatch` warnings, caused by embedded/minimal footprint copies differing from library definitions;
+- one board-level silkscreen overlap, subsequently corrected in commit `a7ab5dcac050ec48d6e6e1a0c57af99e09669a67`;
+- **194 unconnected-item records**, expected because routing is intentionally still zero.
+
+The library-mismatch warnings must be cleaned up before fabrication, but they are not electrical shorts. The 194 unconnected records are not waived: completing and validating routing is the next major PCB task.
+
 ## KiCad 9 parser validation
 - KiCad 9.0.9 now loads the complete PCB successfully (`FULL_LOAD_OK`).
 - Board layer IDs were corrected to KiCad 9 canonical IDs.
