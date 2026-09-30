@@ -79,6 +79,49 @@ jobs:
           b=pcbnew.LoadBoard(boardfile)
           assert b is not None
           assert pcbnew.ImportSpecctraSES(b,ses), 'SES import failed'
+          import re
+          protected = re.compile(r'^R\\d+_(?:COM|NO|NC)          PY
+
+      - name: KiCad DRC on routed candidate
+        id: drc
+        continue-on-error: true
+        run: |
+          kicad-cli pcb drc --exit-code-violations \
+            --output hardware/pcb/route-candidate/drc-routed.txt \
+            hardware/pcb/route-candidate/PSN-Presepe-Mega-routed.kicad_pcb
+
+      - name: Candidate statistics
+        if: always()
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('hardware/pcb/route-candidate/PSN-Presepe-Mega-routed.kicad_pcb')
+          if p.exists():
+              s=p.read_text()
+              print('segments',s.count('(segment'))
+              print('vias',s.count('(via'))
+          r=Path('hardware/pcb/route-candidate/drc-routed.txt')
+          if r.exists():
+              for line in r.read_text().splitlines():
+                  if 'Found ' in line:
+                      print(line)
+          PY
+
+      - name: Upload autoroute candidate
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: PSN-Presepe-RevA-Autoroute-Candidate
+          path: hardware/pcb/route-candidate/
+)
+          power = {'+12V', 'GND', '+5V_MEGA'}
+          removed = 0
+          for item in list(b.GetTracks()):
+              net = item.GetNetname()
+              if protected.fullmatch(net) or net in power:
+                  b.Remove(item)
+                  removed += 1
+          print('Removed protected/power routing items:', removed)
           assert pcbnew.SaveBoard(boardfile,b), 'Candidate save failed'
           print('SES import/save OK')
           PY
