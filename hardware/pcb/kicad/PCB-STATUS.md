@@ -25,6 +25,13 @@
 
 A geometric audit of the earlier text-generated draft routing found same-layer crossings between different nets. Those segments were removed rather than presenting an unsafe or unroutable board as complete.
 
+Preliminary net classes are now stored in the KiCad project:
+- Default signal: 0.30 mm track / 0.25 mm clearance;
+- SELV_POWER: 1.00 mm track / 0.30 mm clearance;
+- RELAY_CONTACT: 1.00 mm track / **1.00 mm preliminary clearance**.
+
+The 1.00 mm relay-contact clearance is only a routing placeholder, **not a declaration of 230 V safety compliance**. Final creepage/clearance must be chosen and verified for the actual installation, pollution degree, material and applicable standard.
+
 Final routing must be performed/checked in KiCad with real interactive routing and DRC. In particular:
 - SELV and relay-contact routing must remain physically separated;
 - no SELV GND plane is allowed under the relay-contact routing area;
@@ -43,9 +50,7 @@ Small connection labels are present near every terminal group:
 The final KiCad review must confirm that every label follows the actual terminal wire-entry orientation and does not overlap pads/courtyards.
 
 ## Mechanical mounting
-Six 3.2 mm NPTH mounting holes are present:
-- four near the board corners;
-- two intermediate supports near x=135 mm on the top/bottom edges.
+Six 3.2 mm NPTH mounting holes are present. Their positions were mechanically rechecked after placement; the simplified center-distance audit reports no other footprint center within 10 mm. Final courtyard/enclosure fit still requires KiCad/physical review.
 
 Final enclosure/standoff fit still requires physical/mechanical review.
 
