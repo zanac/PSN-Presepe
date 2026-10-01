@@ -298,3 +298,16 @@ Experiments:
 
 Generator restored to exact best original K16 in `ed4133fbc21dc006f5b7495b5ae489fb1ab66aa2`.
 Next: inspect residual crossing from artifact `11155458843` (direct K14 pad escape-left variant) and compare with original artifact `11154883351`; design K14 sidestep endpoints around the actual conflicting B.Cu segment rather than guessing coordinates. Do not disturb proven K16 lower backbone y=158.
+
+## K16 promoted — second relay coil-low bank complete — 2026-10-01 13:22 CEST
+
+- Exact residual sidestep crossing from artifact `11155458843`: K16 B.Cu vertical x=141 (start 141,112, length 46) vs K14 B.Cu horizontal re-entry at y=124 from x=139.5 to x=143.5.
+- K14 F.Cu bridge experiment `1b698c15...` proved the only new conflict was K11 F.Cu x=140 vs K14 bridge/via at x=139.5,y=124 (artifact `11156733356`).
+- Local K11/net46 F.Cu sidestep x=137 between y=120..130 freed the K14 bridge without disturbing its validated endpoints.
+- Final candidate `4a546032d55f9b2b6dfa7e99aa6693296c8b1ee8`, Route Candidate run `36854584445`: **SUCCESS**, 155 -> 154, zero error-severity routing DRC. Evidence artifact `11157941040`.
+- Promoted K11 + K14 + K16 atomically to official PCB: `cb164a2313a735384a2130bd7465fa126bc67088`.
+- Added net51 to source sanity allow-list: `809c4d85e9f84cf219d28b8c448208f1bbcb94de`.
+- Official KiCad Validation run `36854767991`: DRC categories `{'lib_footprint_mismatch': 66, 'unconnected_items': 154}`; **critical geometry/electrical categories none**, error-severity DRC violations none. Gate failure is intentionally only incomplete connectivity; no Gerbers exported.
+- Milestone: **all K1-K16 relay coil-low outputs are now routed and KiCad-validated**.
+
+Next phase is not blind relay-contact routing. Inventory the 154 remaining connections and route low-risk logic/control nets first; power/high-current and relay-contact nets remain a separately reviewed phase. Keep Gerber gate closed until zero real DRC errors + zero unconnected.
