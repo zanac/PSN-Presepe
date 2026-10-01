@@ -15006,7 +15006,7 @@
 	(via (at 116.0 170.5) (size 0.8) (drill 0.4) (layers "F.Cu" "B.Cu") (net 61))
 	(segment (start 116.0 170.5) (end 127.5 170.5) (width 0.4) (layer "F.Cu") (net 61))
 	(segment (start 127.5 170.5) (end 127.5 172.75) (width 0.4) (layer "F.Cu") (net 61))
-	(via (at 127.5 172.75) (size 0.7) (drill 0.3) (layers "F.Cu" "B.Cu") (net 61))
+	(via (at 127.5 172.75) (size 0.6) (drill 0.3) (layers "F.Cu" "B.Cu") (net 61))
 	(segment (start 127.5 172.75) (end 129.5 172.75) (width 0.4) (layer "B.Cu") (net 61))
 	(segment (start 129.5 172.75) (end 129.5 174.0) (width 0.4) (layer "B.Cu") (net 61))
 	(via (at 129.5 174.0) (size 0.8) (drill 0.4) (layers "F.Cu" "B.Cu") (net 61))
