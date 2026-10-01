@@ -59,44 +59,35 @@ jobs:
           byrelay={}
           for net,ps in pads.items():
             if len(ps)==2: byrelay.setdefault(int(net[1:net.index('_')]),[]).append((net,ps))
-          work=base
-          cumulative=[]
+          targets={"R11_NC","R12_NC","R15_NC","R16_COM","R16_NO","R16_NC"}
           for rn,nets in sorted(byrelay.items()):
-            if rn not in {11,12,13,15,16}: continue
-            solved=[]
-            # Route contacts one at a time; each accepted route becomes an obstacle.
-            for net,ps in sorted(nets,key=lambda z:{"COM":0,"NO":1,"NC":2}[z[0].split("_")[1]]):
+            for net,ps in sorted(nets):
+              if net not in targets: continue
               a,b=ps
-              if net in {"R11_COM","R11_NO"}: continue
-              if math.hypot(a[0]-b[0],a[1]-b[1])>180: continue
-              tmp=Path(f"/tmp/R{rn}-{net}.kicad_pcb"); tmp.write_text(work)
-              cmd=["python3","hardware/pcb/tools/grid_router.py",str(tmp),"--net",net,
-                   "--start",f"{a[0]},{a[1]},F.Cu","--goal",f"{b[0]},{b[1]},B.Cu",
-                   "--step","0.5","--clearance","1.6","--margin","55"]
-              p=subprocess.run(cmd,text=True,capture_output=True)
-              if p.returncode: print("NO_ROUTE",rn,net,"RC",p.returncode,"ERR",p.stderr.strip(),"OUT",p.stdout.strip()); continue
-              pts=[]
-              for line in p.stdout.splitlines()[1:]:
-                x,y,la=line.split(","); pts.append((float(x),float(y),la))
-              if pts:
-                # Keep grid path intact and add exact pad stubs on its endpoint layers.
-                pts.insert(0,(a[0],a[1],pts[0][2]))
-                pts.append((b[0],b[1],pts[-1][2]))
-              items=[]
-              for u,v in zip(pts,pts[1:]):
-                if u[2]!=v[2]:
-                  items.append(f'\t(via (at {u[0]} {u[1]}) (size 1.2) (drill 0.6) (layers "F.Cu" "B.Cu") (net {a[2]}))\n')
-                  continue
-                else: items.append(f'\t(segment (start {u[0]} {u[1]}) (end {v[0]} {v[1]}) (width 1.0) (layer "{u[2]}") (net {a[2]}))\n')
-              idx=work.rfind(")"); work=work[:idx]+''.join(items)+work[idx:]
-              # KiCad connectivity needs copper on both sides of every via.
-              # A layer-flip point is represented by a via plus the following
-              # segment; ensure there is also a short approach on the new layer.
-              solved.append(net)
-            if solved:
-              cumulative.extend(solved)
-              Path(f"hardware/pcb/targeted-relays/BATCH_R{rn}.kicad_pcb").write_text(work)
-              print("ASTAR_RELAY",rn,len(solved),solved,"CUMULATIVE",len(cumulative))
+              for sl,gl in [("F.Cu","B.Cu"),("B.Cu","B.Cu"),("F.Cu","F.Cu"),("B.Cu","F.Cu")]:
+                tmp=Path(f"/tmp/{net}-{sl[0]}{gl[0]}.kicad_pcb"); tmp.write_text(base)
+                cmd=["python3","hardware/pcb/tools/grid_router.py",str(tmp),"--net",net,
+                     "--start",f"{a[0]},{a[1]},{sl}","--goal",f"{b[0]},{b[1]},{gl}",
+                     "--step","0.5","--clearance","1.6","--margin","70"]
+                p=subprocess.run(cmd,text=True,capture_output=True)
+                if p.returncode: continue
+                pts=[]
+                for line in p.stdout.splitlines()[1:]:
+                  x,y,la=line.split(","); pts.append((float(x),float(y),la))
+                if pts:
+                  pts.insert(0,(a[0],a[1],pts[0][2])); pts.append((b[0],b[1],pts[-1][2]))
+                items=[]
+                for u,v in zip(pts,pts[1:]):
+                  if u[2]!=v[2]:
+                    # PTH endpoints already bridge layers; do not drill a via inside them.
+                    if math.hypot(u[0]-a[0],u[1]-a[1])<1.0 or math.hypot(u[0]-b[0],u[1]-b[1])<1.0: continue
+                    items.append(f'\\t(via (at {u[0]} {u[1]}) (size 1.2) (drill 0.6) (layers "F.Cu" "B.Cu") (net {a[2]}))\\n')
+                  else:
+                    items.append(f'\\t(segment (start {u[0]} {u[1]}) (end {v[0]} {v[1]}) (width 1.0) (layer "{u[2]}") (net {a[2]}))\\n')
+                work=base; idx=work.rfind(")"); work=work[:idx]+''.join(items)+work[idx:]
+                tag=f"{net}_{sl[0]}{gl[0]}"
+                Path(f"hardware/pcb/targeted-relays/{tag}.kicad_pcb").write_text(work)
+                print("SWEEP",tag,len(pts))
           PY
       - name: DRC all candidates
         run: |
@@ -125,27 +116,6 @@ jobs:
                       if line.startswith('[') and line[1:line.index(']')] in critical:
                           print("DETAIL",p.name,*lines[i:i+5],sep=" | ")
           PY
-      - name: Promote cumulative clean checkpoint R15
-        run: |
-          python3 - <<'PY'
-          from pathlib import Path
-          import sys
-          drc=Path("hardware/pcb/targeted-relays/BATCH_R15.drc.txt").read_text()
-          forbidden={"clearance","shorting_items","hole_clearance","holes_co_located","track_dangling","solder_mask_bridge"}
-          cats={line[1:line.index("]")] for line in drc.splitlines() if line.startswith("[") and "]" in line}
-          u=drc.count("[unconnected_items]")
-          bad=sorted(cats & forbidden)
-          print("PROMOTION_GATE unconnected=",u,"forbidden=",bad or "none")
-          if u != 75 or bad: sys.exit(1)
-          Path("hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb").write_text(Path("hardware/pcb/targeted-relays/BATCH_R15.kicad_pcb").read_text())
-          PY
-          cd "$GITHUB_WORKSPACE"
-          git config --global --add safe.directory "$GITHUB_WORKSPACE"
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb
-          git commit -m "Promote 75-unconnected relay contact checkpoint"
-          git push origin HEAD:dev
       - uses: actions/upload-artifact@v4
         with:
           name: targeted-relay-contact-candidate
