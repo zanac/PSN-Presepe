@@ -1,0 +1,34 @@
+name: Promote Validated Autoroute
+on:
+  push:
+    branches: [dev]
+    paths: [".github/workflows/promote-validated-autoroute.yml"]
+permissions:
+  contents: write
+  actions: read
+jobs:
+  promote:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: dev
+      - name: Download validated artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: pcb-autoroute-candidate
+          repository: zanac/PSN-Presepe
+          run-id: 36887424491
+          github-token: ${{ github.token }}
+          path: /tmp/autoroute
+      - name: Verify and promote exact validated board
+        run: |
+          set -euo pipefail
+          test "$(sha256sum /tmp/autoroute/PSN-Presepe-Mega-routed.kicad_pcb | awk '{print $1}')" = "3ce746c00ecc35249875598cf0884ee37483e55b800c15f0a845b2adaf80fcee"
+          grep -q "Found 122 unconnected pads" /tmp/autoroute/drc-routed.txt
+          cp /tmp/autoroute/PSN-Presepe-Mega-routed.kicad_pcb hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb
+          git commit -m "Promote validated 27-connection autoroute batch"
+          git push origin HEAD:dev
