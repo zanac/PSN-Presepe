@@ -72,9 +72,8 @@ jobs:
               print(p.name,"unconnected=",u,"critical=",critical or "none")
               for cat in critical:
                   blocks=re.findall(r'\\['+re.escape(cat)+r'\\][\\s\\S]*?(?=\\n\\[|\\Z)',t)
-                  for b in blocks[:8]:
-                      pts=re.findall(r'@(\\d+(?:\\.\\d+)?) mm, (\\d+(?:\\.\\d+)?) mm',b)
-                      print(" ",cat,pts[:4],b.splitlines()[1:3])
+                  for b in blocks[:12]:
+                      print("DETAIL",p.name,cat,repr(b[:700]))
           PY
       - uses: actions/upload-artifact@v4
         with:
