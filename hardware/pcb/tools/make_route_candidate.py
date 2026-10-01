@@ -15,14 +15,14 @@ print(f"Baseline segments: {baseline_segments}")
 
 # U2 pad16 = (145.16,97.08)
 # K11 pad5 with footprint rotation 90 deg = (193.62,115.00)
-# Avoid existing x=128.5 F.Cu and x=130.5 B.Cu backbones: escape right of U2/K9, drop on B.Cu at x=152, then use y=132 below relay row.
+# Move layer transition beyond K9: F.Cu escape above relay row, via at x=162, then B.Cu below row at y=134.
 parts=[
-'  (segment (start 145.16 97.08) (end 150.5 97.08) (width 0.3) (layer "F.Cu") (net 46))',
-'  (segment (start 150.5 97.08) (end 152.0 99.0) (width 0.3) (layer "F.Cu") (net 46))',
-'  (via (at 152.0 99.0) (size 0.8) (drill 0.4) (layers "F.Cu" "B.Cu") (net 46))',
-'  (segment (start 152.0 99.0) (end 152.0 132.0) (width 0.3) (layer "B.Cu") (net 46))',
-'  (segment (start 152.0 132.0) (end 193.62 132.0) (width 0.3) (layer "B.Cu") (net 46))',
-'  (segment (start 193.62 132.0) (end 193.62 115.0) (width 0.3) (layer "B.Cu") (net 46))',
+'  (segment (start 145.16 97.08) (end 149.0 99.5) (width 0.3) (layer "F.Cu") (net 46))',
+'  (segment (start 149.0 99.5) (end 162.0 99.5) (width 0.3) (layer "F.Cu") (net 46))',
+'  (via (at 162.0 99.5) (size 0.8) (drill 0.4) (layers "F.Cu" "B.Cu") (net 46))',
+'  (segment (start 162.0 99.5) (end 162.0 134.0) (width 0.3) (layer "B.Cu") (net 46))',
+'  (segment (start 162.0 134.0) (end 193.62 134.0) (width 0.3) (layer "B.Cu") (net 46))',
+'  (segment (start 193.62 134.0) (end 193.62 115.0) (width 0.3) (layer "B.Cu") (net 46))',
 ]
 edge=s.find("  (gr_rect "); assert edge>0
 s=s[:edge]+"\n".join(parts)+"\n"+s[edge:]
