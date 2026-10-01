@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Temporary DRC candidate: route only RELAY11_COIL_LOW (U2.16 -> K11.5).
+"""Temporary DRC candidate: route only RELAY12_COIL_LOW (U2.15 -> K12.5).
 
 The official PCB remains untouched. Promote this route only after the candidate
 has zero error-severity DRC violations and reduces the unconnected count by one.
@@ -10,21 +10,21 @@ src=Path(sys.argv[1]); dst=Path(sys.argv[2])
 s=src.read_text(encoding="utf-8")
 baseline_segments=s.count("(segment ")
 assert baseline_segments >= 93, f"Unexpected routing regression: only {baseline_segments} baseline segments"
-assert not any("(net 46)" in ln for ln in s.splitlines() if "(segment " in ln), "RELAY11_COIL_LOW is already routed in baseline"
+assert not any("(net 47)" in ln for ln in s.splitlines() if "(segment " in ln), "RELAY12_COIL_LOW is already routed in baseline"
 print(f"Baseline segments: {baseline_segments}")
 
-# U2 pad16 = (145.16,97.08)
-# K11 pad5 with footprint rotation 90 deg = (193.62,115.00)
-# DRC-guided: escape left of K9's x=147.5 F.Cu vertical, via at x=143.5 (clear of U2 pad column and x=130.5 backbone), then B.Cu down to y=134.
+# U2 pad15 = (145.16,99.62)
+# K12 pad5 with footprint rotation 90 deg = (211.62,115.00)
+# K12 starts from validated K11 topology with a staggered via/x/y corridor to preserve clearance.
 parts=[
-'  (segment (start 145.16 97.08) (end 143.5 99.0) (width 0.3) (layer "F.Cu") (net 46))',
-'  (via (at 143.5 99.0) (size 0.8) (drill 0.4) (layers "F.Cu" "B.Cu") (net 46))',
-'  (segment (start 143.5 99.0) (end 143.5 134.0) (width 0.3) (layer "B.Cu") (net 46))',
-'  (segment (start 143.5 134.0) (end 193.62 134.0) (width 0.3) (layer "B.Cu") (net 46))',
-'  (segment (start 193.62 134.0) (end 193.62 115.0) (width 0.3) (layer "B.Cu") (net 46))',
+'  (segment (start 145.16 99.62) (end 143.0 101.5) (width 0.3) (layer "F.Cu") (net 47))',
+'  (via (at 143.0 101.5) (size 0.8) (drill 0.4) (layers "F.Cu" "B.Cu") (net 47))',
+'  (segment (start 143.0 101.5) (end 143.0 136.0) (width 0.3) (layer "B.Cu") (net 47))',
+'  (segment (start 143.0 136.0) (end 211.62 136.0) (width 0.3) (layer "B.Cu") (net 47))',
+'  (segment (start 211.62 136.0) (end 211.62 115.0) (width 0.3) (layer "B.Cu") (net 47))',
 ]
 edge=s.find("  (gr_rect "); assert edge>0
 s=s[:edge]+"\n".join(parts)+"\n"+s[edge:]
 dst.parent.mkdir(parents=True,exist_ok=True)
 dst.write_text(s,encoding="utf-8")
-print("Added RELAY11_COIL_LOW candidate: U2.16 -> K11.5")
+print("Added RELAY12_COIL_LOW candidate: U2.15 -> K12.5")
