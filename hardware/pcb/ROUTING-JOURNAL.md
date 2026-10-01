@@ -325,3 +325,11 @@ Probes:
 - D40 lower direct `96b9ecd3...`: 154->153 but hole-clearance + short + mask + crossing near MCU corridor.
 
 Conclusion: D25-D40 should be designed as coordinated 8-wire fanout banks, not independent point routes. Next action: map existing copper/through-hole obstacles around MCU x=118..136,y=44..112 and choose parallel fanout channels, then candidate a small 2-4 net bundle before promoting. Generator restored to D25 baseline in `8c099ae9a83cd995c3144e2a6d322096148466c2`; this is only a reproducible probe, not a promotion candidate.
+
+## Relay-input fanout: D25/D26 promoted — 2026-10-01 13:55 CEST
+
+- Copper map exposed two existing walls between MCU and ULN: net16/D22_START on F.Cu around x=128.5 and net17/D23_NEXT on B.Cu around x=130.5. Correct fanout topology is B.Cu from MCU across the F.Cu wall, via in the narrow inter-wall channel, then F.Cu across the B.Cu wall.
+- D25/net20: first cross-layer candidate `5029ffc8...` had only C2 GND collision (F.Cu x=132.5). Bypass C2 right produced clean candidate `c38f647f09050b5915d6ec04d9d82ce5786b3b6f`, run `36857389224`: 154->153, zero routing DRC. Promoted official `927f3d8c9e16484040cb668d39c13c5091dda538`, sanity `f3f9c3ed69bae9054c121c1bc906fa3a7ca9ad80`.
+- D26/net21: initial probe crossed D27 pad and D25. Final route uses B.Cu lane between MCU pad rows, via (129.5,50.09), F.Cu x=131.5 left of C2/D25, then horizontal into U1.2. Clean candidate `02ed5d909c3eda6c1582b5165e66c792c7ad92cd`, run `36858026986`: 153->152, zero routing DRC. Promoted official `d3f6b0a3d65586243c27053727199f439ad5e85a`, sanity `0ad9e773077e304f013aa442f453ca1791a9fdc0`.
+- Official board is now **152 unconnected** with D25+D26 added to the previously clean K1-K16 milestone.
+- D27/net22 candidate `e154a246...` reduces 152->151 with no shorts/clearance, but 4 crossings. Exact pairs from artifact `11160176400`: (1) D27 F start at 129.5,54.5 vs D22_START F track at 130.5,54; (2) D27 B pad escape vs D26 B horizontal y=50.09; (3) D27 F start vs D26 F vertical x=131.5; (4) D27 F vertical x=133 vs D26 F horizontal y=64.54. Next: redesign D27 as a comb lane around those four known segments; do not disturb validated D25/D26 unless coordinated candidate proves clean.
