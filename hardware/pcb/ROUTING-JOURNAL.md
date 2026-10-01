@@ -164,3 +164,9 @@ A red GitHub Actions run does not automatically mean routing failed. While the b
 
 - Candidate `14f2a1e058754b0f325a62f690047cc134942b10` reduced **160 -> 159** and substantially reduced geometry conflicts, but still had one track crossing plus two shorts/mask bridges around the transition area.
 - Ninth candidate `143b7d8e3745eb45d9df65d70cd7192bf4111c19` moves the F.Cu-to-B.Cu transition beyond K9 to `(162,99.5)` and lowers the B.Cu backbone to y=134 before entering K11.5.
+
+## K11 ninth rejected candidate — 2026-10-01
+
+- Candidate `143b7d8e3745eb45d9df65d70cd7192bf4111c19` reduced **160 -> 159** and narrowed failures to exactly 3 violations.
+- DRC evidence: initial F.Cu escape crossed K9 net44 vertical at x=147.5; the long F.Cu segment also crossed K9 pad4 `R9_NO` at `(157.62,99.76)`, causing one short and one solder-mask bridge.
+- Tenth candidate `0249f572798492a72d3edee492a3f8f4dcbbec3d` avoids both: short F.Cu escape left to via `(143.5,99)`, then B.Cu x=143.5 to y=134 and across to K11.5.
