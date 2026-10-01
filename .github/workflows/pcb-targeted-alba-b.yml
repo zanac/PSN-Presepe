@@ -6,7 +6,7 @@ name: PCB Relay Contact Batch
       - ".github/workflows/pcb-targeted-alba-b.yml"
       - "hardware/pcb/tools/grid_router.py"
 permissions:
-  contents: read
+  contents: write
 jobs:
   route:
     runs-on: ubuntu-24.04
@@ -124,6 +124,26 @@ jobs:
                       if line.startswith('[') and line[1:line.index(']')] in critical:
                           print("DETAIL",p.name,*lines[i:i+5],sep=" | ")
           PY
+      - name: Promote cumulative clean checkpoint R14
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re,sys
+          drc=Path("hardware/pcb/targeted-relays/BATCH_R14.drc.txt").read_text()
+          forbidden={"clearance","shorting_items","hole_clearance","holes_co_located","track_dangling","solder_mask_bridge"}
+          cats={m.group(1) for m in re.finditer(r'^\\[([^]]+)\\]:',drc,re.M)}
+          u=drc.count("[unconnected_items]")
+          bad=sorted(cats & forbidden)
+          print("PROMOTION_GATE unconnected=",u,"forbidden=",bad or "none")
+          if u != 93 or bad: sys.exit(1)
+          src=Path("hardware/pcb/targeted-relays/BATCH_R14.kicad_pcb")
+          Path("hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb").write_text(src.read_text())
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb
+          git commit -m "Promote 93-unconnected relay contact checkpoint"
+          git push origin HEAD:dev
       - uses: actions/upload-artifact@v4
         with:
           name: targeted-relay-contact-candidate
