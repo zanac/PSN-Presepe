@@ -16,12 +16,12 @@ LAYERS={"F.Cu":0,"B.Cu":1}
 @dataclass(frozen=True)
 class P: x:int; y:int; layer:int
 
-def astar(start,goal,blocked,bounds,via_cost=18):
+def astar(start,goal,blocked,bounds,via_cost=18,allow_vias=True):
     q=[]; serial=0; heappush(q,(0,serial,start)); prev={start:None}; cost={start:0}
     xmin,xmax,ymin,ymax=bounds
     # Grid edges only. Diagonal center-point routing can cut obstacle corners;
     # Manhattan edges are conservative and KiCad DRC-friendly.
-    moves=[(1,0,0,10),(-1,0,0,10),(0,1,0,10),(0,-1,0,10),(0,0,1,via_cost)]
+    moves=[(1,0,0,10),(-1,0,0,10),(0,1,0,10),(0,-1,0,10)]\n    if allow_vias: moves.append((0,0,1,via_cost))
     while q:
         _,_,p=heappop(q)
         if p==goal:
