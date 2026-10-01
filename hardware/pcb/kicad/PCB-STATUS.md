@@ -128,3 +128,15 @@ CI now treats fabrication readiness explicitly:
 - the current intentionally unrouted board therefore cannot emit an approved fabrication package.
 
 Routing experiments may run sanity checks with `ALLOW_ROUTING=1`, but this does not bypass DRC, connectivity, electrical invariants, perimeter-terminal constraints, or the final fabrication gate.
+
+## Routing progress checkpoint
+
+The source PCB now contains DRC-reviewed low-risk routing for:
+- D22 START;
+- D23 NEXT;
+- D24 TEST;
+- D20 OLED SDA;
+- D21 OLED SCL;
+- A0 potentiometer wiper.
+
+The current promoted source baseline is **188 unconnected items** (down from 194 initially) with zero error-severity DRC violations at the last validated promotion. Buzzer D6 and WS2811 D5/D8 experiments were deliberately not promoted after candidate DRC exposed crossings/clearance conflicts. Candidate routing is therefore fail-safe: a net can reduce the ratsnest and still be rejected if any new DRC error appears.
