@@ -75,12 +75,12 @@ def balanced_blocks(text, token):
 def extract_obstacles(text,target,step,clearance):
     blocked=set()
     net_names={int(n):name for n,name in re.findall(r'^\\s*\\(net (\\d+) "([^"]+)"\\)\\s*$',text,re.M)}
-    seg_re=re.compile(r'\\(segment\\s+\\(start ([\\d.-]+) ([\\d.-]+)\\)\\s+\\(end ([\\d.-]+) ([\\d.-]+)\\)\\s+\\(width ([\\d.-]+)\\)\\s+\\(layer "?(F\\.Cu|B\\.Cu)"?\\).*?\\(net (\\d+)\\)',re.S)
+    seg_re=re.compile(r'\\(segment\\s+\\(start ([\\d.-]+) ([\\d.-]+)\\)\\s+\\(end ([\\d.-]+) ([\\d.-]+)\\)\\s+\\(width ([\\d.-]+)\\)\\s+\\(layer "?(F\\.Cu|B\\.Cu)"?\\).*?\\(net (\\d+)\)',re.S)
     for m in seg_re.finditer(text):
         x1,y1,x2,y2,w,la,n=m.groups(); n=int(n)
         if net_names.get(n)==target: continue
         mark_segment(blocked,*map(float,(x1,y1,x2,y2)),float(w)/2+clearance,LAYERS[la],step)
-    via_re=re.compile(r'\\(via\\s+\\(at ([\\d.-]+) ([\\d.-]+)\\).*?\\(size ([\\d.-]+)\\).*?\\(net (\\d+)\\)',re.S)
+    via_re=re.compile(r'\\(via\\s+\\(at ([\\d.-]+) ([\\d.-]+)\\).*?\\(size ([\\d.-]+)\\).*?\\(net (\\d+)\)',re.S)
     for m in via_re.finditer(text):
         x,y,size,n=m.groups(); n=int(n)
         if net_names.get(n)==target: continue
@@ -89,15 +89,15 @@ def extract_obstacles(text,target,step,clearance):
     # Pads use coordinates local to their footprint. Transform them to board
     # coordinates before rasterizing; previous implementation treated them as global.
     for fp in balanced_blocks(text,"(footprint "):
-        head=re.search(r'\\(at ([\\d.-]+) ([\\d.-]+)(?: ([\\d.-]+))?\\)',fp)
+        head=re.search(r'\\(at ([\\d.-]+) ([\\d.-]+)(?: ([\\d.-]+))?\)',fp)
         if not head: continue
         fx,fy=float(head.group(1)),float(head.group(2)); rot=float(head.group(3) or 0)
         import math
         ang=math.radians(rot); ca,sa=math.cos(ang),math.sin(ang)
         for pad in balanced_blocks(fp,"(pad "):
-            nm=re.search(r'\\(net (\\d+) "([^"]+)"\\)',pad)
+            nm=re.search(r'\\(net (\\d+) "([^"]+)"\)',pad)
             at=re.search(r'\\(at ([\\d.-]+) ([\\d.-]+)',pad)
-            sz=re.search(r'\\(size ([\\d.-]+) ([\\d.-]+)\\)',pad)
+            sz=re.search(r'\\(size ([\\d.-]+) ([\\d.-]+)\)',pad)
             if not(nm and at and sz) or nm.group(2)==target: continue
             px,py=float(at.group(1)),float(at.group(2))
             gx=fx+px*ca-py*sa; gy=fy+px*sa+py*ca
