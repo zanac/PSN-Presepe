@@ -117,3 +117,14 @@ The library-mismatch warnings must be cleaned up before fabrication, but they ar
 - KiCad 9.0.9 now loads the complete PCB successfully (`FULL_LOAD_OK`).
 - Board layer IDs were corrected to KiCad 9 canonical IDs.
 - DRC is now executed in GitHub Actions; reports must be interpreted against the exact HEAD commit because placement evolved during parser repair.
+
+## Fabrication gate
+
+CI now treats fabrication readiness explicitly:
+- KiCad error-severity DRC violations are parsed separately from unrouted connectivity;
+- any real DRC error blocks fabrication;
+- any remaining unconnected item also blocks fabrication;
+- Gerber/drill export is explicitly conditional on the fabrication gate succeeding;
+- the current intentionally unrouted board therefore cannot emit an approved fabrication package.
+
+Routing experiments may run sanity checks with `ALLOW_ROUTING=1`, but this does not bypass DRC, connectivity, electrical invariants, perimeter-terminal constraints, or the final fabrication gate.
