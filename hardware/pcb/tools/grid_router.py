@@ -121,11 +121,15 @@ def extract_obstacles(text,target,step,clearance):
 
 def compress(path):
     if not path:return path
+    # Preserve every bend. Only remove a middle point when the two adjacent
+    # steps are collinear on the same layer; layer changes must remain explicit.
     out=[path[0]]
     for i in range(1,len(path)-1):
         a,b,c=path[i-1],path[i],path[i+1]
-        d1=(b.x-a.x,b.y-a.y,b.layer-a.layer); d2=(c.x-b.x,c.y-b.y,c.layer-b.layer)
-        if d1!=d2: out.append(b)
+        if a.layer!=b.layer or b.layer!=c.layer:
+            out.append(b); continue
+        dx1=b.x-a.x; dy1=b.y-a.y; dx2=c.x-b.x; dy2=c.y-b.y
+        if dx1*dy2 != dy1*dx2: out.append(b)
     out.append(path[-1]); return out
 
 def main():
