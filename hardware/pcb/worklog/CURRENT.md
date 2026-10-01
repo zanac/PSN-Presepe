@@ -33,8 +33,10 @@ Use small commits with one purpose:
 - Fetch HEAD immediately before every PCB/tool/workflow update to avoid overwriting concurrent work.
 
 ## Next action
-Official PCB has advanced to **K1-K16 + D25-D30 / 148 unconnected**. D30 clean Route Candidate was run `36875416537` at `d179b53b...` and its validated geometry is now present in the official PCB. Latest official validation is still running; inspect it before treating the 148 baseline as independently revalidated.
+Official PCB connectivity is **K1-K16 + D25-D30 / 148 unconnected**, but **do not treat this as a clean baseline yet**: full official KiCad Validation run `36875916265` reports `clearance: 3` plus 148 unconnected. Gerbers correctly skipped.
 
-D30 final geometry uses complementary y=78.03 alternating-layer bridge and B.Cu final approach. Continue with D31/net26, using the proven D29/D30 staggered inter-row strategy; preserve D25-D30 unless an atomic repack is fully DRC-clean.
+Immediate priority: repair D30/net25 clearance regression before D31. D30 candidate workflow had accepted connectivity/routing categories, but full PCB validation is stricter. Use pre-promotion D30 geometry/history: run `36874130419` had 149->148 with only one tracks_crossing and no clearance; later promoted geometry eliminated candidate crossing but full DRC exposed 3 clearance violations. Prefer reverting/reworking only D30 geometry, preserving D25-D29, until full official DRC returns zero critical geometry/electrical categories at 148 unconnected.
 
-Final gate: zero real DRC + zero unconnected, then same-revision **Gerber+Excellon ZIP + BOM CSV + CPL/centroid CSV**, cross-checked by reference/revision. Keep +12V/GND distribution, relay COM/NO, high-current copper and pours untouched until dedicated reviewed phase.
+Process rule added conceptually: no future relay-input promotion is considered complete until the **official full KiCad Validation** after promotion has zero critical geometry/electrical categories, not merely Route Candidate success.
+
+After clean D30, continue D31/D32. Final gate: zero real DRC + zero unconnected, then same-revision Gerber+Excellon ZIP + BOM CSV + CPL/centroid CSV.
