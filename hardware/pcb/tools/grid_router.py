@@ -75,7 +75,7 @@ def balanced_blocks(text, token):
 
 def extract_obstacles(text,target,step,clearance):
     blocked=set()
-    net_names={int(n):name for n,name in re.findall(r'^\\s*[(]net ([0-9]+) "([^"]+)"[)]\\s*
+    net_names={int(n):name for n,name in re.findall(r'^\\s*[(]net ([0-9]+) "([^"]+)"[)]\\s*$',text,re.M)}
     # Parse balanced copper records instead of one fragile multiline regex.
     for seg in balanced_blocks(text,"(segment "):
         st=re.search(r'[(]start ([0-9.-]+) ([0-9.-]+)[)]',seg)
