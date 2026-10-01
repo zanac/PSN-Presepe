@@ -70,6 +70,11 @@ jobs:
               cats=[x[1:x.index(']')] for x in t.splitlines() if x.startswith('[') and ']' in x]
               critical=sorted({x for x in cats if x not in {'unconnected_items','lib_footprint_mismatch'}})
               print(p.name,"unconnected=",u,"critical=",critical or "none")
+              if critical:
+                  lines=t.splitlines()
+                  for i,line in enumerate(lines):
+                      if line.startswith('[') and line[1:line.index(']')] in critical:
+                          print("DETAIL",p.name,*lines[i:i+5],sep=" | ")
           PY
       - uses: actions/upload-artifact@v4
         with:
