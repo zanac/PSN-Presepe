@@ -163,4 +163,11 @@ for a in range(len(qpos)):
         dist=((xa-xb)**2+(ya-yb)**2)**0.5
         assert dist >= 14.0, f"Q{ia}/Q{ib} too close for heatsink airflow: {dist:.1f} mm"
 
+
+# When experimental routing is enabled, every segment must use a declared net.
+if os.environ.get("ALLOW_ROUTING") == "1":
+    declared={int(i) for i,_ in global_nets}
+    for m in re.finditer(r'\(segment\b[^)]*(?:\)[^)]*)*?\(net (\d+)\)',s):
+        assert int(m.group(1)) in declared, f"Segment uses undeclared net {m.group(1)}"
+
 print(f"OK: {len(refs)} refs, {len(global_nets)} nets, {segments} segments, electrical + external-terminal invariants verified, no unreviewed zones")
