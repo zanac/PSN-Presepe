@@ -18,17 +18,17 @@ jobs:
         with:
           name: PSN-Presepe-RevA-Autoroute-Candidate
           repository: zanac/PSN-Presepe
-          run-id: 36887424491
+          run-id: 36898305562
           github-token: ${{ github.token }}
           path: /tmp/autoroute
       - name: Verify and promote exact validated board
         run: |
           set -euo pipefail
-          test "$(sha256sum /tmp/autoroute/PSN-Presepe-Mega-routed.kicad_pcb | awk '{print $1}')" = "3ce746c00ecc35249875598cf0884ee37483e55b800c15f0a845b2adaf80fcee"
-          grep -q "Found 122 unconnected pads" /tmp/autoroute/drc-routed.txt
+          test "$(sha256sum /tmp/autoroute/PSN-Presepe-Mega-routed.kicad_pcb | awk '{print $1}')" = "27b90e8072526201c3bd9b3e79a0bf60aeb327b4627cc95545d36118b71faeaa"
+          grep -q "Found 120 unconnected pads" /tmp/autoroute/drc-routed.txt
           cp /tmp/autoroute/PSN-Presepe-Mega-routed.kicad_pcb hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb
-          git commit -m "Promote validated 27-connection autoroute batch"
+          git commit -m "Promote validated five-net autoroute delta"
           git push origin HEAD:dev
