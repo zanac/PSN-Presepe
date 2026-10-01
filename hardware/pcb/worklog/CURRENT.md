@@ -33,12 +33,12 @@ Use small commits with one purpose:
 - Fetch HEAD immediately before every PCB/tool/workflow update to avoid overwriting concurrent work.
 
 ## Next action
-Official PCB: **K1-K16 + D25-D28 / 150 unconnected / zero critical geometry/electrical DRC**. D28 candidate 61fcb1d6... run 36865837527 SUCCESS; promoted 095233fc...; sanity dc2b5e92.... Official validation observed in run 36866316897: only 66 footprint mismatches + 150 unconnected.
+Official PCB: **K1-K16 + D25-D28 / 150 unconnected / zero critical geometry/electrical DRC**. D28 promoted and independently validated.
 
-D28 established a reusable wall-crossing concept: F.Cu crosses D24_TEST(B), via before D22_START(F), B.Cu crosses START, via between START/NEXT, F.Cu crosses D23_NEXT(B). Its analog-row corridor is x=110.55 between A11/A12 and wall-crossing y=92.
+D29 current experiment: `079bd5cc73ac52e8cef2f64aa76cdc2271aa9e1e`, left/lower stagger preserving D28. GitHub runner is currently delayed in KiCad installation; do not infer result until Route Candidate run `36871461901` completes. Previous right-side D29 `067c6e51...` rejected: C2/C3 collisions at x127.5, D28 crossing, and U2/coil conflicts.
 
-D29 first clone c4d7cec6... is rejected despite 150->149: it touches D30, crosses D28, touches U2.1/D33, and crosses D28 right ascent. Next D29 should use a distinct escape (prefer right/vertical or coordinated D29+D30) while retaining the validated alternating-layer wall-crossing principle. Do not modify official D28 unless an atomic replacement is fully DRC-clean.
+If `079bd5cc...` fails, inspect its artifact and refine only the exact collision pairs. Preserve validated D25-D28. Continue D29 then D30 using staggered wall-crossing lanes.
 
-Final gate: zero real DRC + zero unconnected, then same-revision **Gerber+Excellon ZIP + BOM + CPL/centroid**, with reference/revision cross-check.
+Final gate remains zero real DRC + zero unconnected, then produce same-revision assembly package **Gerber+Excellon ZIP + machine-readable BOM CSV + CPL/centroid CSV**. Existing `BOM-REV-A.md` is descriptive only and must be converted/cross-checked. Note assembly capability for THT/module parts separately from file completeness.
 
 Keep +12V/GND distribution, relay COM/NO, high-current copper and pours untouched until dedicated reviewed phase.
