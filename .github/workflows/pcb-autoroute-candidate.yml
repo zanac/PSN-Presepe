@@ -45,11 +45,11 @@ jobs:
           PY
           sed -i 's/(class RELAY_CONTACT,Default /(class RELAY_CONTACT /; s/(class SELV_POWER,Default /(class SELV_POWER /' hardware/pcb/route-candidate/PSN-Presepe-Mega.dsn
 
-      - name: Download Freerouting 2.2.4
+      - name: Download Freerouting 2.4.1
         run: |
           python3 - <<'PY'
           import json, urllib.request
-          api='https://api.github.com/repos/freerouting/freerouting/releases/tags/v2.2.4'
+          api='https://api.github.com/repos/freerouting/freerouting/releases/tags/v2.4.1'
           req=urllib.request.Request(api,headers={'User-Agent':'PSN-Presepe-CI'})
           data=json.load(urllib.request.urlopen(req))
           assets=[a for a in data['assets'] if a['name'].endswith('.jar') and 'sources' not in a['name'] and 'javadoc' not in a['name']]
@@ -115,38 +115,31 @@ jobs:
                           print(line)
           PY
 
-      - name: Validate and promote safe logic routing
+      - name: Compare candidate with production baseline
         run: |
+          kicad-cli pcb drc --severity-all --output hardware/pcb/route-candidate/drc-baseline.txt hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb || true
           python3 - <<'PY'
           from pathlib import Path
           import re
-          board=Path('hardware/pcb/route-candidate/PSN-Presepe-Mega-routed.kicad_pcb')
-          report=Path('hardware/pcb/route-candidate/drc-errors.txt').read_text()
-          assert board.exists()
-          text=board.read_text()
-          assert text.count('(segment') > 0, 'Candidate has no routed segments'
-          assert '** Found 0 DRC violations **' in report, 'Candidate has KiCad DRC errors'
-          allowed_power={'+12V','GND','+5V_MEGA'}
-          bad=[]
-          for line in report.splitlines():
-              if not line.lstrip().startswith('@('):
-                  continue
-              m=re.search(r'\[([^\]]+)\]',line)
-              if not m:
-                  continue
-              net=m.group(1)
-              if net in allowed_power or re.fullmatch(r'R[0-9]+_(COM|NO|NC)',net):
-                  continue
-              bad.append((net,line.strip()))
-          assert not bad, f'Unexpected unrouted nets: {bad[:10]}'
-          print('Promotion gate OK: only protected/power nets remain unrouted')
+          def count(path):
+              t=Path(path).read_text()
+              m=re.search(r'Found (\\d+) unconnected items',t)
+              if m: return int(m.group(1))
+              return len(re.findall(r'^\\[unconnected_items\\]',t,re.M))
+          base=count('hardware/pcb/route-candidate/drc-baseline.txt')
+          cand=count('hardware/pcb/route-candidate/drc-routed.txt')
+          errors=Path('hardware/pcb/route-candidate/drc-errors.txt').read_text()
+          clean='** Found 0 DRC violations **' in errors
+          print(f'Baseline unconnected: {base}')
+          print(f'Autoroute candidate unconnected: {cand}')
+          print(f'Reduction: {base-cand}')
+          print(f'Error-severity DRC clean: {clean}')
+          Path('hardware/pcb/route-candidate/COMPARISON.txt').write_text(
+              f'baseline_unconnected={base}\\ncandidate_unconnected={cand}\\nreduction={base-cand}\\nerror_drc_clean={clean}\\n')
+          # Laboratory only: never promote automatically.
+          assert cand < base, 'Autorouter did not improve connectivity'
+          assert clean, 'Autorouter candidate has error-severity DRC violations'
           PY
-          cp hardware/pcb/route-candidate/PSN-Presepe-Mega-routed.kicad_pcb hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb
-          git commit -m "Promote DRC-gated logic autoroute candidate"
-          git push origin HEAD:dev
 
       - name: Upload autoroute candidate
         if: always()
