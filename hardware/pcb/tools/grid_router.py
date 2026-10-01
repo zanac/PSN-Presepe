@@ -152,7 +152,7 @@ def main():
     blocked.discard(S); blocked.discard(G)
     bounds=(floor((min(sx,gx)-a.margin)/step),ceil((max(sx,gx)+a.margin)/step),
             floor((min(sy,gy)-a.margin)/step),ceil((max(sy,gy)+a.margin)/step))
-    if a.no_vias:\n        for x in range(bounds[0],bounds[1]+1):\n            for y in range(bounds[2],bounds[3]+1):\n                blocked.add(P(x,y,1-sl))\n    path=compress(astar(S,G,blocked,bounds))
+    path=compress(astar(S,G,blocked,bounds,allow_vias=not a.no_vias))
     if not path: raise SystemExit("NO_ROUTE")
     print("ROUTE",len(path))
     for p in path: print(f"{p.x*step:.3f},{p.y*step:.3f},{'F.Cu' if p.layer==0 else 'B.Cu'}")
