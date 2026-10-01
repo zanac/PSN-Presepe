@@ -33,12 +33,12 @@ Use small commits with one purpose:
 - Fetch HEAD immediately before every PCB/tool/workflow update to avoid overwriting concurrent work.
 
 ## Next action
-**Methodology pivot: Freerouting CLI is viable and now preferred for congested logic.** KiCad 9 headless exports Specctra DSN via pcbnew; Freerouting 2.4.1 routes headlessly to SES; KiCad imports SES and remains final DRC authority. Workflow `.github/workflows/pcb-autoroute-candidate.yml` was made artifact-only (no automatic push) in `83052a17...`, then KiCad 9 parser fixed in `e1d62763...`.
+**Freerouting CLI acceleration confirmed as the primary logic-routing strategy.** KiCad 9 -> Specctra DSN -> Freerouting 2.4.1 -> SES -> KiCad DRC works headlessly. Workflow is artifact-only; it never auto-promotes.
 
-First completed autoroute lab run `36881798109`, artifact `11172341324`: after stripping deliberately protected power and relay-contact routing, candidate report shows **122 unconnected pads vs clean official baseline 149 = 27 connections eliminated in one autoroute pass**, with **zero non-connectivity/error DRC violations** in the KiCad report. The workflow itself failed only because its comparison parser incorrectly looked for 'unconnected items'; KiCad 9 says 'unconnected pads'. Parser now fixed. Do NOT promote first artifact automatically; it is evidence/lab output.
+Direct inspection of autoroute artifact `11174895147` proves: official clean baseline report = **149 unconnected pads**; stripped autoroute candidate = **122 unconnected pads** and `Found 0 DRC violations` (non-connectivity). Thus **27 connections were solved in one pass**. Those 27 include D30,D31,D32,D33,D34,D35,D37,D38,D39,D40 plus D2/D3/D4 sky RGB, D5 stars, D6 buzzer, D7/D11/D12 sunset, D8 houses, D44/D45/D46 dawn and associated negative nodes. Power and relay COM/NO/NC were deliberately stripped/protected.
 
-Corrected confirmation run: `36883481213` (Freerouting 2.4.1) currently autorouting. If it confirms the reduction and clean DRC, stop hand-routing D30 as primary strategy. Next build/select best logic autoroute candidate, review diff/net classes, then promote only through full official KiCad DRC. Power (+12V/GND/+5V) and relay COM/NO/NC remain protected for dedicated width/clearance routing.
+Workflow comparison bugs found/fixed: KiCad says 'unconnected pads', and error report legitimately contains unconnected_items. Commits `e1d62763...`, `ae4f884c...`, `f5c7d26f...` harden parser/gate. Current confirmation run `36885710850` is autorouting.
 
-Progress accounting remains: clean official baseline 149 unconnected; routing ~45-55%, overall PCB ~65-70%, manufacturing readiness ~60-65%. A clean autoroute promotion of ~27 logic connections would materially raise these.
+If confirmation matches 149->122 + no critical DRC: before promotion, add/check protected-net preservation and compare routed-net set; then promote the complete candidate only through full official KiCad Validation. Do not hand-route D30-D40 unless autoroute integration fails. After logic promotion, handle remaining logic stragglers, then dedicated relay-contact routing and power buses/zones.
 
-Final gate: zero real DRC + zero unconnected, then same-revision Gerber+Excellon ZIP + BOM CSV + CPL/centroid CSV.
+Revised progress remains ~45-55% routing / ~65-70% overall PCB before autoroute promotion; a validated 27-connection promotion will materially improve both. Final gate remains zero real DRC + zero unconnected -> Gerber+Excellon ZIP + BOM CSV + CPL/centroid CSV.
