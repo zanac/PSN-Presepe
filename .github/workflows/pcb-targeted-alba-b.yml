@@ -18,7 +18,7 @@ jobs:
         run: kicad-cli version
       - name: Build obstacle-aware ALBA candidate
         run: |
-          set -euo pipefail
+          set -eu
           mkdir -p hardware/pcb/targeted-alba
           PCB=hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb
           python3 hardware/pcb/tools/grid_router.py "$PCB" --net ALBA_B_NEG \
