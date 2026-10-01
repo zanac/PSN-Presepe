@@ -1,20 +1,20 @@
 #!/usr/bin/env python3
-"""Temporary DRC candidate: route only RELAY2_COIL_LOW (U1.17 -> K2.5)."""
+"""Temporary DRC candidate: route only RELAY3_COIL_LOW (U1.16 -> K3.5)."""
 from pathlib import Path
 import sys
 src=Path(sys.argv[1]); dst=Path(sys.argv[2])
 s=src.read_text(encoding="utf-8")
-assert s.count("(segment ") == 77, "Expected promoted 77-segment baseline"
+assert s.count("(segment ") == 81, "Expected promoted K1+K2 81-segment baseline"
 
 # KiCad-verified Y-down geometry:
-# U1 pad17 = (145.16,64.54)
-# K2 pad5, footprint rotation 90 deg = (175.62,60.00)
-# Keep above the K1 coil route corridor.
-pts=[(145.16,64.54),(148.0,66.5),(173.0,66.5),(175.62,64.0),(175.62,60.0)]
+# U1 pad16 = (145.16,67.08)
+# K3 pad5, footprint rotation 90 deg = (193.62,60.00)
+# Keep a separate corridor from K2.
+pts=[(145.16,67.08),(148.0,69.0),(191.0,69.0),(193.62,64.0),(193.62,60.0)]
 parts=[]
 for a,b in zip(pts,pts[1:]):
-    parts.append(f'  (segment (start {a[0]} {a[1]}) (end {b[0]} {b[1]}) (width 0.3) (layer "F.Cu") (net 37))')
+    parts.append(f'  (segment (start {a[0]} {a[1]}) (end {b[0]} {b[1]}) (width 0.3) (layer "F.Cu") (net 38))')
 edge=s.find("  (gr_rect "); assert edge>0
 s=s[:edge]+"\n".join(parts)+"\n"+s[edge:]
 dst.parent.mkdir(parents=True,exist_ok=True); dst.write_text(s,encoding="utf-8")
-print("Added RELAY2_COIL_LOW candidate")
+print("Added RELAY3_COIL_LOW candidate")
