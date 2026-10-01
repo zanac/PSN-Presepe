@@ -6,9 +6,7 @@ src=Path(sys.argv[1]); dst=Path(sys.argv[2]); s=src.read_text(encoding="utf-8")
 assert not any("(net 49)" in ln for ln in s.splitlines() if "(segment " in ln)
 lines=s.splitlines(); lines=[ln for ln in lines if not (("(segment " in ln or "(via " in ln) and "(net 46)" in ln)]; s="\n".join(lines)+"\n"
 parts=[
-'  (segment (start 145.16 97.08) (end 143.0 97.9) (width 0.3) (layer "F.Cu") (net 46))',
-'  (via (at 143.0 97.9) (size 0.8) (drill 0.4) (layers "F.Cu" "B.Cu") (net 46))',
-'  (segment (start 143.0 97.9) (end 140.0 99.0) (width 0.3) (layer "B.Cu") (net 46))',
+'  (segment (start 145.16 97.08) (end 140.0 99.0) (width 0.3) (layer "B.Cu") (net 46))',
 '  (via (at 140.0 99.0) (size 0.8) (drill 0.4) (layers "F.Cu" "B.Cu") (net 46))',
 '  (segment (start 140.0 99.0) (end 140.0 134.5) (width 0.3) (layer "F.Cu") (net 46))',
 '  (via (at 140.0 134.5) (size 0.8) (drill 0.4) (layers "F.Cu" "B.Cu") (net 46))',
