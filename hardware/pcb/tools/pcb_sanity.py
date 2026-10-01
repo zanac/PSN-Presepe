@@ -112,4 +112,18 @@ for bank, first in ((1,1),(2,9)):
         assert pad_net(f"K{relay}",1) == "+12V"
         assert pad_net(f"K{relay}",5) == f"RELAY{relay}_COIL_LOW"
 
-print(f"OK: {len(refs)} refs, {len(global_nets)} nets, {segments} segments, balanced S-expression, G5Q mapping + power/MOSFET/ULN invariants verified, no unreviewed zones")
+# External terminal pad order must match the printed wiring labels.
+for i in range(1, 17):
+    assert [pad_net(f"JR{i}",x) for x in (1,2,3)] == [f"R{i}_COM",f"R{i}_NO",f"R{i}_NC"]
+
+assert [pad_net("J_CIELO",x) for x in (1,2,3,4)] == ["+12V","CIELO_R_NEG","CIELO_G_NEG","CIELO_B_NEG"]
+assert [pad_net("J_TRAMONTO",x) for x in (1,2,3,4)] == ["+12V","TRAM_R_NEG","TRAM_G_NEG","TRAM_B_NEG"]
+assert [pad_net("J_ALBA",x) for x in (1,2,3,4)] == ["+12V","ALBA_R_NEG","ALBA_G_NEG","ALBA_B_NEG"]
+assert [pad_net("J_STELLE",x) for x in (1,2,3)] == ["+12V","GND","D5_STELLE_DATA"]
+assert [pad_net("J_CASETTE",x) for x in (1,2,3)] == ["+12V","GND","D8_CASETTE_DATA"]
+assert [pad_net("J_OLED",x) for x in (1,2,3,4)] == ["+5V_MEGA","GND","D20_SDA","D21_SCL"]
+assert [pad_net("J_START",x) for x in (1,2)] == ["D22_START","GND"]
+assert [pad_net("J_NEXT",x) for x in (1,2)] == ["D23_NEXT","GND"]
+assert [pad_net("J_TEST",x) for x in (1,2)] == ["D24_TEST","GND"]
+
+print(f"OK: {len(refs)} refs, {len(global_nets)} nets, {segments} segments, electrical + external-terminal invariants verified, no unreviewed zones")
