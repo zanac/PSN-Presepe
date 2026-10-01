@@ -345,3 +345,13 @@ D27 experiments after checkpoint:
 D28 even-lane probe `d56c5145...`: 152->151 but 4 shorts + 2 mask + 2 crossings, confirming the narrow x=128.5..130.5 inter-wall channel cannot simply host additional independent vias/traces after D25/D26.
 
 Conclusion: next progress requires a coordinated fanout-bus repack, not more isolated routes. Preserve official D25/D26 as baseline; model D27-D32 together, likely with staggered layer-change stations at different Y and/or one atomic repack of D25-D32. Generator restored to best D27 in `a4e29afc4a56b875a72812e5a8a0b55bf0510c06` for reproducible baseline.
+
+## Manufacturing deliverable target clarified — 2026-10-01
+
+Final project gate is not merely a routed PCB. Required handoff is an assembly-service-ready manufacturing package containing at minimum:
+- Gerber fabrication layers plus Excellon drill files, packaged for upload;
+- BOM (bill of materials) with reference designators, quantities, values/MPNs and assembly-relevant sourcing fields where known;
+- CPL / component placement / centroid list with reference, X/Y, side and rotation in a consistent origin/convention;
+- validation that BOM/CPL references match the PCB and that generated fabrication files correspond to the same committed board revision.
+
+Keep current Gerber export gate closed until zero real DRC errors and zero unconnected items. Once routing/fabrication gate passes, generate and validate Gerber + BOM + CPL as the final deliverable bundle rather than stopping at KiCad sources.
