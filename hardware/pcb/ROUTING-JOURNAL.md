@@ -159,3 +159,8 @@ A red GitHub Actions run does not automatically mean routing failed. While the b
 - Candidate `9cbb0a9ad6a4ae42da3628c2dc245dc33c16bc01` reduced **160 -> 159** but produced multiple crossings/shorts.
 - Inspection of the official board exposed existing long backbones in the attempted left corridor: net16 on F.Cu around x=128.5 and net17 on B.Cu around x=130.5. The candidate crossed these repeatedly.
 - Eighth candidate `14f2a1e058754b0f325a62f690047cc134942b10` avoids the left corridor: short F.Cu escape to the right, via at `(152,99)`, B.Cu descent at x=152, then y=132 below relay row into K11.5.
+
+## K11 eighth rejected candidate — 2026-10-01
+
+- Candidate `14f2a1e058754b0f325a62f690047cc134942b10` reduced **160 -> 159** and substantially reduced geometry conflicts, but still had one track crossing plus two shorts/mask bridges around the transition area.
+- Ninth candidate `143b7d8e3745eb45d9df65d70cd7192bf4111c19` moves the F.Cu-to-B.Cu transition beyond K9 to `(162,99.5)` and lowers the B.Cu backbone to y=134 before entering K11.5.
