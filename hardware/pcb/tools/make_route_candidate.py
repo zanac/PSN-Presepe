@@ -14,12 +14,11 @@ parts=[
 '  (segment (start 140.0 99.0) (end 140.0 134.5) (width 0.3) (layer "F.Cu") (net 46))',
 # hop to B.Cu while crossing K12 F.Cu y=136, return after it
 '  (via (at 140.0 134.5) (size 0.8) (drill 0.4) (layers "F.Cu" "B.Cu") (net 46))',
-'  (segment (start 140.0 134.5) (end 140.0 137.5) (width 0.3) (layer "B.Cu") (net 46))',
-'  (via (at 140.0 137.5) (size 0.8) (drill 0.4) (layers "F.Cu" "B.Cu") (net 46))',
-'  (segment (start 140.0 137.5) (end 140.0 146.0) (width 0.3) (layer "F.Cu") (net 46))',
-'  (via (at 140.0 146.0) (size 0.8) (drill 0.4) (layers "F.Cu" "B.Cu") (net 46))',
-'  (segment (start 140.0 146.0) (end 193.62 146.0) (width 0.3) (layer "B.Cu") (net 46))',
-'  (segment (start 193.62 146.0) (end 193.62 115.0) (width 0.3) (layer "B.Cu") (net 46))',
+'  (segment (start 140.0 134.5) (end 140.0 138.5) (width 0.3) (layer "B.Cu") (net 46))',
+'  (via (at 140.0 138.5) (size 0.8) (drill 0.4) (layers "F.Cu" "B.Cu") (net 46))',
+'  (segment (start 140.0 138.5) (end 140.0 146.0) (width 0.3) (layer "F.Cu") (net 46))',
+'  (segment (start 140.0 146.0) (end 193.62 146.0) (width 0.3) (layer "F.Cu") (net 46))',
+'  (segment (start 193.62 146.0) (end 193.62 115.0) (width 0.3) (layer "F.Cu") (net 46))',
 # K14 topology already shown clean in best artifact
 '  (segment (start 145.16 104.70) (end 143.5 106.0) (width 0.3) (layer "B.Cu") (net 49))',
 '  (segment (start 143.5 106.0) (end 143.5 142.0) (width 0.3) (layer "B.Cu") (net 49))',
