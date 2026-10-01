@@ -15,16 +15,12 @@ print(f"Baseline segments: {baseline_segments}")
 
 # U2 pad16 = (145.16,97.08)
 # K11 pad5 with footprint rotation 90 deg = (193.62,115.00)
-# Escape left of U2 on B.Cu, descend at x=132 outside both ULN pad columns, then cross below relays at y=130.
+# Both endpoints are through-hole pads: route entirely on B.Cu, with no vias, outside U2 and below relay row.
 parts=[
-'  (segment (start 145.16 97.08) (end 145.8 97.7) (width 0.3) (layer "F.Cu") (net 46))',
-'  (via (at 145.8 97.7) (size 0.8) (drill 0.4) (layers "F.Cu" "B.Cu") (net 46))',
-'  (segment (start 145.8 97.7) (end 132.0 97.7) (width 0.3) (layer "B.Cu") (net 46))',
-'  (segment (start 132.0 97.7) (end 132.0 130.0) (width 0.3) (layer "B.Cu") (net 46))',
+'  (segment (start 145.16 97.08) (end 132.0 97.08) (width 0.3) (layer "B.Cu") (net 46))',
+'  (segment (start 132.0 97.08) (end 132.0 130.0) (width 0.3) (layer "B.Cu") (net 46))',
 '  (segment (start 132.0 130.0) (end 193.62 130.0) (width 0.3) (layer "B.Cu") (net 46))',
-'  (segment (start 193.62 130.0) (end 193.62 115.8) (width 0.3) (layer "B.Cu") (net 46))',
-'  (via (at 193.62 115.8) (size 0.8) (drill 0.4) (layers "F.Cu" "B.Cu") (net 46))',
-'  (segment (start 193.62 115.8) (end 193.62 115.0) (width 0.3) (layer "F.Cu") (net 46))',
+'  (segment (start 193.62 130.0) (end 193.62 115.0) (width 0.3) (layer "B.Cu") (net 46))',
 ]
 edge=s.find("  (gr_rect "); assert edge>0
 s=s[:edge]+"\n".join(parts)+"\n"+s[edge:]
