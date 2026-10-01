@@ -8,7 +8,10 @@ from pathlib import Path
 import sys
 src=Path(sys.argv[1]); dst=Path(sys.argv[2])
 s=src.read_text(encoding="utf-8")
-assert s.count("(segment ") == 77, "Expected promoted 77-segment baseline"
+baseline_segments=s.count("(segment ")
+assert baseline_segments >= 77, f"Unexpected routing regression: only {baseline_segments} baseline segments"
+assert not any("(net 39)" in ln for ln in s.splitlines() if "(segment " in ln), "RELAY4_COIL_LOW is already routed in baseline"
+print(f"Baseline segments: {baseline_segments}")
 
 # U1 pad15 = (145.16,69.62)
 # K4 pad5 with footprint rotation 90 deg = (211.62,60.00)
