@@ -86,3 +86,7 @@ Remaining connectivity workload is now exactly the planned non-logic work:
 - **0 logic connections**
 
 Next stage: route relay contacts parametrically/in reviewed batches with mains-capable clearance/isolation rules; do not use blind generic autorouting. Power buses/zones remain last.
+
+
+## Relay-contact milestone (2026-10-02)
+Official board on `dev` has advanced from the 117-unconnected logic-complete baseline to a promoted **75-unconnected relay checkpoint** (commits `2acb44b...` / `89188ab...`). This means 42 connectivity items have been removed since the 117 baseline. Current targeted work is the final relay-contact subset; power routing remains last. A corrected obstacle router now applies footprint rotation consistently to real pad geometry. Revalidate the official 75 baseline with the normal KiCad workflow before any further promotion; never replace it with an experimental candidate that has shorts/clearance errors.
