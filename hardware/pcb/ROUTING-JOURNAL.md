@@ -184,3 +184,9 @@ A red GitHub Actions run does not automatically mean routing failed. While the b
 - K12 candidates iteratively isolated K11/K10 conflicts; final candidate `d4b72695d6b28b4b8ef0bdb7f43e9477bc797e03`, Route Candidate `36830213836`: **159 -> 158**, zero error-severity DRC violations.
 - Promoted exact validated net47 geometry: `dd8bc4059f4ce6603bb334ec920307bdd859ca93`; sanity approval: `60b5597450766b482d425369ccb97190e007f913`.
 - K13/net48 candidate `e7a2ac6f155dd92796aaf1ccfccd572ebb9ca45b` starts a staggered mixed-layer corridor; validate before promotion.
+
+## K13 validated and promoted / K14 start — 2026-10-01
+
+- K13 required a controlled multi-layer weave around the dense U2/K9-K12 corridor. Final candidate `e8c343cec4e64c4b1aeb9493270f28f7e2edad7e`, Route Candidate `36830926095`: **158 -> 157**, zero error-severity DRC violations.
+- Promoted exact net48 geometry: `ed6538741ede7c8c13bf49c5a07d07e912edf69f`; sanity approval: `7cd69e3a957f27bcba06e4c1a9304fca573e77bf`.
+- K14/net49 candidate `6d4f840eca798715aee363e8a9ace09ffbfd599f` started with staggered coordinates; DRC remains authoritative.
