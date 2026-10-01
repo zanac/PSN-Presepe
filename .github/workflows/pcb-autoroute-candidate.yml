@@ -123,7 +123,7 @@ jobs:
           import re
           def count(path):
               t=Path(path).read_text()
-              m=re.search(r'Found (\\d+) unconnected (?:items|pads)',t)
+              m=re.search(r'Found\\s+(\\d+)\\s+unconnected\\s+(?:items|pads)',t,re.I)
               if m: return int(m.group(1))
               return len(re.findall(r'^\\[unconnected_items\\]',t,re.M))
           base=count('hardware/pcb/route-candidate/drc-baseline.txt')
