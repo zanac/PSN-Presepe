@@ -81,7 +81,6 @@ jobs:
             if routed:
               Path(f"hardware/pcb/targeted-relays/R{rn}.kicad_pcb").write_text(src[:idx]+''.join(items)+src[idx:])
               print("relay candidate",rn,len(routed),routed)
-          items=[]; routed=[]
           PY
       - name: DRC all candidates
         run: |
