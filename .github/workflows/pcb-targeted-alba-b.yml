@@ -1,5 +1,5 @@
 name: PCB Targeted ALBA_B Route
-on:
+'on':
   push:
     branches: [dev]
     paths: [".github/workflows/pcb-targeted-alba-b.yml"]
