@@ -91,6 +91,43 @@ jobs:
                 Path(f"hardware/pcb/targeted-relays/{tag}.kicad_pcb").write_text(work)
                 print("SWEEP",tag,len(pts))
           PY
+      - name: Build selective clearance-cleanup candidate
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          p=Path("hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb")
+          t=p.read_text()
+          bad={"R9_NC","R14_COM","R3_NO","R3_COM","R10_COM","R10_NO","R4_NO","R4_COM","R5_NO","R5_COM","R1_COM","R1_NO","R6_COM","R6_NO","R2_COM","R2_NO","R8_NC","R8_COM"}
+          ids={int(n) for n,name in re.findall(r'^\\s*\\(net (\\d+) "([^"]+)"\\)',t,re.M) if name in bad}
+          def strip_blocks(text,token):
+            out=[]; pos=0
+            while True:
+              st=text.find(token,pos)
+              if st<0: out.append(text[pos:]); break
+              out.append(text[pos:st]); d=0; q=False; esc=False; end=None
+              for i in range(st,len(text)):
+                ch=text[i]
+                if q:
+                  if esc: esc=False
+                  elif ch=="\\\\": esc=True
+                  elif ch=='"': q=False
+                else:
+                  if ch=='"': q=True
+                  elif ch=="(": d+=1
+                  elif ch==")":
+                    d-=1
+                    if d==0: end=i+1; break
+              b=text[st:end]
+              m=re.search(r'\\(net (\\d+)\\)',b)
+              if not(m and int(m.group(1)) in ids): out.append(b)
+              pos=end
+            return ''.join(out)
+          t=strip_blocks(t,"(segment")
+          t=strip_blocks(t,"(via")
+          out=Path("hardware/pcb/targeted-relays/cleanup.kicad_pcb"); out.parent.mkdir(parents=True,exist_ok=True); out.write_text(t)
+          print("CLEANUP_NETS",len(ids),sorted(bad))
+          PY
       - name: DRC all candidates
         run: |
           set -u
