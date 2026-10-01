@@ -6,13 +6,11 @@ src=Path(sys.argv[1]); dst=Path(sys.argv[2])
 s=src.read_text(encoding="utf-8")
 assert s.count("(segment ") == 47, "Expected clean promoted buttons + OLED + A0 baseline"
 
-# D5 Mega=(78.8,41.2) -> STELLE DATA=(190.16,184)
-# D8 Mega=(69.656,41.2) -> CASETTE DATA=(208.16,184)
-# Escape upward from the Mega header, then use separate SELV corridors east of
-# the Mega but west of the relay bank.
+# Escape Mega to the left/central SELV area, descend west of the driver bank,
+# then cross along the quiet bottom corridor immediately above the terminals.
 routes={
-  12:("F.Cu",[(78.8,41.2),(78.8,28),(128,28),(128,122),(122,128),(122,171),(190.16,171),(190.16,184)]),
-  13:("B.Cu",[(69.656,41.2),(69.656,26),(125,26),(125,120),(120,125),(120,174),(208.16,174),(208.16,184)]),
+  12:("B.Cu",[(78.8,41.2),(82,47),(122,47),(122,169),(125,172),(190.16,172),(190.16,184)]),
+  13:("F.Cu",[(69.656,41.2),(69.656,101),(124,101),(124,166),(128,170),(208.16,170),(208.16,184)]),
 }
 parts=[]
 for net,(layer,pts) in routes.items():
