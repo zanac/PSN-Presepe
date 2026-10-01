@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 from pathlib import Path
-import re,sys
+import os,re,sys
 
 def count(path):
     s=Path(path).read_text(encoding="utf-8")
@@ -12,5 +12,9 @@ base=count(sys.argv[1]); cand=count(sys.argv[2])
 print(f"Baseline unconnected: {base}")
 print(f"Candidate unconnected: {cand}")
 print(f"Reduction: {base-cand}")
-if cand>=base:
+mode=os.environ.get("CANDIDATE_MODE","improve")
+if mode=="baseline":
+    if cand!=base:
+        raise SystemExit(f"Baseline candidate changed connectivity: {base} -> {cand}")
+elif cand>=base:
     raise SystemExit("Routing candidate did not reduce unconnected items")
