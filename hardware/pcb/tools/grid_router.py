@@ -75,16 +75,26 @@ def balanced_blocks(text, token):
 def extract_obstacles(text,target,step,clearance):
     blocked=set()
     net_names={int(n):name for n,name in re.findall(r'^\\s*\\(net (\\d+) "([^"]+)"\\)\\s*$',text,re.M)}
-    seg_re=re.compile(r'\\(segment\\s+\\(start ([\\d.-]+) ([\\d.-]+)\\)\\s+\\(end ([\\d.-]+) ([\\d.-]+)\\)\\s+\\(width ([\\d.-]+)\\)\\s+\\(layer "?(F\\.Cu|B\\.Cu)"?\\).*?\\(net (\\d+)\)',re.S)
-    for m in seg_re.finditer(text):
-        x1,y1,x2,y2,w,la,n=m.groups(); n=int(n)
+    # Parse balanced copper records instead of one fragile multiline regex.
+    for seg in balanced_blocks(text,"(segment "):
+        st=re.search(r'\\(start ([\\d.-]+) ([\\d.-]+)\\)',seg)
+        en=re.search(r'\\(end ([\\d.-]+) ([\\d.-]+)\\)',seg)
+        wd=re.search(r'\\(width ([\\d.-]+)\\)',seg)
+        ly=re.search(r'\\(layer "?(F\\.Cu|B\\.Cu)"?\\)',seg)
+        nt=re.search(r'\\(net (\\d+)\\)',seg)
+        if not(st and en and wd and ly and nt): continue
+        n=int(nt.group(1))
         if net_names.get(n)==target: continue
-        mark_segment(blocked,*map(float,(x1,y1,x2,y2)),float(w)/2+clearance,LAYERS[la],step)
-    via_re=re.compile(r'\\(via\\s+\\(at ([\\d.-]+) ([\\d.-]+)\\).*?\\(size ([\\d.-]+)\\).*?\\(net (\\d+)\)',re.S)
-    for m in via_re.finditer(text):
-        x,y,size,n=m.groups(); n=int(n)
+        mark_segment(blocked,float(st.group(1)),float(st.group(2)),float(en.group(1)),float(en.group(2)),
+                     float(wd.group(1))/2+clearance,LAYERS[ly.group(1)],step)
+    for via in balanced_blocks(text,"(via "):
+        at=re.search(r'\\(at ([\\d.-]+) ([\\d.-]+)\\)',via)
+        sz=re.search(r'\\(size ([\\d.-]+)\\)',via)
+        nt=re.search(r'\\(net (\\d+)\\)',via)
+        if not(at and sz and nt): continue
+        n=int(nt.group(1))
         if net_names.get(n)==target: continue
-        mark_disc(blocked,float(x),float(y),float(size)/2+clearance,[0,1],step)
+        mark_disc(blocked,float(at.group(1)),float(at.group(2)),float(sz.group(1))/2+clearance,[0,1],step)
 
     # Pads use coordinates local to their footprint. Transform them to board
     # coordinates before rasterizing; previous implementation treated them as global.
