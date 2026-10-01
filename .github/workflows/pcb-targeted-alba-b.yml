@@ -81,9 +81,9 @@ jobs:
                   if u[2]!=v[2]:
                     # PTH endpoints already bridge layers; do not drill a via inside them.
                     if math.hypot(u[0]-a[0],u[1]-a[1])<1.0 or math.hypot(u[0]-b[0],u[1]-b[1])<1.0: continue
-                    items.append(f'\\t(via (at {u[0]} {u[1]}) (size 1.2) (drill 0.6) (layers "F.Cu" "B.Cu") (net {a[2]}))\\n')
+                    items.append(f'\t(via (at {u[0]} {u[1]}) (size 1.2) (drill 0.6) (layers "F.Cu" "B.Cu") (net {a[2]}))\n')
                   else:
-                    items.append(f'\\t(segment (start {u[0]} {u[1]}) (end {v[0]} {v[1]}) (width 1.0) (layer "{u[2]}") (net {a[2]}))\\n')
+                    items.append(f'\t(segment (start {u[0]} {u[1]}) (end {v[0]} {v[1]}) (width 1.0) (layer "{u[2]}") (net {a[2]}))\n')
                 work=base; idx=work.rfind(")"); work=work[:idx]+''.join(items)+work[idx:]
                 tag=f"{net}_{sl[0]}{gl[0]}"
                 Path(f"hardware/pcb/targeted-relays/{tag}.kicad_pcb").write_text(work)
