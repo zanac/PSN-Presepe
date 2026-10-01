@@ -62,6 +62,8 @@ jobs:
         if: always()
         run: |
           python3 hardware/pcb/tools/drc_summary.py hardware/pcb/build/drc-report.txt
+          echo "Candidate DRC:"
+          python3 hardware/pcb/tools/drc_summary.py hardware/pcb/build/route-candidate-drc.txt
           python3 hardware/pcb/tools/compare_unconnected.py \
             hardware/pcb/build/drc-report.txt \
             hardware/pcb/build/route-candidate-drc.txt
