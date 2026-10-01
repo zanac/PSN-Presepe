@@ -1,4 +1,4 @@
-name: PCB Autoroute Candidate
+name: PCB Autoroute Candidate\n# baseline-after-27: target the five remaining logic connections
 
 on:
   workflow_dispatch:
