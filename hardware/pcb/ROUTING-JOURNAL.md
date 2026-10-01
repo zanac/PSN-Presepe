@@ -254,3 +254,18 @@ K15/net50:
 - Generator restored to best K15 candidate in `41ef0da662f07cabb78bdffc8f552df953100fd1`.
 
 Next: solve only K15's initial pad escape across K12 x=147, but keep layer changes farther from U2 pads/vias. Official board stays K1-K14 / 156 unconnected until K15 candidate is zero-error.
+
+## K15 extended escape search — 2026-10-01 12:07 CEST
+
+Official remains K1-K14 / 156 unconnected and clean except intentional incompleteness.
+
+K15 experiments from best `70fab4b4...` (156 -> 155, one crossing, zero shorts/clearance):
+- `33354716...`: move layer bridge below U2; 2 shorts + 2 mask bridges + 2 crossings. Reject.
+- `abafd372...`: separate pad escape/crossing; 3 shorts + 4 mask bridges + hole errors. Reject.
+- `75a2ff22...`: long F.Cu escape to x=152; no shorts but 6 crossings. Reject.
+- `9c2821ef...`: attempted candidate-only local K12 bridge; generator produced malformed candidate (KiCad failed to load). **No electrical conclusion; this topology still needs a correct test.**
+- `3f9d0036...`: B.Cu detour around K12 lower endpoint; 2 shorts + 3 mask bridges. Reject.
+
+Conclusion: do not add vias close to U2 and do not route K15 long-distance on F.Cu. Best known K15 candidate remains `70fab4b4a9e86a9c205d61f840278a23a06451c5`, artifact `11153127344`, with only K15 initial B.Cu escape crossing K12 B.Cu vertical x=147. Generator restored to that exact candidate in `5225dca9ee6584600b84fb2d18bfaad6556e9662`.
+
+Next experiment: correctly construct a candidate that keeps K15 exactly as best-known and replaces only K12's B.Cu x=147 segment with a local F.Cu bridge around the K15 crossing, with vias placed sufficiently far from U2. Validate syntax before DRC.
