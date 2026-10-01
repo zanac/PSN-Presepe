@@ -33,12 +33,12 @@ Use small commits with one purpose:
 - Fetch HEAD immediately before every PCB/tool/workflow update to avoid overwriting concurrent work.
 
 ## Next action
-**Freerouting CLI acceleration confirmed as the primary logic-routing strategy.** KiCad 9 -> Specctra DSN -> Freerouting 2.4.1 -> SES -> KiCad DRC works headlessly. Workflow is artifact-only; it never auto-promotes.
+**Validated Freerouting logic batch is ready for promotion from artifact 11175292602 (run 36887424491).** The candidate passed protected-net stripping, routed-net preservation, KiCad DRC comparison and improved connectivity from **149 to 122 unconnected pads (-27)** with no critical DRC categories.
 
-Direct inspection of autoroute artifact `11174895147` proves: official clean baseline report = **149 unconnected pads**; stripped autoroute candidate = **122 unconnected pads** and `Found 0 DRC violations` (non-connectivity). Thus **27 connections were solved in one pass**. Those 27 include D30,D31,D32,D33,D34,D35,D37,D38,D39,D40 plus D2/D3/D4 sky RGB, D5 stars, D6 buzzer, D7/D11/D12 sunset, D8 houses, D44/D45/D46 dawn and associated negative nodes. Power and relay COM/NO/NC were deliberately stripped/protected.
+Promotion failed only because KiCad SES reformatting exposed an indentation assumption in `pcb_sanity.py`; the sanity parser has since been hardened and the exact validated routed-net ID set approved. Autoroute CI is now serialized with `concurrency/cancel-in-progress` and remains artifact-only; promotion is external/manual after validation.
 
-Workflow comparison bugs found/fixed: KiCad says 'unconnected pads', and error report legitimately contains unconnected_items. Commits `e1d62763...`, `ae4f884c...`, `f5c7d26f...` harden parser/gate. Current confirmation run `36885710850` is autorouting.
+After promotion, exactly **5 logic connections** remain: `D36_RELAY12`, `CIELO_G_NEG`, `TRAM_R_NEG`, `TRAM_G_NEG`, `ALBA_B_NEG`. The other **117** remaining unconnected reports are deliberate routing work: **48 relay contacts + 69 power**. Close the 5 logic stragglers with targeted candidates/DRC before relay-contact routing, then power buses/zones.
 
-If confirmation matches 149->122 + no critical DRC: before promotion, add/check protected-net preservation and compare routed-net set; then promote the complete candidate only through full official KiCad Validation. Do not hand-route D30-D40 unless autoroute integration fails. After logic promotion, handle remaining logic stragglers, then dedicated relay-contact routing and power buses/zones.
+Official KiCad validation workflow was also fixed so `kicad-cli` may emit incomplete-board reports without aborting before `drc_gate.py`; the explicit fabrication gate remains authoritative. Final fabrication gate remains zero real DRC + zero unconnected -> same-revision Gerber+Excellon ZIP + BOM CSV + CPL/centroid CSV.
 
-Revised progress remains ~45-55% routing / ~65-70% overall PCB before autoroute promotion; a validated 27-connection promotion will materially improve both. Final gate remains zero real DRC + zero unconnected -> Gerber+Excellon ZIP + BOM CSV + CPL/centroid CSV.
+Progress checkpoint before artifact promotion: ~50% routing / ~68% overall PCB. Recalculate immediately after the 149->122 candidate is committed.
