@@ -93,7 +93,7 @@ jobs:
       - name: Validate protected nets and routed-net preservation
         run: |
           python3 - <<'PY'
-          import re, sys
+          import sys
           sys.path.append('/usr/lib/python3/dist-packages')
           import pcbnew
 
@@ -103,71 +103,12 @@ jobs:
           b1=pcbnew.LoadBoard(candidate)
           assert b0 is not None and b1 is not None
 
-          relay_contact=re.compile(r'^R[0-9]+_(COM|NO|NC)        continue-on-error: true
-        run: |
-          kicad-cli pcb drc --severity-all --output hardware/pcb/route-candidate/drc-routed.txt hardware/pcb/route-candidate/PSN-Presepe-Mega-routed.kicad_pcb
-          kicad-cli pcb drc --severity-error --output hardware/pcb/route-candidate/drc-errors.txt hardware/pcb/route-candidate/PSN-Presepe-Mega-routed.kicad_pcb
-
-      - name: Candidate statistics
-        if: always()
-        run: |
-          python3 - <<'PY'
-          from pathlib import Path
-          p=Path('hardware/pcb/route-candidate/PSN-Presepe-Mega-routed.kicad_pcb')
-          if p.exists():
-              s=p.read_text()
-              print('segments',s.count('(segment'))
-              print('vias',s.count('(via'))
-          for name in ('drc-routed.txt','drc-errors.txt'):
-              r=Path('hardware/pcb/route-candidate')/name
-              if r.exists():
-                  print(name)
-                  for line in r.read_text().splitlines():
-                      if 'Found ' in line:
-                          print(line)
-          PY
-
-      - name: Compare candidate with production baseline
-        run: |
-          kicad-cli pcb drc --severity-all --output hardware/pcb/route-candidate/drc-baseline.txt hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb || true
-          python3 - <<'PY'
-          from pathlib import Path
-          import re
-          def count(path):
-              t=Path(path).read_text()
-              m=re.search(r'Found\\s+(\\d+)\\s+unconnected\\s+(?:items|pads)',t,re.I)
-              if m: return int(m.group(1))
-              return len(re.findall(r'^\\[unconnected_items\\]',t,re.M))
-          base=count('hardware/pcb/route-candidate/drc-baseline.txt')
-          cand=count('hardware/pcb/route-candidate/drc-routed.txt')
-          errors=Path('hardware/pcb/route-candidate/drc-errors.txt').read_text()
-          cats=re.findall(r'^\\[([^]\\n]+)\\]',errors,re.M)
-          ignored={'unconnected_items','lib_footprint_mismatch'}
-          critical=sorted({c for c in cats if c not in ignored})
-          clean=not critical
-          print(f'Baseline unconnected: {base}')
-          print(f'Autoroute candidate unconnected: {cand}')
-          print(f'Reduction: {base-cand}')
-          print(f'Critical DRC categories: {critical or "none"}')
-          Path('hardware/pcb/route-candidate/COMPARISON.txt').write_text(
-              f'baseline_unconnected={base}\\ncandidate_unconnected={cand}\\nreduction={base-cand}\\ncritical_drc={",".join(critical) or "none"}\\n')
-          # Laboratory only: never promote automatically.
-          assert cand < base, 'Autorouter did not improve connectivity'
-          assert clean, f'Autorouter candidate has critical DRC categories: {critical}'
-          PY
-
-      - name: Upload autoroute candidate
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: PSN-Presepe-RevA-Autoroute-Candidate
-          path: hardware/pcb/route-candidate/
-)
-          power={'+12V','GND','+5V_MEGA'}
+          power=set(['+12V','GND','+5V_MEGA'])
           def protected(n):
-              return n in power or bool(relay_contact.fullmatch(n))
+              relay_contact=n.startswith('R') and (n.endswith('_COM') or n.endswith('_NO') or n.endswith('_NC'))
+              return n in power or relay_contact
           def routed_nets(board):
-              return {t.GetNetname() for t in board.GetTracks() if t.GetNetname()}
+              return set(t.GetNetname() for t in board.GetTracks() if t.GetNetname())
 
           base_nets=routed_nets(b0)
           cand_nets=routed_nets(b1)
@@ -175,16 +116,12 @@ jobs:
           missing_existing=sorted(n for n in base_nets if not protected(n) and n not in cand_nets)
           added_logic=sorted(n for n in cand_nets-base_nets if not protected(n))
 
-          print('Baseline routed nets:', sorted(base_nets))
-          print('Candidate routed nets:', sorted(cand_nets))
           print('New autorouted logic nets:', added_logic)
           print('Protected routed nets after strip:', protected_after or 'none')
           print('Previously routed non-protected nets missing:', missing_existing or 'none')
-
-          assert not protected_after, f'Protected nets still contain autorouted copper: {protected_after}'
-          assert not missing_existing, f'Candidate lost previously routed nets: {missing_existing}'
+          assert not protected_after, 'Protected nets still contain autorouted copper: '+str(protected_after)
+          assert not missing_existing, 'Candidate lost previously routed nets: '+str(missing_existing)
           PY
-
       - name: KiCad DRC on stripped candidate
         continue-on-error: true
         run: |
