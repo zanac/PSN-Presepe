@@ -33,4 +33,4 @@ Use small commits with one purpose:
 - Fetch HEAD immediately before every PCB/tool/workflow update to avoid overwriting concurrent work.
 
 ## Next action
-K10 is promoted and official baseline is **160 unconnected items**. First K11 candidate `0c90ef05...` was rejected for one track crossing with K10 and was not promoted. Validate revised K11 candidate `68718816b2a38c29f8d96a4ba7934758ab69114c` (Route Candidate run `36826094970`); if green, promote net 46 and continue with K12/net47.
+K10 is promoted and official baseline is **160 unconnected items**. First K11 candidate `0c90ef05...` was rejected for one track crossing with K10 and was not promoted. Second K11 F.Cu candidate was also rejected for one crossing. Validate third K11 candidate `3022cabc0e84f851c72c524990f2827ac1d8dc3d` using B.Cu crossover + two vias (Route Candidate run `36826462548`); if green, promote net 46 and continue with K12/net47 using the validated layer-change pattern.
