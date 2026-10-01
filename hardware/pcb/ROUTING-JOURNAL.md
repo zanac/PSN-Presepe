@@ -333,3 +333,15 @@ Conclusion: D25-D40 should be designed as coordinated 8-wire fanout banks, not i
 - D26/net21: initial probe crossed D27 pad and D25. Final route uses B.Cu lane between MCU pad rows, via (129.5,50.09), F.Cu x=131.5 left of C2/D25, then horizontal into U1.2. Clean candidate `02ed5d909c3eda6c1582b5165e66c792c7ad92cd`, run `36858026986`: 153->152, zero routing DRC. Promoted official `d3f6b0a3d65586243c27053727199f439ad5e85a`, sanity `0ad9e773077e304f013aa442f453ca1791a9fdc0`.
 - Official board is now **152 unconnected** with D25+D26 added to the previously clean K1-K16 milestone.
 - D27/net22 candidate `e154a246...` reduces 152->151 with no shorts/clearance, but 4 crossings. Exact pairs from artifact `11160176400`: (1) D27 F start at 129.5,54.5 vs D22_START F track at 130.5,54; (2) D27 B pad escape vs D26 B horizontal y=50.09; (3) D27 F start vs D26 F vertical x=131.5; (4) D27 F vertical x=133 vs D26 F horizontal y=64.54. Next: redesign D27 as a comb lane around those four known segments; do not disturb validated D25/D26 unless coordinated candidate proves clean.
+
+## D27/D28 fanout search — 2026-10-01 14:04 CEST
+
+Official D25/D26 board independently revalidated by PCB KiCad Validation run `36858485914`: categories `{'lib_footprint_mismatch': 66, 'unconnected_items': 152}`; critical geometry/electrical categories none. Gate failure only incomplete connectivity; Gerbers skipped.
+
+D27 experiments after checkpoint:
+- right-side fanout `63ffe450...`: worse (1 short, 2 mask bridges, 3 crossings), reject.
+- coordinated D26 repack + D27 `d67059cf...`: 1 short + 1 clearance + 3 crossings, reject; preserve clean official D26.
+- best remains `e154a246...`: 152->151, **zero shorts/clearance**, four crossings, all previously identified.
+D28 even-lane probe `d56c5145...`: 152->151 but 4 shorts + 2 mask + 2 crossings, confirming the narrow x=128.5..130.5 inter-wall channel cannot simply host additional independent vias/traces after D25/D26.
+
+Conclusion: next progress requires a coordinated fanout-bus repack, not more isolated routes. Preserve official D25/D26 as baseline; model D27-D32 together, likely with staggered layer-change stations at different Y and/or one atomic repack of D25-D32. Generator restored to best D27 in `a4e29afc4a56b875a72812e5a8a0b55bf0510c06` for reproducible baseline.
