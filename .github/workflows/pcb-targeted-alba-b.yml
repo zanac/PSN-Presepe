@@ -79,7 +79,7 @@ jobs:
                 if p!=q: items.append(f'\\t(segment (start {p[0]:.3f} {p[1]:.3f}) (end {q[0]:.3f} {q[1]:.3f}) (width 1.0) (layer "B.Cu") (net {a[2]}))\\n')
               routed.append(net)
             if routed:
-              Path(f"hardware/pcb/targeted-relays/R{rn}.kicad_pcb").write_text(src[:idx]+''.join(items).replace('\\\\t','\\t').replace('\\\\n','\\n')+src[idx:])
+              Path(f"hardware/pcb/targeted-relays/R{rn}.kicad_pcb").write_text(src[:idx]+''.join(items).encode().decode('unicode_escape')+src[idx:])
               print("SERIALIZED",repr(items[0]) if items else "none")
               print("relay candidate",rn,len(routed),routed)
           PY
