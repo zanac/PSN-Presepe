@@ -103,3 +103,10 @@ A red GitHub Actions run does not automatically mean routing failed. While the b
 - K1-K8 first coil-low bank is complete; second bank routing has started with K9.
 - Official connectivity after K9 is **161 unconnected items**.
 - Next target: K10 / `RELAY10_COIL_LOW`, net 45, U2 pad17 -> K10 pad5; candidate commit `f355ad399eab761c4f565e3a53219743873418e0`.
+
+## K10 rejected candidate — 2026-10-01
+
+- Candidate `f355ad399eab761c4f565e3a53219743873418e0` reduced connectivity **161 -> 160**, but was correctly rejected by Route Candidate run `36825569934`.
+- DRC found K10 trace crossing K9 coil trace and touching K9 contact pads (`R9_NC`, `R9_COM`): 1 tracks_crossing, 2 shorting_items, 3 solder_mask_bridge.
+- Nothing from this failed candidate was promoted to the production PCB.
+- Revised K10 candidate `838e61b3dc6f0e53eba087d159820d8b42295f62` routes around the left/bottom of K9 and must pass the full candidate gate before promotion.
