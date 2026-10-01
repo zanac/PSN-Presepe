@@ -18,14 +18,14 @@ jobs:
       - uses: actions/checkout@v4
       - name: Verify KiCad CLI
         run: kicad-cli version
-      - name: Build relay-contact batch candidate
+      - name: Build obstacle-aware relay candidates
         run: |
           set -eu
           mkdir -p hardware/pcb/targeted-relays
           python3 - <<'PY'
           from pathlib import Path
-          import math,re
-          src=Path("hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb").read_text()
+          import math,re,subprocess,tempfile
+          base=Path("hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb").read_text()
           def blocks(text,token):
             p=0
             while True:
@@ -43,45 +43,45 @@ jobs:
                   elif ch=="(":d+=1
                   elif ch==")":
                     d-=1
-                    if d==0:
-                      yield text[st:i+1];p=i+1;break
+                    if d==0: yield text[st:i+1];p=i+1;break
           pads={}
-          for b in blocks(src,"(footprint "):
-            rm=re.search(r'\(property "Reference" "([^"]+)"',b); am=re.search(r'\(at ([-\d.]+) ([-\d.]+)(?: ([-\d.]+))?\)',b)
+          for fp in blocks(base,"(footprint"):
+            rm=re.search(r'\(property "Reference" "([^"]+)"',fp); am=re.search(r'\(at ([-\d.]+) ([-\d.]+)(?: ([-\d.]+))?\)',fp)
             if not(rm and am):continue
             ref=rm.group(1)
-            if not (re.fullmatch(r'K\d+',ref) or re.fullmatch(r'JR\d+',ref)):continue
-            fx,fy,rot=float(am.group(1)),float(am.group(2)),float(am.group(3) or 0); a=math.radians(rot)
-            for pb in blocks(b,"(pad "):
+            if not(re.fullmatch(r'K\d+',ref) or re.fullmatch(r'JR\d+',ref)):continue
+            fx,fy,rot=float(am.group(1)),float(am.group(2)),float(am.group(3) or 0); aa=math.radians(rot)
+            for pb in blocks(fp,"(pad"):
               nm=re.search(r'\(net (\d+) "(R\d+_(?:COM|NO|NC))"\)',pb); pm=re.search(r'\(at ([-\d.]+) ([-\d.]+)',pb)
               if not(nm and pm):continue
-              px,py=float(pm.group(1)),float(pm.group(2))
-              x=fx+px*math.cos(a)+py*math.sin(a); y=fy-px*math.sin(a)+py*math.cos(a)
+              px,py=float(pm.group(1)),float(pm.group(2)); x=fx+px*math.cos(aa)-py*math.sin(aa); y=fy+px*math.sin(aa)+py*math.cos(aa)
               pads.setdefault(nm.group(2),[]).append((x,y,int(nm.group(1)),ref))
-          # Generate one candidate per relay. Each candidate routes COM/NO/NC for
-          # only that relay, so DRC can accept safe groups without 29-net cross-talk.
           byrelay={}
           for net,ps in pads.items():
-            if len(ps)!=2: continue
-            rn=int(net[1:net.index('_')])
-            byrelay.setdefault(rn,[]).append((net,ps))
-          idx=src.rfind(")")
+            if len(ps)==2: byrelay.setdefault(int(net[1:net.index('_')]),[]).append((net,ps))
           for rn,nets in sorted(byrelay.items()):
-            items=[]; routed=[]
-            for net,ps in nets:
+            work=base; solved=[]
+            # Route contacts one at a time; each accepted route becomes an obstacle.
+            for net,ps in sorted(nets,key=lambda z:{"COM":0,"NO":1,"NC":2}[z[0].split("_")[1]]):
               a,b=ps
-              if math.hypot(a[0]-b[0],a[1]-b[1])>55: continue
-              # Stagger each contact lane by net type to preserve spacing.
-              typ=net.split("_")[1]; off={"NC":-2.0,"COM":0.0,"NO":2.0}[typ]
-              xmid=(a[0]+b[0])/2+off
-              pts=[(a[0],a[1]),(xmid,a[1]),(xmid,b[1]),(b[0],b[1])]
-              for p,q in zip(pts,pts[1:]):
-                if p!=q: items.append(f'\\t(segment (start {p[0]:.3f} {p[1]:.3f}) (end {q[0]:.3f} {q[1]:.3f}) (width 1.0) (layer "B.Cu") (net {a[2]}))\\n')
-              routed.append(net)
-            if routed:
-              Path(f"hardware/pcb/targeted-relays/R{rn}.kicad_pcb").write_text(src[:idx]+''.join(items).encode().decode('unicode_escape')+src[idx:])
-              print("SERIALIZED",repr(items[0]) if items else "none")
-              print("relay candidate",rn,len(routed),routed)
+              if math.hypot(a[0]-b[0],a[1]-b[1])>70: continue
+              tmp=Path(f"/tmp/R{rn}-{net}.kicad_pcb"); tmp.write_text(work)
+              cmd=["python3","hardware/pcb/tools/grid_router.py",str(tmp),"--net",net,
+                   "--start",f"{a[0]},{a[1]},B.Cu","--goal",f"{b[0]},{b[1]},B.Cu",
+                   "--step","0.5","--clearance","1.2","--margin","25"]
+              p=subprocess.run(cmd,text=True,capture_output=True)
+              if p.returncode: print("NO_ROUTE",rn,net); continue
+              pts=[]
+              for line in p.stdout.splitlines()[1:]:
+                x,y,la=line.split(","); pts.append((float(x),float(y),la))
+              items=[]
+              for u,v in zip(pts,pts[1:]):
+                if u[2]!=v[2]: items.append(f'\t(via (at {u[0]} {u[1]}) (size 1.2) (drill 0.6) (layers "F.Cu" "B.Cu") (net {a[2]}))\n')
+                else: items.append(f'\t(segment (start {u[0]} {u[1]}) (end {v[0]} {v[1]}) (width 0.8) (layer "{u[2]}") (net {a[2]}))\n')
+              idx=work.rfind(")"); work=work[:idx]+''.join(items)+work[idx:]; solved.append(net)
+            if solved:
+              Path(f"hardware/pcb/targeted-relays/R{rn}.kicad_pcb").write_text(work)
+              print("ASTAR_RELAY",rn,len(solved),solved)
           PY
       - name: DRC all candidates
         run: |
@@ -89,9 +89,6 @@ jobs:
           for pcb in hardware/pcb/targeted-relays/*.kicad_pcb; do
             echo "DRC $pcb"
             n="${pcb%.kicad_pcb}"
-            head -c 80 "$pcb" | tail -c 80 || true
-            echo
-            tail -c 300 "$pcb" || true
             kicad-cli pcb drc --severity-all --output "${n}.drc.txt" "$pcb" || true
             echo "REPORT ${n}.drc.txt"; grep -E "^Found|^\\[" "${n}.drc.txt" | head -80 || true
           done
