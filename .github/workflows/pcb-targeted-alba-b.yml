@@ -74,9 +74,15 @@ jobs:
               pts=[]
               for line in p.stdout.splitlines()[1:]:
                 x,y,la=line.split(","); pts.append((float(x),float(y),la))
+              # Grid endpoints are rounded; force exact pad centers so the route
+              # electrically terminates on the intended relay/terminal pads.
+              if pts:
+                pts[0]=(a[0],a[1],pts[0][2]); pts[-1]=(b[0],b[1],pts[-1][2])
               items=[]
               for u,v in zip(pts,pts[1:]):
-                if u[2]!=v[2]: items.append(f'\t(via (at {u[0]} {u[1]}) (size 1.2) (drill 0.6) (layers "F.Cu" "B.Cu") (net {a[2]}))\n')
+                if u[2]!=v[2]:
+                  items.append(f'\t(via (at {u[0]} {u[1]}) (size 1.2) (drill 0.6) (layers "F.Cu" "B.Cu") (net {a[2]}))\n')
+                  continue
                 else: items.append(f'\t(segment (start {u[0]} {u[1]}) (end {v[0]} {v[1]}) (width 0.8) (layer "{u[2]}") (net {a[2]}))\n')
               idx=work.rfind(")"); work=work[:idx]+''.join(items)+work[idx:]; solved.append(net)
             if solved:
