@@ -33,8 +33,8 @@ Use small commits with one purpose:
 - Fetch HEAD immediately before every PCB/tool/workflow update to avoid overwriting concurrent work.
 
 ## Next action
-Official PCB remains **K1-K16 complete / 154 unconnected / zero critical routing DRC**. No relay-input probe has been promoted.
+Official PCB: **K1-K16 + D25 + D26 complete / 152 unconnected / zero critical routing DRC on promoted routes**. D25 clean candidate `c38f647f...` promoted `927f3d8c...`; D26 clean candidate `02ed5d90...` promoted `d3f6b0a3...`; sanity through net21 at `0ad9e773...`.
 
-Next low-risk block is nets 20..35 (D25..D40 MCU1 -> U1/U2). Single-net probes show the x≈122..135 corridor is already obstacle-dense on both layers: D25 direct reduces 154->153 but has short/crossing/mask; left detour is worse; D40 direct also hits one obstacle cluster. Treat these as two coordinated 8-wire fanout banks.
+Fanout topology established: MCU->U1 crosses F.Cu wall net16 on B.Cu, changes layer in x≈129.5 channel, then crosses B.Cu wall net17 on F.Cu. D27 current candidate `e154a246...` reduces 152->151 with no short/clearance but 4 known crossings (artifact `11160176400`): D22_START F at (130.5,54), D26 B y=50.09, D26 F x=131.5, D26 F horizontal y=64.54. Redesign D27 around these exact obstacles, preferably comb-style; preserve validated D25/D26 unless an atomic repack is DRC-clean.
 
-Restart: map existing segments/vias/pads in x=118..136,y=44..112, identify parallel channels and candidate a 2-4 net bundle. Keep +12V/GND, relay COM/NO, high-current copper and pours untouched. Generator at `8c099ae9a83cd995c3144e2a6d322096148466c2` is the reproducible D25 probe baseline only.
+Continue D27..D32 low-risk input fanout. Keep +12V/GND, COM/NO, high-current copper and pours untouched.
