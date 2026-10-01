@@ -5,9 +5,9 @@ This file is the short restart point for long autonomous PCB sessions.
 ## Current baseline
 - Branch: `dev`.
 - Official board: `hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb`.
-- Official board currently contains **81 routed segments**.
+- Official board currently contains **105 routed segments**.
 - Routing is being promoted only after a temporary candidate passes real KiCad DRC.
-- Current temporary candidate script targets the next relay-coil experiment after K4; always fetch it fresh because concurrent commits may advance it.
+- K1-K8 relay coil-low routes are promoted and sanity-approved. The current temporary candidate targets K9 (`RELAY9_COIL_LOW`, net 44, U2.18 -> K9.5); always fetch it fresh because concurrent commits may advance it.
 - Gerber fabrication gate remains blocked until DRC has no real errors and connectivity is complete.
 
 ## Restart procedure
@@ -33,4 +33,4 @@ Use small commits with one purpose:
 - Fetch HEAD immediately before every PCB/tool/workflow update to avoid overwriting concurrent work.
 
 ## Next action
-K4 (`RELAY4_COIL_LOW`) passed Routing Lab with 0 error-severity DRC violations and reduced unconnected 167 → 166; it was promoted in commit `c8a58e53350999d83ced2cef67cfb762959357a3`. Prepare and validate K5 next.
+K8 (`RELAY8_COIL_LOW`, net 43) passed Route Candidate run `36825163253` and Routing Lab run `36825163240`; it was promoted in commit `92b51d9ade2f77bdfbd14e6c32fc90ccd81dfb0e` and sanity-approved in `da995d58895f32e03e9aa645983017897bd52724`. Validate the K9 candidate in commit `6424899cb5dd446a89f35f9b0216fc53cb99c796`; promote it only if candidate DRC is clean and connectivity improves.
