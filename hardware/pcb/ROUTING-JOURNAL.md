@@ -69,3 +69,13 @@ Important: re-read the production PCB and generator from fresh `dev` HEAD before
 ## Do not infer
 
 A red GitHub Actions run does not automatically mean routing failed. While the board is incomplete, the final fabrication gate intentionally exits non-zero for remaining unconnected items. Always inspect the DRC counts and candidate-specific steps/logs.
+
+## Checkpoint K5 — 2026-10-01
+
+- K5 / `RELAY5_COIL_LOW` net 40 promoted in `9d1b02622b19cd3b372162aa1dcf989d9fa6d91c`.
+- Sanity allow-list updated in `76e252d9f4eabce3c5dec292bf02dfb8ce4fabec`.
+- Stable KiCad 9.0.9 run: `36824507731`.
+- Official baseline: **165 unconnected items**.
+- Error-severity DRC violations: **0**.
+- Critical geometry/electrical categories: **none**.
+- Next target: K6 / `RELAY6_COIL_LOW`, net 41, U1 pad13 -> K6 pad5.
