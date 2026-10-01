@@ -5,9 +5,9 @@ This file is the short restart point for long autonomous PCB sessions.
 ## Current baseline
 - Branch: `dev`.
 - Official board: `hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb`.
-- Official board currently contains **105 routed segments**.
+- Official board currently contains **113 routed segments**.
 - Routing is being promoted only after a temporary candidate passes real KiCad DRC.
-- K1-K8 relay coil-low routes are promoted and sanity-approved. The current temporary candidate targets K9 (`RELAY9_COIL_LOW`, net 44, U2.18 -> K9.5); always fetch it fresh because concurrent commits may advance it.
+- K1-K10 relay coil-low routes are promoted and sanity-approved. K11 is in candidate validation.
 - Gerber fabrication gate remains blocked until DRC has no real errors and connectivity is complete.
 
 ## Restart procedure
@@ -33,4 +33,4 @@ Use small commits with one purpose:
 - Fetch HEAD immediately before every PCB/tool/workflow update to avoid overwriting concurrent work.
 
 ## Next action
-K8 (`RELAY8_COIL_LOW`, net 43) passed Route Candidate run `36825163253` and Routing Lab run `36825163240`; it was promoted in commit `92b51d9ade2f77bdfbd14e6c32fc90ccd81dfb0e` and sanity-approved in `da995d58895f32e03e9aa645983017897bd52724`. Validate the K9 candidate in commit `6424899cb5dd446a89f35f9b0216fc53cb99c796`; promote it only if candidate DRC is clean and connectivity improves.
+K10 is promoted and official baseline is **160 unconnected items**. First K11 candidate `0c90ef05...` was rejected for one track crossing with K10 and was not promoted. Validate revised K11 candidate `68718816b2a38c29f8d96a4ba7934758ab69114c` (Route Candidate run `36826094970`); if green, promote net 46 and continue with K12/net47.
