@@ -8,14 +8,13 @@ permissions:
 jobs:
   route:
     runs-on: ubuntu-24.04
-    timeout-minutes: 20
+    container:
+      image: kicad/kicad:9.0
+    timeout-minutes: 12
     steps:
       - uses: actions/checkout@v4
-      - name: Install KiCad 9
-        run: |
-          sudo add-apt-repository --yes ppa:kicad/kicad-9.0-releases
-          sudo apt-get update
-          sudo apt-get install --yes kicad
+      - name: Verify KiCad CLI
+        run: kicad-cli version
       - name: Build targeted candidates
         run: |
           mkdir -p hardware/pcb/targeted-alba
