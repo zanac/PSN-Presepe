@@ -20,7 +20,7 @@ Persistent restart/checkpoint log for long autonomous routing sessions on branch
 - Source PCB routed segments: at least 109
 - Copper zones: 0
 - Error-severity DRC violations: **0**
-- Unconnected items: **161**
+- Unconnected items: **160**
 - Full-report non-routing warnings: 66 `lib_footprint_mismatch`
 - Fabrication status: **BLOCKED / NOT FOR FABRICATION**
 
@@ -110,3 +110,10 @@ A red GitHub Actions run does not automatically mean routing failed. While the b
 - DRC found K10 trace crossing K9 coil trace and touching K9 contact pads (`R9_NC`, `R9_COM`): 1 tracks_crossing, 2 shorting_items, 3 solder_mask_bridge.
 - Nothing from this failed candidate was promoted to the production PCB.
 - Revised K10 candidate `838e61b3dc6f0e53eba087d159820d8b42295f62` routes around the left/bottom of K9 and must pass the full candidate gate before promotion.
+
+## Checkpoint K10 — 2026-10-01
+
+- Revised K10 candidate `838e61b3dc6f0e53eba087d159820d8b42295f62` passed Route Candidate run `36825827075` with all gate steps successful.
+- K10 / net 45 promoted in `f3bcda32516b89d19843643708845e0119bd251b` and sanity-approved in `2ea98eb2c71bd09bed03ded318b039c09c0754bc`.
+- Official connectivity after K10: **160 unconnected items**.
+- K11 / net 46 candidate prepared in `0c90ef05d92acda60cadc32e994b2534617a294a` using a lower corridor below K10.
