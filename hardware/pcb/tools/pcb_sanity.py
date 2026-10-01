@@ -37,7 +37,7 @@ assert zones == 0, f"Draft board unexpectedly contains {zones} copper zone(s); c
 
 segments = s.count("(segment ")
 if os.environ.get("ALLOW_ROUTING") != "1":
-    approved_source_route_nets = {14, 15, 16, 17, 18}  # OLED SDA/SCL + buttons
+    approved_source_route_nets = {14, 15, 16, 17, 18, 19}  # OLED SDA/SCL + buttons + A0 pot
     routed_ids = {int(x) for x in re.findall(r'\(segment [^\n]*\(net (\d+)\)\)', s)}
     via_ids = {int(x) for x in re.findall(r'\(via [^\n]*\(net (\d+)\)\)', s)}
     unexpected = (routed_ids | via_ids) - approved_source_route_nets
