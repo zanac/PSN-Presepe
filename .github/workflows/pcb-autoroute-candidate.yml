@@ -155,13 +155,13 @@ jobs:
           import re
           def count(path):
               t=Path(path).read_text()
-              m=re.search(r'Found\\s+(\\d+)\\s+unconnected\\s+(?:items|pads)',t,re.I)
+              m=re.search(r'Found +([0-9]+) +unconnected +(items|pads)',t,re.I)
               if m: return int(m.group(1))
-              return len(re.findall(r'^\\[unconnected_items\\]',t,re.M))
+              return t.count('[unconnected_items]')
           base=count('hardware/pcb/route-candidate/drc-baseline.txt')
           cand=count('hardware/pcb/route-candidate/drc-routed.txt')
           errors=Path('hardware/pcb/route-candidate/drc-errors.txt').read_text()
-          cats=re.findall(r'^\\[([^]\\n]+)\\]',errors,re.M)
+          cats=[line[1:line.index(']')] for line in errors.splitlines() if line.startswith('[') and ']' in line]
           ignored={'unconnected_items','lib_footprint_mismatch'}
           critical=sorted({c for c in cats if c not in ignored})
           clean=not critical
