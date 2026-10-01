@@ -50,7 +50,7 @@ jobs:
             if not(rm and am):continue
             ref=rm.group(1)
             if not(re.fullmatch(r'K\d+',ref) or re.fullmatch(r'JR\d+',ref)):continue
-            fx,fy,rot=float(am.group(1)),float(am.group(2)),float(am.group(3) or 0); aa=math.radians(rot)
+            fx,fy,rot=float(am.group(1)),float(am.group(2)),float(am.group(3) or 0); aa=math.radians(-rot)
             for pb in blocks(fp,"(pad"):
               nm=re.search(r'\(net (\d+) "(R\d+_(?:COM|NO|NC))"\)',pb); pm=re.search(r'\(at ([-\d.]+) ([-\d.]+)',pb)
               if not(nm and pm):continue
