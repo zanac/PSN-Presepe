@@ -15,8 +15,8 @@ print(f"Baseline segments: {baseline_segments}")
 
 # U2 pad17 = (145.16,94.54)
 # K10 pad5 with footprint rotation 90 deg = (175.62,115.00)
-# Short local corridor for the second ULN2803 relay bank.
-pts=[(145.16,94.54),(149.5,96.5),(149.5,109.5),(175.62,109.5),(175.62,115.0)]
+# Route around the left/bottom side of K9 to avoid its contact pads and the K9 coil trace.
+pts=[(145.16,94.54),(142.0,96.5),(142.0,118.0),(175.62,118.0),(175.62,115.0)]
 parts=[]
 for a,b in zip(pts,pts[1:]):
     parts.append(f'  (segment (start {a[0]} {a[1]}) (end {b[0]} {b[1]}) (width 0.3) (layer "F.Cu") (net 45))')
