@@ -9,7 +9,7 @@ assert s.count("(segment ") == 74, "Expected promoted 74-segment baseline"
 # U1 pad18 = (145.16,62.00)
 # K1 pad5 after KiCad 90-degree rotation = (142.38,60.00)
 # Very short local connection, kept on F.Cu.
-pts=[(145.16,62.0),(150.0,62.0),(143.5,60.0),(142.38,60.0)]
+pts=[(145.16,62.0),(144.2,60.0),(142.38,60.0)]
 parts=[]
 for a,b in zip(pts,pts[1:]):
     parts.append(f'  (segment (start {a[0]} {a[1]}) (end {b[0]} {b[1]}) (width 0.3) (layer "F.Cu") (net 36))')
