@@ -87,8 +87,10 @@ jobs:
         run: |
           set -u
           for pcb in hardware/pcb/targeted-relays/*.kicad_pcb; do
+            echo "DRC $pcb"
             n="${pcb%.kicad_pcb}"
             kicad-cli pcb drc --severity-all --output "${n}.drc.txt" "$pcb" || true
+            echo "REPORT ${n}.drc.txt"; grep -E "^Found|^\\[" "${n}.drc.txt" | head -80 || true
           done
       - name: Rank candidates
         run: |
