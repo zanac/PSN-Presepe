@@ -311,3 +311,17 @@ Next: inspect residual crossing from artifact `11155458843` (direct K14 pad esca
 - Milestone: **all K1-K16 relay coil-low outputs are now routed and KiCad-validated**.
 
 Next phase is not blind relay-contact routing. Inventory the 154 remaining connections and route low-risk logic/control nets first; power/high-current and relay-contact nets remain a separately reviewed phase. Keep Gerber gate closed until zero real DRC errors + zero unconnected.
+
+## Relay-input fanout reconnaissance — 2026-10-01 13:36 CEST
+
+Official board remains the validated K1-K16 milestone: 154 unconnected, zero critical routing DRC. No input candidate promoted.
+
+Residual low-risk target block identified: nets 20..35 = D25_RELAY1..D40_RELAY16, MCU1 -> U1/U2 inputs. U1 inputs are x=135,y=62..79.78; U2 inputs x=135,y=92..109.78. MCU1 absolute relay pads alternate x=121.98/124.52 from y=46.28 through 66.60.
+
+Probes:
+- D25 F.Cu direct `b8adaee1...`: 154->153 but 1 short + 1 crossing + 1 solder-mask bridge.
+- D25 same geometry B.Cu `3945740e...`: same violation pattern, proving corridor geometry rather than layer is the problem.
+- D25 external-left B.Cu `7bb85a63...`: worse (clearance/short/mask/crossings); left edge around MCU is occupied.
+- D40 lower direct `96b9ecd3...`: 154->153 but hole-clearance + short + mask + crossing near MCU corridor.
+
+Conclusion: D25-D40 should be designed as coordinated 8-wire fanout banks, not independent point routes. Next action: map existing copper/through-hole obstacles around MCU x=118..136,y=44..112 and choose parallel fanout channels, then candidate a small 2-4 net bundle before promoting. Generator restored to D25 baseline in `8c099ae9a83cd995c3144e2a6d322096148466c2`; this is only a reproducible probe, not a promotion candidate.
