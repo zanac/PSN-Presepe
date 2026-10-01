@@ -33,4 +33,4 @@ Use small commits with one purpose:
 - Fetch HEAD immediately before every PCB/tool/workflow update to avoid overwriting concurrent work.
 
 ## Next action
-K10 remains the latest promoted relay route; official baseline **160 unconnected**. K11 attempts 1-4 were rejected and never promoted. Fourth attempt proved x=145.8 B.Cu descent conflicts with U2 PTH pad column. Validate fifth candidate `1b3deb535c66716031a2bf19b6e43e25ecf7b356` (Route Candidate `36826828953`): escape left on B.Cu, descend x=132, cross below relay row y=130, rise at K11. If green, promote net46 and continue K12.
+Official baseline remains **160 unconnected**, K1-K10 promoted. K11 attempts 1-5 were rejected and never promoted. Attempt 5 showed the external B.Cu corridor is usable but its two vias created hole/mask/short violations. Since U2.16 and K11.5 are THT, candidate 6 removes vias entirely: `788b41860645d9cdb9d12693b080ed1e41a214e9`, Route Candidate `36827291884`. Validate it; if green promote net46, then use via-free B.Cu routing as the starting pattern for K12-K16.
