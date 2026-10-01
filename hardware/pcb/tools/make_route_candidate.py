@@ -13,7 +13,15 @@ parts=[
 '  (segment (start 193.62 146.0) (end 193.62 115.0) (width 0.3) (layer "F.Cu") (net 46))',
 # K14 uses the old K11 B.Cu lane and its own lower backbone
 '  (segment (start 145.16 104.70) (end 143.5 106.0) (width 0.3) (layer "B.Cu") (net 49))',
-'  (segment (start 143.5 106.0) (end 143.5 142.0) (width 0.3) (layer "B.Cu") (net 49))',
+'  (segment (start 143.5 106.0) (end 143.5 135.0) (width 0.3) (layer "B.Cu") (net 49))',
+'  (via (at 143.5 135.0) (size 0.8) (drill 0.4) (layers "F.Cu" "B.Cu") (net 49))',
+'  (segment (start 143.5 135.0) (end 143.5 137.0) (width 0.3) (layer "F.Cu") (net 49))',
+'  (via (at 143.5 137.0) (size 0.8) (drill 0.4) (layers "F.Cu" "B.Cu") (net 49))',
+'  (segment (start 143.5 137.0) (end 143.5 139.0) (width 0.3) (layer "B.Cu") (net 49))',
+'  (via (at 143.5 139.0) (size 0.8) (drill 0.4) (layers "F.Cu" "B.Cu") (net 49))',
+'  (segment (start 143.5 139.0) (end 143.5 141.0) (width 0.3) (layer "F.Cu") (net 49))',
+'  (via (at 143.5 141.0) (size 0.8) (drill 0.4) (layers "F.Cu" "B.Cu") (net 49))',
+'  (segment (start 143.5 141.0) (end 143.5 142.0) (width 0.3) (layer "B.Cu") (net 49))',
 '  (segment (start 143.5 142.0) (end 247.62 142.0) (width 0.3) (layer "B.Cu") (net 49))',
 '  (segment (start 247.62 142.0) (end 247.62 115.0) (width 0.3) (layer "B.Cu") (net 49))',
 ]
