@@ -60,7 +60,7 @@ jobs:
       - name: Autoroute raw candidate
         run: |
           java -jar hardware/pcb/route-candidate/freerouting.jar \
-            --gui.enabled=false -da -dct 0 -mp 300 \
+            --gui.enabled=false -da -dct 0 -mp 50 \
             -de hardware/pcb/route-candidate/PSN-Presepe-Mega.dsn \
             -do hardware/pcb/route-candidate/PSN-Presepe-Mega.ses
 
