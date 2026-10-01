@@ -83,3 +83,13 @@ K2 geometry is therefore READY for clean promotion to fresh `dev`. Candidate pat
 K2 was promoted to `dev` in commit `d8761dd1bf4adc2f0b2304a1835ebe33a3bc4dd1`; sanity whitelist updated in `a728d711a275e50bf1e7d17cdb207a2b63e460ca`. Stable validation workflow run `36821946903` confirmed the official PCB at **168 unconnected items, 0 error-severity DRC violations, no critical geometry/electrical categories**. Stable and experimental CI were then separated (`ae11ce53...`, `727d91d4...`).
 
 Next routing target: K3 / `RELAY3_COIL_LOW` from U1 output to K3 coil pad, using the corrected Y-down rotated relay geometry. Start from fresh dev HEAD, not from the old K2 candidate generator.
+
+## Checkpoint K5 — 2026-10-01
+
+- K5 / `RELAY5_COIL_LOW` net 40 promoted in `9d1b02622b19cd3b372162aa1dcf989d9fa6d91c`.
+- Sanity allow-list updated in `76e252d9f4eabce3c5dec292bf02dfb8ce4fabec`.
+- Stable KiCad 9.0.9 run: `36824507731`.
+- Official baseline: **165 unconnected items**.
+- Error-severity DRC violations: **0**.
+- Critical geometry/electrical categories: **none**.
+- Next target: K6 / `RELAY6_COIL_LOW`, net 41, U1 pad13 -> K6 pad5.
