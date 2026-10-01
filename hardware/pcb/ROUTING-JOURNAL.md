@@ -204,3 +204,11 @@ A red GitHub Actions run does not automatically mean routing failed. While the b
 - Immediate-via attempt `9936fc0a28abaa4dd6564a554f6cee3d8fd327a9` confirmed that simply dropping to B.Cu alongside U2 collides with pads 12/11/10 and K11.
 - **No K14 candidate was promoted. Official PCB remains K1-K13, 157 unconnected.**
 - Next safe strategy: test a combined temporary reroute that removes/repositions K11/net46 to open an escape lane for K14, then run full KiCad DRC and require no regression before changing the official PCB.
+
+## K14 combined-reroute experiments — 2026-10-01
+
+- Official PCB stayed unchanged at K1-K13 / **157 unconnected** throughout this series.
+- Joint K11+K14 candidates `dfd7af45...`, `a8a32429...`, and `fa9e4053...` all preserved connectivity and produced **157 -> 156**; the best result was only two track crossings and no shorts.
+- Moving K13 as well (`26902354...`) regressed DRC, so K13 should remain in its validated geometry.
+- K14 layer-weave `32fda91e...` and alternate entry `ca57761c...` proved the two-crossing bottleneck is in the U2.13 local fanout, not the lower backbone.
+- Next experiment should temporarily repack K11+K12 together while preserving K13, creating a dedicated B.Cu escape lane for K14. No official route should be replaced until the combined candidate has zero error-severity DRC and still reduces unconnected 157 -> 156.
