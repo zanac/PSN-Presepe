@@ -24,7 +24,7 @@ jobs:
           mkdir -p hardware/pcb/targeted-alba
           PCB=hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb
           python3 hardware/pcb/tools/grid_router.py "$PCB" --net ALBA_B_NEG \
-            --start 112.54,165,B.Cu --goal 171.24,184,B.Cu --step 0.5 --clearance 0.35 --margin 25 \
+            --start 112.54,165,B.Cu --goal 171.24,184,B.Cu --step 0.25 --clearance 0.60 --margin 25 \
             > hardware/pcb/targeted-alba/astar.route
           python3 - <<'PY'
           from pathlib import Path
