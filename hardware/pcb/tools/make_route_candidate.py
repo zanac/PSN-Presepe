@@ -13,10 +13,10 @@ assert baseline_segments >= 81, f"Unexpected routing regression: only {baseline_
 assert not any("(net 40)" in ln for ln in s.splitlines() if "(segment " in ln), "RELAY5_COIL_LOW is already routed in baseline"
 print(f"Baseline segments: {baseline_segments}")
 
-# U1 pad14 = (126.16,72.16)
+# U1 pad14 = (145.16,72.16)
 # K5 pad5 with footprint rotation 90 deg = (229.62,60.00)
 # New corridor is below the already validated K1/K2/K3 coil corridors.
-pts=[(126.16,72.16),(148.0,74.0),(227.0,74.0),(229.62,64.0),(229.62,60.0)]
+pts=[(145.16,72.16),(148.0,74.0),(227.0,74.0),(229.62,64.0),(229.62,60.0)]
 parts=[]
 for a,b in zip(pts,pts[1:]):
     parts.append(f'  (segment (start {a[0]} {a[1]}) (end {b[0]} {b[1]}) (width 0.3) (layer "F.Cu") (net 40))')
