@@ -33,8 +33,8 @@ Use small commits with one purpose:
 - Fetch HEAD immediately before every PCB/tool/workflow update to avoid overwriting concurrent work.
 
 ## Next action
-**Milestone reached: K1-K16 relay coil-low routing complete.** Final K16 candidate `4a546032d55f9b2b6dfa7e99aa6693296c8b1ee8` passed Route Candidate run `36854584445`: 155 -> 154 unconnected, zero routing DRC errors. Promoted K11/K14/K16 geometry in `cb164a2313a735384a2130bd7465fa126bc67088`; net51 sanity approval `809c4d85e9f84cf219d28b8c448208f1bbcb94de`.
+Official PCB remains **K1-K16 complete / 154 unconnected / zero critical routing DRC**. No relay-input probe has been promoted.
 
-Official KiCad Validation `36854767991`: **154 unconnected**, `lib_footprint_mismatch: 66`, **critical geometry/electrical categories: none**, error-severity DRC violations none. Fabrication gate intentionally remains closed; no Gerbers.
+Next low-risk block is nets 20..35 (D25..D40 MCU1 -> U1/U2). Single-net probes show the x≈122..135 corridor is already obstacle-dense on both layers: D25 direct reduces 154->153 but has short/crossing/mask; left detour is worse; D40 direct also hits one obstacle cluster. Treat these as two coordinated 8-wire fanout banks.
 
-Next: inventory/classify the 154 residual connections. Continue autonomously with low-risk logic/control routing candidates first (Arduino relay input nets D25-D40 and other signal nets as geometry permits). Keep +12V/GND distribution, relay contacts COM/NO, high-current copper and pours out of blind routing; those require their dedicated reviewed phase.
+Restart: map existing segments/vias/pads in x=118..136,y=44..112, identify parallel channels and candidate a 2-4 net bundle. Keep +12V/GND, relay COM/NO, high-current copper and pours untouched. Generator at `8c099ae9a83cd995c3144e2a6d322096148466c2` is the reproducible D25 probe baseline only.
