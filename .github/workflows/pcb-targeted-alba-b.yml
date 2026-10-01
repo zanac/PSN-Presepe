@@ -73,4 +73,78 @@ jobs:
 
 
 
+      - name: Build conservative obstacle-aware ALBA candidates
+        run: |
+          set -eu
+          mkdir -p hardware/pcb/targeted-alba
+          PCB=hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb
+          for cfg in "025_055 0.25 0.55" "025_070 0.25 0.70" "050_070 0.50 0.70" "050_090 0.50 0.90"; do
+            set -- $cfg; name=$1; step=$2; clearance=$3
+            python3 hardware/pcb/tools/grid_router.py "$PCB" --net ALBA_B_NEG \
+              --start 112.54,165,B.Cu --goal 171.24,184,B.Cu --step "$step" --clearance "$clearance" --margin 30 \
+              > "hardware/pcb/targeted-alba/$name.route"
+            NAME="$name" python3 - <<'PY'
+          from pathlib import Path
+          import os
+          name=os.environ["NAME"]
+          src=Path("hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb").read_text()
+          # Remove the currently promoted net-61 copper before rerouting it.
+          lines=src.splitlines(True); out=[]; i=0
+          while i<len(lines):
+              if ("(segment " in lines[i] or "(via " in lines[i]) and "(net 61)" in lines[i]:
+                  i+=1; continue
+              out.append(lines[i]); i+=1
+          src=''.join(out)
+          pts=[]
+          for line in Path(f"hardware/pcb/targeted-alba/{name}.route").read_text().splitlines()[1:]:
+              x,y,la=line.split(","); pts.append((float(x),float(y),la))
+          items=[]
+          for p,q in zip(pts,pts[1:]):
+              if p[2]!=q[2]:
+                  items.append(f'\t(via (at {p[0]} {p[1]}) (size 0.8) (drill 0.4) (layers "F.Cu" "B.Cu") (net 61))\n')
+              else:
+                  items.append(f'\t(segment (start {p[0]} {p[1]}) (end {q[0]} {q[1]}) (width 0.4) (layer "{p[2]}") (net 61))\n')
+          idx=src.rfind(")")
+          Path(f"hardware/pcb/targeted-alba/{name}.kicad_pcb").write_text(src[:idx]+''.join(items)+src[idx:])
+          print(name,"points",len(pts),"items",len(items))
+          PY
+          done
+      - name: DRC all candidates
+        run: |
+          set -u
+          for pcb in hardware/pcb/targeted-alba/*.kicad_pcb; do
+            n="${pcb%.kicad_pcb}"
+            kicad-cli pcb drc --severity-error --output "${n}.drc.txt" "$pcb" || true
+          done
+      - name: Rank candidates
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          for p in sorted(Path("hardware/pcb/targeted-alba").glob("*.drc.txt")):
+              t=p.read_text()
+              m=re.search(r'Found +([0-9]+) +unconnected +(items|pads)',t,re.I)
+              u=int(m.group(1)) if m else t.count('[unconnected_items]')
+              cats=[x[1:x.index(']')] for x in t.splitlines() if x.startswith('[') and ']' in x]
+              critical=sorted({x for x in cats if x not in {'unconnected_items','lib_footprint_mismatch'}})
+              print(p.name,"unconnected=",u,"critical=",critical or "none")
+              if critical:
+                  lines=t.splitlines()
+                  for i,line in enumerate(lines):
+                      if line.startswith('[') and line[1:line.index(']')] in critical:
+                          print("DETAIL",p.name,*lines[i:i+5],sep=" | ")
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: targeted-alba-b-candidates
+          path: hardware/pcb/targeted-alba/
+
+
+
+
+
+
+
+
+
 
