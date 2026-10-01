@@ -18,33 +18,22 @@ jobs:
       - uses: actions/checkout@v4
       - name: Verify KiCad CLI
         run: kicad-cli version
-      - name: Build ALBA clearance-fix candidates
+      - name: Build ALBA via-size candidates
         run: |
           set -eu
           mkdir -p hardware/pcb/targeted-alba
           python3 - <<'PY'
           from pathlib import Path
           src=Path("hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb").read_text()
-          old=[
-            '(segment (start 127.5 170.5) (end 127.5 172.75) (width 0.4) (layer "F.Cu") (net 61))',
-            '(via (at 127.5 172.75) (size 0.8) (drill 0.4) (layers "F.Cu" "B.Cu") (net 61))',
-            '(segment (start 127.5 172.75) (end 129.5 172.75) (width 0.4) (layer "B.Cu") (net 61))']
-          variants={
-            "fix_128_173":(128.0,173.0),
-            "fix_1285_173":(128.5,173.0),
-            "fix_128_1735":(128.0,173.5),
-            "fix_1285_1735":(128.5,173.5),
-            "fix_129_173":(129.0,173.0)}
-          for name,(x,y) in variants.items():
-            s=src
-            new=[
-              f'(segment (start 127.5 170.5) (end {x} {y}) (width 0.4) (layer "F.Cu") (net 61))',
-              f'(via (at {x} {y}) (size 0.8) (drill 0.4) (layers "F.Cu" "B.Cu") (net 61))',
-              f'(segment (start {x} {y}) (end 129.5 172.75) (width 0.4) (layer "B.Cu") (net 61))']
-            for a,b in zip(old,new):
-              assert a in s,a
-              s=s.replace(a,b,1)
-            Path(f"hardware/pcb/targeted-alba/{name}.kicad_pcb").write_text(s)
+          old='(via (at 127.5 172.75) (size 0.8) (drill 0.4) (layers "F.Cu" "B.Cu") (net 61))'
+          assert old in src
+          for name,size,drill in [
+            ("via_070_030",0.70,0.30),
+            ("via_065_030",0.65,0.30),
+            ("via_060_030",0.60,0.30),
+            ("via_060_025",0.60,0.25)]:
+            new=f'(via (at 127.5 172.75) (size {size}) (drill {drill}) (layers "F.Cu" "B.Cu") (net 61))'
+            Path(f"hardware/pcb/targeted-alba/{name}.kicad_pcb").write_text(src.replace(old,new,1))
           PY
       - name: DRC all candidates
         run: |
