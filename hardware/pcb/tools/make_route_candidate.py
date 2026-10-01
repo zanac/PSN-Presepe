@@ -8,9 +8,9 @@ parts=[
 '  (segment (start 121.98 48.82) (end 123.2 50.09) (width 0.3) (layer "B.Cu") (net 21))',
 '  (segment (start 123.2 50.09) (end 129.5 50.09) (width 0.3) (layer "B.Cu") (net 21))',
 '  (via (at 129.5 50.09) (size 0.8) (drill 0.4) (layers "F.Cu" "B.Cu") (net 21))',
-'  (segment (start 129.5 50.09) (end 138.0 52.0) (width 0.3) (layer "F.Cu") (net 21))',
-'  (segment (start 138.0 52.0) (end 138.0 61.0) (width 0.3) (layer "F.Cu") (net 21))',
-'  (segment (start 138.0 61.0) (end 135.0 64.54) (width 0.3) (layer "F.Cu") (net 21))',
+'  (segment (start 129.5 50.09) (end 131.5 52.0) (width 0.3) (layer "F.Cu") (net 21))',
+'  (segment (start 131.5 52.0) (end 131.5 64.54) (width 0.3) (layer "F.Cu") (net 21))',
+'  (segment (start 131.5 64.54) (end 135.0 64.54) (width 0.3) (layer "F.Cu") (net 21))',
 ]
 edge=s.find("  (gr_rect "); assert edge>0
 s=s[:edge]+chr(10).join(parts)+chr(10)+s[edge:]
