@@ -51,3 +51,17 @@ Validated artifact for the 122->120 delta: run `36898305562`, artifact `11180751
 Final fabrication gate remains zero real DRC + zero unconnected -> same-revision Gerber+Excellon ZIP + BOM CSV + CPL/centroid CSV.
 
 Progress checkpoint after 122->120 promotion: ~66% routing / ~76% overall PCB.
+
+## ALBA_B targeted routing investigation (2026-10-01)
+Official board remains at **118 unconnected**; no experimental candidate has been promoted.
+
+Target net: `ALBA_B_NEG` (net 61), Q9.2 `(112.54,165)` -> J_ALBA.4 `(171.24,184)`.
+
+A dedicated KiCad 9 container workflow now batches candidate routes and runs real DRC without repeated APT installation:
+`.github/workflows/pcb-targeted-alba-b.yml`.
+
+Every tested route electrically closes ALBA_B and reaches **117 unconnected**, but all current geometries still create critical DRC collisions, so promotion is correctly blocked. Main geometric barriers observed around the Q9 escape/destination corridor include `D22_START`, `D24_TEST`, `CIELO_R_NEG`, `CIELO_G_NEG`, `CIELO_B_NEG`, `TRAM_B_NEG`, `ALBA_R_NEG`, and `ALBA_G_NEG`.
+
+Best diagnostic families so far reduced the error classes to `tracks_crossing` / `shorting_items` (some variants also introduce clearance/hole/solder-mask issues). Direct, lower-edge, upper, mixed-layer, fine sweep, and dogleg topologies have been tested. Do not promote any of them.
+
+Next best practice: stop hand-picking polylines and make the targeted router obstacle-aware from the actual PCB copper/pads/vias, searching a clearance-inflated grid independently on F.Cu/B.Cu with via transitions. Require 117 unconnected and no new critical DRC before promotion.
