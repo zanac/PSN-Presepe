@@ -45,8 +45,9 @@ for b in blocks():
         nm=re.search(r'\(net \d+ "([^"]+)"\)',line)
         if not am or not nm:continue
         px,py=float(am.group(1)),float(am.group(2))
-        x=fx+px*math.cos(a)-py*math.sin(a)
-        y=fy+px*math.sin(a)+py*math.cos(a)
+        # KiCad board coordinates use Y-down orientation for footprint rotation.
+        x=fx+px*math.cos(a)+py*math.sin(a)
+        y=fy-px*math.sin(a)+py*math.cos(a)
         rows.append((ref,m.group(1),nm.group(1),x,y))
 for r in rows:
     print(f"{r[0]},{r[1]},{r[2]},{r[3]:.3f},{r[4]:.3f}")
