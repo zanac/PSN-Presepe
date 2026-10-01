@@ -70,10 +70,6 @@ jobs:
               cats=[x[1:x.index(']')] for x in t.splitlines() if x.startswith('[') and ']' in x]
               critical=sorted({x for x in cats if x not in {'unconnected_items','lib_footprint_mismatch'}})
               print(p.name,"unconnected=",u,"critical=",critical or "none")
-              for cat in critical:
-                  blocks=re.findall(r'\\['+re.escape(cat)+r'\\][\\s\\S]*?(?=\\n\\[|\\Z)',t)
-                  for b in blocks[:12]:
-                      print("DETAIL",p.name,cat,repr(b[:700]))
           PY
       - uses: actions/upload-artifact@v4
         with:
