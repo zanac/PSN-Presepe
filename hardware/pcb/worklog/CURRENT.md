@@ -33,12 +33,10 @@ Use small commits with one purpose:
 - Fetch HEAD immediately before every PCB/tool/workflow update to avoid overwriting concurrent work.
 
 ## Next action
-Official PCB connectivity is **K1-K16 + D25-D30 / 148 unconnected**, but **do not treat this as a clean baseline yet**: full official KiCad Validation run `36875916265` reports `clearance: 3` plus 148 unconnected. Gerbers correctly skipped.
+Clean-baseline recovery in progress. D30/net25 is intentionally **removed** from the official PCB; current connectivity is **149 unconnected** (K1-K16 + D25-D29). Full DRC still had one clearance after commit `4a322caf...`.
 
-Immediate priority: repair D30/net25 clearance regression before D31. D30 candidate workflow had accepted connectivity/routing categories, but full PCB validation is stricter. Use pre-promotion D30 geometry/history: run `36874130419` had 149->148 with only one tracks_crossing and no clearance; later promoted geometry eliminated candidate crossing but full DRC exposed 3 clearance violations. Prefer reverting/reworking only D30 geometry, preserving D25-D29, until full official DRC returns zero critical geometry/electrical categories at 148 unconnected.
+Current official experiment commit: `deae8e0597c8823744d3c9f7c4dd5c17a4808d2d`. It changes only D29/net24 escape via from x=119.5 to x=120.5 at y=52.63 and its two adjoining segments. Full KiCad Validation run `36879585169` is pending/in progress. Do not infer success until its DRC summary is read.
 
-Process rule added conceptually: no future relay-input promotion is considered complete until the **official full KiCad Validation** after promotion has zero critical geometry/electrical categories, not merely Route Candidate success.
+If full DRC is clean: record 149-unconnected clean baseline, then redesign D30 from scratch and require both Route Candidate AND post-promotion full KiCad Validation to show zero critical geometry/electrical categories. If the one clearance remains: download the DRC artifact and identify exact object pair before another coordinate change; do not guess further.
 
-After clean D30, continue D31/D32. Final gate: zero real DRC + zero unconnected, then same-revision Gerber+Excellon ZIP + BOM CSV + CPL/centroid CSV.
-
-<!-- trigger full validation for restored D30 geometry 0630a8ae -->
+After D30 full-DRC clean at 148, continue D31/D32. Final manufacturing gate: zero real DRC + zero unconnected, then same-revision Gerber+Excellon ZIP + machine-readable BOM CSV + CPL/centroid CSV.
