@@ -1,4 +1,4 @@
-name: Promote Validated Autoroute
+name: Promote Validated ALBA Route
 on:
   push:
     branches: [dev]
@@ -13,22 +13,23 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: dev
-      - name: Download validated artifact
+      - name: Download exact validated ALBA artifact
         uses: actions/download-artifact@v4
         with:
-          name: PSN-Presepe-RevA-Autoroute-Candidate
+          name: targeted-alba-b-candidates
           repository: zanac/PSN-Presepe
-          run-id: 36901223170
+          run-id: 36917747409
           github-token: ${{ github.token }}
-          path: /tmp/autoroute
-      - name: Verify and promote exact validated board
+          path: /tmp/alba
+      - name: Verify and promote exact DRC-clean board
         run: |
           set -euo pipefail
-          test "$(sha256sum /tmp/autoroute/PSN-Presepe-Mega-routed.kicad_pcb | awk '{print $1}')" = "6fceb6eb04f7106b439376a042ee5e727971977724bb0802adda80ba4260174d"
-          grep -q "Found 118 unconnected pads" /tmp/autoroute/drc-routed.txt
-          cp /tmp/autoroute/PSN-Presepe-Mega-routed.kicad_pcb hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb
+          test "$(sha256sum /tmp/alba/astar.kicad_pcb | awk '{print $1}')" = "375180931d81941c8e779a37e8520d5c06d50b37f63b85b9791f4d072a31f89b"
+          grep -q "Found 117 unconnected items" /tmp/alba/astar.drc.txt
+          ! grep -Eq '^\\[(clearance|shorting_items|tracks_crossing|track_dangling|via_dangling|hole_clearance|copper_edge_clearance|solder_mask_bridge)\\]' /tmp/alba/astar.drc.txt
+          cp /tmp/alba/astar.kicad_pcb hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb
-          git commit -m "Promote validated three-net autoroute delta"
+          git commit -m "Promote DRC-clean ALBA_B route"
           git push origin HEAD:dev
