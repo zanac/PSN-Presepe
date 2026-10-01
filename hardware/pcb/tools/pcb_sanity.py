@@ -36,11 +36,11 @@ assert len(set(refs)) == 83, "Duplicate references"
 zones = s.count("(zone ")
 assert zones == 0, f"Draft board unexpectedly contains {zones} copper zone(s); contact-zone isolation must be reviewed before adding pours"
 
-segments = len(re.findall(r'\\(segment\\b', s))
+segments = len(re.findall(r'\(segment\b', s))
 if os.environ.get("ALLOW_ROUTING") != "1":
     approved_source_route_nets = {3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 53, 55, 58, 59, 60, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71}  # OLED + buttons + A0 + D25/D26/D27/D28/D29 relay inputs + K1/K2/K3/K4/K5/K6/K7/K8/K9/K10/K11/K12/K13/K14/K15/K16 coil-low + local MOSFET gate nodes
-    routed_ids = {int(x) for x in re.findall(r'\(segment [^\n]*\(net (\d+)\)\)', s)}
-    via_ids = {int(x) for x in re.findall(r'\(via [^\n]*\(net (\d+)\)\)', s)}
+    routed_ids = {int(x) for x in re.findall(r'\(segment\b[\s\S]{0,500}?\(net (\d+)\)', s)}
+    via_ids = {int(x) for x in re.findall(r'\(via\b[\s\S]{0,500}?\(net (\d+)\)', s)}
     unexpected = (routed_ids | via_ids) - approved_source_route_nets
     assert not unexpected, f"Source PCB contains unapproved routed net IDs: {sorted(unexpected)}"
 elif segments == 0:
@@ -59,8 +59,8 @@ for i in range(1, 17):
     block = s[start:end]
     expected = {"2": f"R{i}_COM", "3": f"R{i}_NC", "4": f"R{i}_NO"}
     for pad, net in expected.items():
-        assert re.search(rf'\(pad "{pad}"[^\n]*\(net \d+ "{net}"\)', block), f"K{i} pad {pad} must be {net}"
-    assert re.search(r'\(pad "3"[^\n]*\(at 17\.78 0(?: 90)?\)', block), f"K{i} pad 3 geometry must be x=17.78 mm"
+        assert re.search(rf'\(pad "{pad}"[\s\S]{{0,800}}?\(net \d+ "{net}"\)', block), f"K{i} pad {pad} must be {net}"
+    assert re.search(r'\(pad "3"[\s\S]{0,300}?\(at 17\.78 0(?: 90)?\)', block), f"K{i} pad 3 geometry must be x=17.78 mm"
 
 
 def footprint_block(ref):
@@ -92,7 +92,7 @@ def footprint_block(ref):
 
 def pad_net(ref, pad):
     b = footprint_block(ref)
-    m = re.search(rf'\(pad "{re.escape(str(pad))}"[^\n]*\(net \d+ "([^"]+)"\)', b)
+    m = re.search(rf'\(pad "{re.escape(str(pad))}"[\s\S]{{0,800}}?\(net \d+ "([^"]+)"\)', b)
     assert m, f"Missing net on {ref} pad {pad}"
     return m.group(1)
 
@@ -139,7 +139,7 @@ assert [pad_net("J_TEST",x) for x in (1,2)] == ["D24_TEST","GND"]
 # Mechanical perimeter invariants: external terminals must remain on board edges.
 def footprint_at(ref):
     b = footprint_block(ref)
-    m = re.search(r'\(footprint [^\n]*\(layer "[^"]+"\) \(at ([0-9.]+) ([0-9.]+)(?: ([0-9.]+))?\)', b)
+    m = re.search(r'\(footprint[\s\S]{0,500}?\(at ([0-9.]+) ([0-9.]+)(?: ([0-9.]+))?\)', b)
     assert m, f"Cannot read placement for {ref}"
     return tuple(float(x) if x is not None else 0.0 for x in m.groups())
 
@@ -188,7 +188,7 @@ assert len(via_lines)==len(set(via_lines)), "Duplicate via(s) detected"
 # K1 at (150,60), local pad5 at (0,7.62), rotation 90deg -> (157.62,60).
 def pad_local_at(ref, pad):
     b=footprint_block(ref)
-    m=re.search(rf'\(pad "{re.escape(str(pad))}"[^\n]*\(at (-?[0-9.]+) (-?[0-9.]+)',b)
+    m=re.search(rf'\(pad "{re.escape(str(pad))}"[\s\S]{{0,300}}?\(at (-?[0-9.]+) (-?[0-9.]+)',b)
     assert m, f"Cannot read local pad coordinate {ref}.{pad}"
     return float(m.group(1)),float(m.group(2))
 kx,ky,krot=footprint_at("K1")
