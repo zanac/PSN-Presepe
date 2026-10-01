@@ -80,6 +80,7 @@ jobs:
               routed.append(net)
             if routed:
               Path(f"hardware/pcb/targeted-relays/R{rn}.kicad_pcb").write_text(src[:idx]+''.join(items)+src[idx:])
+              print("SERIALIZED",repr(items[0]) if items else "none")
               print("relay candidate",rn,len(routed),routed)
           PY
       - name: DRC all candidates
@@ -88,6 +89,9 @@ jobs:
           for pcb in hardware/pcb/targeted-relays/*.kicad_pcb; do
             echo "DRC $pcb"
             n="${pcb%.kicad_pcb}"
+            head -c 80 "$pcb" | tail -c 80 || true
+            echo
+            tail -c 300 "$pcb" || true
             kicad-cli pcb drc --severity-all --output "${n}.drc.txt" "$pcb" || true
             echo "REPORT ${n}.drc.txt"; grep -E "^Found|^\\[" "${n}.drc.txt" | head -80 || true
           done
