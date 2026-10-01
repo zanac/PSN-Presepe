@@ -1,13 +1,19 @@
 #!/usr/bin/env python3
-"""Temporary DRC candidate: K15 route right of K14, local bridge across K14 backbone."""
+"""Temporary DRC candidate: K15 plus local K12 layer bridge."""
 from pathlib import Path
 import sys
 src=Path(sys.argv[1]); dst=Path(sys.argv[2]); s=src.read_text(encoding="utf-8")
 assert not any("(net 50)" in ln for ln in s.splitlines() if "(segment " in ln)
-needle="  (segment (start 147.0 101.5) (end 147.0 132.0) (width 0.3) (layer \"B.Cu\") (net 47))"
-assert s.count(needle)==1, f"expected one K12 segment, got {s.count(needle)}"
-s=s.replace(needle, "  (segment (start 147.0 101.5) (end 147.0 106.0) (width 0.3) (layer \"B.Cu\") (net 47))\\n  (via (at 147.0 106.0) (size 0.8) (drill 0.4) (layers \"F.Cu\" \"B.Cu\") (net 47))\\n  (segment (start 147.0 106.0) (end 147.0 111.0) (width 0.3) (layer \"F.Cu\") (net 47))\\n  (via (at 147.0 111.0) (size 0.8) (drill 0.4) (layers \"F.Cu\" \"B.Cu\") (net 47))\\n  (segment (start 147.0 111.0) (end 147.0 132.0) (width 0.3) (layer \"B.Cu\") (net 47))")
-assert needle not in s
+needle='  (segment (start 147.0 101.5) (end 147.0 132.0) (width 0.3) (layer "B.Cu") (net 47))'
+k12=[
+'  (segment (start 147.0 101.5) (end 147.0 106.0) (width 0.3) (layer "B.Cu") (net 47))',
+'  (via (at 147.0 106.0) (size 0.8) (drill 0.4) (layers "F.Cu" "B.Cu") (net 47))',
+'  (segment (start 147.0 106.0) (end 147.0 111.0) (width 0.3) (layer "F.Cu") (net 47))',
+'  (via (at 147.0 111.0) (size 0.8) (drill 0.4) (layers "F.Cu" "B.Cu") (net 47))',
+'  (segment (start 147.0 111.0) (end 147.0 132.0) (width 0.3) (layer "B.Cu") (net 47))',
+]
+assert s.count(needle)==1
+s=s.replace(needle, chr(10).join(k12))
 parts=[
 '  (segment (start 145.16 107.24) (end 148.0 109.0) (width 0.3) (layer "B.Cu") (net 50))',
 '  (segment (start 148.0 109.0) (end 148.0 140.0) (width 0.3) (layer "B.Cu") (net 50))',
@@ -18,6 +24,7 @@ parts=[
 '  (segment (start 148.0 154.0) (end 265.62 154.0) (width 0.3) (layer "B.Cu") (net 50))',
 '  (segment (start 265.62 154.0) (end 265.62 115.0) (width 0.3) (layer "B.Cu") (net 50))',
 ]
-edge=s.find("  (gr_rect "); assert edge>0; s=s[:edge]+"\n".join(parts)+"\n"+s[edge:]
+edge=s.find("  (gr_rect "); assert edge>0
+s=s[:edge]+chr(10).join(parts)+chr(10)+s[edge:]
 dst.parent.mkdir(parents=True,exist_ok=True); dst.write_text(s,encoding="utf-8")
-print("Added K15 right-side local-bridge candidate")
+print("Added K15 candidate plus local K12 bridge")
