@@ -8,9 +8,9 @@ old='  (segment (start 143.5 106.0) (end 143.5 142.0) (width 0.3) (layer "B.Cu")
 assert s.count(old)==1
 s=s.replace(old,chr(10).join([
 '  (segment (start 143.5 106.0) (end 139.5 106.0) (width 0.3) (layer "B.Cu") (net 49))',
-'  (segment (start 139.5 106.0) (end 139.5 116.0) (width 0.3) (layer "B.Cu") (net 49))',
-'  (segment (start 139.5 116.0) (end 143.5 116.0) (width 0.3) (layer "B.Cu") (net 49))',
-'  (segment (start 143.5 116.0) (end 143.5 142.0) (width 0.3) (layer "B.Cu") (net 49))',
+'  (segment (start 139.5 106.0) (end 139.5 124.0) (width 0.3) (layer "B.Cu") (net 49))',
+'  (segment (start 139.5 124.0) (end 143.5 124.0) (width 0.3) (layer "B.Cu") (net 49))',
+'  (segment (start 143.5 124.0) (end 143.5 142.0) (width 0.3) (layer "B.Cu") (net 49))',
 ]))
 parts=[
 '  (segment (start 145.16 109.78) (end 141.0 112.0) (width 0.3) (layer "B.Cu") (net 51))',
