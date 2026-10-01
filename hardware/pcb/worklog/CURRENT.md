@@ -33,6 +33,8 @@ Use small commits with one purpose:
 - Fetch HEAD immediately before every PCB/tool/workflow update to avoid overwriting concurrent work.
 
 ## Next action
-Official PCB: **K1-K14 / 156 unconnected**, zero critical routing DRC errors. K15/net50 best candidate remains `70fab4b4a9e86a9c205d61f840278a23a06451c5`: **156 -> 155**, zero shorts/clearance, one crossing; artifact `11153127344`. Generator restored to this exact candidate at `5225dca9ee6584600b84fb2d18bfaad6556e9662`.
+Official PCB is now **K1-K15 / 155 unconnected**. K15/net50 plus required K9/K12 local repack was promoted in `bec89822bcfcb3f2f0540362171a7f785e18f947`; sanity approval `7638b267b49036cdf2a1bbe0fabd7a69d004d471`. Official KiCad validation reports zero error-severity routing violations; fabrication gate remains blocked only by incomplete connectivity.
 
-Extended escape search proves vias near U2 and long F.Cu routes regress badly. The only promising untested topology is a **candidate-only local reroute of K12**, bridging its B.Cu vertical x=147 onto F.Cu around the K15 crossing while leaving K15 exactly unchanged. Previous attempt `9c2821ef...` was syntactically malformed and therefore gave no DRC conclusion. Rebuild that test cleanly, validate candidate syntax, then run DRC. Promote coordinated K12 adjustment + K15 only if zero-error.
+K16/net51 best candidate is `60009a8e344c969e03e2cf42ff5496f14314ae5d`: **155 -> 154**, zero shorts/clearance, exactly one crossing. Artifact `11154883351`: K16 initial B.Cu escape crosses K14 B.Cu vertical x=143.5. A direct K14 F.Cu bridge (`220fc49f...`) removes the crossing but its two vias short against K13 F.Cu x=143 (artifact `11155515916`). Right-side K16 escape regresses. Generator restored to best K16 in `993086ce6a043618672e8388f5d7e208f15a1eba`.
+
+Next: coordinated **local K13/K14 repack around y≈108–114** to free one layer at the K16 escape, without changing the proven lower K16 backbone y=158. Promote K16 only after zero-error candidate DRC. After K16, stop coil-low routing and begin the separately reviewed relay-contact/high-current phase; no Gerbers until zero DRC + zero unconnected.
