@@ -23,15 +23,14 @@ routes={
                (128.5,116),(128.5,124),(130.5,126),
                (130.5,177),(78,177),(78,184)]),
 }
-# D24 uses two vias below the Mega to cross the ordered D22/D23 trunks:
-# F.Cu -> B.Cu before D22, then B.Cu -> F.Cu before D23.
+# D24 starts directly on B.Cu from its through-hole Mega pad.  It stays
+# left of D23, then changes to F.Cu once near the bottom routing corridor.
 route18=[
-  ("F.Cu",[(121.98,46.28),(117,46.28),(117,87),(118.17,88.5),
-           (118.17,90.5),(117,92),(117,114),(127,114)]),
-  ("B.Cu",[(127,114),(129.5,116)]),
-  ("F.Cu",[(129.5,116),(139,116),(139,180),(91,180),(91,184)]),
+  ("B.Cu",[(121.98,46.28),(117,46.28),(117,87),(118.17,88.5),
+           (118.17,90.5),(117,92),(117,172),(116,175)]),
+  ("F.Cu",[(116,175),(116,180),(91,180),(91,184)]),
 ]
-vias=[(127,114,18),(129.5,116,18)]
+vias=[(116,175,18)]
 parts=[]
 for net,(layer,pts) in routes.items():
     for a,b in zip(pts,pts[1:]):
