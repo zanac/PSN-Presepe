@@ -9,10 +9,10 @@ assert s.count("(segment ") == 42, "Expected clean promoted button + OLED baseli
 
 # Escape perpendicular to Mega header rows before turning into left corridors.
 # A0=(78.8,89.46) -> below analog header, then left/down to RV1 wiper=(50.5,145)
-# D6=(76.26,41.2) -> above digital header, then left/down to BZ1 pad1=(48,156)
+# D6=(76.26,41.2) -> above digital header on F.Cu, then left/down to BZ1 pad1=(48,156)
 routes={
   19:("F.Cu",[(78.8,89.46),(78.8,96),(64,96),(64,139),(50.5,139),(50.5,145)]),
-  62:("B.Cu",[(76.26,41.2),(76.26,31),(27,31),(27,150),(42,150),(48,156)]),
+  62:("F.Cu",[(76.26,41.2),(76.26,31),(27,31),(27,150),(42,150),(48,156)]),
 }
 parts=[]
 for net,(layer,pts) in routes.items():
