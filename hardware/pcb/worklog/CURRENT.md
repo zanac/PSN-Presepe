@@ -39,4 +39,4 @@ D27 best candidate remains `e154a246...`: 152->151, zero short/clearance, four k
 
 Next: design D27-D32 as a coordinated fanout bus with staggered layer-change stations, using official D25/D26 as baseline. Prefer a multi-net candidate and promote atomically only if connectivity improves by the intended number and routing DRC is zero. Generator restored to best D27 at `a4e29afc4a56b875a72812e5a8a0b55bf0510c06`.
 
-Keep +12V/GND, COM/NO, high-current copper and pours untouched.
+Final deliverable after the fabrication gate: assembly-service-ready Gerber+drill ZIP, BOM, and CPL/centroid placement list, all generated from the same committed revision and cross-checked by reference designator. Keep Gerber generation blocked until zero real DRC errors + zero unconnected.\n\nKeep +12V/GND, COM/NO, high-current copper and pours untouched.
