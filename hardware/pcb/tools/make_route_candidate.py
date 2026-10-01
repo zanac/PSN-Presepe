@@ -5,13 +5,11 @@ import sys
 src=Path(sys.argv[1]); dst=Path(sys.argv[2]); s=src.read_text(encoding="utf-8")
 assert not any("(net 20)" in ln for ln in s.splitlines() if "(segment " in ln or "(via " in ln)
 parts=[
-'  (segment (start 124.52 46.28) (end 127.0 49.0) (width 0.3) (layer "B.Cu") (net 20))',
-'  (segment (start 127.0 49.0) (end 127.0 55.0) (width 0.3) (layer "B.Cu") (net 20))',
-'  (segment (start 127.0 55.0) (end 129.5 55.0) (width 0.3) (layer "B.Cu") (net 20))',
-'  (via (at 129.5 55.0) (size 0.8) (drill 0.4) (layers "F.Cu" "B.Cu") (net 20))',
-'  (segment (start 129.5 55.0) (end 132.5 57.0) (width 0.3) (layer "F.Cu") (net 20))',
-'  (segment (start 132.5 57.0) (end 132.5 59.5) (width 0.3) (layer "F.Cu") (net 20))',
-'  (segment (start 132.5 59.5) (end 135.0 62.0) (width 0.3) (layer "F.Cu") (net 20))',
+'  (segment (start 124.52 46.28) (end 129.5 46.28) (width 0.3) (layer "B.Cu") (net 20))',
+'  (via (at 129.5 46.28) (size 0.8) (drill 0.4) (layers "F.Cu" "B.Cu") (net 20))',
+'  (segment (start 129.5 46.28) (end 136.5 49.0) (width 0.3) (layer "F.Cu") (net 20))',
+'  (segment (start 136.5 49.0) (end 136.5 58.0) (width 0.3) (layer "F.Cu") (net 20))',
+'  (segment (start 136.5 58.0) (end 135.0 62.0) (width 0.3) (layer "F.Cu") (net 20))',
 ]
 edge=s.find("  (gr_rect "); assert edge>0
 s=s[:edge]+chr(10).join(parts)+chr(10)+s[edge:]
