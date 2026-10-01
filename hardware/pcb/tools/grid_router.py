@@ -109,7 +109,8 @@ def extract_obstacles(text,target,step,clearance):
             nm=re.search(r'[(]net ([0-9]+) "([^"]+)"[)]',pad)
             at=re.search(r'[(]at ([0-9.-]+) ([0-9.-]+)',pad)
             sz=re.search(r'[(]size ([0-9.-]+) ([0-9.-]+)[)]',pad)
-            if not(at and sz): continue\n            if nm and nm.group(2)==target: continue
+            if not(at and sz): continue
+            if nm and nm.group(2)==target: continue
             px,py=float(at.group(1)),float(at.group(2))
             gx=fx+px*ca-py*sa; gy=fy+px*sa+py*ca
             rad=max(float(sz.group(1)),float(sz.group(2)))/2+clearance
