@@ -33,10 +33,10 @@ Use small commits with one purpose:
 - Fetch HEAD immediately before every PCB/tool/workflow update to avoid overwriting concurrent work.
 
 ## Next action
-Official PCB remains **K1-K16 + D25 + D26 / 152 unconnected**, independently verified by KiCad Validation run `36858485914`: only 66 footprint mismatches + 152 unconnected; **no critical geometry/electrical DRC**.
+Official PCB: **K1-K16 + D25 + D26 + D27 / 151 unconnected**. D27 final candidate `fc0e3274...`, run `36861858225` SUCCESS; promoted `f2e4c50a...`, sanity `0a6bfe6f...`.
 
-D27 best candidate remains `e154a246...`: 152->151, zero short/clearance, four known crossings. Right-side D27 and coordinated D26/D27 repack were worse. D28 isolated even-lane probe was also worse. The x=128.5 F.Cu / x=130.5 B.Cu wall pair plus D25/D26 now makes single-net additions inefficient.
+D28 best structural probe is `20a17bb0...`: 151->150, zero crossings, only one short + two mask bridges. The remaining obstacle is the physical Mega header itself: unused/no-net D42/D43 pads at y=69.14. Restart by routing D28 below the **entire** digital header rather than below D40, then return toward U1.4; preserve validated D25-D27.
 
-Next: design D27-D32 as a coordinated fanout bus with staggered layer-change stations, using official D25/D26 as baseline. Prefer a multi-net candidate and promote atomically only if connectivity improves by the intended number and routing DRC is zero. Generator restored to best D27 at `a4e29afc4a56b875a72812e5a8a0b55bf0510c06`.
+Final delivery gate remains: zero real DRC + zero unconnected, then generate same-revision assembly package **Gerber+Excellon ZIP + BOM + CPL/centroid**, cross-check reference designators and revision consistency.
 
-Final deliverable after the fabrication gate: assembly-service-ready Gerber+drill ZIP, BOM, and CPL/centroid placement list, all generated from the same committed revision and cross-checked by reference designator. Keep Gerber generation blocked until zero real DRC errors + zero unconnected.\n\nKeep +12V/GND, COM/NO, high-current copper and pours untouched.
+Keep +12V/GND distribution, relay COM/NO, high-current copper and pours untouched until their dedicated reviewed phase.
