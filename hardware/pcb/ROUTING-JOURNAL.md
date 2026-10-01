@@ -170,3 +170,11 @@ A red GitHub Actions run does not automatically mean routing failed. While the b
 - Candidate `143b7d8e3745eb45d9df65d70cd7192bf4111c19` reduced **160 -> 159** and narrowed failures to exactly 3 violations.
 - DRC evidence: initial F.Cu escape crossed K9 net44 vertical at x=147.5; the long F.Cu segment also crossed K9 pad4 `R9_NO` at `(157.62,99.76)`, causing one short and one solder-mask bridge.
 - Tenth candidate `0249f572798492a72d3edee492a3f8f4dcbbec3d` avoids both: short F.Cu escape left to via `(143.5,99)`, then B.Cu x=143.5 to y=134 and across to K11.5.
+
+## K11 validated and promoted / K12 start — 2026-10-01
+
+- K11 candidate 10 `0249f572798492a72d3edee492a3f8f4dcbbec3d`, Route Candidate `36829048742`: **160 -> 159**, zero error-severity DRC violations.
+- Promoted exact validated net46 geometry in official board: `22d3f2b4cc33837f3d7836bc771c1eba14583a2e`.
+- Sanity gate now approves net46: `0e0a16ba399b72449ab47a3430c59bbf27abba4e`.
+- Verified official K12-K16 footprints directly: pad5 endpoints are (211.62,115), (229.62,115), (247.62,115), (265.62,115), (283.62,115).
+- K12/net47 candidate `cb24da98b496a8ded0bc87c96a1290f5913806c6` uses a staggered variant of the validated K11 topology: via (143,101.5), B.Cu x=143, lower corridor y=136, K12.5.
