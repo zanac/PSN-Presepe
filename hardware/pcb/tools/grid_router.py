@@ -19,8 +19,9 @@ class P: x:int; y:int; layer:int
 def astar(start,goal,blocked,bounds,via_cost=18):
     q=[]; serial=0; heappush(q,(0,serial,start)); prev={start:None}; cost={start:0}
     xmin,xmax,ymin,ymax=bounds
-    moves=[(1,0,0,10),(-1,0,0,10),(0,1,0,10),(0,-1,0,10),
-           (1,1,0,14),(1,-1,0,14),(-1,1,0,14),(-1,-1,0,14),(0,0,1,via_cost)]
+    # Grid edges only. Diagonal center-point routing can cut obstacle corners;
+    # Manhattan edges are conservative and KiCad DRC-friendly.
+    moves=[(1,0,0,10),(-1,0,0,10),(0,1,0,10),(0,-1,0,10),(0,0,1,via_cost)]
     while q:
         _,_,p=heappop(q)
         if p==goal:
@@ -140,8 +141,9 @@ def main():
     blocked=extract_obstacles(text,a.net,step,a.clearance)
     S=P(round(sx/step),round(sy/step),sl); G=P(round(gx/step),round(gy/step),gl)
     # Endpoints belong to target net; allow a small escape disk.
-    for p in list(blocked):
-        if hypot(p.x*step-sx,p.y*step-sy)<1.2 or hypot(p.x*step-gx,p.y*step-gy)<1.2: blocked.discard(p)
+    # Only free the exact target endpoints. Clearing a disk around them allowed
+    # routes to cut through neighboring copper immediately after the pad.
+    blocked.discard(S); blocked.discard(G)
     bounds=(floor((min(sx,gx)-a.margin)/step),ceil((max(sx,gx)+a.margin)/step),
             floor((min(sy,gy)-a.margin)/step),ceil((max(sy,gy)+a.margin)/step))
     path=compress(astar(S,G,blocked,bounds))
