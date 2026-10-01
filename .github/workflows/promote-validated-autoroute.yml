@@ -16,7 +16,7 @@ jobs:
       - name: Download validated artifact
         uses: actions/download-artifact@v4
         with:
-          name: pcb-autoroute-candidate
+          name: PSN-Presepe-RevA-Autoroute-Candidate
           repository: zanac/PSN-Presepe
           run-id: 36887424491
           github-token: ${{ github.token }}
