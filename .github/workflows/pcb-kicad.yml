@@ -36,6 +36,21 @@ jobs:
           sudo apt-get install -y --no-install-recommends kicad kicad-footprints
           kicad-cli version
 
+      - name: Build low-risk routing candidate
+        run: |
+          python3 hardware/pcb/tools/make_route_candidate.py \
+            hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb \
+            hardware/pcb/build/route-candidate.kicad_pcb
+          ALLOW_ROUTING=1 python3 hardware/pcb/tools/pcb_sanity.py \
+            hardware/pcb/build/route-candidate.kicad_pcb
+
+      - name: DRC low-risk routing candidate
+        continue-on-error: true
+        run: |
+          kicad-cli pcb drc --severity-all \
+            --output hardware/pcb/build/route-candidate-drc.txt \
+            hardware/pcb/build/route-candidate.kicad_pcb
+
       - name: PCB DRC full report
         run: |
           mkdir -p hardware/pcb/build
@@ -82,6 +97,7 @@ jobs:
           path: |
             hardware/pcb/build/drc-report.txt
             hardware/pcb/build/drc-errors.txt
+            hardware/pcb/build/route-candidate-drc.txt
           if-no-files-found: warn
 
       - name: Upload draft Gerbers
