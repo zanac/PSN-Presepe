@@ -13,7 +13,7 @@ jobs:
     container:
       image: kicad/kicad:9.0
       options: --user 0
-    timeout-minutes: 7
+    timeout-minutes: 6
     steps:
       - uses: actions/checkout@v4
       - name: Verify KiCad CLI
