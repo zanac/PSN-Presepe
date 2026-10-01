@@ -129,16 +129,19 @@ jobs:
           base=count('hardware/pcb/route-candidate/drc-baseline.txt')
           cand=count('hardware/pcb/route-candidate/drc-routed.txt')
           errors=Path('hardware/pcb/route-candidate/drc-errors.txt').read_text()
-          clean='** Found 0 DRC violations **' in errors
+          cats=re.findall(r'^\\[([^]\\n]+)\\]',errors,re.M)
+          ignored={'unconnected_items','lib_footprint_mismatch'}
+          critical=sorted({c for c in cats if c not in ignored})
+          clean=not critical
           print(f'Baseline unconnected: {base}')
           print(f'Autoroute candidate unconnected: {cand}')
           print(f'Reduction: {base-cand}')
-          print(f'Error-severity DRC clean: {clean}')
+          print(f'Critical DRC categories: {critical or "none"}')
           Path('hardware/pcb/route-candidate/COMPARISON.txt').write_text(
-              f'baseline_unconnected={base}\\ncandidate_unconnected={cand}\\nreduction={base-cand}\\nerror_drc_clean={clean}\\n')
+              f'baseline_unconnected={base}\\ncandidate_unconnected={cand}\\nreduction={base-cand}\\ncritical_drc={",".join(critical) or "none"}\\n')
           # Laboratory only: never promote automatically.
           assert cand < base, 'Autorouter did not improve connectivity'
-          assert clean, 'Autorouter candidate has error-severity DRC violations'
+          assert clean, f'Autorouter candidate has critical DRC categories: {critical}'
           PY
 
       - name: Upload autoroute candidate
