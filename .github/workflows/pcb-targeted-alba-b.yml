@@ -68,7 +68,7 @@ jobs:
               tmp=Path(f"/tmp/R{rn}-{net}.kicad_pcb"); tmp.write_text(work)
               cmd=["python3","hardware/pcb/tools/grid_router.py",str(tmp),"--net",net,
                    "--start",f"{a[0]},{a[1]},F.Cu","--goal",f"{b[0]},{b[1]},F.Cu",
-                   "--step","0.5","--clearance","1.2","--margin","35","--no-vias"]
+                   "--step","0.5","--clearance","0.55","--margin","45","--no-vias"]
               p=subprocess.run(cmd,text=True,capture_output=True)
               if p.returncode: print("NO_ROUTE",rn,net); continue
               pts=[]
