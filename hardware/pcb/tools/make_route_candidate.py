@@ -19,7 +19,8 @@ print(f"Baseline segments: {baseline_segments}")
 parts=[
 '  (segment (start 145.16 104.70) (end 146.5 106.0) (width 0.3) (layer "F.Cu") (net 49))',
 '  (segment (start 146.5 106.0) (end 146.5 113.0) (width 0.3) (layer "F.Cu") (net 49))',
-'  (segment (start 146.5 113.0) (end 182.0 113.0) (width 0.3) (layer "F.Cu") (net 49))',
+'  (via (at 146.5 113.0) (size 0.8) (drill 0.4) (layers "F.Cu" "B.Cu") (net 49))',
+'  (segment (start 146.5 113.0) (end 182.0 113.0) (width 0.3) (layer "B.Cu") (net 49))',
 '  (via (at 182.0 113.0) (size 0.8) (drill 0.4) (layers "F.Cu" "B.Cu") (net 49))',
 '  (segment (start 182.0 113.0) (end 182.0 132.0) (width 0.3) (layer "B.Cu") (net 49))',
 '  (via (at 182.0 132.0) (size 0.8) (drill 0.4) (layers "F.Cu" "B.Cu") (net 49))',
