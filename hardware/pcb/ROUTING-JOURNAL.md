@@ -269,3 +269,18 @@ K15 experiments from best `70fab4b4...` (156 -> 155, one crossing, zero shorts/c
 Conclusion: do not add vias close to U2 and do not route K15 long-distance on F.Cu. Best known K15 candidate remains `70fab4b4a9e86a9c205d61f840278a23a06451c5`, artifact `11153127344`, with only K15 initial B.Cu escape crossing K12 B.Cu vertical x=147. Generator restored to that exact candidate in `5225dca9ee6584600b84fb2d18bfaad6556e9662`.
 
 Next experiment: correctly construct a candidate that keeps K15 exactly as best-known and replaces only K12's B.Cu x=147 segment with a local F.Cu bridge around the K15 crossing, with vias placed sufficiently far from U2. Validate syntax before DRC.
+
+## K15 promoted; K16 started — 2026-10-01 12:38 CEST
+
+### K15/net50 completion
+- Corrected the malformed K12-bridge generator and obtained a valid topology test in `88fe9b7b...`: 156 -> 155, crossings eliminated but two shorts; artifact `11154558418` proved both shorts were K12 bridge vias vs K9 F.Cu vertical x=147.5.
+- Repacked K9/net44 away from those vias while keeping the proven K12 bridge and K15 geometry. Candidate `435f8b0439c3839422fc9aa41ebd0fbd59e951f0`, Route Candidate run `36849600656`: **SUCCESS**, 156 -> 155, zero routing DRC errors. Evidence artifact `11154489961`.
+- Promoted K9 + K12 repack and K15/net50 atomically to official PCB in `bec89822bcfcb3f2f0540362171a7f785e18f947`; sanity allow-list net50 in `7638b267b49036cdf2a1bbe0fabd7a69d004d471`.
+- Official KiCad validation: **155 unconnected**, error-severity DRC violations none, critical geometry/electrical categories none. Fabrication gate fails only because connectivity is intentionally incomplete.
+
+### K16/net51 search
+- Initial lower-backbone candidate `60009a8e344c969e03e2cf42ff5496f14314ae5d`: **155 -> 154**, zero shorts/clearance, exactly one crossing. Artifact `11154883351` identifies exact crossing: K16 initial B.Cu escape from U2.11 vs K14 B.Cu vertical x=143.5 (K14 segment 106->142).
+- `220fc49f...`: bridge K14 locally onto F.Cu around K16 crossing. Crossing removed, but two shorts; artifact `11155515916` shows both K14 vias collide with K13 F.Cu vertical x=143.0 (segment starting 143,103.5).
+- `8fdcf5b2...`: K16 right-side/lower escape; regressed to 2 shorts + 3 crossings. Reject.
+- Conclusion: K13 F.Cu x=143 and K14 B.Cu x=143.5 form the two-layer bottleneck. Next solve via coordinated local K13/K14 repack around y~108-114, leaving K16 best geometry unchanged.
+- Generator restored to exact best K16 candidate in `993086ce6a043618672e8388f5d7e208f15a1eba`.
