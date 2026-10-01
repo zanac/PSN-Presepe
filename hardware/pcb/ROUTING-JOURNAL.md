@@ -195,3 +195,12 @@ A red GitHub Actions run does not automatically mean routing failed. While the b
 
 - Candidate `6d4f840eca798715aee363e8a9ace09ffbfd599f`, Route Candidate `36831044922`, reduced **157 -> 156** but had five track crossings with validated K10/K12/K13 geometry.
 - No promotion occurred. Revised candidate `72818bf4bff0f99182f49c627206f51aa03493df` uses a right-side fanout and controlled layer weave; validate it next.
+
+## K14 fanout constraint discovered — 2026-10-01
+
+- Multiple K14/net49 candidates consistently reduce connectivity **157 -> 156**, proving endpoint/net correctness, but none is promotable yet.
+- DRC evidence shows the U2.13 escape is boxed by validated routes: K10/K13 on F.Cu, K11/K12 on B.Cu, plus U2.12/U2.11/U2.10 pads and K9 contact/coil pads.
+- Best outer-corridor attempt `ff03eec08cb81aab1dc6231e00134e116e4a03dc` left only K11-vs-K14 local conflicts; moving the via left (`4c51bf5fc6e2b27ed5a6c2927e023908c842bb78`) moved the remaining conflicts to the short F.Cu escape against K10/K13.
+- Immediate-via attempt `9936fc0a28abaa4dd6564a554f6cee3d8fd327a9` confirmed that simply dropping to B.Cu alongside U2 collides with pads 12/11/10 and K11.
+- **No K14 candidate was promoted. Official PCB remains K1-K13, 157 unconnected.**
+- Next safe strategy: test a combined temporary reroute that removes/repositions K11/net46 to open an escape lane for K14, then run full KiCad DRC and require no regression before changing the official PCB.
