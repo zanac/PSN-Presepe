@@ -90,3 +90,7 @@ Next stage: route relay contacts parametrically/in reviewed batches with mains-c
 
 ## Relay-contact milestone (2026-10-02)
 Official board on `dev` has advanced from the 117-unconnected logic-complete baseline to a promoted **75-unconnected relay checkpoint** (commits `2acb44b...` / `89188ab...`). This means 42 connectivity items have been removed since the 117 baseline. Current targeted work is the final relay-contact subset; power routing remains last. A corrected obstacle router now applies footprint rotation consistently to real pad geometry. Revalidate the official 75 baseline with the normal KiCad workflow before any further promotion; never replace it with an experimental candidate that has shorts/clearance errors.
+
+
+## Validated relay batch checkpoint (2026-10-02)
+Promoted exact artifact from relay run `36943389801` at commit `ce40b5714b637355b450c43f20231f18ec328107`: **76 unconnected** in candidate DRC, with no clearance/short/track-dangling error categories. This preserves the previously verified 93-unconnected clean baseline and adds 17 conservatively routed relay-contact nets. Expected remaining connectivity: **7 relay contacts + 69 power = 76**. Run normal official-board KiCad validation immediately after this checkpoint and treat that result as authoritative.
