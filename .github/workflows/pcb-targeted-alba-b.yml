@@ -63,7 +63,7 @@ jobs:
           byrelay={}
           for net,ps in pads.items():
             if len(ps)!=2: continue
-            rn=int(re.search(r'R(\\d+)_',net).group(1))
+            rn=int(net[1:net.index('_')])
             byrelay.setdefault(rn,[]).append((net,ps))
           idx=src.rfind(")")
           for rn,nets in sorted(byrelay.items()):
