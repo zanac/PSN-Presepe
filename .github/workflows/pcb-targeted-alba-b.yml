@@ -99,7 +99,7 @@ jobs:
           p=Path("hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb")
           t=p.read_text()
           bad={"R9_NC","R14_COM","R3_NO","R3_COM","R10_COM","R10_NO","R4_NO","R4_COM","R5_NO","R5_COM","R1_COM","R1_NO","R6_COM","R6_NO","R2_COM","R2_NO","R8_NC","R8_COM"}
-          ids={int(n) for n,name in re.findall(r'\\(net (\\d+) "([^"]+)"\\)',t) if name in bad}
+          ids={int(n) for n,name in re.findall(r'\(net (\d+) "([^"]+)"\)',t) if name in bad}
           def strip_blocks(text,token):
             out=[]; pos=0
             while True:
