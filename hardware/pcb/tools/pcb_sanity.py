@@ -126,4 +126,23 @@ assert [pad_net("J_START",x) for x in (1,2)] == ["D22_START","GND"]
 assert [pad_net("J_NEXT",x) for x in (1,2)] == ["D23_NEXT","GND"]
 assert [pad_net("J_TEST",x) for x in (1,2)] == ["D24_TEST","GND"]
 
+
+# Mechanical perimeter invariants: external terminals must remain on board edges.
+def footprint_at(ref):
+    b = footprint_block(ref)
+    m = re.search(r'\(footprint [^\n]*\(layer "[^"]+"\) \(at ([0-9.]+) ([0-9.]+)(?: ([0-9.]+))?\)', b)
+    assert m, f"Cannot read placement for {ref}"
+    return tuple(float(x) if x is not None else 0.0 for x in m.groups())
+
+bottom = ["J1","J_OLED","J_START","J_NEXT","J_TEST","J_CIELO","J_TRAMONTO","J_ALBA","J_STELLE","J_CASETTE"]
+for ref in bottom:
+    x,y,rot = footprint_at(ref)
+    assert y >= 183.0, f"{ref} moved away from bottom perimeter: y={y}"
+for i in range(1,9):
+    x,y,rot = footprint_at(f"JR{i}")
+    assert y <= 28.0, f"JR{i} moved away from top perimeter: y={y}"
+for i in range(9,17):
+    x,y,rot = footprint_at(f"JR{i}")
+    assert x >= 291.0, f"JR{i} moved away from right perimeter: x={x}"
+
 print(f"OK: {len(refs)} refs, {len(global_nets)} nets, {segments} segments, electrical + external-terminal invariants verified, no unreviewed zones")
