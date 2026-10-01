@@ -129,3 +129,10 @@ A red GitHub Actions run does not automatically mean routing failed. While the b
 - Candidate `68718816b2a38c29f8d96a4ba7934758ab69114c` again reduced **160 -> 159**, but run `36826094970` rejected it for exactly one `tracks_crossing`.
 - Existing K9/K10 F.Cu corridors constrain a clean same-layer escape from U2.16.
 - Third candidate `3022cabc0e84f851c72c524990f2827ac1d8dc3d` uses a controlled B.Cu crossover with two vias, returning to F.Cu near K11. It must pass full DRC before promotion.
+
+## K11 third rejected candidate — 2026-10-01
+
+- B.Cu candidate `3022cabc0e84f851c72c524990f2827ac1d8dc3d` reduced **160 -> 159** but run `36826462548` rejected it.
+- Exact errors from candidate artifact: F.Cu escape crossed K9 coil route; B.Cu diagonal crossed K10 COM pad `(168.0,104.84)`, causing one short and one solder-mask bridge.
+- DRC artifact also confirms actual lower relay coordinates K11..K16; no further coordinate extrapolation is needed.
+- Fourth candidate `ffd9058b0c0dce627d6f4b7ceda41f36553ee566` drops to B.Cu beside U2 and uses y=124 below the relay row before returning beside K11 coil pad.
