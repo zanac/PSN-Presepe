@@ -74,10 +74,10 @@ jobs:
               pts=[]
               for line in p.stdout.splitlines()[1:]:
                 x,y,la=line.split(","); pts.append((float(x),float(y),la))
-              # Grid endpoints are rounded; force exact pad centers so the route
-              # electrically terminates on the intended relay/terminal pads.
               if pts:
-                pts[0]=(a[0],a[1],pts[0][2]); pts[-1]=(b[0],b[1],pts[-1][2])
+                # Keep grid path intact and add exact pad stubs on its endpoint layers.
+                pts.insert(0,(a[0],a[1],pts[0][2]))
+                pts.append((b[0],b[1],pts[-1][2]))
               items=[]
               for u,v in zip(pts,pts[1:]):
                 if u[2]!=v[2]:
