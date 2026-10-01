@@ -123,3 +123,9 @@ A red GitHub Actions run does not automatically mean routing failed. While the b
 - Candidate `0c90ef05d92acda60cadc32e994b2534617a294a` reduced **160 -> 159** but was rejected by run `36825931693` for one `tracks_crossing` only.
 - Exact crossing: K11 first segment from U2.16 intersects K10 vertical segment at `(142.0,96.5..118.0)`; no shorts were reported.
 - Revised K11 candidate `68718816b2a38c29f8d96a4ba7934758ab69114c` exits U2 to the right and uses y=122 lower corridor.
+
+## K11 second rejected candidate — 2026-10-01
+
+- Candidate `68718816b2a38c29f8d96a4ba7934758ab69114c` again reduced **160 -> 159**, but run `36826094970` rejected it for exactly one `tracks_crossing`.
+- Existing K9/K10 F.Cu corridors constrain a clean same-layer escape from U2.16.
+- Third candidate `3022cabc0e84f851c72c524990f2827ac1d8dc3d` uses a controlled B.Cu crossover with two vias, returning to F.Cu near K11. It must pass full DRC before promotion.
