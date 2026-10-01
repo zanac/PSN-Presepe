@@ -13,8 +13,11 @@ print(f"Baseline unconnected: {base}")
 print(f"Candidate unconnected: {cand}")
 print(f"Reduction: {base-cand}")
 mode=os.environ.get("CANDIDATE_MODE","improve")
-if mode=="baseline":
+if mode=="same":
     if cand!=base:
-        raise SystemExit(f"Baseline candidate changed connectivity: {base} -> {cand}")
-elif cand>=base:
-    raise SystemExit("Routing candidate did not reduce unconnected items")
+        raise SystemExit(f"Candidate unexpectedly changed connectivity: {base} -> {cand}")
+elif mode=="improve":
+    if cand>=base:
+        raise SystemExit("Routing candidate did not reduce unconnected items")
+else:
+    raise SystemExit(f"Unknown CANDIDATE_MODE={mode!r}; use same or improve")
