@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 from pathlib import Path
+import os
 import re
 import sys
 
@@ -35,7 +36,10 @@ zones = s.count("(zone ")
 assert zones == 0, f"Draft board unexpectedly contains {zones} copper zone(s); contact-zone isolation must be reviewed before adding pours"
 
 segments = s.count("(segment ")
-assert segments == 0, f"Draft board unexpectedly contains {segments} routed segment(s)"
+if os.environ.get("ALLOW_ROUTING") != "1":
+    assert segments == 0, f"Draft board unexpectedly contains {segments} routed segment(s)"
+elif segments == 0:
+    print("WARNING: ALLOW_ROUTING=1 but candidate still has zero routed segments")
 
 
 # Omron G5Q-1 SPDT contact mapping: 1/5 coil, 2 COM, 3 NC, 4 NO.
