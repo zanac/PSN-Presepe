@@ -87,3 +87,7 @@ Next routing target: K3 / `RELAY3_COIL_LOW` from U1 output to K3 coil pad, using
 ## WIP plan: K3 coil-low
 
 Fresh WIP baseline: dev SHA `35c4da7e7b36db75b342b3b75d405e4feaab6ff4`, official connectivity 168 unconnected, K2 already promoted. Target net 38 `RELAY3_COIL_LOW`: U1 pad16 absolute endpoint (145.16,67.08) to K3 pad5 absolute endpoint (193.62,60.00). Candidate will remain F.Cu 0.30 mm and use a corridor below/separate from the validated K2 route before approaching K3. Expected success: 168 -> 167, no new DRC categories beyond the 66 library mismatches.
+
+## READY: K3 coil-low
+
+Routing WIP run `36822097321` on `b11c0c6565e26cfc71cb678f21dd22ecae39d76e` succeeded completely: baseline 168 -> candidate 167, reduction 1, 66 library mismatch warnings unchanged, no critical DRC categories, 0 detail blocks. K3 candidate is approved for clean promotion.
