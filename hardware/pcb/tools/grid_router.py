@@ -77,7 +77,7 @@ def extract_obstacles(text,target,step,clearance):
     blocked=set()
     net_names={int(n):name for n,name in re.findall('^ *[(]net ([0-9]+) "([^"]+)"[)] *$',text,re.M)}
     # Parse balanced copper records instead of one fragile multiline regex.
-    for seg in balanced_blocks(text,"(segment "):
+    for seg in balanced_blocks(text,"(segment"):
         st=re.search(r'[(]start ([0-9.-]+) ([0-9.-]+)[)]',seg)
         en=re.search(r'[(]end ([0-9.-]+) ([0-9.-]+)[)]',seg)
         wd=re.search(r'[(]width ([0-9.-]+)[)]',seg)
@@ -88,7 +88,7 @@ def extract_obstacles(text,target,step,clearance):
         if net_names.get(n)==target: continue
         mark_segment(blocked,float(st.group(1)),float(st.group(2)),float(en.group(1)),float(en.group(2)),
                      float(wd.group(1))/2+clearance,LAYERS[ly.group(1)],step)
-    for via in balanced_blocks(text,"(via "):
+    for via in balanced_blocks(text,"(via"):
         at=re.search(r'[(]at ([0-9.-]+) ([0-9.-]+)[)]',via)
         sz=re.search(r'[(]size ([0-9.-]+)[)]',via)
         nt=re.search(r'[(]net ([0-9]+)[)]',via)
@@ -98,13 +98,13 @@ def extract_obstacles(text,target,step,clearance):
         mark_disc(blocked,float(at.group(1)),float(at.group(2)),float(sz.group(1))/2+clearance,[0,1],step)
 
     # Pads use coordinates local to their footprint; use escape-proof regexes.
-    for fp in balanced_blocks(text,"(footprint "):
+    for fp in balanced_blocks(text,"(footprint"):
         head=re.search(r'[(]at ([0-9.-]+) ([0-9.-]+)(?: ([0-9.-]+))?[)]',fp)
         if not head: continue
         fx,fy=float(head.group(1)),float(head.group(2)); rot=float(head.group(3) or 0)
         import math
         ang=math.radians(rot); ca,sa=math.cos(ang),math.sin(ang)
-        for pad in balanced_blocks(fp,"(pad "):
+        for pad in balanced_blocks(fp,"(pad"):
             nm=re.search(r'[(]net ([0-9]+) "([^"]+)"[)]',pad)
             at=re.search(r'[(]at ([0-9.-]+) ([0-9.-]+)',pad)
             sz=re.search(r'[(]size ([0-9.-]+) ([0-9.-]+)[)]',pad)
