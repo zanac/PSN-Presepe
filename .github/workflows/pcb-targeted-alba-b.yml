@@ -88,7 +88,7 @@ jobs:
           set -u
           for pcb in hardware/pcb/targeted-relays/*.kicad_pcb; do
             n="${pcb%.kicad_pcb}"
-            kicad-cli pcb drc --severity-error --output "${n}.drc.txt" "$pcb" || true
+            kicad-cli pcb drc --severity-all --output "${n}.drc.txt" "$pcb" || true
           done
       - name: Rank candidates
         run: |
