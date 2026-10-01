@@ -284,3 +284,17 @@ Next experiment: correctly construct a candidate that keeps K15 exactly as best-
 - `8fdcf5b2...`: K16 right-side/lower escape; regressed to 2 shorts + 3 crossings. Reject.
 - Conclusion: K13 F.Cu x=143 and K14 B.Cu x=143.5 form the two-layer bottleneck. Next solve via coordinated local K13/K14 repack around y~108-114, leaving K16 best geometry unchanged.
 - Generator restored to exact best K16 candidate in `993086ce6a043618672e8388f5d7e208f15a1eba`.
+
+## K16 bottleneck search II — 2026-10-01 13:00 CEST
+
+Official PCB unchanged: K1-K15 / 155 unconnected / zero error-severity routing DRC. Best K16 remains `60009a8e...`: 155 -> 154, zero shorts/clearance, one crossing K16 B.Cu escape vs K14 B.Cu x=143.5.
+
+Experiments:
+- `566b3c6e...`: move K13 F.Cu vertical to x=140 + K14 F.Cu bridge. 1 short + 3 crossings. Reject.
+- `a5122023...`: interleaved K13 B.Cu bridge / K14 F.Cu bridge. 4 shorts + 1 clearance + 1 crossing. Reject.
+- `07d8caea...`: short K16 F.Cu escape right. 3 shorts + 1 mask bridge + 2 crossings. Reject.
+- `f8a53546...`: K16 F.Cu escape left with remote via at (141,120). No shorts/clearance, but 2 crossings. Interesting but worse than baseline.
+- K14 same-layer sidestep family: `1fd13ff9...`, `78bc73c0...`, `9171f3a8...`, `4feb36b5...`, `e8b973a2...`, `52dcbd65...`. All maintain 155 -> 154 with **zero shorts/clearance and exactly one crossing**. Moving K14 left does free the original K16/K14 crossing, but one K14 raccordo then crosses another B.Cu route. This family is geometrically promising but needs exact residual-pair inspection before another coordinate change.
+
+Generator restored to exact best original K16 in `ed4133fbc21dc006f5b7495b5ae489fb1ab66aa2`.
+Next: inspect residual crossing from artifact `11155458843` (direct K14 pad escape-left variant) and compare with original artifact `11154883351`; design K14 sidestep endpoints around the actual conflicting B.Cu segment rather than guessing coordinates. Do not disturb proven K16 lower backbone y=158.
