@@ -33,4 +33,4 @@ Use small commits with one purpose:
 - Fetch HEAD immediately before every PCB/tool/workflow update to avoid overwriting concurrent work.
 
 ## Next action
-K13/net48 is validated and officially promoted. Route Candidate `36830926095` proved **158 -> 157** with zero error-severity DRC; board commit `ed6538741ede7c8c13bf49c5a07d07e912edf69f`, sanity approval `7cd69e3a957f27bcba06e4c1a9304fca573e77bf`. Validate K14/net49 candidate `6d4f840eca798715aee363e8a9ace09ffbfd599f`; if green promote exact geometry, approve net49, then continue K15.
+Official board remains K1-K13 promoted/sanity-approved at **157 unconnected**. K14/net49 is electrically correct but its U2.13 fanout is boxed by K10/K13 F.Cu, K11/K12 B.Cu and nearby U2/K9 pads; all attempted candidates were rejected by real DRC and none was promoted. Journal commit `309ba1de4ecd2de44cddcdbc4cb54d8ae2249cca` records the evidence. Next: build a temporary combined candidate that reroutes K11/net46 to open a clean K14 escape lane; require full KiCad DRC and no connectivity regression before any official-board replacement.
