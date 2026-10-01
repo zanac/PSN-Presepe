@@ -33,4 +33,4 @@ Use small commits with one purpose:
 - Fetch HEAD immediately before every PCB/tool/workflow update to avoid overwriting concurrent work.
 
 ## Next action
-Official baseline remains **160 unconnected**, K1-K10 promoted. K11 attempts 1-5 were rejected and never promoted. Attempt 5 showed the external B.Cu corridor is usable but its two vias created hole/mask/short violations. Since U2.16 and K11.5 are THT, candidate 6 removes vias entirely: `788b41860645d9cdb9d12693b080ed1e41a214e9`, Route Candidate `36827291884`. Validate it; if green promote net46, then use via-free B.Cu routing as the starting pattern for K12-K16.
+Official baseline remains **160 unconnected**, K1-K10 promoted. K11 candidates 1-6 were rejected and never promoted; every one still proved connectivity reduction 160->159. Candidate 6 showed direct B.Cu lateral escape from U2.16 crosses the ULN THT row. Validate candidate 7 `9cbb0a9ad6a4ae42da3628c2dc245dc33c16bc01` (Route Candidate `36827640339`): short F.Cu escape to remote via at (150,98.5), then external B.Cu corridor x=130/y=132 into K11.5. If green promote net46 and continue K12.
