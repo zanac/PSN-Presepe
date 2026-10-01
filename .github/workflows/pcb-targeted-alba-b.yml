@@ -139,6 +139,8 @@ jobs:
           src=Path("hardware/pcb/targeted-relays/BATCH_R14.kicad_pcb")
           Path("hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb").write_text(src.read_text())
           PY
+          cd "$GITHUB_WORKSPACE"
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb
