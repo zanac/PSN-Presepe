@@ -2,7 +2,7 @@ name: PCB Targeted ALBA_B Route
 'on':
   push:
     branches: [dev]
-    paths: [".github/workflows/pcb-targeted-alba-b.yml"]
+    paths:\n      - ".github/workflows/pcb-targeted-alba-b.yml"\n      - "hardware/pcb/tools/grid_router.py"
 permissions:
   contents: read
 jobs:
