@@ -24,8 +24,10 @@ parts=[
 '  (segment (start 140.0 144.0) (end 193.62 144.0) (width 0.3) (layer "F.Cu") (net 46))',
 '  (segment (start 193.62 144.0) (end 193.62 115.0) (width 0.3) (layer "F.Cu") (net 46))',
 # new K14/net49 on freed B.Cu corridor
-'  (segment (start 145.16 104.70) (end 143.5 106.0) (width 0.3) (layer "B.Cu") (net 49))',
-'  (segment (start 143.5 106.0) (end 143.5 142.0) (width 0.3) (layer "B.Cu") (net 49))',
+'  (segment (start 145.16 104.70) (end 143.5 106.0) (width 0.3) (layer "F.Cu") (net 49))',
+'  (segment (start 143.5 106.0) (end 143.5 130.0) (width 0.3) (layer "F.Cu") (net 49))',
+'  (via (at 143.5 130.0) (size 0.8) (drill 0.4) (layers "F.Cu" "B.Cu") (net 49))',
+'  (segment (start 143.5 130.0) (end 143.5 142.0) (width 0.3) (layer "B.Cu") (net 49))',
 '  (segment (start 143.5 142.0) (end 247.62 142.0) (width 0.3) (layer "B.Cu") (net 49))',
 '  (segment (start 247.62 142.0) (end 247.62 115.0) (width 0.3) (layer "B.Cu") (net 49))',
 ]
