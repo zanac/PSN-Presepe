@@ -15,12 +15,12 @@ Persistent restart/checkpoint log for long autonomous routing sessions on branch
 ## Current verified baseline
 
 - Branch: `dev`
-- Baseline HEAD when this checkpoint was written: `ca7565f4aed8d7d69ef1fb77e9e3324dc0286b88`
+- Baseline HEAD when this checkpoint was written: `3f41e3e98e11786a8fc51d589adb8a157fd18042`
 - KiCad: 9.0.9 in GitHub Actions
-- Source PCB routed segments: at least 97
+- Source PCB routed segments: at least 101
 - Copper zones: 0
 - Error-severity DRC violations: **0**
-- Unconnected items: **164**
+- Unconnected items: **163**
 - Full-report non-routing warnings: 66 `lib_footprint_mismatch`
 - Fabrication status: **BLOCKED / NOT FOR FABRICATION**
 
@@ -31,14 +31,14 @@ The source sanity allow-list currently contains these routed net IDs:
 - 14, 15: OLED SDA/SCL
 - 16, 17, 18: START/NEXT/TEST
 - 19: A0 potentiometer signal
-- 36, 37, 38, 39, 40, 41: relay coil-low K1/K2/K3/K4/K5/K6
+- 36, 37, 38, 39, 40, 41, 42: relay coil-low K1/K2/K3/K4/K5/K6/K7
 - 63..71: local MOSFET gate nodes
 
 These nets are considered source-PCB routing checkpoints because they were promoted only after candidate DRC validation.
 
 ## Current experiment
 
-Next candidate: `RELAY7_COIL_LOW`, net 42, U1 pad12 -> K7 pad5.
+Next candidate: `RELAY8_COIL_LOW`, net 43, U1 pad11 -> K8 pad5.
 
 Generator:
 `hardware/pcb/tools/make_route_candidate.py`
@@ -87,3 +87,11 @@ A red GitHub Actions run does not automatically mean routing failed. While the b
 - Sanity allow-list updated in `ca7565f4aed8d7d69ef1fb77e9e3324dc0286b88`.
 - Candidate reduced connectivity from **165 → 164 unconnected items** with zero error-severity DRC violations.
 - Next target: K7 / `RELAY7_COIL_LOW`, net 42, U1 pad12 -> K7 pad5.
+
+## Checkpoint K7 — 2026-10-01
+
+- K7 / `RELAY7_COIL_LOW` net 42 candidate passed dedicated route validation on run `36824895407` and Routing Lab `36824895370`.
+- K7 route promoted in `6b68a10e4f4a674b6cefec46b93f88035723c038`.
+- Sanity allow-list updated in `3f41e3e98e11786a8fc51d589adb8a157fd18042`.
+- Candidate improved connectivity with zero error-severity DRC violations; official baseline is now **163 unconnected items**.
+- Next target: K8 / `RELAY8_COIL_LOW`, net 43, U1 pad11 -> K8 pad5.
