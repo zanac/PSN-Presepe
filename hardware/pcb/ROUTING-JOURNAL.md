@@ -17,10 +17,10 @@ Persistent restart/checkpoint log for long autonomous routing sessions on branch
 - Branch: `dev`
 - Baseline HEAD when this checkpoint was written: `3f41e3e98e11786a8fc51d589adb8a157fd18042`
 - KiCad: 9.0.9 in GitHub Actions
-- Source PCB routed segments: at least 101
+- Source PCB routed segments: at least 109
 - Copper zones: 0
 - Error-severity DRC violations: **0**
-- Unconnected items: **163**
+- Unconnected items: **161**
 - Full-report non-routing warnings: 66 `lib_footprint_mismatch`
 - Fabrication status: **BLOCKED / NOT FOR FABRICATION**
 
@@ -31,14 +31,14 @@ The source sanity allow-list currently contains these routed net IDs:
 - 14, 15: OLED SDA/SCL
 - 16, 17, 18: START/NEXT/TEST
 - 19: A0 potentiometer signal
-- 36, 37, 38, 39, 40, 41, 42: relay coil-low K1/K2/K3/K4/K5/K6/K7
+- 36, 37, 38, 39, 40, 41, 42, 43, 44: relay coil-low K1/K2/K3/K4/K5/K6/K7/K8/K9
 - 63..71: local MOSFET gate nodes
 
 These nets are considered source-PCB routing checkpoints because they were promoted only after candidate DRC validation.
 
 ## Current experiment
 
-Next candidate: `RELAY8_COIL_LOW`, net 43, U1 pad11 -> K8 pad5.
+Next candidate: `RELAY10_COIL_LOW`, net 45, U2 pad17 -> K10 pad5.
 
 Generator:
 `hardware/pcb/tools/make_route_candidate.py`
@@ -95,3 +95,11 @@ A red GitHub Actions run does not automatically mean routing failed. While the b
 - Sanity allow-list updated in `3f41e3e98e11786a8fc51d589adb8a157fd18042`.
 - Candidate improved connectivity with zero error-severity DRC violations; official baseline is now **163 unconnected items**.
 - Next target: K8 / `RELAY8_COIL_LOW`, net 43, U1 pad11 -> K8 pad5.
+
+## Checkpoint K8/K9 — 2026-10-01
+
+- K8 / net 43 passed Route Candidate run `36825163253` and Routing Lab `36825163240`; promoted in `92b51d9ade2f77bdfbd14e6c32fc90ccd81dfb0e`, sanity-approved in `da995d58895f32e03e9aa645983017897bd52724`.
+- K9 / net 44 passed Route Candidate run `36825298968` and Routing Lab `36825299003`; promoted in `eb7ac805b9a549f9871fbe4db3625000b6ec9203`, sanity-approved in `6cfd658603feee9aa6f601e6d1489f433ac8953b`.
+- K1-K8 first coil-low bank is complete; second bank routing has started with K9.
+- Official connectivity after K9 is **161 unconnected items**.
+- Next target: K10 / `RELAY10_COIL_LOW`, net 45, U2 pad17 -> K10 pad5; candidate commit `f355ad399eab761c4f565e3a53219743873418e0`.
