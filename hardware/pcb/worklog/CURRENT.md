@@ -33,4 +33,4 @@ Use small commits with one purpose:
 - Fetch HEAD immediately before every PCB/tool/workflow update to avoid overwriting concurrent work.
 
 ## Next action
-Official baseline **160 unconnected**, K1-K10 promoted. K11 candidates 1-7 rejected, never promoted; each still reduces connectivity 160->159. Candidate 7 exposed existing long routing backbones at x=128.5 F.Cu (net16) and x=130.5 B.Cu (net17), making the left-side corridor unsuitable. Validate candidate 8 `14f2a1e058754b0f325a62f690047cc134942b10` (Route Candidate `36828125988`): F.Cu escape right, via (152,99), B.Cu descent x=152, lower corridor y=132 into K11.5. If green promote net46 and continue K12.
+Official baseline **160 unconnected**, K1-K10 promoted. K11 candidates 1-8 rejected, never promoted; all reduced connectivity 160->159. Candidate 8 narrowed the remaining issues to one crossing and two shorts around its transition near K9. Validate candidate 9 `143b7d8e3745eb45d9df65d70cd7192bf4111c19` (Route Candidate `36828306234`): F.Cu transition moved beyond K9 to via (162,99.5), B.Cu descent x=162, backbone y=134, direct K11.5. If green promote net46 and continue K12.
