@@ -1,20 +1,20 @@
 #!/usr/bin/env python3
-"""Temporary DRC candidate: D27 two-via fanout avoiding Mega pad column."""
+"""Temporary DRC candidate: D28 inter-pad two-via fanout."""
 from pathlib import Path
 import sys
 src=Path(sys.argv[1]); dst=Path(sys.argv[2]); s=src.read_text(encoding="utf-8")
-assert not any("(net 22)" in ln for ln in s.splitlines() if "(segment " in ln or "(via " in ln)
+assert not any("(net 23)" in ln for ln in s.splitlines() if "(segment " in ln or "(via " in ln)
 parts=[
-'  (segment (start 124.52 48.82) (end 127.0 51.5) (width 0.3) (layer "F.Cu") (net 22))',
-'  (via (at 127.0 51.5) (size 0.8) (drill 0.4) (layers "F.Cu" "B.Cu") (net 22))',
-'  (segment (start 127.0 51.5) (end 126.0 52.5) (width 0.3) (layer "B.Cu") (net 22))',
-'  (segment (start 126.0 52.5) (end 126.0 61.5) (width 0.3) (layer "B.Cu") (net 22))',
-'  (segment (start 126.0 61.5) (end 129.5 61.5) (width 0.3) (layer "B.Cu") (net 22))',
-'  (via (at 129.5 61.5) (size 0.8) (drill 0.4) (layers "F.Cu" "B.Cu") (net 22))',
-'  (segment (start 129.5 61.5) (end 129.5 67.08) (width 0.3) (layer "F.Cu") (net 22))',
-'  (segment (start 129.5 67.08) (end 135.0 67.08) (width 0.3) (layer "F.Cu") (net 22))',
+'  (segment (start 121.98 51.36) (end 123.25 52.63) (width 0.3) (layer "F.Cu") (net 23))',
+'  (segment (start 123.25 52.63) (end 127.5 52.63) (width 0.3) (layer "F.Cu") (net 23))',
+'  (via (at 127.5 52.63) (size 0.8) (drill 0.4) (layers "F.Cu" "B.Cu") (net 23))',
+'  (segment (start 127.5 52.63) (end 127.5 64.0) (width 0.3) (layer "B.Cu") (net 23))',
+'  (segment (start 127.5 64.0) (end 129.5 64.0) (width 0.3) (layer "B.Cu") (net 23))',
+'  (via (at 129.5 64.0) (size 0.8) (drill 0.4) (layers "F.Cu" "B.Cu") (net 23))',
+'  (segment (start 129.5 64.0) (end 129.5 69.62) (width 0.3) (layer "F.Cu") (net 23))',
+'  (segment (start 129.5 69.62) (end 135.0 69.62) (width 0.3) (layer "F.Cu") (net 23))',
 ]
 edge=s.find("  (gr_rect "); assert edge>0
 s=s[:edge]+chr(10).join(parts)+chr(10)+s[edge:]
 dst.parent.mkdir(parents=True,exist_ok=True); dst.write_text(s,encoding="utf-8")
-print("Added D27 two-via candidate")
+print("Added D28 inter-pad candidate")
