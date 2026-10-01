@@ -190,3 +190,8 @@ A red GitHub Actions run does not automatically mean routing failed. While the b
 - K13 required a controlled multi-layer weave around the dense U2/K9-K12 corridor. Final candidate `e8c343cec4e64c4b1aeb9493270f28f7e2edad7e`, Route Candidate `36830926095`: **158 -> 157**, zero error-severity DRC violations.
 - Promoted exact net48 geometry: `ed6538741ede7c8c13bf49c5a07d07e912edf69f`; sanity approval: `7cd69e3a957f27bcba06e4c1a9304fca573e77bf`.
 - K14/net49 candidate `6d4f840eca798715aee363e8a9ace09ffbfd599f` started with staggered coordinates; DRC remains authoritative.
+
+## K14 first rejected candidate — 2026-10-01
+
+- Candidate `6d4f840eca798715aee363e8a9ace09ffbfd599f`, Route Candidate `36831044922`, reduced **157 -> 156** but had five track crossings with validated K10/K12/K13 geometry.
+- No promotion occurred. Revised candidate `72818bf4bff0f99182f49c627206f51aa03493df` uses a right-side fanout and controlled layer weave; validate it next.
