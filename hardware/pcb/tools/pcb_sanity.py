@@ -19,7 +19,7 @@ assert depth == 0 and minimum == 0, f"Unbalanced PCB S-expression: depth={depth}
 bad = re.findall(r'\(layers [^)]*\(net \d+ "[^"]+"\)', s)
 assert not bad, f"Malformed net nested inside layers: {len(bad)} occurrence(s)"
 
-global_nets = re.findall(r'^  \(net (\d+) "([^"]+)"\)$', s, re.M)
+global_nets = re.findall(r'^\s*\(net (\d+) "([^"]+)"\)$', s, re.M)
 assert len(global_nets) == 119, f"Expected 119 global nets, got {len(global_nets)}"
 assert len({n for n, _ in global_nets}) == 119, "Duplicate global net IDs"
 assert len({name for _, name in global_nets}) == 119, "Duplicate global net names"
