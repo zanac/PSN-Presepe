@@ -40,3 +40,5 @@ Immediate priority: repair D30/net25 clearance regression before D31. D30 candid
 Process rule added conceptually: no future relay-input promotion is considered complete until the **official full KiCad Validation** after promotion has zero critical geometry/electrical categories, not merely Route Candidate success.
 
 After clean D30, continue D31/D32. Final gate: zero real DRC + zero unconnected, then same-revision Gerber+Excellon ZIP + BOM CSV + CPL/centroid CSV.
+
+<!-- trigger full validation for restored D30 geometry 0630a8ae -->
