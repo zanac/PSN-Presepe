@@ -41,4 +41,6 @@ After promotion, exactly **5 logic connections** remain: `D36_RELAY12`, `CIELO_G
 
 Official KiCad validation workflow was also fixed so `kicad-cli` may emit incomplete-board reports without aborting before `drc_gate.py`; the explicit fabrication gate remains authoritative. Final fabrication gate remains zero real DRC + zero unconnected -> same-revision Gerber+Excellon ZIP + BOM CSV + CPL/centroid CSV.
 
-Progress checkpoint before artifact promotion: ~50% routing / ~68% overall PCB. Recalculate immediately after the 149->122 candidate is committed.
+Promotion completed on dev as commit `393ea5587f6bc1b73dfe43eff5713779dc7345ab`: the validated Freerouting board is now the official KiCad source. Expected official baseline is **122 unconnected pads**, with 27 connections promoted from the former 149 baseline. Next: confirm official KiCad Validation, then close the 5 logic stragglers before relay-contact and power routing.
+
+Progress checkpoint after promotion: ~64% routing / ~74% overall PCB.
