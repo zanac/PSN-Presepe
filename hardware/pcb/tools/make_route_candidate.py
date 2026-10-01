@@ -16,9 +16,9 @@ parts=[
 '  (via (at 127.0 78.03) (size 0.8) (drill 0.4) (layers "F.Cu" "B.Cu") (net 25))',
 '  (segment (start 127.0 78.03) (end 129.5 78.03) (width 0.3) (layer "B.Cu") (net 25))',
 '  (via (at 129.5 78.03) (size 0.8) (drill 0.4) (layers "F.Cu" "B.Cu") (net 25))',
-'  (segment (start 129.5 78.03) (end 131.5 78.03) (width 0.3) (layer "F.Cu") (net 25))',
-'  (via (at 131.5 78.03) (size 0.8) (drill 0.4) (layers "F.Cu" "B.Cu") (net 25))',
-'  (segment (start 131.5 78.03) (end 133.0 78.03) (width 0.3) (layer "B.Cu") (net 25))',
+'  (segment (start 129.5 78.03) (end 131.25 78.03) (width 0.3) (layer "F.Cu") (net 25))',
+'  (via (at 131.25 78.03) (size 0.8) (drill 0.4) (layers "F.Cu" "B.Cu") (net 25))',
+'  (segment (start 131.25 78.03) (end 133.0 78.03) (width 0.3) (layer "B.Cu") (net 25))',
 '  (segment (start 133.0 78.03) (end 133.0 74.7) (width 0.3) (layer "B.Cu") (net 25))',
 '  (segment (start 133.0 74.7) (end 135.0 74.7) (width 0.3) (layer "B.Cu") (net 25))',
 ]
