@@ -2,9 +2,12 @@ name: PCB Autoroute Candidate
 
 on:
   workflow_dispatch:
+  push:
+    branches: [dev]
+    paths: [".github/workflows/pcb-autoroute-candidate.yml"]
 
 permissions:
-  contents: read
+  contents: write
 
 env:
   KICAD9_FOOTPRINT_DIR: /usr/share/kicad/footprints
@@ -111,6 +114,39 @@ jobs:
                       if 'Found ' in line:
                           print(line)
           PY
+
+      - name: Validate and promote safe logic routing
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          board=Path('hardware/pcb/route-candidate/PSN-Presepe-Mega-routed.kicad_pcb')
+          report=Path('hardware/pcb/route-candidate/drc-errors.txt').read_text()
+          assert board.exists()
+          text=board.read_text()
+          assert text.count('(segment') > 0, 'Candidate has no routed segments'
+          assert '** Found 0 DRC violations **' in report, 'Candidate has KiCad DRC errors'
+          allowed_power={'+12V','GND','+5V_MEGA'}
+          bad=[]
+          for line in report.splitlines():
+              if not line.lstrip().startswith('@('):
+                  continue
+              m=re.search(r'\[([^\]]+)\]',line)
+              if not m:
+                  continue
+              net=m.group(1)
+              if net in allowed_power or re.fullmatch(r'R[0-9]+_(COM|NO|NC)',net):
+                  continue
+              bad.append((net,line.strip()))
+          assert not bad, f'Unexpected unrouted nets: {bad[:10]}'
+          print('Promotion gate OK: only protected/power nets remain unrouted')
+          PY
+          cp hardware/pcb/route-candidate/PSN-Presepe-Mega-routed.kicad_pcb hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb
+          git commit -m "Promote DRC-gated logic autoroute candidate"
+          git push origin HEAD:dev
 
       - name: Upload autoroute candidate
         if: always()
