@@ -35,7 +35,7 @@ def blocks():
 rows=[]
 for b in blocks():
     refm=re.search(r'\(property "Reference" "([^"]+)"',b)
-    atm=re.match(r'\(footprint [^\n]*\(layer "[^"]+"\) \(at (-?[\d.]+) (-?[\d.]+)(?: (-?[\d.]+))?\)',b)
+    atm=re.search(r'\(at\s+(-?[\d.]+)\s+(-?[\d.]+)(?:\s+(-?[\d.]+))?\)', b)
     if not refm or not atm:continue
     ref=refm.group(1); fx,fy=float(atm.group(1)),float(atm.group(2)); fr=float(atm.group(3) or 0)
     a=math.radians(fr)
