@@ -68,7 +68,7 @@ jobs:
               tmp=Path(f"/tmp/R{rn}-{net}.kicad_pcb"); tmp.write_text(work)
               cmd=["python3","hardware/pcb/tools/grid_router.py",str(tmp),"--net",net,
                    "--start",f"{a[0]},{a[1]},F.Cu","--goal",f"{b[0]},{b[1]},F.Cu",
-                   "--step","0.5","--clearance","0.55","--margin","45"]
+                   "--step","0.5","--clearance","1.6","--margin","55"]
               p=subprocess.run(cmd,text=True,capture_output=True)
               if p.returncode: print("NO_ROUTE",rn,net,"RC",p.returncode,"ERR",p.stderr.strip(),"OUT",p.stdout.strip()); continue
               pts=[]
@@ -83,7 +83,7 @@ jobs:
                 if u[2]!=v[2]:
                   items.append(f'\t(via (at {u[0]} {u[1]}) (size 1.2) (drill 0.6) (layers "F.Cu" "B.Cu") (net {a[2]}))\n')
                   continue
-                else: items.append(f'\t(segment (start {u[0]} {u[1]}) (end {v[0]} {v[1]}) (width 0.8) (layer "{u[2]}") (net {a[2]}))\n')
+                else: items.append(f'\t(segment (start {u[0]} {u[1]}) (end {v[0]} {v[1]}) (width 1.0) (layer "{u[2]}") (net {a[2]}))\n')
               idx=work.rfind(")"); work=work[:idx]+''.join(items)+work[idx:]
               # KiCad connectivity needs copper on both sides of every via.
               # A layer-flip point is represented by a via plus the following
