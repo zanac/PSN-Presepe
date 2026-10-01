@@ -388,3 +388,12 @@ Manufacturing end target remains assembly-ready Gerber+drill ZIP + BOM + CPL, ge
 D29/net24 first staggered probe c4d7cec6... connects 150->149 but is rejected: 3 shorts + 3 mask bridges + 2 crossings. Exact causes: initial F.Cu escape touches D30 pad; long leftward y54 route crosses D28 vertical; return at y91 touches U2.1 (D33); right-side ascent crosses D28 x140. Next D29 design should NOT clone D28 leftward escape. Prefer a right-of-header/vertical corridor or a coordinated D29/D30 escape that leaves both pads without crossing each other, while reusing the validated wall-crossing concept.
 
 Official board remains **150 unconnected / zero critical geometry/electrical DRC**. Manufacturing gate unchanged: zero real DRC + zero unconnected before Gerber; final bundle Gerber+Excellon ZIP + BOM + CPL.
+
+## D29 promoted / D30 start — 2026-10-01 16:08 CEST
+
+- D29/net24 required several rejected families. Outer-right route proved its remote section clean but exposed the local pad escape blockage from D27/D26/D25. Coordinated D27 repack reduced errors but did not clear D26/D25 crossings and was rejected.
+- Successful D29 topology uses the physical inter-pad corridor between D28/D30, then crosses TEST/START/NEXT with deliberate layer locks. Final key corridor is y=80.57, midpoint between Mega D50/D51 and D52/D53 rows: F.Cu crosses TEST(B), via x127, B.Cu crosses START(F), via x129.5, F.Cu crosses NEXT(B), then x132 into U1.5.
+- Final D29 candidate `fdeb1ecde2a6d61a3bfce07df42df195cdded63c`, Route Candidate run `36873633369`: **SUCCESS**, 150->149, zero routing DRC errors.
+- Promoted official D29 `b6ba98a856ac02f48155f664b1b0eaf3362f9bc5`; sanity allow-list net24 `ff67854db31d4626c20260fa8f586047bdf681e0`.
+- Official board is now **149 unconnected** with D25-D29 routed.
+- D30/net25 candidate `cd71514a7a079843dc92f24f6da86afe8916eea7` uses complementary alternating-layer path at y=78.03 and is awaiting Route Candidate run `36874130419`. Do not infer success until DRC completes.
