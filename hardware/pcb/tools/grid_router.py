@@ -96,24 +96,21 @@ def extract_obstacles(text,target,step,clearance):
         if net_names.get(n)==target: continue
         mark_disc(blocked,float(at.group(1)),float(at.group(2)),float(sz.group(1))/2+clearance,[0,1],step)
 
-    # Pads use coordinates local to their footprint. Transform them to board
-    # coordinates before rasterizing; previous implementation treated them as global.
+    # Pads use coordinates local to their footprint; use escape-proof regexes.
     for fp in balanced_blocks(text,"(footprint "):
-        head=re.search(r'\\(at ([\\d.-]+) ([\\d.-]+)(?: ([\\d.-]+))?\)',fp)
+        head=re.search(r'[(]at ([0-9.-]+) ([0-9.-]+)(?: ([0-9.-]+))?[)]',fp)
         if not head: continue
         fx,fy=float(head.group(1)),float(head.group(2)); rot=float(head.group(3) or 0)
         import math
         ang=math.radians(rot); ca,sa=math.cos(ang),math.sin(ang)
         for pad in balanced_blocks(fp,"(pad "):
-            nm=re.search(r'\\(net (\\d+) "([^"]+)"\)',pad)
-            at=re.search(r'\\(at ([\\d.-]+) ([\\d.-]+)',pad)
-            sz=re.search(r'\\(size ([\\d.-]+) ([\\d.-]+)\)',pad)
+            nm=re.search(r'[(]net ([0-9]+) "([^"]+)"[)]',pad)
+            at=re.search(r'[(]at ([0-9.-]+) ([0-9.-]+)',pad)
+            sz=re.search(r'[(]size ([0-9.-]+) ([0-9.-]+)[)]',pad)
             if not(nm and at and sz) or nm.group(2)==target: continue
             px,py=float(at.group(1)),float(at.group(2))
             gx=fx+px*ca-py*sa; gy=fy+px*sa+py*ca
             rad=max(float(sz.group(1)),float(sz.group(2)))/2+clearance
-            # Through-hole pads obstruct both copper layers. SMD pads only their
-            # explicit copper layer; conservatively use both if uncertain.
             if "thru_hole" in pad: layers=[0,1]
             elif '(layers "F.Cu"' in pad: layers=[0]
             elif '(layers "B.Cu"' in pad: layers=[1]
