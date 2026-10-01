@@ -33,10 +33,12 @@ Use small commits with one purpose:
 - Fetch HEAD immediately before every PCB/tool/workflow update to avoid overwriting concurrent work.
 
 ## Next action
-Clean official baseline restored: **K1-K16 + D25-D29 / 149 unconnected / zero critical geometry/electrical DRC**. Full KiCad Validation run `36880034688` on commit `40500c6a...`: categories only `lib_footprint_mismatch:66` + `unconnected_items:149`; critical categories none. D29 clearance was fixed by moving its first via right to x=120.5.
+**Progress accounting corrected.** Clean official baseline is K1-K16 + D25-D29, **149 unconnected**, full KiCad Validation run `36880034688`: categories only footprint mismatch + unconnected; **zero critical geometry/electrical DRC**.
 
-D30/net25 was removed from official PCB and sanity approval revoked after discovering full-DRC clearance regressions. Redesign D30 from the clean 149 baseline. Candidate success alone is insufficient: after promotion require official full KiCad Validation with zero critical geometry/electrical categories and 148 unconnected before D31.
+149 is not 149 equally difficult routes. Exact clean-report decomposition: **GND 37 + +12V 27 + +5V_MEGA 5 = 69 (46%)** are shared power connections suited to buses/zones; **48** are relay contact nets (COM/NO/NC, 3 x 16); **9** relay-input signals remain D30-D40; the remainder are PWM/data/buzzer/MOSFET-side signals. Therefore old ~94% estimate was too optimistic for manufacturing completion. Use current estimates: routing/connectivity ~45-55%, overall PCB ~65-70%, manufacturing-package readiness ~60-65%.
 
-Continue D30 using the prior alternating-layer concept but keep transition vias safely spaced; avoid the compressed x=129.5/131.25 transition that produced clearance errors. Then D31/D32.
+D30 restart candidate `69132e77...` reduced 149->148 but had exactly one short: D30 via at (131.5,78.03) against D29 F.Cu track at x=132. Variant moving via to 131.25 (`060d7da5...`) worsened to 1 short + 3 crossings; reject and do not promote. Official PCB remains clean 149 baseline.
+
+Next routing strategy: do not remain blocked on D30. Define/review a dedicated relay-contact routing class (wider copper/appropriate clearance) and route contact groups with candidate + full DRC; these 48 repetitive connections can materially reduce unconnected count. Resume D30 in parallel from clean baseline when a collision-free wall bridge is found. Do not blindly bulk-route K9-K16 because terminal geometry can require long paths.
 
 Final gate: zero real DRC + zero unconnected, then same-revision Gerber+Excellon ZIP + BOM CSV + CPL/centroid CSV.
