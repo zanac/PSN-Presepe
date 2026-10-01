@@ -24,10 +24,11 @@ parts=[]
 for net,rgx,rgy,rpx,rpy,qx,qy in positions:
     rg2=(rgx+10.16,rgy)
     junction=(rgx+10.16,qy)
+    layer="B.Cu" if net==63 else "F.Cu"  # Q1 avoids the promoted A0 F.Cu path.
     pts=[rg2,junction,(qx,qy)]
     for a,b in zip(pts,pts[1:]):
-        parts.append(f'  (segment (start {a[0]} {a[1]}) (end {b[0]} {b[1]}) (width 0.3) (layer "F.Cu") (net {net}))')
-    parts.append(f'  (segment (start {rpx} {rpy}) (end {junction[0]} {junction[1]}) (width 0.3) (layer "F.Cu") (net {net}))')
+        parts.append(f'  (segment (start {a[0]} {a[1]}) (end {b[0]} {b[1]}) (width 0.3) (layer "{layer}") (net {net}))')
+    parts.append(f'  (segment (start {rpx} {rpy}) (end {junction[0]} {junction[1]}) (width 0.3) (layer "{layer}") (net {net}))')
 edge=s.find("  (gr_rect "); assert edge>0
 s=s[:edge]+"\n".join(parts)+"\n"+s[edge:]
 dst.parent.mkdir(parents=True,exist_ok=True); dst.write_text(s,encoding="utf-8")
