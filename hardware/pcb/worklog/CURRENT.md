@@ -33,10 +33,12 @@ Use small commits with one purpose:
 - Fetch HEAD immediately before every PCB/tool/workflow update to avoid overwriting concurrent work.
 
 ## Next action
-Official PCB: **K1-K16 + D25 + D26 + D27 / 151 unconnected**. D27 final candidate `fc0e3274...`, run `36861858225` SUCCESS; promoted `f2e4c50a...`, sanity `0a6bfe6f...`.
+Official PCB: **K1-K16 + D25-D28 / 150 unconnected / zero critical geometry/electrical DRC**. D28 candidate 61fcb1d6... run 36865837527 SUCCESS; promoted 095233fc...; sanity dc2b5e92.... Official validation observed in run 36866316897: only 66 footprint mismatches + 150 unconnected.
 
-D28 best structural probe is `20a17bb0...`: 151->150, zero crossings, only one short + two mask bridges. The remaining obstacle is the physical Mega header itself: unused/no-net D42/D43 pads at y=69.14. Restart by routing D28 below the **entire** digital header rather than below D40, then return toward U1.4; preserve validated D25-D27.
+D28 established a reusable wall-crossing concept: F.Cu crosses D24_TEST(B), via before D22_START(F), B.Cu crosses START, via between START/NEXT, F.Cu crosses D23_NEXT(B). Its analog-row corridor is x=110.55 between A11/A12 and wall-crossing y=92.
 
-Final delivery gate remains: zero real DRC + zero unconnected, then generate same-revision assembly package **Gerber+Excellon ZIP + BOM + CPL/centroid**, cross-check reference designators and revision consistency.
+D29 first clone c4d7cec6... is rejected despite 150->149: it touches D30, crosses D28, touches U2.1/D33, and crosses D28 right ascent. Next D29 should use a distinct escape (prefer right/vertical or coordinated D29+D30) while retaining the validated alternating-layer wall-crossing principle. Do not modify official D28 unless an atomic replacement is fully DRC-clean.
 
-Keep +12V/GND distribution, relay COM/NO, high-current copper and pours untouched until their dedicated reviewed phase.
+Final gate: zero real DRC + zero unconnected, then same-revision **Gerber+Excellon ZIP + BOM + CPL/centroid**, with reference/revision cross-check.
+
+Keep +12V/GND distribution, relay COM/NO, high-current copper and pours untouched until dedicated reviewed phase.
