@@ -65,3 +65,24 @@ Every tested route electrically closes ALBA_B and reaches **117 unconnected**, b
 Best diagnostic families so far reduced the error classes to `tracks_crossing` / `shorting_items` (some variants also introduce clearance/hole/solder-mask issues). Direct, lower-edge, upper, mixed-layer, fine sweep, and dogleg topologies have been tested. Do not promote any of them.
 
 Next best practice: stop hand-picking polylines and make the targeted router obstacle-aware from the actual PCB copper/pads/vias, searching a clearance-inflated grid independently on F.Cu/B.Cu with via transitions. Require 117 unconnected and no new critical DRC before promotion.
+
+
+## ALBA_B closed on official board (2026-10-01)
+Milestone reached on `dev`: official board is now **117 unconnected** with **no critical geometry/electrical DRC categories** and **no error-severity DRC violations**.
+
+Final ALBA_B route is net 61. The only post-promotion clearance issue was between the ALBA_B via at `(127.5,172.75)` and `ALBA_G_NEG`: RGB_LOAD requires 0.300 mm clearance. Keeping the validated route geometry and changing that via from 0.8/0.4 mm to **0.6/0.3 mm** removes the violation. Official electrical board commit: `8dba41f28c25e780997ea7a1cd376aa72ea8b58f`.
+
+Official KiCad validation reports:
+- 117 unconnected items
+- critical geometry/electrical categories: none
+- error-severity DRC violations: none
+- remaining non-critical/incomplete-board categories include planned unconnected items, footprint-library mismatch, existing hole-to-hole notices and a dangling-via notice.
+
+The fabrication workflow remains intentionally red until **zero unconnected**; do not weaken that gate.
+
+Remaining connectivity workload is now exactly the planned non-logic work:
+- **48 relay-contact connections**
+- **69 power connections**
+- **0 logic connections**
+
+Next stage: route relay contacts parametrically/in reviewed batches with mains-capable clearance/isolation rules; do not use blind generic autorouting. Power buses/zones remain last.
