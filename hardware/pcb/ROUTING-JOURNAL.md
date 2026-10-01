@@ -136,3 +136,9 @@ A red GitHub Actions run does not automatically mean routing failed. While the b
 - Exact errors from candidate artifact: F.Cu escape crossed K9 coil route; B.Cu diagonal crossed K10 COM pad `(168.0,104.84)`, causing one short and one solder-mask bridge.
 - DRC artifact also confirms actual lower relay coordinates K11..K16; no further coordinate extrapolation is needed.
 - Fourth candidate `ffd9058b0c0dce627d6f4b7ceda41f36553ee566` drops to B.Cu beside U2 and uses y=124 below the relay row before returning beside K11 coil pad.
+
+## K11 fourth rejected candidate — 2026-10-01
+
+- Candidate `ffd9058b0c0dce627d6f4b7ceda41f36553ee566` reduced **160 -> 159**, but its B.Cu vertical at x=145.8 ran alongside/through U2 output-side PTH apertures, including +12V pad10, producing mask bridges and one short.
+- Root cause is now explicit: do not descend beside U2 output pad column on B.Cu.
+- Fifth candidate `1b3deb535c66716031a2bf19b6e43e25ecf7b356` escapes left on B.Cu, descends at x=132 outside U2 pad columns, crosses below relay row at y=130, then rises at K11.
