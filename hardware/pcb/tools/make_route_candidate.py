@@ -17,14 +17,18 @@ print(f"Baseline segments: {baseline_segments}")
 # K12 pad5 with footprint rotation 90 deg = (229.62,115.00)
 # K13 uses a via-free B.Cu escape from the THT U2 pad, avoiding K11/K12 F.Cu corridors.
 parts=[
-'  (segment (start 145.16 102.16) (end 146.0 103.0) (width 0.3) (layer "F.Cu") (net 48))',
-'  (segment (start 146.0 103.0) (end 146.0 116.0) (width 0.3) (layer "F.Cu") (net 48))',
-'  (via (at 146.0 116.0) (size 0.8) (drill 0.4) (layers "F.Cu" "B.Cu") (net 48))',
-'  (segment (start 146.0 116.0) (end 146.0 130.0) (width 0.3) (layer "B.Cu") (net 48))',
-'  (via (at 146.0 130.0) (size 0.8) (drill 0.4) (layers "F.Cu" "B.Cu") (net 48))',
-'  (segment (start 146.0 130.0) (end 145.0 140.0) (width 0.3) (layer "F.Cu") (net 48))',
-'  (segment (start 145.0 140.0) (end 229.62 140.0) (width 0.3) (layer "F.Cu") (net 48))',
-'  (segment (start 229.62 140.0) (end 229.62 115.0) (width 0.3) (layer "F.Cu") (net 48))',
+'  (segment (start 145.16 102.16) (end 143.0 103.5) (width 0.3) (layer "F.Cu") (net 48))',
+'  (segment (start 143.0 103.5) (end 143.0 116.5) (width 0.3) (layer "F.Cu") (net 48))',
+'  (segment (start 143.0 116.5) (end 170.0 116.5) (width 0.3) (layer "F.Cu") (net 48))',
+'  (via (at 170.0 116.5) (size 0.8) (drill 0.4) (layers "F.Cu" "B.Cu") (net 48))',
+'  (segment (start 170.0 116.5) (end 180.0 116.5) (width 0.3) (layer "B.Cu") (net 48))',
+'  (segment (start 180.0 116.5) (end 180.0 132.0) (width 0.3) (layer "B.Cu") (net 48))',
+'  (via (at 180.0 132.0) (size 0.8) (drill 0.4) (layers "F.Cu" "B.Cu") (net 48))',
+'  (segment (start 180.0 132.0) (end 180.0 135.0) (width 0.3) (layer "F.Cu") (net 48))',
+'  (via (at 180.0 135.0) (size 0.8) (drill 0.4) (layers "F.Cu" "B.Cu") (net 48))',
+'  (segment (start 180.0 135.0) (end 180.0 140.0) (width 0.3) (layer "B.Cu") (net 48))',
+'  (segment (start 180.0 140.0) (end 229.62 140.0) (width 0.3) (layer "B.Cu") (net 48))',
+'  (segment (start 229.62 140.0) (end 229.62 115.0) (width 0.3) (layer "B.Cu") (net 48))',
 ]
 edge=s.find("  (gr_rect "); assert edge>0
 s=s[:edge]+"\n".join(parts)+"\n"+s[edge:]
