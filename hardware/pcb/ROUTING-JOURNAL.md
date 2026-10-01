@@ -355,3 +355,10 @@ Final project gate is not merely a routed PCB. Required handoff is an assembly-s
 - validation that BOM/CPL references match the PCB and that generated fabrication files correspond to the same committed board revision.
 
 Keep current Gerber export gate closed until zero real DRC errors and zero unconnected items. Once routing/fabrication gate passes, generate and validate Gerber + BOM + CPL as the final deliverable bundle rather than stopping at KiCad sources.
+
+## Manufacturing-target follow-up / START repack probe — 2026-10-01
+
+- Final assembly-service requirement (Gerber+drill, BOM, CPL) recorded in project checkpoint; these artifacts must all be generated from and cross-checked against the same final committed PCB revision.
+- Investigated freeing MCU->ULN fanout by moving D22_START/net16 away from x=128.5. Candidate `2e7d983d...` moved the long F.Cu backbone to x=108, but DRC produced 7 shorts, 6 mask bridges and 3 crossings. Rejected; official PCB unchanged.
+- This confirms the central/left region is obstacle-dense and a wholesale control-net move is not justified without a real routing search. Generator restored to best D27 candidate at `9dfb714f24ab70e5392f0cbebac2d4b77721db25`.
+- Official production source remains 152 unconnected with no critical geometry/electrical DRC (last verified run `36858485914`).
