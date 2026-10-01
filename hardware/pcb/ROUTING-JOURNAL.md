@@ -15,12 +15,12 @@ Persistent restart/checkpoint log for long autonomous routing sessions on branch
 ## Current verified baseline
 
 - Branch: `dev`
-- Baseline HEAD when this checkpoint was written: `c4530759f577c5f7e3ca362b86b38b26fe50a67a`
+- Baseline HEAD when this checkpoint was written: `ca7565f4aed8d7d69ef1fb77e9e3324dc0286b88`
 - KiCad: 9.0.9 in GitHub Actions
-- Source PCB routed segments: at least 81
+- Source PCB routed segments: at least 97
 - Copper zones: 0
 - Error-severity DRC violations: **0**
-- Unconnected items: **166**
+- Unconnected items: **164**
 - Full-report non-routing warnings: 66 `lib_footprint_mismatch`
 - Fabrication status: **BLOCKED / NOT FOR FABRICATION**
 
@@ -31,14 +31,14 @@ The source sanity allow-list currently contains these routed net IDs:
 - 14, 15: OLED SDA/SCL
 - 16, 17, 18: START/NEXT/TEST
 - 19: A0 potentiometer signal
-- 36, 37, 38, 39: relay coil-low K1/K2/K3/K4
+- 36, 37, 38, 39, 40, 41: relay coil-low K1/K2/K3/K4/K5/K6
 - 63..71: local MOSFET gate nodes
 
 These nets are considered source-PCB routing checkpoints because they were promoted only after candidate DRC validation.
 
 ## Current experiment
 
-Next candidate: `RELAY5_COIL_LOW`, net 40, U1 output -> K5 coil.
+Next candidate: `RELAY7_COIL_LOW`, net 42, U1 pad12 -> K7 pad5.
 
 Generator:
 `hardware/pcb/tools/make_route_candidate.py`
@@ -79,3 +79,11 @@ A red GitHub Actions run does not automatically mean routing failed. While the b
 - Error-severity DRC violations: **0**.
 - Critical geometry/electrical categories: **none**.
 - Next target: K6 / `RELAY6_COIL_LOW`, net 41, U1 pad13 -> K6 pad5.
+
+## Checkpoint K6 — 2026-10-01
+
+- K6 / `RELAY6_COIL_LOW` net 41 candidate passed dedicated route validation on run `36824635074`.
+- K6 route promoted in `ca01fe1fb9f8d1e2e33b271d4be57d3ba8253dcc`.
+- Sanity allow-list updated in `ca7565f4aed8d7d69ef1fb77e9e3324dc0286b88`.
+- Candidate reduced connectivity from **165 → 164 unconnected items** with zero error-severity DRC violations.
+- Next target: K7 / `RELAY7_COIL_LOW`, net 42, U1 pad12 -> K7 pad5.
