@@ -142,3 +142,9 @@ A red GitHub Actions run does not automatically mean routing failed. While the b
 - Candidate `ffd9058b0c0dce627d6f4b7ceda41f36553ee566` reduced **160 -> 159**, but its B.Cu vertical at x=145.8 ran alongside/through U2 output-side PTH apertures, including +12V pad10, producing mask bridges and one short.
 - Root cause is now explicit: do not descend beside U2 output pad column on B.Cu.
 - Fifth candidate `1b3deb535c66716031a2bf19b6e43e25ecf7b356` escapes left on B.Cu, descends at x=132 outside U2 pad columns, crosses below relay row at y=130, then rises at K11.
+
+## K11 fifth rejected candidate — 2026-10-01
+
+- Candidate `1b3deb535c66716031a2bf19b6e43e25ecf7b356` reduced **160 -> 159** but failed with via-related hole/mask/short violations.
+- Key simplification: U2.16 and K11.5 are both through-hole pads, so no layer-change vias are required to use B.Cu.
+- Sixth candidate `788b41860645d9cdb9d12693b080ed1e41a214e9` routes net46 entirely on B.Cu: directly from U2.16 left to x=132, below relay row at y=130, then directly into K11.5.
