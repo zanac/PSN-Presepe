@@ -1,4 +1,4 @@
-name: PCB Targeted ALBA_B Route
+name: PCB Relay Contact Batch
 'on':
   push:
     branches: [dev]
@@ -18,46 +18,66 @@ jobs:
       - uses: actions/checkout@v4
       - name: Verify KiCad CLI
         run: kicad-cli version
-      - name: Build conservative obstacle-aware ALBA candidates
+      - name: Build relay-contact batch candidate
         run: |
           set -eu
-          mkdir -p hardware/pcb/targeted-alba
-          PCB=hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb
-          for cfg in "025_055 0.25 0.55" "025_070 0.25 0.70" "050_070 0.50 0.70" "050_090 0.50 0.90"; do
-            set -- $cfg; name=$1; step=$2; clearance=$3
-            python3 hardware/pcb/tools/grid_router.py "$PCB" --net ALBA_B_NEG \
-              --start 112.54,165,B.Cu --goal 171.24,184,B.Cu --step "$step" --clearance "$clearance" --margin 30 \
-              > "hardware/pcb/targeted-alba/$name.route"
-            NAME="$name" python3 - <<'PY'
+          mkdir -p hardware/pcb/targeted-relays
+          python3 - <<'PY'
           from pathlib import Path
-          import os
-          name=os.environ["NAME"]
+          import math,re
           src=Path("hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb").read_text()
-          # Remove the currently promoted net-61 copper before rerouting it.
-          lines=src.splitlines(True); out=[]; i=0
-          while i<len(lines):
-              if ("(segment " in lines[i] or "(via " in lines[i]) and "(net 61)" in lines[i]:
-                  i+=1; continue
-              out.append(lines[i]); i+=1
-          src=''.join(out)
-          pts=[]
-          for line in Path(f"hardware/pcb/targeted-alba/{name}.route").read_text().splitlines()[1:]:
-              x,y,la=line.split(","); pts.append((float(x),float(y),la))
-          items=[]
-          for p,q in zip(pts,pts[1:]):
-              if p[2]!=q[2]:
-                  items.append(f'\t(via (at {p[0]} {p[1]}) (size 0.8) (drill 0.4) (layers "F.Cu" "B.Cu") (net 61))\n')
-              else:
-                  items.append(f'\t(segment (start {p[0]} {p[1]}) (end {q[0]} {q[1]}) (width 0.4) (layer "{p[2]}") (net 61))\n')
+          def blocks(text,token):
+            p=0
+            while True:
+              st=text.find(token,p)
+              if st<0:return
+              d=0;q=False;esc=False
+              for i in range(st,len(text)):
+                ch=text[i]
+                if q:
+                  if esc:esc=False
+                  elif ch=="\\":esc=True
+                  elif ch=='"':q=False
+                else:
+                  if ch=='"':q=True
+                  elif ch=="(":d+=1
+                  elif ch==")":
+                    d-=1
+                    if d==0:
+                      yield text[st:i+1];p=i+1;break
+          pads={}
+          for b in blocks(src,"(footprint "):
+            rm=re.search(r'\(property "Reference" "([^"]+)"',b); am=re.search(r'\(at ([-\d.]+) ([-\d.]+)(?: ([-\d.]+))?\)',b)
+            if not(rm and am):continue
+            ref=rm.group(1)
+            if not (re.fullmatch(r'K\d+',ref) or re.fullmatch(r'JR\d+',ref)):continue
+            fx,fy,rot=float(am.group(1)),float(am.group(2)),float(am.group(3) or 0); a=math.radians(rot)
+            for pb in blocks(b,"(pad "):
+              nm=re.search(r'\(net (\d+) "(R\d+_(?:COM|NO|NC))"\)',pb); pm=re.search(r'\(at ([-\d.]+) ([-\d.]+)',pb)
+              if not(nm and pm):continue
+              px,py=float(pm.group(1)),float(pm.group(2))
+              x=fx+px*math.cos(a)+py*math.sin(a); y=fy-px*math.sin(a)+py*math.cos(a)
+              pads.setdefault(nm.group(2),[]).append((x,y,int(nm.group(1)),ref))
+          items=[]; routed=[]
+          for net,ps in sorted(pads.items(),key=lambda z:int(re.search(r'\d+',z[0]).group())):
+            if len(ps)!=2:continue
+            a,b=ps
+            # Only short/medium relay-contact pairs in first safe batch; use B.Cu,
+            # 1.0 mm copper and orthogonal dogleg. DRC decides acceptance.
+            if math.hypot(a[0]-b[0],a[1]-b[1])>55:continue
+            xmid=(a[0]+b[0])/2
+            pts=[(a[0],a[1]),(xmid,a[1]),(xmid,b[1]),(b[0],b[1])]
+            for p,q in zip(pts,pts[1:]):
+              if p!=q: items.append(f'\t(segment (start {p[0]:.3f} {p[1]:.3f}) (end {q[0]:.3f} {q[1]:.3f}) (width 1.0) (layer "B.Cu") (net {a[2]}))\n')
+            routed.append(net)
           idx=src.rfind(")")
-          Path(f"hardware/pcb/targeted-alba/{name}.kicad_pcb").write_text(src[:idx]+''.join(items)+src[idx:])
-          print(name,"points",len(pts),"items",len(items))
+          Path("hardware/pcb/targeted-relays/batch.kicad_pcb").write_text(src[:idx]+''.join(items)+src[idx:])
+          print("relay nets proposed",len(routed),routed)
           PY
-          done
       - name: DRC all candidates
         run: |
           set -u
-          for pcb in hardware/pcb/targeted-alba/*.kicad_pcb; do
+          for pcb in hardware/pcb/targeted-relays/*.kicad_pcb; do
             n="${pcb%.kicad_pcb}"
             kicad-cli pcb drc --severity-error --output "${n}.drc.txt" "$pcb" || true
           done
@@ -66,7 +86,7 @@ jobs:
           python3 - <<'PY'
           from pathlib import Path
           import re
-          for p in sorted(Path("hardware/pcb/targeted-alba").glob("*.drc.txt")):
+          for p in sorted(Path("hardware/pcb/targeted-relays").glob("*.drc.txt")):
               t=p.read_text()
               m=re.search(r'Found +([0-9]+) +unconnected +(items|pads)',t,re.I)
               u=int(m.group(1)) if m else t.count('[unconnected_items]')
@@ -81,8 +101,8 @@ jobs:
           PY
       - uses: actions/upload-artifact@v4
         with:
-          name: targeted-alba-b-candidates
-          path: hardware/pcb/targeted-alba/
+          name: targeted-relay-contact-candidate
+          path: hardware/pcb/targeted-relays/
 
 
 
