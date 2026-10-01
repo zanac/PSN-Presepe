@@ -222,3 +222,19 @@ A red GitHub Actions run does not automatically mean routing failed. While the b
 - The remaining crossing is between K11 F.Cu backbone ending at/near `(193.62,146)` and validated K12 F.Cu geometry reported from `(147,136)`; artifact `11150558819` is the cleanest evidence checkpoint.
 - Extending the K11 B.Cu section (`5e358898...`, `db215b94...`) trades that one crossing for crossings against K13/K14, so do not use those variants.
 - **Official PCB remains unchanged: K1-K13, 157 unconnected.** Best restart base is candidate `c2d97e60287361f5e377c04ce1d9b19ce04a474b`; solve only its final K11/K12 crossing while keeping K14 topology unchanged.
+
+## K14 extended search / local optimum — 2026-10-01 11:36 CEST
+
+Extended autonomous search confirmed the local optimum rather than promoting a marginal route:
+- K11 endpoint-from-left `bbc99085...`: 157 -> 156, 1 crossing.
+- K11 minimal B.Cu endpoint stub `5d70da72...`: 157 -> 156, 1 crossing.
+- Shift endpoint vertical right `f7bf6f79...`: 157 -> 156, 1 crossing.
+- Lower F.Cu backbone `2107f249...`: 157 -> 156, 1 crossing.
+- Direct B.Cu U2.16 escape `afcc54a1...`: 157 -> 156, 1 crossing.
+- Outer x=136 descent `8bb8ef6b...`: produced shorts/mask/clearance; rejected.
+- K12+K14 `2ae0c50e...`: 3 crossings; rejected.
+- K10+K14 `6e9c4195...`: shorts/mask + 4 crossings; rejected.
+
+Conclusion: moving K10/K12/K13 or changing K11's endpoint/backbone does not beat the K11+K14 candidate `c2d97e60...`, which remains the best known geometry at **one tracks_crossing, zero shorts/clearance, 157 -> 156**. Generator was deliberately restored to that exact candidate in commit `7d5c70de...`. Official PCB remains K1-K13 / 157 unconnected.
+
+Next useful step is to inspect the exact DRC item text/coordinates for artifact `11150558819` and modify only the segment pair named by KiCad. Do not resume broad geometric guessing.
