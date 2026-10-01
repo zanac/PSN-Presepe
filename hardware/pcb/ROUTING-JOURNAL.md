@@ -148,3 +148,8 @@ A red GitHub Actions run does not automatically mean routing failed. While the b
 - Candidate `1b3deb535c66716031a2bf19b6e43e25ecf7b356` reduced **160 -> 159** but failed with via-related hole/mask/short violations.
 - Key simplification: U2.16 and K11.5 are both through-hole pads, so no layer-change vias are required to use B.Cu.
 - Sixth candidate `788b41860645d9cdb9d12693b080ed1e41a214e9` routes net46 entirely on B.Cu: directly from U2.16 left to x=132, below relay row at y=130, then directly into K11.5.
+
+## K11 sixth rejected candidate — 2026-10-01
+
+- Via-free B.Cu candidate `788b41860645d9cdb9d12693b080ed1e41a214e9` again reduced **160 -> 159** but failed: lateral B.Cu escape from U2.16 crosses other plated-through pads in the U2 row.
+- Seventh candidate `9cbb0a9ad6a4ae42da3628c2dc245dc33c16bc01` uses a short F.Cu escape to a remote via `(150,98.5)`, then B.Cu outside U2 at x=130 and below relays at y=132, ending directly at K11.5 THT.
