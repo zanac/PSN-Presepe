@@ -1,5 +1,5 @@
 name: PCB Autoroute Candidate
-# baseline-120: target the three remaining logic connections
+# baseline-118: target final logic connection ALBA_B_NEG
 
 on:
   workflow_dispatch:
