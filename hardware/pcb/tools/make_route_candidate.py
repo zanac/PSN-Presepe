@@ -11,8 +11,8 @@ assert s.count("(segment ") == 47, "Expected clean promoted buttons + OLED + A0 
 # Escape upward from the Mega header, then use separate SELV corridors east of
 # the Mega but west of the relay bank.
 routes={
-  12:("F.Cu",[(78.8,41.2),(78.8,28),(132,28),(132,172),(190.16,172),(190.16,184)]),
-  13:("B.Cu",[(69.656,41.2),(69.656,26),(136,26),(136,175),(208.16,175),(208.16,184)]),
+  12:("F.Cu",[(78.8,41.2),(78.8,28),(128,28),(128,122),(122,128),(122,171),(190.16,171),(190.16,184)]),
+  13:("B.Cu",[(69.656,41.2),(69.656,26),(125,26),(125,120),(120,125),(120,174),(208.16,174),(208.16,184)]),
 }
 parts=[]
 for net,(layer,pts) in routes.items():
