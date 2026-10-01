@@ -31,6 +31,9 @@ refs = re.findall(r'\(property "Reference" "([^"]+)"', s)
 assert len(refs) == 83, f"Expected 83 references including mounting holes, got {len(refs)}"
 assert len(set(refs)) == 83, "Duplicate references"
 
+zones = s.count("(zone ")
+assert zones == 0, f"Draft board unexpectedly contains {zones} copper zone(s); contact-zone isolation must be reviewed before adding pours"
+
 segments = s.count("(segment ")
 assert segments == 0, f"Draft board unexpectedly contains {segments} routed segment(s)"
 
@@ -109,4 +112,4 @@ for bank, first in ((1,1),(2,9)):
         assert pad_net(f"K{relay}",1) == "+12V"
         assert pad_net(f"K{relay}",5) == f"RELAY{relay}_COIL_LOW"
 
-print(f"OK: {len(refs)} refs, {len(global_nets)} nets, {segments} segments, balanced S-expression, G5Q mapping + power/MOSFET/ULN invariants verified")
+print(f"OK: {len(refs)} refs, {len(global_nets)} nets, {segments} segments, balanced S-expression, G5Q mapping + power/MOSFET/ULN invariants verified, no unreviewed zones")
