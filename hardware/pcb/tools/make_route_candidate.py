@@ -5,9 +5,10 @@ import sys
 src=Path(sys.argv[1]); dst=Path(sys.argv[2]); s=src.read_text(encoding="utf-8")
 assert not any("(net 25)" in ln for ln in s.splitlines() if "(segment " in ln or "(via " in ln)
 parts=[
-'  (segment (start 121.98 53.9) (end 114.5 55.5) (width 0.3) (layer "F.Cu") (net 25))',
-'  (via (at 114.5 55.5) (size 0.8) (drill 0.4) (layers "F.Cu" "B.Cu") (net 25))',
-'  (segment (start 114.5 55.5) (end 108.01 57.0) (width 0.3) (layer "B.Cu") (net 25))',
+'  (segment (start 121.98 53.9) (end 116.5 56.0) (width 0.3) (layer "B.Cu") (net 25))',
+'  (via (at 116.5 56.0) (size 0.8) (drill 0.4) (layers "F.Cu" "B.Cu") (net 25))',
+'  (segment (start 116.5 56.0) (end 108.01 57.0) (width 0.3) (layer "F.Cu") (net 25))',
+'  (via (at 108.01 57.0) (size 0.8) (drill 0.4) (layers "F.Cu" "B.Cu") (net 25))',
 '  (segment (start 108.01 57.0) (end 108.01 78.03) (width 0.3) (layer "B.Cu") (net 25))',
 '  (segment (start 108.01 78.03) (end 115.5 78.03) (width 0.3) (layer "B.Cu") (net 25))',
 '  (via (at 115.5 78.03) (size 0.8) (drill 0.4) (layers "F.Cu" "B.Cu") (net 25))',
