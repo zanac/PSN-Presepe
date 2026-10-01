@@ -182,4 +182,17 @@ assert len(segment_lines)==len(set(segment_lines)), "Duplicate routed segment(s)
 via_lines=[ln.strip() for ln in s.splitlines() if "(via " in ln]
 assert len(via_lines)==len(set(via_lines)), "Duplicate via(s) detected"
 
+
+# Rotated-relay geometry invariant (KiCad board Y-down rotation).
+# K1 at (150,60), local pad5 at (0,7.62), rotation 90deg -> (157.62,60).
+def pad_local_at(ref, pad):
+    b=footprint_block(ref)
+    m=re.search(rf'\(pad "{re.escape(str(pad))}"[^\n]*\(at (-?[0-9.]+) (-?[0-9.]+)',b)
+    assert m, f"Cannot read local pad coordinate {ref}.{pad}"
+    return float(m.group(1)),float(m.group(2))
+kx,ky,krot=footprint_at("K1")
+px,py=pad_local_at("K1",5)
+assert abs(krot-90.0)<1e-6
+assert abs((kx+py)-157.62)<0.01 and abs((ky-px)-60.0)<0.01, "K1 rotated pad transform regression"
+
 print(f"OK: {len(refs)} refs, {len(global_nets)} nets, {segments} segments, electrical + external-terminal invariants verified, no unreviewed zones")
