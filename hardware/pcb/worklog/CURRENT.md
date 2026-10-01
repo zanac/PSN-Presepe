@@ -33,12 +33,12 @@ Use small commits with one purpose:
 - Fetch HEAD immediately before every PCB/tool/workflow update to avoid overwriting concurrent work.
 
 ## Next action
-**Progress accounting corrected.** Clean official baseline is K1-K16 + D25-D29, **149 unconnected**, full KiCad Validation run `36880034688`: categories only footprint mismatch + unconnected; **zero critical geometry/electrical DRC**.
+We are progressing, not routing-blocked. **Clean official baseline is K1-K16 + D25-D29 / 149 unconnected / zero critical geometry/electrical DRC**, proven by full KiCad Validation run `36880034688`. Workflow failure is only the intentional incomplete-connectivity gate.
 
-149 is not 149 equally difficult routes. Exact clean-report decomposition: **GND 37 + +12V 27 + +5V_MEGA 5 = 69 (46%)** are shared power connections suited to buses/zones; **48** are relay contact nets (COM/NO/NC, 3 x 16); **9** relay-input signals remain D30-D40; the remainder are PWM/data/buzzer/MOSFET-side signals. Therefore old ~94% estimate was too optimistic for manufacturing completion. Use current estimates: routing/connectivity ~45-55%, overall PCB ~65-70%, manufacturing-package readiness ~60-65%.
+D30/net25 redesign is active. Old alternating-layer family on the corrected D29 baseline produced 148 unconnected but 1 short (and later variants 3 crossings), so that family is abandoned. Current candidate is `08f5c5905378e17317c3b45fbb43ec9773f4a799`: simpler low-left route at y=83, preserving official PCB. Route Candidate run `36881645149` is still spending time in KiCad 9 installation; read its result before any promotion.
 
-D30 restart candidate `69132e77...` reduced 149->148 but had exactly one short: D30 via at (131.5,78.03) against D29 F.Cu track at x=132. Variant moving via to 131.25 (`060d7da5...`) worsened to 1 short + 3 crossings; reject and do not promote. Official PCB remains clean 149 baseline.
+Important process: candidate success is necessary but not sufficient. After any D30 promotion, require full official KiCad Validation with **148 unconnected + zero critical geometry/electrical categories** before D31.
 
-Next routing strategy: do not remain blocked on D30. Define/review a dedicated relay-contact routing class (wider copper/appropriate clearance) and route contact groups with candidate + full DRC; these 48 repetitive connections can materially reduce unconnected count. Resume D30 in parallel from clean baseline when a collision-free wall bridge is found. Do not blindly bulk-route K9-K16 because terminal geometry can require long paths.
+Operational bottleneck: GitHub-hosted runner repeatedly spends several minutes installing KiCad 9 for every candidate. Routing itself is advancing. After D30 is stabilized, improve CI runtime (cache/preinstalled-container strategy if safe) so D31+ iterations are faster; do not weaken DRC.
 
 Final gate: zero real DRC + zero unconnected, then same-revision Gerber+Excellon ZIP + BOM CSV + CPL/centroid CSV.
