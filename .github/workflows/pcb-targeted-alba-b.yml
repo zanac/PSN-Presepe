@@ -87,4 +87,38 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: targeted-alba-b-candidates
+          path: hardware/pcb/targeted-alba/              # Print full DRC report for coordinate/object diagnosis; only four small candidates.
+              if critical:
+                  print("REPORT_BEGIN",p.name)
+                  print(t)
+                  print("REPORT_END",p.name)
+          PY
+      - name: DRC all candidates
+        run: |
+          set -u
+          for pcb in hardware/pcb/targeted-alba/*.kicad_pcb; do
+            n="${pcb%.kicad_pcb}"
+            kicad-cli pcb drc --severity-error --output "${n}.drc.txt" "$pcb" || true
+          done
+      - name: Rank candidates
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          for p in sorted(Path("hardware/pcb/targeted-alba").glob("*.drc.txt")):
+              t=p.read_text()
+              m=re.search(r'Found +([0-9]+) +unconnected +(items|pads)',t,re.I)
+              u=int(m.group(1)) if m else t.count('[unconnected_items]')
+              cats=[x[1:x.index(']')] for x in t.splitlines() if x.startswith('[') and ']' in x]
+              critical=sorted({x for x in cats if x not in {'unconnected_items','lib_footprint_mismatch'}})
+              print(p.name,"unconnected=",u,"critical=",critical or "none")
+              if critical:
+                  lines=t.splitlines()
+                  for i,line in enumerate(lines):
+                      if line.startswith('[') and line[1:line.index(']')] in critical:
+                          print("DETAIL",p.name,*lines[i:i+5],sep=" | ")
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: targeted-alba-b-candidates
           path: hardware/pcb/targeted-alba/
