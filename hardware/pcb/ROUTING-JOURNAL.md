@@ -238,3 +238,19 @@ Extended autonomous search confirmed the local optimum rather than promoting a m
 Conclusion: moving K10/K12/K13 or changing K11's endpoint/backbone does not beat the K11+K14 candidate `c2d97e60...`, which remains the best known geometry at **one tracks_crossing, zero shorts/clearance, 157 -> 156**. Generator was deliberately restored to that exact candidate in commit `7d5c70de...`. Official PCB remains K1-K13 / 157 unconnected.
 
 Next useful step is to inspect the exact DRC item text/coordinates for artifact `11150558819` and modify only the segment pair named by KiCad. Do not resume broad geometric guessing.
+
+## K14 promoted; K15 started — 2026-10-01 11:55 CEST
+
+- Exact artifact inspection of `11150558819` identified the last K14-blocking violation precisely: K12 F.Cu horizontal at y=136 crossing K11 F.Cu vertical x=193.62.
+- Candidate `5a6f8a361b15faae3c396026fbd24d9db01cb418` inserted only a local K11 B.Cu bridge from y=138 to y=134. Route Candidate run `36844515326` **SUCCESS**: 157 -> 156, zero routing DRC errors.
+- Promoted K11 replacement + K14/net49 atomically to official PCB in `285ee46f592a7a2ee4197c7c06fb1f488ee47f00`.
+- Sanity allow-list updated for net49 in `81a3c3e064615797c101b76999cfe74ef5cfe764`.
+- Official KiCad validation after promotion: **156 unconnected**, no critical geometry/electrical categories; fabrication gate fails only because board is intentionally incomplete.
+
+K15/net50:
+- Initial B.Cu candidate `81777e02...`: 156 -> 155, exactly one crossing (K15 initial fanout vs K14 vertical).
+- Right-side/local-bridge candidate `70fab4b4a9e86a9c205d61f840278a23a06451c5`: 156 -> 155, exactly one crossing, zero shorts/clearance. Artifact `11153127344` identifies it as K15 initial B.Cu segment crossing K12 B.Cu vertical x=147.
+- Attempts `d62b78e2...` and `a2d19887...` to bridge near U2 introduce a short; rejected.
+- Generator restored to best K15 candidate in `41ef0da662f07cabb78bdffc8f552df953100fd1`.
+
+Next: solve only K15's initial pad escape across K12 x=147, but keep layer changes farther from U2 pads/vias. Official board stays K1-K14 / 156 unconnected until K15 candidate is zero-error.
