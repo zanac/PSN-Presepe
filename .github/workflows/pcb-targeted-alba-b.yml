@@ -50,7 +50,7 @@ jobs:
             if not(rm and am):continue
             ref=rm.group(1)
             if not(re.fullmatch(r'K\d+',ref) or re.fullmatch(r'JR\d+',ref)):continue
-            fx,fy,rot=float(am.group(1)),float(am.group(2)),float(am.group(3) or 0); aa=math.radians(-rot)
+            fx,fy,rot=float(am.group(1)),float(am.group(2)),float(am.group(3) or 0); aa=math.radians(rot)
             for pb in blocks(fp,"(pad"):
               nm=re.search(r'\(net (\d+) "(R\d+_(?:COM|NO|NC))"\)',pb); pm=re.search(r'\(at ([-\d.]+) ([-\d.]+)',pb)
               if not(nm and pm):continue
@@ -71,8 +71,8 @@ jobs:
                      "--start",f"{a[0]},{a[1]},{sl}","--goal",f"{b[0]},{b[1]},{gl}",
                      "--step","0.5","--clearance","1.6","--margin","70"]
                 print("TRY",rn,net,a[:3],b[:3],flush=True)
-              p=subprocess.run(cmd,text=True,capture_output=True,timeout=20)
-                if p.returncode: continue
+                p=subprocess.run(cmd,text=True,capture_output=True,timeout=20)
+                if p.returncode: print('NO_ROUTE',rn,net,sl,gl,p.stderr.strip()); continue
                 pts=[]
                 for line in p.stdout.splitlines()[1:]:
                   x,y,la=line.split(","); pts.append((float(x),float(y),la))
