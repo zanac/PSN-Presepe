@@ -376,3 +376,15 @@ D28/net23 search:
 - Next D28 direction: pass below the entire Mega digital header (not merely D25-D40), then cross toward U1 on the appropriate layer, or use a similarly separated outer corridor. Preserve clean D25-D27.
 
 Manufacturing end target remains assembly-ready Gerber+drill ZIP + BOM + CPL, generated only after zero real DRC + zero unconnected and cross-checked to the same revision.
+
+## D28 promoted / D29 start — 2026-10-01 15:10 CEST
+
+- Concurrent branch work had already completed D27: official f2e4c50a..., sanity 0a6bfe6f..., 151 unconnected.
+- D28/net23 solved after mapping the full Mega header. Key obstacle stack: D24_TEST B.Cu around x=117, D22_START F.Cu x=128.5, D23_NEXT B.Cu x=130.5, plus analog header row at y=89.46. Successful topology uses a layer-lock: F.Cu from D28 through midpoint x=110.55 between A11/A12, cross TEST on F at y=92, via (127,92), cross START on B, via (129.5,92), cross NEXT on F, then return above U2 and enter U1.4.
+- Final D28 candidate 61fcb1d6ce842ba8100e617b474577927426e17e, Route Candidate run 36865837527: SUCCESS, 151->150, zero routing DRC.
+- Promoted official 095233fc564d720196f9259d7ef4c0053fadeade; sanity dc2b5e9288273f8bed750f5c5de49f94036aa08c.
+- Independent official validation observed on run 36866316897: categories lib_footprint_mismatch=66, unconnected_items=150; critical geometry/electrical none.
+
+D29/net24 first staggered probe c4d7cec6... connects 150->149 but is rejected: 3 shorts + 3 mask bridges + 2 crossings. Exact causes: initial F.Cu escape touches D30 pad; long leftward y54 route crosses D28 vertical; return at y91 touches U2.1 (D33); right-side ascent crosses D28 x140. Next D29 design should NOT clone D28 leftward escape. Prefer a right-of-header/vertical corridor or a coordinated D29/D30 escape that leaves both pads without crossing each other, while reusing the validated wall-crossing concept.
+
+Official board remains **150 unconnected / zero critical geometry/electrical DRC**. Manufacturing gate unchanged: zero real DRC + zero unconnected before Gerber; final bundle Gerber+Excellon ZIP + BOM + CPL.
