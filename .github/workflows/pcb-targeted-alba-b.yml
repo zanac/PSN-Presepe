@@ -58,21 +58,30 @@ jobs:
               px,py=float(pm.group(1)),float(pm.group(2))
               x=fx+px*math.cos(a)+py*math.sin(a); y=fy-px*math.sin(a)+py*math.cos(a)
               pads.setdefault(nm.group(2),[]).append((x,y,int(nm.group(1)),ref))
-          items=[]; routed=[]
-          for net,ps in sorted(pads.items(),key=lambda z:int(re.search(r'\d+',z[0]).group())):
-            if len(ps)!=2:continue
-            a,b=ps
-            # Only short/medium relay-contact pairs in first safe batch; use B.Cu,
-            # 1.0 mm copper and orthogonal dogleg. DRC decides acceptance.
-            if math.hypot(a[0]-b[0],a[1]-b[1])>55:continue
-            xmid=(a[0]+b[0])/2
-            pts=[(a[0],a[1]),(xmid,a[1]),(xmid,b[1]),(b[0],b[1])]
-            for p,q in zip(pts,pts[1:]):
-              if p!=q: items.append(f'\t(segment (start {p[0]:.3f} {p[1]:.3f}) (end {q[0]:.3f} {q[1]:.3f}) (width 1.0) (layer "B.Cu") (net {a[2]}))\n')
-            routed.append(net)
+          # Generate one candidate per relay. Each candidate routes COM/NO/NC for
+          # only that relay, so DRC can accept safe groups without 29-net cross-talk.
+          byrelay={}
+          for net,ps in pads.items():
+            if len(ps)!=2: continue
+            rn=int(re.search(r'R(\\d+)_',net).group(1))
+            byrelay.setdefault(rn,[]).append((net,ps))
           idx=src.rfind(")")
-          Path("hardware/pcb/targeted-relays/batch.kicad_pcb").write_text(src[:idx]+''.join(items)+src[idx:])
-          print("relay nets proposed",len(routed),routed)
+          for rn,nets in sorted(byrelay.items()):
+            items=[]; routed=[]
+            for net,ps in nets:
+              a,b=ps
+              if math.hypot(a[0]-b[0],a[1]-b[1])>55: continue
+              # Stagger each contact lane by net type to preserve spacing.
+              typ=net.split("_")[1]; off={"NC":-2.0,"COM":0.0,"NO":2.0}[typ]
+              xmid=(a[0]+b[0])/2+off
+              pts=[(a[0],a[1]),(xmid,a[1]),(xmid,b[1]),(b[0],b[1])]
+              for p,q in zip(pts,pts[1:]):
+                if p!=q: items.append(f'\\t(segment (start {p[0]:.3f} {p[1]:.3f}) (end {q[0]:.3f} {q[1]:.3f}) (width 1.0) (layer "B.Cu") (net {a[2]}))\\n')
+              routed.append(net)
+            if routed:
+              Path(f"hardware/pcb/targeted-relays/R{rn}.kicad_pcb").write_text(src[:idx]+''.join(items)+src[idx:])
+              print("relay candidate",rn,len(routed),routed)
+          items=[]; routed=[]
           PY
       - name: DRC all candidates
         run: |
