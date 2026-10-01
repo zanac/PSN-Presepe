@@ -51,27 +51,64 @@ def mark_segment(blocked,x1,y1,x2,y2,r,layer,step):
     for i in range(n+1):
         t=i/n; mark_disc(blocked,x1+(x2-x1)*t,y1+(y2-y1)*t,r,[layer],step)
 
+def balanced_blocks(text, token):
+    pos=0
+    while True:
+        i=text.find(token,pos)
+        if i<0:return
+        depth=0; quoted=False; esc=False
+        for j in range(i,len(text)):
+            ch=text[j]
+            if quoted:
+                if esc: esc=False
+                elif ch=="\\": esc=True
+                elif ch=='"': quoted=False
+            else:
+                if ch=='"': quoted=True
+                elif ch=='(': depth+=1
+                elif ch==')':
+                    depth-=1
+                    if depth==0:
+                        yield text[i:j+1]; pos=j+1; break
+        else:return
+
 def extract_obstacles(text,target,step,clearance):
     blocked=set()
-    # KiCad v20240108-style segment records.
-    seg_re=re.compile(r'\(segment\s+\(start ([\d.-]+) ([\d.-]+)\)\s+\(end ([\d.-]+) ([\d.-]+)\)\s+\(width ([\d.-]+)\)\s+\(layer "?(F\.Cu|B\.Cu)"?\).*?\(net (\d+)\)',re.S)
-    net_names={int(n):name for n,name in re.findall(r'^\s*\(net (\d+) "([^"]+)"\)\s*$',text,re.M)}
+    net_names={int(n):name for n,name in re.findall(r'^\\s*\\(net (\\d+) "([^"]+)"\\)\\s*$',text,re.M)}
+    seg_re=re.compile(r'\\(segment\\s+\\(start ([\\d.-]+) ([\\d.-]+)\\)\\s+\\(end ([\\d.-]+) ([\\d.-]+)\\)\\s+\\(width ([\\d.-]+)\\)\\s+\\(layer "?(F\\.Cu|B\\.Cu)"?\\).*?\\(net (\\d+)\\)',re.S)
     for m in seg_re.finditer(text):
         x1,y1,x2,y2,w,la,n=m.groups(); n=int(n)
         if net_names.get(n)==target: continue
         mark_segment(blocked,*map(float,(x1,y1,x2,y2)),float(w)/2+clearance,LAYERS[la],step)
-    # All vias are treated as through-hole copper obstacles unless on target net.
-    via_re=re.compile(r'\(via\s+\(at ([\d.-]+) ([\d.-]+)\).*?\(size ([\d.-]+)\).*?\(net (\d+)\)',re.S)
+    via_re=re.compile(r'\\(via\\s+\\(at ([\\d.-]+) ([\\d.-]+)\\).*?\\(size ([\\d.-]+)\\).*?\\(net (\\d+)\\)',re.S)
     for m in via_re.finditer(text):
         x,y,size,n=m.groups(); n=int(n)
         if net_names.get(n)==target: continue
         mark_disc(blocked,float(x),float(y),float(size)/2+clearance,[0,1],step)
-    # Conservative approximation for foreign through-hole pads: locate pad blocks with net.
-    pad_re=re.compile(r'\(pad\s+"?[^"]*"?\s+thru_hole.*?\(at ([\d.-]+) ([\d.-]+)(?: [\d.-]+)?\).*?\(size ([\d.-]+) ([\d.-]+)\).*?\(net (\d+) "([^"]+)"\)',re.S)
-    for m in pad_re.finditer(text):
-        x,y,sx,sy,n,name=m.groups()
-        if name==target: continue
-        mark_disc(blocked,float(x),float(y),max(float(sx),float(sy))/2+clearance,[0,1],step)
+
+    # Pads use coordinates local to their footprint. Transform them to board
+    # coordinates before rasterizing; previous implementation treated them as global.
+    for fp in balanced_blocks(text,"(footprint "):
+        head=re.search(r'\\(at ([\\d.-]+) ([\\d.-]+)(?: ([\\d.-]+))?\\)',fp)
+        if not head: continue
+        fx,fy=float(head.group(1)),float(head.group(2)); rot=float(head.group(3) or 0)
+        import math
+        ang=math.radians(rot); ca,sa=math.cos(ang),math.sin(ang)
+        for pad in balanced_blocks(fp,"(pad "):
+            nm=re.search(r'\\(net (\\d+) "([^"]+)"\\)',pad)
+            at=re.search(r'\\(at ([\\d.-]+) ([\\d.-]+)',pad)
+            sz=re.search(r'\\(size ([\\d.-]+) ([\\d.-]+)\\)',pad)
+            if not(nm and at and sz) or nm.group(2)==target: continue
+            px,py=float(at.group(1)),float(at.group(2))
+            gx=fx+px*ca-py*sa; gy=fy+px*sa+py*ca
+            rad=max(float(sz.group(1)),float(sz.group(2)))/2+clearance
+            # Through-hole pads obstruct both copper layers. SMD pads only their
+            # explicit copper layer; conservatively use both if uncertain.
+            if "thru_hole" in pad: layers=[0,1]
+            elif '(layers "F.Cu"' in pad: layers=[0]
+            elif '(layers "B.Cu"' in pad: layers=[1]
+            else: layers=[0,1]
+            mark_disc(blocked,gx,gy,rad,layers,step)
     return blocked
 
 def compress(path):
