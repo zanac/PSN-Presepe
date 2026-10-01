@@ -45,9 +45,9 @@ for b in blocks():
         nm=re.search(r'\(net \d+ "([^"]+)"\)',line)
         if not am or not nm:continue
         px,py=float(am.group(1)),float(am.group(2))
-        # KiCad footprint rotation uses the standard 2D transform in board coordinates.
-        x=fx+px*math.cos(a)-py*math.sin(a)
-        y=fy+px*math.sin(a)+py*math.cos(a)
+        # KiCad board coordinates are Y-down; this transform is verified against KiCad DRC on rotated G5Q pads.
+        x=fx+px*math.cos(a)+py*math.sin(a)
+        y=fy-px*math.sin(a)+py*math.cos(a)
         rows.append((ref,m.group(1),nm.group(1),x,y))
 for r in rows:
     print(f"{r[0]},{r[1]},{r[2]},{r[3]:.3f},{r[4]:.3f}")
