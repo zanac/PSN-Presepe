@@ -196,4 +196,3 @@ assert abs(krot-90.0)<1e-6
 assert abs((kx+py)-157.62)<0.01 and abs((ky-px)-60.0)<0.01, "K1 rotated pad transform regression"
 
 print(f"OK: {len(refs)} refs, {len(global_nets)} nets, {segments} segments, electrical + external-terminal invariants verified, no unreviewed zones")
-, s, re.M)
