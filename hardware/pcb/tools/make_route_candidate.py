@@ -7,8 +7,9 @@ assert not any("(net 22)" in ln for ln in s.splitlines() if "(segment " in ln or
 parts=[
 '  (segment (start 124.52 48.82) (end 127.0 51.5) (width 0.3) (layer "F.Cu") (net 22))',
 '  (via (at 127.0 51.5) (size 0.8) (drill 0.4) (layers "F.Cu" "B.Cu") (net 22))',
-'  (segment (start 127.0 51.5) (end 127.0 61.5) (width 0.3) (layer "B.Cu") (net 22))',
-'  (segment (start 127.0 61.5) (end 129.5 61.5) (width 0.3) (layer "B.Cu") (net 22))',
+'  (segment (start 127.0 51.5) (end 126.0 52.5) (width 0.3) (layer "B.Cu") (net 22))',
+'  (segment (start 126.0 52.5) (end 126.0 61.5) (width 0.3) (layer "B.Cu") (net 22))',
+'  (segment (start 126.0 61.5) (end 129.5 61.5) (width 0.3) (layer "B.Cu") (net 22))',
 '  (via (at 129.5 61.5) (size 0.8) (drill 0.4) (layers "F.Cu" "B.Cu") (net 22))',
 '  (segment (start 129.5 61.5) (end 129.5 67.08) (width 0.3) (layer "F.Cu") (net 22))',
 '  (segment (start 129.5 67.08) (end 135.0 67.08) (width 0.3) (layer "F.Cu") (net 22))',
