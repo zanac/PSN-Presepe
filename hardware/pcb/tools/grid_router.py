@@ -21,7 +21,7 @@ def astar(start,goal,blocked,bounds,via_cost=18,allow_vias=True):
     xmin,xmax,ymin,ymax=bounds
     # Grid edges only. Diagonal center-point routing can cut obstacle corners;
     # Manhattan edges are conservative and KiCad DRC-friendly.
-    moves=[(1,0,False,10),(-1,0,False,10),(0,1,False,10),(0,-1,False,10)]\n    if allow_vias: moves.append((0,0,True,via_cost))
+    moves=[(1,0,0,10),(-1,0,0,10),(0,1,0,10),(0,-1,0,10)]\n    if allow_vias: moves.append((0,0,1,via_cost))
     while q:
         _,_,p=heappop(q)
         if p==goal:
