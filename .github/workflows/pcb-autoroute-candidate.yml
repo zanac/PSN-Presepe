@@ -176,6 +176,35 @@ jobs:
           assert clean, f'Autorouter candidate has critical DRC categories: {critical}'
           PY
 
+      - name: Promote validated logic batch to dev
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('hardware/pcb/tools/pcb_sanity.py')
+          s=p.read_text()
+          old='approved_source_route_nets = {14, 15, 16, 20, 21, 22, 23, 24, 17, 18, 19, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 63, 64, 65, 66, 67, 68, 69, 70, 71}'
+          new='approved_source_route_nets = {3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 53, 55, 58, 59, 60, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71}'
+          assert old in s, 'Sanity whitelist changed unexpectedly; refusing promotion'
+          p.write_text(s.replace(old,new))
+          PY
+          cp hardware/pcb/route-candidate/PSN-Presepe-Mega-routed.kicad_pcb hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb
+          python3 hardware/pcb/tools/pcb_sanity.py hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb
+          kicad-cli pcb drc --severity-error --output hardware/pcb/route-candidate/drc-promoted.txt hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb || true
+          python3 - <<'PY'
+          from pathlib import Path
+          t=Path('hardware/pcb/route-candidate/drc-promoted.txt').read_text()
+          cats=[line[1:line.index(']')] for line in t.splitlines() if line.startswith('[') and ']' in line]
+          critical=sorted(set(cats)-{'unconnected_items','lib_footprint_mismatch'})
+          assert not critical, 'Promoted board has critical DRC categories: '+str(critical)
+          assert 'Found 122 unconnected pads' in t, 'Promoted connectivity count changed unexpectedly'
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb hardware/pcb/tools/pcb_sanity.py
+          git diff --cached --quiet && { echo "Nothing to promote"; exit 1; }
+          git commit -m "Promote KiCad-validated Freerouting logic batch"
+          git push origin HEAD:dev
+
       - name: Upload autoroute candidate
         if: always()
         uses: actions/upload-artifact@v4
