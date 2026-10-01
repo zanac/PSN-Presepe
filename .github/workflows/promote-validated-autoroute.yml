@@ -25,7 +25,7 @@ jobs:
         run: |
           set -euo pipefail
           test "$(sha256sum /tmp/alba/astar.kicad_pcb | awk '{print $1}')" = "375180931d81941c8e779a37e8520d5c06d50b37f63b85b9791f4d072a31f89b"
-          grep -q "Found 117 unconnected items" /tmp/alba/astar.drc.txt
+          grep -q "Found 117 unconnected pads" /tmp/alba/astar.drc.txt
           ! grep -Eq '^\\[(clearance|shorting_items|tracks_crossing|track_dangling|via_dangling|hole_clearance|copper_edge_clearance|solder_mask_bridge)\\]' /tmp/alba/astar.drc.txt
           cp /tmp/alba/astar.kicad_pcb hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb
           git config user.name "github-actions[bot]"
