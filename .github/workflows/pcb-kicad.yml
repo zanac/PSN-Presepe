@@ -67,7 +67,7 @@ jobs:
           echo "Candidate DRC:"
           python3 hardware/pcb/tools/drc_summary.py hardware/pcb/build/route-candidate-drc.txt
           python3 hardware/pcb/tools/drc_details.py hardware/pcb/build/route-candidate-drc.txt
-          CANDIDATE_MODE=improve python3 hardware/pcb/tools/compare_unconnected.py \
+          CANDIDATE_MODE=baseline python3 hardware/pcb/tools/compare_unconnected.py \
             hardware/pcb/build/drc-report.txt \
             hardware/pcb/build/route-candidate-drc.txt
 
