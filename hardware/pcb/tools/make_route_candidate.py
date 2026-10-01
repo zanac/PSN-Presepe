@@ -15,11 +15,12 @@ assert s.count("(segment ") == 0
 # MCU1 D22=(121.98,43.74), D23=(124.52,43.74), D24=(121.98,46.28)
 # J_START=(65,184), J_NEXT=(78,184), J_TEST=(91,184)
 routes={
-  # net: (layer, points). D23/D24 intentionally share x=138 on opposite
-  # copper layers. D24 escapes left/down first to avoid the adjacent D25 PTH.
-  16:("B.Cu",[(121.98,43.74),(122,50),(122,174),(65,174),(65,184)]),
-  17:("B.Cu",[(124.52,43.74),(138,43.74),(138,177),(78,177),(78,184)]),
-  18:("F.Cu",[(121.98,46.28),(119,49),(119,52),(138,52),(138,180),(91,180),(91,184)]),
+  # Escape the dense Mega header before running vertically.
+  # x=130.5 passes between the capacitor pads and stays left of the ULN rows.
+  # x=139 is the reviewed gap between ULN and relay footprints.
+  16:("F.Cu",[(121.98,43.74),(121.98,40),(139,40),(139,174),(65,174),(65,184)]),
+  17:("B.Cu",[(124.52,43.74),(130.5,43.74),(130.5,177),(78,177),(78,184)]),
+  18:("F.Cu",[(121.98,46.28),(119,49),(119,52),(130.5,52),(130.5,180),(91,180),(91,184)]),
 }
 parts=[]
 for net,(layer,pts) in routes.items():
