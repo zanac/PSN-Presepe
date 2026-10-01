@@ -33,8 +33,8 @@ Use small commits with one purpose:
 - Fetch HEAD immediately before every PCB/tool/workflow update to avoid overwriting concurrent work.
 
 ## Next action
-Official PCB: **K1-K15 / 155 unconnected**, zero error-severity routing DRC. K16/net51 best remains `60009a8e344c969e03e2cf42ff5496f14314ae5d`: **155 -> 154**, zero shorts/clearance, exactly one crossing (K16 B.Cu initial escape vs K14 B.Cu x=143.5). Generator restored to this exact candidate at `ed4133fbc21dc006f5b7495b5ae489fb1ab66aa2`.
+**Milestone reached: K1-K16 relay coil-low routing complete.** Final K16 candidate `4a546032d55f9b2b6dfa7e99aa6693296c8b1ee8` passed Route Candidate run `36854584445`: 155 -> 154 unconnected, zero routing DRC errors. Promoted K11/K14/K16 geometry in `cb164a2313a735384a2130bd7465fa126bc67088`; net51 sanity approval `809c4d85e9f84cf219d28b8c448208f1bbcb94de`.
 
-Extensive K13/K14/K16 search completed. Layer-bridge approaches create shorts; K16 F.Cu escapes create >=2 crossings. The best alternative family is a **same-layer K14 sidestep left**: multiple variants keep zero shorts/clearance and one crossing while removing the original K16/K14 collision. Latest direct-pad variant `52dcbd651d32f25c427530a4616253fec0cb930a`, artifact `11155458843`. Next action: inspect that artifact's exact residual crossing pair and choose K14 sidestep endpoints around that specific B.Cu obstacle. Compare against original artifact `11154883351`; do not change K16 lower backbone y=158.
+Official KiCad Validation `36854767991`: **154 unconnected**, `lib_footprint_mismatch: 66`, **critical geometry/electrical categories: none**, error-severity DRC violations none. Fabrication gate intentionally remains closed; no Gerbers.
 
-Promote K16 only after candidate reaches 154 unconnected with zero error-severity DRC. Then K1-K16 coil-low bank is complete and routing moves to a separately reviewed relay-contact/high-current phase; no Gerbers until zero DRC + zero unconnected.
+Next: inventory/classify the 154 residual connections. Continue autonomously with low-risk logic/control routing candidates first (Arduino relay input nets D25-D40 and other signal nets as geometry permits). Keep +12V/GND distribution, relay contacts COM/NO, high-current copper and pours out of blind routing; those require their dedicated reviewed phase.
