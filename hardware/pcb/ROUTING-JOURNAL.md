@@ -362,3 +362,17 @@ Keep current Gerber export gate closed until zero real DRC errors and zero uncon
 - Investigated freeing MCU->ULN fanout by moving D22_START/net16 away from x=128.5. Candidate `2e7d983d...` moved the long F.Cu backbone to x=108, but DRC produced 7 shorts, 6 mask bridges and 3 crossings. Rejected; official PCB unchanged.
 - This confirms the central/left region is obstacle-dense and a wholesale control-net move is not justified without a real routing search. Generator restored to best D27 candidate at `9dfb714f24ab70e5392f0cbebac2d4b77721db25`.
 - Official production source remains 152 unconnected with no critical geometry/electrical DRC (last verified run `36858485914`).
+
+## D27 promoted / D28 structural search — 2026-10-01
+
+- D27/net22 solved with a two-via topology that avoids the future Mega relay-pad column. Near-final `b4b4fa61...` reduced errors to only C2 +12V collision; shifting the B.Cu vertical from x=127 to x=126 cleared it.
+- Final D27 candidate `fc0e3274e039a829cef709cb772e92feb6e241b6`, Route Candidate run `36861858225`: **SUCCESS**, 152->151, zero routing DRC errors.
+- Promoted D27 official: `f2e4c50a032b9b3cbcc343b89e67a3e54d10981f`; sanity allow-list through net22: `0a6bfe6f704635acf52494c0b4b361d0d40b8471`.
+- Official board is now **151 unconnected**.
+
+D28/net23 search:
+- inter-pad two-via `e598c821...`: 151->150 but 3 shorts + 1 mask + 2 crossings; exact conflicts include C2 and D27 lanes.
+- below-relay-header `20a17bb0...`: 151->150, **zero crossings**, only 1 short + 2 mask. Exact remaining obstacle is not a used relay net: Mega physical header continues with no-net pads D42 at (121.98,69.14) and D43 at (124.52,69.14). Therefore routing below D40 at y≈69 is still inside the physical header.
+- Next D28 direction: pass below the entire Mega digital header (not merely D25-D40), then cross toward U1 on the appropriate layer, or use a similarly separated outer corridor. Preserve clean D25-D27.
+
+Manufacturing end target remains assembly-ready Gerber+drill ZIP + BOM + CPL, generated only after zero real DRC + zero unconnected and cross-checked to the same revision.
