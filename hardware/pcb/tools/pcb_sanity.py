@@ -149,4 +149,18 @@ for i in range(9,17):
     x,y,rot = footprint_at(f"JR{i}")
     assert x >= 291.0, f"JR{i} moved away from right perimeter: x={x}"
 
+
+# MOSFET thermal/mechanical reservation: keep all TO-220 devices in the dedicated
+# heatsink/airflow region and prevent accidental crowding.
+qpos=[]
+for i in range(1,10):
+    x,y,rot=footprint_at(f"Q{i}")
+    assert 65.0 <= x <= 115.0 and 130.0 <= y <= 170.0, f"Q{i} left MOSFET thermal zone: {(x,y)}"
+    qpos.append((i,x,y))
+for a in range(len(qpos)):
+    for b in range(a+1,len(qpos)):
+        ia,xa,ya=qpos[a]; ib,xb,yb=qpos[b]
+        dist=((xa-xb)**2+(ya-yb)**2)**0.5
+        assert dist >= 14.0, f"Q{ia}/Q{ib} too close for heatsink airflow: {dist:.1f} mm"
+
 print(f"OK: {len(refs)} refs, {len(global_nets)} nets, {segments} segments, electrical + external-terminal invariants verified, no unreviewed zones")
