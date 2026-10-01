@@ -37,6 +37,7 @@ jobs:
             "b_step":[
               ('s',112.54,165,122.54,175,'B.Cu'),('s',122.54,175,162.24,175,'B.Cu'),('s',162.24,175,171.24,184,'B.Cu')],
           }
+          # Insert before the board's final closing parenthesis; KiCad 9 accepts these top-level primitives.
           edge=src.rfind(")")
           assert edge>0
           for name,items in variants.items():
