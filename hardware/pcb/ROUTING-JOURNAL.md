@@ -178,3 +178,9 @@ A red GitHub Actions run does not automatically mean routing failed. While the b
 - Sanity gate now approves net46: `0e0a16ba399b72449ab47a3430c59bbf27abba4e`.
 - Verified official K12-K16 footprints directly: pad5 endpoints are (211.62,115), (229.62,115), (247.62,115), (265.62,115), (283.62,115).
 - K12/net47 candidate `cb24da98b496a8ded0bc87c96a1290f5913806c6` uses a staggered variant of the validated K11 topology: via (143,101.5), B.Cu x=143, lower corridor y=136, K12.5.
+
+## K12 validated and promoted / K13 start — 2026-10-01
+
+- K12 candidates iteratively isolated K11/K10 conflicts; final candidate `d4b72695d6b28b4b8ef0bdb7f43e9477bc797e03`, Route Candidate `36830213836`: **159 -> 158**, zero error-severity DRC violations.
+- Promoted exact validated net47 geometry: `dd8bc4059f4ce6603bb334ec920307bdd859ca93`; sanity approval: `60b5597450766b482d425369ccb97190e007f913`.
+- K13/net48 candidate `e7a2ac6f155dd92796aaf1ccfccd572ebb9ca45b` starts a staggered mixed-layer corridor; validate before promotion.
