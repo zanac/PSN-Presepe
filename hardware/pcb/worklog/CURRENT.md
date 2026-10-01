@@ -33,4 +33,4 @@ Use small commits with one purpose:
 - Fetch HEAD immediately before every PCB/tool/workflow update to avoid overwriting concurrent work.
 
 ## Next action
-K10 is promoted and official baseline is **160 unconnected items**. First K11 candidate `0c90ef05...` was rejected for one track crossing with K10 and was not promoted. K11 attempts 1-3 were rejected and never promoted. Candidate 3 artifact identified exact collisions with K9 F.Cu and K10 COM pad. Validate fourth K11 candidate `ffd9058b0c0dce627d6f4b7ceda41f36553ee566` (Route Candidate run `36826662269`): immediate B.Cu drop beside U2, y=124 corridor below relay row, return beside K11. If green, promote net46 and use actual DRC-confirmed K12-K16 coordinates for subsequent candidates.
+K10 remains the latest promoted relay route; official baseline **160 unconnected**. K11 attempts 1-4 were rejected and never promoted. Fourth attempt proved x=145.8 B.Cu descent conflicts with U2 PTH pad column. Validate fifth candidate `1b3deb535c66716031a2bf19b6e43e25ecf7b356` (Route Candidate `36826828953`): escape left on B.Cu, descend x=132, cross below relay row y=130, rise at K11. If green, promote net46 and continue K12.
