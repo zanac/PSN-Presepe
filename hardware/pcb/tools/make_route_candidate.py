@@ -15,11 +15,15 @@ print(f"Baseline segments: {baseline_segments}")
 
 # U2 pad16 = (145.16,97.08)
 # K11 pad5 with footprint rotation 90 deg = (193.62,115.00)
-# Exit U2 to the right, then use a lower corridor below K10 without crossing its x=142 vertical.
-pts=[(145.16,97.08),(147.0,99.0),(147.0,122.0),(193.62,122.0),(193.62,115.0)]
-parts=[]
-for a,b in zip(pts,pts[1:]):
-    parts.append(f'  (segment (start {a[0]} {a[1]}) (end {b[0]} {b[1]}) (width 0.3) (layer "F.Cu") (net 46))')
+# Change layer immediately outside U2, cross the established F.Cu relay corridors on B.Cu,
+# then return to F.Cu close to K11. Keep vias outside component pads.
+parts=[
+'  (segment (start 145.16 97.08) (end 148.5 100.0) (width 0.3) (layer "F.Cu") (net 46))',
+'  (via (at 148.5 100.0) (size 0.8) (drill 0.4) (layers "F.Cu" "B.Cu") (net 46))',
+'  (segment (start 148.5 100.0) (end 190.0 108.0) (width 0.3) (layer "B.Cu") (net 46))',
+'  (via (at 190.0 108.0) (size 0.8) (drill 0.4) (layers "F.Cu" "B.Cu") (net 46))',
+'  (segment (start 190.0 108.0) (end 193.62 115.0) (width 0.3) (layer "F.Cu") (net 46))',
+]
 edge=s.find("  (gr_rect "); assert edge>0
 s=s[:edge]+"\n".join(parts)+"\n"+s[edge:]
 dst.parent.mkdir(parents=True,exist_ok=True)
