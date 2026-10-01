@@ -16,38 +16,32 @@ jobs:
       - uses: actions/checkout@v4
       - name: Verify KiCad CLI
         run: kicad-cli version
-      - name: Build targeted candidates
+      - name: Build obstacle-aware ALBA candidate
         run: |
+          set -euo pipefail
           mkdir -p hardware/pcb/targeted-alba
+          PCB=hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb
+          python3 hardware/pcb/tools/grid_router.py "$PCB" --net ALBA_B_NEG \
+            --start 112.54,165,B.Cu --goal 171.24,184,B.Cu --step 0.5 --clearance 0.35 --margin 25 \
+            > hardware/pcb/targeted-alba/astar.route
           python3 - <<'PY'
           from pathlib import Path
+          import re
           src=Path("hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb").read_text()
-          net=61
-          # Do not reject the net merely because pads/metadata reference net 61.
-          # Existing copper is left untouched; candidate DRC decides whether the added route is valid.
-          # ALBA_B_NEG: Q9.2 (112.54,165) -> J_ALBA.4 (171.24,184).
-          # Conservative H/V/45 candidates, 0.30mm signal trace, 0 or 2 vias.
-          variants={
-            # Escape Q9 laterally on B.Cu to avoid the CIELO_R via at x~111.955,
-            # then switch to F.Cu and weave between the long horizontal/vertical trunks.
-            "dogleg_r1":[('s',112.54,165,116,165,'B.Cu'),('s',116,165,118,163,'B.Cu'),('v',118,163),('s',118,163,126,171,'F.Cu'),('s',126,171,168,171,'F.Cu'),('s',168,171,176,179,'F.Cu'),('s',176,179,171.24,183.76,'F.Cu'),('s',171.24,183.76,171.24,184,'F.Cu'),('v',171.24,184)],
-            "dogleg_r2":[('s',112.54,165,117,165,'B.Cu'),('s',117,165,120,162,'B.Cu'),('v',120,162),('s',120,162,129,171,'F.Cu'),('s',129,171,167,171,'F.Cu'),('s',167,171,177,181,'F.Cu'),('s',177,181,174,184,'F.Cu'),('s',174,184,171.24,184,'F.Cu'),('v',171.24,184)],
-            "dogleg_r3":[('s',112.54,165,118,165,'B.Cu'),('s',118,165,122,161,'B.Cu'),('v',122,161),('s',122,161,132,171,'F.Cu'),('s',132,171,166,171,'F.Cu'),('s',166,171,178,183,'F.Cu'),('s',178,183,177,184,'F.Cu'),('s',177,184,171.24,184,'F.Cu'),('v',171.24,184)],
-            "dogleg_b1":[('s',112.54,165,116,165,'B.Cu'),('s',116,165,120,169,'B.Cu'),('s',120,169,120,172,'B.Cu'),('s',120,172,168,172,'B.Cu'),('s',168,172,178,182,'B.Cu'),('s',178,182,176,184,'B.Cu'),('s',176,184,171.24,184,'B.Cu')],
-          }
-          # Insert before the board's final closing parenthesis; KiCad 9 accepts these top-level primitives.
-          edge=src.rfind(")")
-          assert edge>0
-          for name,items in variants.items():
-              out=[]
-              for x in items:
-                  if x[0]=='s':
-                      _,x1,y1,x2,y2,layer=x
-                      out.append(f'  (segment (start {x1} {y1}) (end {x2} {y2}) (width 0.3) (layer "{layer}") (net {net}))')
-                  else:
-                      _,x1,y1=x
-                      out.append(f'  (via (at {x1} {y1}) (size 0.8) (drill 0.4) (layers "F.Cu" "B.Cu") (net {net}))')
-              Path(f"hardware/pcb/targeted-alba/{name}.kicad_pcb").write_text(src[:edge]+"\n".join(out)+"\n"+src[edge:])
+          pts=[]
+          for line in Path("hardware/pcb/targeted-alba/astar.route").read_text().splitlines()[1:]:
+              x,y,la=line.split(","); pts.append((float(x),float(y),la))
+          # net 61 = ALBA_B_NEG on the current Rev-A board.
+          items=[]
+          for a,b in zip(pts,pts[1:]):
+              if a[2]!=b[2]:
+                  items.append(f'\t(via (at {a[0]} {a[1]}) (size 0.8) (drill 0.4) (layers "F.Cu" "B.Cu") (net 61))\n')
+              else:
+                  items.append(f'\t(segment (start {a[0]} {a[1]}) (end {b[0]} {b[1]}) (width 0.4) (layer "{a[2]}") (net 61))\n')
+          idx=src.rfind(")")
+          out=src[:idx]+''.join(items)+src[idx:]
+          Path("hardware/pcb/targeted-alba/astar.kicad_pcb").write_text(out)
+          print("route points",len(pts),"items",len(items))
           PY
       - name: DRC all candidates
         run: |
