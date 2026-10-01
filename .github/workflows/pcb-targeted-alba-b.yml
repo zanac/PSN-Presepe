@@ -70,7 +70,7 @@ jobs:
                    "--start",f"{a[0]},{a[1]},F.Cu","--goal",f"{b[0]},{b[1]},F.Cu",
                    "--step","0.5","--clearance","0.55","--margin","45"]
               p=subprocess.run(cmd,text=True,capture_output=True)
-              if p.returncode: print("NO_ROUTE",rn,net); continue
+              if p.returncode: print("NO_ROUTE",rn,net,"RC",p.returncode,"ERR",p.stderr.strip(),"OUT",p.stdout.strip()); continue
               pts=[]
               for line in p.stdout.splitlines()[1:]:
                 x,y,la=line.split(","); pts.append((float(x),float(y),la))
