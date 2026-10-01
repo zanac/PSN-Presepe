@@ -36,23 +36,6 @@ jobs:
           sudo apt-get install -y --no-install-recommends kicad kicad-footprints
           kicad-cli version
 
-      - name: Build low-risk routing candidate
-        run: |
-          python3 hardware/pcb/tools/make_route_candidate.py \
-            hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb \
-            hardware/pcb/kicad/route-candidate.kicad_pcb
-          cp hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pro \
-            hardware/pcb/kicad/route-candidate.kicad_pro
-          ALLOW_ROUTING=1 python3 hardware/pcb/tools/pcb_sanity.py \
-            hardware/pcb/kicad/route-candidate.kicad_pcb
-
-      - name: DRC low-risk routing candidate
-        continue-on-error: true
-        run: |
-          kicad-cli pcb drc --severity-all \
-            --output hardware/pcb/build/route-candidate-drc.txt \
-            hardware/pcb/kicad/route-candidate.kicad_pcb
-
       - name: PCB DRC full report
         run: |
           mkdir -p hardware/pcb/build
@@ -64,12 +47,9 @@ jobs:
         if: always()
         run: |
           python3 hardware/pcb/tools/drc_summary.py hardware/pcb/build/drc-report.txt
-          echo "Candidate DRC:"
-          python3 hardware/pcb/tools/drc_summary.py hardware/pcb/build/route-candidate-drc.txt
           python3 hardware/pcb/tools/drc_details.py hardware/pcb/build/route-candidate-drc.txt
           python3 hardware/pcb/tools/compare_unconnected.py \
             hardware/pcb/build/drc-report.txt \
-            hardware/pcb/build/route-candidate-drc.txt
 
       - name: PCB DRC and connectivity gate
         id: fabrication_gate
