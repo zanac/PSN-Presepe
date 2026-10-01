@@ -212,3 +212,13 @@ A red GitHub Actions run does not automatically mean routing failed. While the b
 - Moving K13 as well (`26902354...`) regressed DRC, so K13 should remain in its validated geometry.
 - K14 layer-weave `32fda91e...` and alternate entry `ca57761c...` proved the two-crossing bottleneck is in the U2.13 local fanout, not the lower backbone.
 - Next experiment should temporarily repack K11+K12 together while preserving K13, creating a dedicated B.Cu escape lane for K14. No official route should be replaced until the combined candidate has zero error-severity DRC and still reduces unconnected 157 -> 156.
+
+## K14 exact-crossing reduction — 2026-10-01 11:17 CEST
+
+- K11+K12+K14 repack `65b12f29...` regressed to 3 crossings; rejected.
+- Right-side K14 escape `83235a25...` entered K9 contact geometry and produced shorts/clearance errors; reject this topology family.
+- Inspecting the best K11+K14 artifact proved its two DRC crossings were both on the temporary K11 replacement, while K14 itself was clean.
+- Local K11 layer-hop candidate `c2d97e60...` improved the combined route to **one single tracks_crossing**, still **157 -> 156**, with no shorts/clearance errors.
+- The remaining crossing is between K11 F.Cu backbone ending at/near `(193.62,146)` and validated K12 F.Cu geometry reported from `(147,136)`; artifact `11150558819` is the cleanest evidence checkpoint.
+- Extending the K11 B.Cu section (`5e358898...`, `db215b94...`) trades that one crossing for crossings against K13/K14, so do not use those variants.
+- **Official PCB remains unchanged: K1-K13, 157 unconnected.** Best restart base is candidate `c2d97e60287361f5e377c04ce1d9b19ce04a474b`; solve only its final K11/K12 crossing while keeping K14 topology unchanged.
