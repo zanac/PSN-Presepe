@@ -33,8 +33,10 @@ Use small commits with one purpose:
 - Fetch HEAD immediately before every PCB/tool/workflow update to avoid overwriting concurrent work.
 
 ## Next action
-Official PCB: **K1-K16 + D25 + D26 complete / 152 unconnected / zero critical routing DRC on promoted routes**. D25 clean candidate `c38f647f...` promoted `927f3d8c...`; D26 clean candidate `02ed5d90...` promoted `d3f6b0a3...`; sanity through net21 at `0ad9e773...`.
+Official PCB remains **K1-K16 + D25 + D26 / 152 unconnected**, independently verified by KiCad Validation run `36858485914`: only 66 footprint mismatches + 152 unconnected; **no critical geometry/electrical DRC**.
 
-Fanout topology established: MCU->U1 crosses F.Cu wall net16 on B.Cu, changes layer in x≈129.5 channel, then crosses B.Cu wall net17 on F.Cu. D27 current candidate `e154a246...` reduces 152->151 with no short/clearance but 4 known crossings (artifact `11160176400`): D22_START F at (130.5,54), D26 B y=50.09, D26 F x=131.5, D26 F horizontal y=64.54. Redesign D27 around these exact obstacles, preferably comb-style; preserve validated D25/D26 unless an atomic repack is DRC-clean.
+D27 best candidate remains `e154a246...`: 152->151, zero short/clearance, four known crossings. Right-side D27 and coordinated D26/D27 repack were worse. D28 isolated even-lane probe was also worse. The x=128.5 F.Cu / x=130.5 B.Cu wall pair plus D25/D26 now makes single-net additions inefficient.
 
-Continue D27..D32 low-risk input fanout. Keep +12V/GND, COM/NO, high-current copper and pours untouched.
+Next: design D27-D32 as a coordinated fanout bus with staggered layer-change stations, using official D25/D26 as baseline. Prefer a multi-net candidate and promote atomically only if connectivity improves by the intended number and routing DRC is zero. Generator restored to best D27 at `a4e29afc4a56b875a72812e5a8a0b55bf0510c06`.
+
+Keep +12V/GND, COM/NO, high-current copper and pours untouched.
