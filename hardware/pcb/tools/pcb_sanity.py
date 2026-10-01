@@ -174,4 +174,12 @@ if os.environ.get("ALLOW_ROUTING") == "1":
     for m in re.finditer(r'\(segment\b[^)]*(?:\)[^)]*)*?\(net (\d+)\)',s):
         assert int(m.group(1)) in declared, f"Segment uses undeclared net {m.group(1)}"
 
+
+# Duplicate copper primitives are forbidden: they add no connectivity and make
+# routing review/counts misleading.
+segment_lines=[ln.strip() for ln in s.splitlines() if "(segment " in ln]
+assert len(segment_lines)==len(set(segment_lines)), "Duplicate routed segment(s) detected"
+via_lines=[ln.strip() for ln in s.splitlines() if "(via " in ln]
+assert len(via_lines)==len(set(via_lines)), "Duplicate via(s) detected"
+
 print(f"OK: {len(refs)} refs, {len(global_nets)} nets, {segments} segments, electrical + external-terminal invariants verified, no unreviewed zones")
