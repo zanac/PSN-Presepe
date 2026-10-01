@@ -33,10 +33,10 @@ Use small commits with one purpose:
 - Fetch HEAD immediately before every PCB/tool/workflow update to avoid overwriting concurrent work.
 
 ## Next action
-Clean-baseline recovery in progress. D30/net25 is intentionally **removed** from the official PCB; current connectivity is **149 unconnected** (K1-K16 + D25-D29). Full DRC still had one clearance after commit `4a322caf...`.
+Clean official baseline restored: **K1-K16 + D25-D29 / 149 unconnected / zero critical geometry/electrical DRC**. Full KiCad Validation run `36880034688` on commit `40500c6a...`: categories only `lib_footprint_mismatch:66` + `unconnected_items:149`; critical categories none. D29 clearance was fixed by moving its first via right to x=120.5.
 
-Current official experiment commit: `deae8e0597c8823744d3c9f7c4dd5c17a4808d2d`. It changes only D29/net24 escape via from x=119.5 to x=120.5 at y=52.63 and its two adjoining segments. Full KiCad Validation run `36879585169` is pending/in progress. Do not infer success until its DRC summary is read.
+D30/net25 was removed from official PCB and sanity approval revoked after discovering full-DRC clearance regressions. Redesign D30 from the clean 149 baseline. Candidate success alone is insufficient: after promotion require official full KiCad Validation with zero critical geometry/electrical categories and 148 unconnected before D31.
 
-If full DRC is clean: record 149-unconnected clean baseline, then redesign D30 from scratch and require both Route Candidate AND post-promotion full KiCad Validation to show zero critical geometry/electrical categories. If the one clearance remains: download the DRC artifact and identify exact object pair before another coordinate change; do not guess further.
+Continue D30 using the prior alternating-layer concept but keep transition vias safely spaced; avoid the compressed x=129.5/131.25 transition that produced clearance errors. Then D31/D32.
 
-After D30 full-DRC clean at 148, continue D31/D32. Final manufacturing gate: zero real DRC + zero unconnected, then same-revision Gerber+Excellon ZIP + machine-readable BOM CSV + CPL/centroid CSV.
+Final gate: zero real DRC + zero unconnected, then same-revision Gerber+Excellon ZIP + BOM CSV + CPL/centroid CSV.
