@@ -60,7 +60,11 @@ jobs:
 
       - name: Summarize DRC
         if: always()
-        run: python3 hardware/pcb/tools/drc_summary.py hardware/pcb/build/drc-report.txt
+        run: |
+          python3 hardware/pcb/tools/drc_summary.py hardware/pcb/build/drc-report.txt
+          python3 hardware/pcb/tools/compare_unconnected.py \
+            hardware/pcb/build/drc-report.txt \
+            hardware/pcb/build/route-candidate-drc.txt
 
       - name: PCB DRC and connectivity gate
         id: fabrication_gate
