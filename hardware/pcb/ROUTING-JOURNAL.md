@@ -117,3 +117,9 @@ A red GitHub Actions run does not automatically mean routing failed. While the b
 - K10 / net 45 promoted in `f3bcda32516b89d19843643708845e0119bd251b` and sanity-approved in `2ea98eb2c71bd09bed03ded318b039c09c0754bc`.
 - Official connectivity after K10: **160 unconnected items**.
 - K11 / net 46 candidate prepared in `0c90ef05d92acda60cadc32e994b2534617a294a` using a lower corridor below K10.
+
+## K11 rejected candidate — 2026-10-01
+
+- Candidate `0c90ef05d92acda60cadc32e994b2534617a294a` reduced **160 -> 159** but was rejected by run `36825931693` for one `tracks_crossing` only.
+- Exact crossing: K11 first segment from U2.16 intersects K10 vertical segment at `(142.0,96.5..118.0)`; no shorts were reported.
+- Revised K11 candidate `68718816b2a38c29f8d96a4ba7934758ab69114c` exits U2 to the right and uses y=122 lower corridor.
