@@ -104,7 +104,7 @@ def extract_obstacles(text,target,step,clearance):
         if not head: continue
         fx,fy=float(head.group(1)),float(head.group(2)); rot=float(head.group(3) or 0)
         import math
-        ang=math.radians(-rot); ca,sa=math.cos(ang),math.sin(ang)
+        ang=math.radians(rot); ca,sa=math.cos(ang),math.sin(ang)
         for pad in balanced_blocks(fp,"(pad"):
             nm=re.search(r'[(]net ([0-9]+) "([^"]+)"[)]',pad)
             at=re.search(r'[(]at ([0-9.-]+) ([0-9.-]+)',pad)
