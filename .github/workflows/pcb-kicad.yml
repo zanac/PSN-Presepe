@@ -47,7 +47,8 @@ jobs:
         if: always()
         run: python3 hardware/pcb/tools/drc_summary.py hardware/pcb/build/drc-report.txt
 
-      - name: PCB DRC error gate
+      - name: PCB DRC and connectivity gate
+        id: fabrication_gate
         run: |
           kicad-cli pcb drc --severity-error \
             --output hardware/pcb/build/drc-errors.txt \
@@ -55,7 +56,7 @@ jobs:
           python3 hardware/pcb/tools/drc_gate.py hardware/pcb/build/drc-errors.txt
 
       - name: Export Gerbers and drill
-        if: success()
+        if: steps.fabrication_gate.outcome == 'success'
         run: |
           mkdir -p hardware/pcb/build/gerbers
           kicad-cli pcb export gerbers \
@@ -68,7 +69,7 @@ jobs:
             hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb
 
       - name: Package fabrication preview
-        if: success()
+        if: steps.fabrication_gate.outcome == 'success'
         run: |
           cd hardware/pcb/build/gerbers
           zip -9 ../PSN-Presepe-RevA-Gerber-DRAFT.zip ./*
@@ -84,7 +85,7 @@ jobs:
           if-no-files-found: warn
 
       - name: Upload draft Gerbers
-        if: success()
+        if: steps.fabrication_gate.outcome == 'success'
         uses: actions/upload-artifact@v4
         with:
           name: PSN-Presepe-RevA-Gerber-DRAFT
