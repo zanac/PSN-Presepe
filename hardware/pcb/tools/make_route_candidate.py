@@ -18,7 +18,9 @@ s="\n".join(lines)+"\n"
 parts=[
 # replacement K11/net46
 '  (segment (start 145.16 97.08) (end 140.0 99.0) (width 0.3) (layer "F.Cu") (net 46))',
-'  (segment (start 140.0 99.0) (end 140.0 144.0) (width 0.3) (layer "F.Cu") (net 46))',
+'  (via (at 140.0 99.0) (size 0.8) (drill 0.4) (layers "F.Cu" "B.Cu") (net 46))',
+'  (segment (start 140.0 99.0) (end 140.0 144.0) (width 0.3) (layer "B.Cu") (net 46))',
+'  (via (at 140.0 144.0) (size 0.8) (drill 0.4) (layers "F.Cu" "B.Cu") (net 46))',
 '  (segment (start 140.0 144.0) (end 193.62 144.0) (width 0.3) (layer "F.Cu") (net 46))',
 '  (segment (start 193.62 144.0) (end 193.62 115.0) (width 0.3) (layer "F.Cu") (net 46))',
 # new K14/net49 on freed B.Cu corridor
