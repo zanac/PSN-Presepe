@@ -49,9 +49,10 @@ jobs:
 
       - name: PCB DRC error gate
         run: |
-          kicad-cli pcb drc --severity-error --exit-code-violations \
+          kicad-cli pcb drc --severity-error \
             --output hardware/pcb/build/drc-errors.txt \
             hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb
+          python3 hardware/pcb/tools/drc_gate.py hardware/pcb/build/drc-errors.txt
 
       - name: Export Gerbers and drill
         if: success()
