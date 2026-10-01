@@ -17,10 +17,10 @@ print(f"Baseline segments: {baseline_segments}")
 # K12 pad5 with footprint rotation 90 deg = (211.62,115.00)
 # K12 starts from validated K11 topology with a staggered via/x/y corridor to preserve clearance.
 parts=[
-'  (segment (start 145.16 99.62) (end 143.0 101.5) (width 0.3) (layer "F.Cu") (net 47))',
-'  (via (at 143.0 101.5) (size 0.8) (drill 0.4) (layers "F.Cu" "B.Cu") (net 47))',
-'  (segment (start 143.0 101.5) (end 143.0 136.0) (width 0.3) (layer "B.Cu") (net 47))',
-'  (segment (start 143.0 136.0) (end 211.62 136.0) (width 0.3) (layer "B.Cu") (net 47))',
+'  (segment (start 145.16 99.62) (end 141.5 101.5) (width 0.3) (layer "F.Cu") (net 47))',
+'  (via (at 141.5 101.5) (size 0.8) (drill 0.4) (layers "F.Cu" "B.Cu") (net 47))',
+'  (segment (start 141.5 101.5) (end 141.5 136.0) (width 0.3) (layer "B.Cu") (net 47))',
+'  (segment (start 141.5 136.0) (end 211.62 136.0) (width 0.3) (layer "B.Cu") (net 47))',
 '  (segment (start 211.62 136.0) (end 211.62 115.0) (width 0.3) (layer "B.Cu") (net 47))',
 ]
 edge=s.find("  (gr_rect "); assert edge>0
