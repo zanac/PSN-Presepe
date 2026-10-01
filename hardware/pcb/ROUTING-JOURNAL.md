@@ -153,3 +153,9 @@ A red GitHub Actions run does not automatically mean routing failed. While the b
 
 - Via-free B.Cu candidate `788b41860645d9cdb9d12693b080ed1e41a214e9` again reduced **160 -> 159** but failed: lateral B.Cu escape from U2.16 crosses other plated-through pads in the U2 row.
 - Seventh candidate `9cbb0a9ad6a4ae42da3628c2dc245dc33c16bc01` uses a short F.Cu escape to a remote via `(150,98.5)`, then B.Cu outside U2 at x=130 and below relays at y=132, ending directly at K11.5 THT.
+
+## K11 seventh rejected candidate — 2026-10-01
+
+- Candidate `9cbb0a9ad6a4ae42da3628c2dc245dc33c16bc01` reduced **160 -> 159** but produced multiple crossings/shorts.
+- Inspection of the official board exposed existing long backbones in the attempted left corridor: net16 on F.Cu around x=128.5 and net17 on B.Cu around x=130.5. The candidate crossed these repeatedly.
+- Eighth candidate `14f2a1e058754b0f325a62f690047cc134942b10` avoids the left corridor: short F.Cu escape to the right, via at `(152,99)`, B.Cu descent at x=152, then y=132 below relay row into K11.5.
