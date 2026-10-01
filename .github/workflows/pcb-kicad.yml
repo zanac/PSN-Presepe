@@ -41,6 +41,8 @@ jobs:
           python3 hardware/pcb/tools/make_route_candidate.py \
             hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb \
             hardware/pcb/kicad/route-candidate.kicad_pcb
+          cp hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pro \
+            hardware/pcb/kicad/route-candidate.kicad_pro
           ALLOW_ROUTING=1 python3 hardware/pcb/tools/pcb_sanity.py \
             hardware/pcb/kicad/route-candidate.kicad_pcb
 
