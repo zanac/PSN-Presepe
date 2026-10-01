@@ -62,12 +62,12 @@ jobs:
           work=base
           cumulative=[]
           for rn,nets in sorted(byrelay.items()):
-            if rn not in {1,2,3,4,5,6,7,14,15,16}: continue
+            if rn not in {8,9,10,11,12,13,15,16}: continue
             solved=[]
             # Route contacts one at a time; each accepted route becomes an obstacle.
             for net,ps in sorted(nets,key=lambda z:{"COM":0,"NO":1,"NC":2}[z[0].split("_")[1]]):
               a,b=ps
-              if math.hypot(a[0]-b[0],a[1]-b[1])>70: continue
+              if math.hypot(a[0]-b[0],a[1]-b[1])>180: continue
               tmp=Path(f"/tmp/R{rn}-{net}.kicad_pcb"); tmp.write_text(work)
               cmd=["python3","hardware/pcb/tools/grid_router.py",str(tmp),"--net",net,
                    "--start",f"{a[0]},{a[1]},F.Cu","--goal",f"{b[0]},{b[1]},F.Cu",
@@ -124,28 +124,6 @@ jobs:
                       if line.startswith('[') and line[1:line.index(']')] in critical:
                           print("DETAIL",p.name,*lines[i:i+5],sep=" | ")
           PY
-      - name: Promote cumulative clean checkpoint R14
-        run: |
-          python3 - <<'PY'
-          from pathlib import Path
-          import re,sys
-          drc=Path("hardware/pcb/targeted-relays/BATCH_R14.drc.txt").read_text()
-          forbidden={"clearance","shorting_items","hole_clearance","holes_co_located","track_dangling","solder_mask_bridge"}
-          cats={line[1:line.index("]")] for line in drc.splitlines() if line.startswith("[") and "]" in line}
-          u=drc.count("[unconnected_items]")
-          bad=sorted(cats & forbidden)
-          print("PROMOTION_GATE unconnected=",u,"forbidden=",bad or "none")
-          if u != 93 or bad: sys.exit(1)
-          src=Path("hardware/pcb/targeted-relays/BATCH_R14.kicad_pcb")
-          Path("hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb").write_text(src.read_text())
-          PY
-          cd "$GITHUB_WORKSPACE"
-          git config --global --add safe.directory "$GITHUB_WORKSPACE"
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb
-          git commit -m "Promote 93-unconnected relay contact checkpoint"
-          git push origin HEAD:dev
       - uses: actions/upload-artifact@v4
         with:
           name: targeted-relay-contact-candidate
