@@ -33,12 +33,14 @@ Use small commits with one purpose:
 - Fetch HEAD immediately before every PCB/tool/workflow update to avoid overwriting concurrent work.
 
 ## Next action
-Official PCB: **K1-K16 + D25-D28 / 150 unconnected / zero critical geometry/electrical DRC**. D28 promoted and independently validated.
+Official PCB: **K1-K16 + D25-D29 / 149 unconnected**. D29 candidate `fdeb1ecd...`, Route Candidate `36873633369` SUCCESS (150->149, zero routing DRC); promoted `b6ba98a8...`; sanity net24 `ff67854d...`.
 
-D29 current experiment: `079bd5cc73ac52e8cef2f64aa76cdc2271aa9e1e`, left/lower stagger preserving D28. GitHub runner is currently delayed in KiCad installation; do not infer result until Route Candidate run `36871461901` completes. Previous right-side D29 `067c6e51...` rejected: C2/C3 collisions at x127.5, D28 crossing, and U2/coil conflicts.
+D29 reusable pattern: B.Cu escape through midpoint between adjacent Mega pads, via after pad column; F.Cu down an analog inter-column corridor; at an inter-row midpoint use F across TEST(B), via x127, B across START(F), via x129.5, F across NEXT(B), then approach U1. For D29 the clean inter-row Y is 80.57.
 
-If `079bd5cc...` fails, inspect its artifact and refine only the exact collision pairs. Preserve validated D25-D28. Continue D29 then D30 using staggered wall-crossing lanes.
+D30 current candidate `cd71514a7a079843dc92f24f6da86afe8916eea7`, run `36874130419`, uses complementary y=78.03 path and extra B.Cu final approach to cross D29. CI was still installing KiCad at checkpoint. Inspect result/artifact first; promote only if 149->148 and zero routing DRC.
 
-Final gate remains zero real DRC + zero unconnected, then produce same-revision assembly package **Gerber+Excellon ZIP + machine-readable BOM CSV + CPL/centroid CSV**. Existing `BOM-REV-A.md` is descriptive only and must be converted/cross-checked. Note assembly capability for THT/module parts separately from file completeness.
+Then continue D31/D32 using staggered inter-row corridors. Preserve D25-D29 unless an atomic repack is fully clean.
+
+Final gate: zero real DRC + zero unconnected, then same-revision Gerber+Excellon ZIP + machine-readable BOM CSV + CPL/centroid CSV with reference/revision cross-check.
 
 Keep +12V/GND distribution, relay COM/NO, high-current copper and pours untouched until dedicated reviewed phase.
