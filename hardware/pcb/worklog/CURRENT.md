@@ -33,12 +33,10 @@ Use small commits with one purpose:
 - Fetch HEAD immediately before every PCB/tool/workflow update to avoid overwriting concurrent work.
 
 ## Next action
-We are progressing, not routing-blocked. **Clean official baseline is K1-K16 + D25-D29 / 149 unconnected / zero critical geometry/electrical DRC**, proven by full KiCad Validation run `36880034688`. Workflow failure is only the intentional incomplete-connectivity gate.
+Tooling review found a positive acceleration path: KiCad 9 Python exposes Specctra DSN export/import and Freerouting supports headless DSN->SES autorouting. Existing `.github/workflows/pcb-autoroute-candidate.yml` has been converted into an **artifact-only laboratory** (no automatic PCB push), updated to Freerouting 2.4.1, with baseline-vs-candidate connectivity/DRC comparison. Long 300-pass run `36881798109` is still autorouting; fast 50-pass run `36883023057` is starting. Evaluate artifacts before adopting anything.
 
-D30/net25 redesign is active. Old alternating-layer family on the corrected D29 baseline produced 148 unconnected but 1 short (and later variants 3 crossings), so that family is abandoned. Current candidate is `08f5c5905378e17317c3b45fbb43ec9773f4a799`: simpler low-left route at y=83, preserving official PCB. Route Candidate run `36881645149` is still spending time in KiCad 9 installation; read its result before any promotion.
+Clean official PCB baseline remains **149 unconnected / zero critical geometry/electrical DRC** (run `36880034688`). Exact residual composition from the clean report: GND 37, +12V 27, +5V_MEGA 5 (69 shared-power records); 48 relay-contact records (COM/NO/NC); 9 relay-input signals D30-D40; remainder other logic/PWM/data/MOSFET-side signals. Progress estimates corrected: routing ~45-55%, overall PCB ~65-70%, manufacturing package ~60-65%.
 
-Important process: candidate success is necessary but not sufficient. After any D30 promotion, require full official KiCad Validation with **148 unconnected + zero critical geometry/electrical categories** before D31.
+D30 manual candidate `08f5c590...` rejected (1 clearance, 1 short, 3 crossings). Earlier family reached 148 with only one localized short; do not promote. Prioritize autoroute experiment outcome. If Freerouting produces a DRC-clean large reduction, inspect and selectively adopt candidate; protected relay contacts and power are stripped by the lab before DRC. If not useful, resume manual/batched routing and improve CI to evaluate multiple candidates per KiCad installation.
 
-Operational bottleneck: GitHub-hosted runner repeatedly spends several minutes installing KiCad 9 for every candidate. Routing itself is advancing. After D30 is stabilized, improve CI runtime (cache/preinstalled-container strategy if safe) so D31+ iterations are faster; do not weaken DRC.
-
-Final gate: zero real DRC + zero unconnected, then same-revision Gerber+Excellon ZIP + BOM CSV + CPL/centroid CSV.
+Final gate unchanged: zero real DRC + zero unconnected, then same-revision Gerber+Excellon ZIP + BOM CSV + CPL/centroid CSV.
