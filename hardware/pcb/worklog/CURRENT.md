@@ -5,9 +5,9 @@ This file is the short restart point for long autonomous PCB sessions.
 ## Current baseline
 - Branch: `dev`.
 - Official board: `hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb`.
-- Official board currently contains **113 routed segments**.
+- Official board contains K1-K12 coil-low routing; K12 added six track segments plus one via after K11 baseline.
 - Routing is being promoted only after a temporary candidate passes real KiCad DRC.
-- K1-K10 relay coil-low routes are promoted and sanity-approved. K11 is in candidate validation.
+- K1-K12 relay coil-low routes are promoted and sanity-approved. K13 is in candidate validation.
 - Gerber fabrication gate remains blocked until DRC has no real errors and connectivity is complete.
 
 ## Restart procedure
@@ -33,4 +33,4 @@ Use small commits with one purpose:
 - Fetch HEAD immediately before every PCB/tool/workflow update to avoid overwriting concurrent work.
 
 ## Next action
-K11/net46 is now validated and officially promoted. Candidate run `36829048742` proved **160 -> 159** with zero error-severity DRC; board commit `22d3f2b4cc33837f3d7836bc771c1eba14583a2e`, sanity approval `0e0a16ba399b72449ab47a3430c59bbf27abba4e`. Official baseline should now be **159 unconnected** (confirm from next candidate logs). Exact K12-K16 pad5 endpoints verified from official board: x=211.62/229.62/247.62/265.62/283.62, y=115. Validate K12/net47 candidate `cb24da98b496a8ded0bc87c96a1290f5913806c6`, Route Candidate `36829369985`; if green promote and continue K13.
+K12/net47 is validated and officially promoted. Route Candidate `36830213836` proved **159 -> 158** with zero error-severity DRC; board commit `dd8bc4059f4ce6603bb334ec920307bdd859ca93`, sanity approval `60b5597450766b482d425369ccb97190e007f913`. Validate K13/net48 candidate `e7a2ac6f155dd92796aaf1ccfccd572ebb9ca45b`; if green promote exact geometry, approve net48, then continue K14.
