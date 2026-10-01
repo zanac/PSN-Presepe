@@ -33,14 +33,8 @@ Use small commits with one purpose:
 - Fetch HEAD immediately before every PCB/tool/workflow update to avoid overwriting concurrent work.
 
 ## Next action
-Official PCB: **K1-K16 + D25-D29 / 149 unconnected**. D29 candidate `fdeb1ecd...`, Route Candidate `36873633369` SUCCESS (150->149, zero routing DRC); promoted `b6ba98a8...`; sanity net24 `ff67854d...`.
+Official PCB has advanced to **K1-K16 + D25-D30 / 148 unconnected**. D30 clean Route Candidate was run `36875416537` at `d179b53b...` and its validated geometry is now present in the official PCB. Latest official validation is still running; inspect it before treating the 148 baseline as independently revalidated.
 
-D29 reusable pattern: B.Cu escape through midpoint between adjacent Mega pads, via after pad column; F.Cu down an analog inter-column corridor; at an inter-row midpoint use F across TEST(B), via x127, B across START(F), via x129.5, F across NEXT(B), then approach U1. For D29 the clean inter-row Y is 80.57.
+D30 final geometry uses complementary y=78.03 alternating-layer bridge and B.Cu final approach. Continue with D31/net26, using the proven D29/D30 staggered inter-row strategy; preserve D25-D30 unless an atomic repack is fully DRC-clean.
 
-D30 current candidate `cd71514a7a079843dc92f24f6da86afe8916eea7`, run `36874130419`, uses complementary y=78.03 path and extra B.Cu final approach to cross D29. CI was still installing KiCad at checkpoint. Inspect result/artifact first; promote only if 149->148 and zero routing DRC.
-
-Then continue D31/D32 using staggered inter-row corridors. Preserve D25-D29 unless an atomic repack is fully clean.
-
-Final gate: zero real DRC + zero unconnected, then same-revision Gerber+Excellon ZIP + machine-readable BOM CSV + CPL/centroid CSV with reference/revision cross-check.
-
-Keep +12V/GND distribution, relay COM/NO, high-current copper and pours untouched until dedicated reviewed phase.
+Final gate: zero real DRC + zero unconnected, then same-revision **Gerber+Excellon ZIP + BOM CSV + CPL/centroid CSV**, cross-checked by reference/revision. Keep +12V/GND distribution, relay COM/NO, high-current copper and pours untouched until dedicated reviewed phase.
