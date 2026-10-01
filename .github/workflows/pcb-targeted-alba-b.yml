@@ -67,7 +67,7 @@ jobs:
               if math.hypot(a[0]-b[0],a[1]-b[1])>70: continue
               tmp=Path(f"/tmp/R{rn}-{net}.kicad_pcb"); tmp.write_text(work)
               cmd=["python3","hardware/pcb/tools/grid_router.py",str(tmp),"--net",net,
-                   "--start",f"{a[0]},{a[1]},B.Cu","--goal",f"{b[0]},{b[1]},B.Cu",
+                   "--start",f"{a[0]},{a[1]},F.Cu","--goal",f"{b[0]},{b[1]},F.Cu",
                    "--step","0.5","--clearance","1.2","--margin","25"]
               p=subprocess.run(cmd,text=True,capture_output=True)
               if p.returncode: print("NO_ROUTE",rn,net); continue
@@ -84,7 +84,11 @@ jobs:
                   items.append(f'\t(via (at {u[0]} {u[1]}) (size 1.2) (drill 0.6) (layers "F.Cu" "B.Cu") (net {a[2]}))\n')
                   continue
                 else: items.append(f'\t(segment (start {u[0]} {u[1]}) (end {v[0]} {v[1]}) (width 0.8) (layer "{u[2]}") (net {a[2]}))\n')
-              idx=work.rfind(")"); work=work[:idx]+''.join(items)+work[idx:]; solved.append(net)
+              idx=work.rfind(")"); work=work[:idx]+''.join(items)+work[idx:]
+              # KiCad connectivity needs copper on both sides of every via.
+              # A layer-flip point is represented by a via plus the following
+              # segment; ensure there is also a short approach on the new layer.
+              solved.append(net)
             if solved:
               Path(f"hardware/pcb/targeted-relays/R{rn}.kicad_pcb").write_text(work)
               print("ASTAR_RELAY",rn,len(solved),solved)
