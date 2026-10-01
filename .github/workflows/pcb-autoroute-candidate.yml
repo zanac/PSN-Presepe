@@ -74,6 +74,7 @@ jobs:
           cp hardware/pcb/kicad/fp-lib-table hardware/pcb/route-candidate/fp-lib-table
           cp -a hardware/pcb/kicad/PSN_Presep_Custom.pretty hardware/pcb/route-candidate/
           python3 - <<'PY'
+          import re
           import sys
           sys.path.append('/usr/lib/python3/dist-packages')
           import pcbnew
@@ -82,8 +83,18 @@ jobs:
           b=pcbnew.LoadBoard(boardfile)
           assert b is not None
           assert pcbnew.ImportSpecctraSES(b,ses), 'SES import failed'
-          import re
-          protected = re.compile(r'^R\\d+_(?:COM|NO|NC)          PY
+          protected = re.compile(r'^R[0-9]+_(COM|NO|NC)$')
+          power = {'+12V', 'GND', '+5V_MEGA'}
+          removed = 0
+          for item in list(b.GetTracks()):
+              net = item.GetNetname()
+              if protected.fullmatch(net) or net in power:
+                  b.Remove(item)
+                  removed += 1
+          print('Removed protected/power routing items:', removed)
+          assert pcbnew.SaveBoard(boardfile,b), 'Candidate save failed'
+          print('SES import/save OK')
+          PY
 
       - name: KiCad DRC on routed candidate
         id: drc
