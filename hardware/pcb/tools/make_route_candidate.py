@@ -18,11 +18,11 @@ print(f"Baseline segments: {baseline_segments}")
 # K13 uses a via-free B.Cu escape from the THT U2 pad, avoiding K11/K12 F.Cu corridors.
 parts=[
 '  (segment (start 145.16 102.16) (end 143.0 103.5) (width 0.3) (layer "F.Cu") (net 48))',
-'  (segment (start 143.0 103.5) (end 143.0 116.5) (width 0.3) (layer "F.Cu") (net 48))',
-'  (segment (start 143.0 116.5) (end 170.0 116.5) (width 0.3) (layer "F.Cu") (net 48))',
-'  (via (at 170.0 116.5) (size 0.8) (drill 0.4) (layers "F.Cu" "B.Cu") (net 48))',
-'  (segment (start 170.0 116.5) (end 180.0 116.5) (width 0.3) (layer "B.Cu") (net 48))',
-'  (segment (start 180.0 116.5) (end 180.0 132.0) (width 0.3) (layer "B.Cu") (net 48))',
+'  (segment (start 143.0 103.5) (end 143.0 117.0) (width 0.3) (layer "F.Cu") (net 48))',
+'  (segment (start 143.0 117.0) (end 170.0 117.0) (width 0.3) (layer "F.Cu") (net 48))',
+'  (via (at 170.0 117.0) (size 0.8) (drill 0.4) (layers "F.Cu" "B.Cu") (net 48))',
+'  (segment (start 170.0 117.0) (end 180.0 117.0) (width 0.3) (layer "B.Cu") (net 48))',
+'  (segment (start 180.0 117.0) (end 180.0 132.0) (width 0.3) (layer "B.Cu") (net 48))',
 '  (via (at 180.0 132.0) (size 0.8) (drill 0.4) (layers "F.Cu" "B.Cu") (net 48))',
 '  (segment (start 180.0 132.0) (end 180.0 135.0) (width 0.3) (layer "F.Cu") (net 48))',
 '  (via (at 180.0 135.0) (size 0.8) (drill 0.4) (layers "F.Cu" "B.Cu") (net 48))',
