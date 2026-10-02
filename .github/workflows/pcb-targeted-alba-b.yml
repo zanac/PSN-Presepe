@@ -218,19 +218,17 @@ jobs:
           # soft path for R16 contacts, then let KiCad identify any remaining
           # hard conflicts. This avoids hard-A* refusing a diagnostically useful path.
           direct=strip_target_copper(base,{"R10_NO","R16_NC","R16_NO"})
-          # Assert surgical strip really removed all copper for the three nets.
+          # Assert using complete balanced KiCad blocks, not the first ')'.
           direct_ids={101,117,119}
           direct_left=[]
           for tok in ("(segment","(via"):
-            pos=0
-            while True:
-              st=direct.find(tok,pos)
-              if st<0: break
-              end=direct.find(")",st)+1
-              b=direct[st:end]; m=re.search(r'[(]net ([0-9]+)[)]',b)
-              if m and int(m.group(1)) in direct_ids: direct_left.append((tok,int(m.group(1)),b))
-              pos=end
+            for b in blocks(direct,tok):
+              m=re.search(r'[(]net ([0-9]+)[)]',b)
+              if m and int(m.group(1)) in direct_ids:
+                direct_left.append((tok,int(m.group(1)),b[:180]))
           print("DIRECT101_LEFT_AFTER_STRIP",len(direct_left),direct_left[:3])
+          if direct_left:
+            raise RuntimeError("surgical strip left target copper: "+repr(direct_left[:3]))
           direct_done=[]
           for rn,net,ps in surgery_order:
             if net=="R10_NO": continue
