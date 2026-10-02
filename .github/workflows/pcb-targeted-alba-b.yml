@@ -1,5 +1,6 @@
 name: PCB Relay Contact Batch
 on:
+  workflow_dispatch:
   push:
     branches: [dev]
     paths:
