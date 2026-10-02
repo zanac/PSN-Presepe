@@ -13,7 +13,7 @@ jobs:
     container:
       image: kicad/kicad:9.0
       options: --user 0
-    timeout-minutes: 10
+    timeout-minutes: 7
     steps:
       - uses: actions/checkout@v4
       - name: Verify KiCad CLI
@@ -70,7 +70,7 @@ jobs:
             a,b=ps
             tmp=Path(f"/tmp/cumulative-{net}.kicad_pcb"); tmp.write_text(work)
             p=None
-            for step,margin,to in [("0.25","70",30),("0.125","45",80)]:
+            for step,margin,to in [("0.25","70",20),("0.125","25",25)]:
               cmd=["python3","hardware/pcb/tools/grid_router.py",str(tmp),"--net",net,
                    "--start",f"{a[0]},{a[1]},B.Cu","--goal",f"{b[0]},{b[1]},B.Cu",
                    "--step",step,"--clearance","1.75","--margin",margin]
