@@ -184,7 +184,7 @@ jobs:
               cmd=["python3","hardware/pcb/tools/grid_router.py",str(tmp),"--net",net,
                    "--start",f"{a[0]},{a[1]},B.Cu","--goal",f"{b[0]},{b[1]},B.Cu",
                    "--step",step,"--clearance","1.50","--margin",margin,"--via-cost",via,
-                   "--soft-congestion","--congestion-cost","5000"]
+                   "--soft-congestion","--congestion-cost","5000","--report-blockers"]
               try: probe=subprocess.run(cmd,text=True,capture_output=True,timeout=to)
               except subprocess.TimeoutExpired:
                 print("SOFT_TIMEOUT",net,step); continue
