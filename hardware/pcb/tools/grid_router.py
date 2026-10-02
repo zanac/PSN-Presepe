@@ -17,7 +17,8 @@ LAYERS={"F.Cu":0,"B.Cu":1}
 class P: x:int; y:int; layer:int
 
 def astar(start,goal,blocked,bounds,via_cost=18,allow_vias=True,soft_blocked=None,congestion_cost=5000):
-    soft_blocked=soft_blocked or set()\n    q=[]; serial=0; heappush(q,(0,serial,start)); prev={start:None}; cost={start:0}
+    soft_blocked=soft_blocked or set()
+    q=[]; serial=0; heappush(q,(0,serial,start)); prev={start:None}; cost={start:0}
     xmin,xmax,ymin,ymax=bounds
     # Grid edges only. Diagonal center-point routing can cut obstacle corners;
     # Manhattan edges are conservative and KiCad DRC-friendly.
