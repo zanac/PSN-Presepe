@@ -42,8 +42,7 @@ for fp in blocks(text,"(footprint"):
 pairs=[(nid,name,ps) for (nid,name),ps in pads.items() if len(ps)==2 and nid]
 hard={"D40_RELAY16","D44_ALBA_R","D46_ALBA_B","R15_COM","R16_NC","R14_NO","R16_COM","D30_RELAY6","D28_RELAY4","D34_RELAY10",
       "R16_NO","R14_NC","R13_NO","R13_NC","R13_COM","D26_RELAY2","D36_RELAY12","D38_RELAY14","D24_TEST","D22_START","D21_SCL","D20_SDA"}
-failed_first=["D32_RELAY8","D26_RELAY2","D38_RELAY14","D24_TEST","D22_START","D21_SCL","D20_SDA",
-              "R16_COM","R16_NC","D40_RELAY16","R15_COM","R14_NO","D44_ALBA_R","D46_ALBA_B","D30_RELAY6","D28_RELAY4","D34_RELAY10"]
+failed_first=["R16_COM","R16_NC","D40_RELAY16","R15_COM","R14_NO","D44_ALBA_R","D46_ALBA_B","D30_RELAY6","D28_RELAY4","D34_RELAY10"]
 priority={n:i for i,n in enumerate(failed_first)}
 pairs.sort(key=lambda z: (0,priority[z[1]]) if z[1] in priority else (1 if z[1] in hard else 2, math.dist(z[2][0],z[2][1])))
 print("PAIR_NETS",len(pairs))
