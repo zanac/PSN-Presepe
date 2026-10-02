@@ -184,6 +184,27 @@ def main():
             floor((min(sy,gy)-a.margin)/step),ceil((max(sy,gy)+a.margin)/step))
     path=compress(astar(S,G,blocked,bounds,via_cost=a.via_cost,allow_vias=not a.no_vias,soft_blocked=soft,congestion_cost=a.congestion_cost))
     if not path: raise SystemExit("NO_ROUTE")
+    if a.report_blockers and a.soft_congestion:
+        # Report foreign track nets whose inflated cells intersect the chosen path.
+        path_cells=set(path); blockers=set()
+        net_names={int(n):name for n,name in re.findall(r'^ *[(]net ([0-9]+) "([^"]+)"[)] *
+    for p in path: print(f"{p.x*step:.3f},{p.y*step:.3f},{'F.Cu' if p.layer==0 else 'B.Cu'}")
+if __name__=="__main__": main()
+,text,re.M)}
+        for seg in balanced_blocks(text,"(segment"):
+            st=re.search(r'[(]start ([0-9.-]+) ([0-9.-]+)[)]',seg)
+            en=re.search(r'[(]end ([0-9.-]+) ([0-9.-]+)[)]',seg)
+            wd=re.search(r'[(]width ([0-9.-]+)[)]',seg)
+            ly=re.search(r'[(]layer "?(F[.]Cu|B[.]Cu)"?[)]',seg)
+            nt=re.search(r'[(]net ([0-9]+)[)]',seg)
+            if not(st and en and wd and ly and nt): continue
+            name=net_names.get(int(nt.group(1)),"")
+            if name==a.net: continue
+            cells=set()
+            mark_segment(cells,float(st.group(1)),float(st.group(2)),float(en.group(1)),float(en.group(2)),
+                         float(wd.group(1))/2+a.clearance,LAYERS[ly.group(1)],step)
+            if path_cells & cells: blockers.add(name or f"net-{nt.group(1)}")
+        print("BLOCKERS",",".join(sorted(blockers)) if blockers else "none")
     print("ROUTE",len(path))
     for p in path: print(f"{p.x*step:.3f},{p.y*step:.3f},{'F.Cu' if p.layer==0 else 'B.Cu'}")
 if __name__=="__main__": main()
