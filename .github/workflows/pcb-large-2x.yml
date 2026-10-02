@@ -5,7 +5,7 @@ on:
   push:
     branches: [dev]
     paths:
-      - 'hardware/pcb/tools/make_large_2x.py'
+      - 'hardware/pcb/tools/make_large_2x.py'\n      - 'hardware/pcb/tools/autoroute_large_2x.py'
       - '.github/workflows/pcb-large-2x.yml'
 
 jobs:
@@ -20,7 +20,9 @@ jobs:
           sudo apt-get install -y kicad
       - name: Build 2x board
         run: python3 hardware/pcb/tools/make_large_2x.py
-      - name: DRC unrouted large board
+      - name: Autoroute pair nets
+        run: python3 hardware/pcb/tools/autoroute_large_2x.py
+      - name: DRC routed large board
         run: |
           kicad-cli pcb drc --severity-all --output hardware/pcb/kicad/PSN-Presepe-Mega-LARGE-2X.drc.txt hardware/pcb/kicad/PSN-Presepe-Mega-LARGE-2X.kicad_pcb || true
           grep -E 'Found|\[.*\]:' hardware/pcb/kicad/PSN-Presepe-Mega-LARGE-2X.drc.txt | tail -40 || true
