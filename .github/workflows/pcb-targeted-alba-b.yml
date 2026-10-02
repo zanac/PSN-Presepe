@@ -71,17 +71,17 @@ jobs:
             a,b=ps
             tmp=Path(f"/tmp/cumulative-{net}.kicad_pcb"); tmp.write_text(work)
             p=None
-            for step,margin,to,via in [("0.25","70",20,"180"),("0.125","25",25,"240")]:
+            for step,margin,to,via,clear in [("0.25","70",15,"180","1.75"),("0.25","90",18,"220","1.25"),("0.125","18",20,"260","1.25")]:
               cmd=["python3","hardware/pcb/tools/grid_router.py",str(tmp),"--net",net,
                    "--start",f"{a[0]},{a[1]},B.Cu","--goal",f"{b[0]},{b[1]},B.Cu",
-                   "--step",step,"--clearance","1.75","--margin",margin,"--via-cost",via]
+                   "--step",step,"--clearance",clear,"--margin",margin,"--via-cost",via]
               try:
                 q=subprocess.run(cmd,text=True,capture_output=True,timeout=to)
               except subprocess.TimeoutExpired:
-                print("TIMEOUT",net,"step",step); continue
+                print("TIMEOUT",net,"step",step,"clear",clear); continue
               if q.returncode==0:
-                p=q; print("ROUTED_GRID",net,step); break
-              print("NO_ROUTE_GRID",net,step,q.stderr.strip())
+                p=q; print("ROUTED_GRID",net,step,"clear",clear); break
+              print("NO_ROUTE_GRID",net,step,"clear",clear,q.stderr.strip())
             if p is None: continue
             pts=[]
             for line in p.stdout.splitlines()[1:]:
