@@ -33,7 +33,10 @@ def astar(start,goal,blocked,bounds,via_cost=18,allow_vias=True,soft_blocked=Non
         for dx,dy,flip,w in moves:
             n=P(p.x+dx,p.y+dy,1-p.layer if flip else p.layer)
             if not(xmin<=n.x<=xmax and ymin<=n.y<=ymax) or n in blocked: continue
-            nc=cost[p]+w
+            # Crossing an existing routed-track corridor is allowed only as
+            # a last resort. Charge once when entering the congested region.
+            enter_congestion = n in soft_blocked and p not in soft_blocked
+            nc=cost[p]+w+(congestion_cost if enter_congestion else 0)
             if nc<cost.get(n,10**18):
                 cost[n]=nc; prev[n]=p; serial+=1
                 h=10*(abs(n.x-goal.x)+abs(n.y-goal.y))+ (via_cost if n.layer!=goal.layer else 0)
