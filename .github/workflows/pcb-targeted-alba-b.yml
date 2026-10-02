@@ -63,7 +63,7 @@ jobs:
           for net,ps in pads.items():
             if len(ps)==2: byrelay.setdefault(int(net[1:net.index('_')]),[]).append((net,ps))
           targets={"R16_COM","R16_NO","R16_NC","R14_COM","R15_NC"}
-          edge_lane={"R14_COM":305.0,"R15_NC":308.0,"R16_COM":311.0,"R16_NO":314.0,"R16_NC":317.0}
+          edge_lane={"R14_COM":297.0,"R15_NC":294.0,"R16_COM":291.0,"R16_NO":288.0,"R16_NC":285.0}
           print("RELAY_MAP",len(byrelay),sorted((k,len(v)) for k,v in byrelay.items()))
           work=base; solved=[]
           order=[]
