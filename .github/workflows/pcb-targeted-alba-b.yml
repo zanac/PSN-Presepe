@@ -1,5 +1,5 @@
 name: PCB Relay Contact Batch
-'on':
+on:
   push:
     branches: [dev]
     paths:
