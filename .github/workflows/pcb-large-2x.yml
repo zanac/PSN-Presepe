@@ -29,17 +29,21 @@ jobs:
           kicad-cli pcb drc --severity-all --output hardware/pcb/kicad/PSN-Presepe-Mega-LARGE-2X.drc.txt hardware/pcb/kicad/PSN-Presepe-Mega-LARGE-2X.kicad_pcb || true
           grep -E 'Found|\\[.*\\]:' hardware/pcb/kicad/PSN-Presepe-Mega-LARGE-2X.drc.txt | tail -80 || true
           echo "DRC_CATEGORY_COUNTS"
-          grep -oE '\\[[a-z_]+\\]' hardware/pcb/kicad/PSN-Presepe-Mega-LARGE-2X.drc.txt | sort | uniq -c | sort -nr || true
           python3 - <<'PY'
-          import re
           from pathlib import Path
-          p=Path("hardware/pcb/kicad/PSN-Presepe-Mega-LARGE-2X.drc.txt")
-          s=p.read_text()
-          cats=sorted(set(re.findall(r'\\[([a-z_]+)\\]',s)))
+          from collections import Counter
+          s=Path("hardware/pcb/kicad/PSN-Presepe-Mega-LARGE-2X.drc.txt").read_text()
+          cats=[]
+          for line in s.splitlines():
+              z=line.strip()
+              if z.startswith("[") and "]:" in z:
+                  cats.append(z[1:z.index("]:")])
+          counts=Counter(cats)
+          for k,v in counts.most_common():
+              print(v,k)
           forbidden={"clearance","shorting_items","tracks_crossing","hole_clearance","solder_mask_bridge"}
-          critical=sorted(forbidden & set(cats))
-          m=re.search(r"Found (\\d+) unconnected",s)
-          print("LARGE_DRC_GATE unconnected=",m.group(1) if m else "?","critical=",critical or "none")
+          critical={k:v for k,v in counts.items() if k in forbidden}
+          print("LARGE_DRC_GATE critical=",critical or "none")
           PY
       - uses: actions/upload-artifact@v4
         with:
