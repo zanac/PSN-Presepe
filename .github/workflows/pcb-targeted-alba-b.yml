@@ -175,6 +175,34 @@ jobs:
             repacked.append(net)
           Path("hardware/pcb/targeted-relays/repack.kicad_pcb").write_text(repack)
           print("LOCAL_REPACK_DONE",len(repacked),repacked)
+          # Fast isolation pass: test each stubborn net independently against the
+          # known-clean baseline. This can harvest a clean partial win without
+          # requiring all five routes to coexist.
+          for rn,net,ps in order:
+            a,b=ps; tmp=Path(f"/tmp/single-{net}.kicad_pcb"); tmp.write_text(base)
+            chosen=None
+            for step,margin,to,via,clear in [("0.5","120",5,"220","1.75"),("0.25","45",8,"260","1.50"),("0.125","10",10,"360","1.50")]:
+              cmd=["python3","hardware/pcb/tools/grid_router.py",str(tmp),"--net",net,
+                   "--start",f"{a[0]},{a[1]},B.Cu","--goal",f"{b[0]},{b[1]},B.Cu",
+                   "--step",step,"--clearance",clear,"--margin",margin,"--via-cost",via]
+              try: q=subprocess.run(cmd,text=True,capture_output=True,timeout=to)
+              except subprocess.TimeoutExpired: continue
+              if q.returncode==0: chosen=q; break
+            if chosen is None: continue
+            pts=[]
+            for line in chosen.stdout.splitlines()[1:]:
+              x,y,la=line.split(","); pts.append((float(x),float(y),la))
+            if not pts: continue
+            pts.insert(0,(a[0],a[1],pts[0][2])); pts.append((b[0],b[1],pts[-1][2]))
+            single=base; items=[]
+            for u,v in zip(pts,pts[1:]):
+              if u[2]!=v[2]:
+                if math.hypot(u[0]-a[0],u[1]-a[1])<1.0 or math.hypot(u[0]-b[0],u[1]-b[1])<1.0: continue
+                items.append(f'\\t(via (at {u[0]} {u[1]}) (size 1.0) (drill 0.5) (layers "F.Cu" "B.Cu") (net {a[2]}))\\n')
+              else: items.append(f'\\t(segment (start {u[0]} {u[1]}) (end {v[0]} {v[1]}) (width 1.0) (layer "{u[2]}") (net {a[2]}))\\n')
+            idx=single.rfind(")"); single=single[:idx]+''.join(items).encode().decode('unicode_escape')+single[idx:]
+            Path(f"hardware/pcb/targeted-relays/single-{net}.kicad_pcb").write_text(single)
+            print("SINGLE_CANDIDATE",net,len(pts))
           Path("hardware/pcb/targeted-relays/cumulative.kicad_pcb").write_text(work)
           print("CUMULATIVE_DONE",len(solved),solved)
           PY
