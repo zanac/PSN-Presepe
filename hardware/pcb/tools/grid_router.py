@@ -187,25 +187,33 @@ def main():
     if not path: raise SystemExit("NO_ROUTE")
     if a.report_blockers and a.soft_congestion:
         # Report foreign track nets whose inflated cells intersect the chosen path.
-        path_cells=set(path); blockers=set()
-        net_names={int(n):name for n,name in re.findall(r'^ *[(]net ([0-9]+) "([^"]+)"[)] *
-    for p in path: print(f"{p.x*step:.3f},{p.y*step:.3f},{'F.Cu' if p.layer==0 else 'B.Cu'}")
-if __name__=="__main__": main()
-,text,re.M)}
+        path_cells=set(path)
+        blockers=set()
+        net_names={}
+        for line in text.splitlines():
+            m=re.match(r' *[(]net ([0-9]+) "([^"]+)"[)] *$',line)
+            if m:
+                net_names[int(m.group(1))]=m.group(2)
         for seg in balanced_blocks(text,"(segment"):
             st=re.search(r'[(]start ([0-9.-]+) ([0-9.-]+)[)]',seg)
             en=re.search(r'[(]end ([0-9.-]+) ([0-9.-]+)[)]',seg)
             wd=re.search(r'[(]width ([0-9.-]+)[)]',seg)
             ly=re.search(r'[(]layer "?(F[.]Cu|B[.]Cu)"?[)]',seg)
             nt=re.search(r'[(]net ([0-9]+)[)]',seg)
-            if not(st and en and wd and ly and nt): continue
+            if not(st and en and wd and ly and nt):
+                continue
             name=net_names.get(int(nt.group(1)),"")
-            if name==a.net: continue
+            if name==a.net:
+                continue
             cells=set()
             mark_segment(cells,float(st.group(1)),float(st.group(2)),float(en.group(1)),float(en.group(2)),
                          float(wd.group(1))/2+a.clearance,LAYERS[ly.group(1)],step)
-            if path_cells & cells: blockers.add(name or f"net-{nt.group(1)}")
+            if path_cells & cells:
+                blockers.add(name or ("net-"+nt.group(1)))
         print("BLOCKERS",",".join(sorted(blockers)) if blockers else "none")
     print("ROUTE",len(path))
-    for p in path: print(f"{p.x*step:.3f},{p.y*step:.3f},{'F.Cu' if p.layer==0 else 'B.Cu'}")
-if __name__=="__main__": main()
+    for p in path:
+        print(f"{p.x*step:.3f},{p.y*step:.3f},{'F.Cu' if p.layer==0 else 'B.Cu'}")
+
+if __name__=="__main__":
+    main()
