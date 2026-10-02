@@ -169,7 +169,7 @@ jobs:
           import re,shutil
           drc=Path("hardware/pcb/targeted-relays/cumulative.drc.txt").read_text()
           forbidden={"clearance","shorting_items","tracks_crossing","hole_clearance","solder_mask_bridge","track_dangling"}
-          cats={m.group(1) for m in re.finditer(r'^\\[([^]]+)\\]',drc,re.M)}
+          cats={line[1:line.index("]")] for line in drc.splitlines() if line.startswith("[") and "]" in line}
           m=re.search(r'Found +([0-9]+) +unconnected +(?:items|pads)',drc,re.I)
           unc=int(m.group(1)) if m else 999
           bad=sorted(cats & forbidden)
