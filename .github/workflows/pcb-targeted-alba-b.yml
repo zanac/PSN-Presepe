@@ -114,7 +114,8 @@ jobs:
           # footprints and placement stay fixed; KiCad DRC remains authoritative.
           local_targets={"R13_COM","R13_NO","R13_NC","R14_COM","R14_NO","R14_NC","R15_COM","R15_NO","R15_NC","R16_COM","R16_NO","R16_NC"}
           def strip_target_copper(text,names):
-            ids={int(n) for n,name in re.findall(r'\\(net (\\d+) "([^"]+)"\\)',text) if name in names}
+            ids={int(n) for n,name in re.findall(r'[(]net ([0-9]+) "([^"]+)"[)]',text) if name in names}
+            print("STRIP_IDS",sorted(names),sorted(ids))
             for token in ("(segment","(via"):
               out=[]; pos=0
               while True:
