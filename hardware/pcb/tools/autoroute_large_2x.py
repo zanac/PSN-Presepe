@@ -40,8 +40,11 @@ for fp in blocks(text,"(footprint"):
         pads.setdefault((int(nm.group(1)),nm.group(2)),[]).append((x,y))
 
 pairs=[(nid,name,ps) for (nid,name),ps in pads.items() if len(ps)==2 and nid]
-hard={"R16_NO","R14_NC","R13_NO","R13_NC","R13_COM","D26_RELAY2","D36_RELAY12","D38_RELAY14","D40_RELAY16","D44_ALBA_R","D46_ALBA_B","D24_TEST","D22_START","D21_SCL","D20_SDA"}
-pairs.sort(key=lambda z: (0 if z[1] in hard else 1, math.dist(z[2][0],z[2][1])))
+hard={"D40_RELAY16","D44_ALBA_R","D46_ALBA_B","R15_COM","R16_NC","R14_NO","R16_COM","D30_RELAY6","D28_RELAY4","D34_RELAY10",
+      "R16_NO","R14_NC","R13_NO","R13_NC","R13_COM","D26_RELAY2","D36_RELAY12","D38_RELAY14","D24_TEST","D22_START","D21_SCL","D20_SDA"}
+failed_first=["R16_COM","R16_NC","D40_RELAY16","R15_COM","R14_NO","D44_ALBA_R","D46_ALBA_B","D30_RELAY6","D28_RELAY4","D34_RELAY10"]
+priority={n:i for i,n in enumerate(failed_first)}
+pairs.sort(key=lambda z: (0,priority[z[1]]) if z[1] in priority else (1 if z[1] in hard else 2, math.dist(z[2][0],z[2][1])))
 print("PAIR_NETS",len(pairs))
 def drc_critical(board):
     report=Path("/tmp/large-step.drc.txt")
@@ -74,8 +77,10 @@ for k,(nid,name,ps) in enumerate(pairs,1):
     # Dense/hard nets get a fine-grid, low-via-cost escape attempt. On the
     # oversized board it is preferable to change layer early rather than
     # compete for the same local B.Cu corridor.
+    # Keep the fine-grid fallback conservative: the previous globally cheap-via
+    # experiment regressed the clean result from 97 to 98 unconnected.
     if name in hard:
-        attempts += [("0.25","240","40",False)]
+        attempts += [("0.25","240","140",False)]
     accepted=False
     had_route=False
     for clearance in clearances:
