@@ -1,0 +1,32 @@
+name: PCB Large 2x Autoroute
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [dev]
+    paths:
+      - 'hardware/pcb/tools/make_large_2x.py'
+      - '.github/workflows/pcb-large-2x.yml'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install KiCad
+        run: |
+          sudo add-apt-repository --yes ppa:kicad/kicad-9.0-releases
+          sudo apt-get update
+          sudo apt-get install -y kicad
+      - name: Build 2x board
+        run: python3 hardware/pcb/tools/make_large_2x.py
+      - name: DRC unrouted large board
+        run: |
+          kicad-cli pcb drc --severity-all --output hardware/pcb/kicad/PSN-Presepe-Mega-LARGE-2X.drc.txt hardware/pcb/kicad/PSN-Presepe-Mega-LARGE-2X.kicad_pcb || true
+          grep -E 'Found|\[.*\]:' hardware/pcb/kicad/PSN-Presepe-Mega-LARGE-2X.drc.txt | tail -40 || true
+      - uses: actions/upload-artifact@v4
+        with:
+          name: pcb-large-2x
+          path: |
+            hardware/pcb/kicad/PSN-Presepe-Mega-LARGE-2X.kicad_pcb
+            hardware/pcb/kicad/PSN-Presepe-Mega-LARGE-2X.drc.txt
