@@ -213,6 +213,38 @@ jobs:
             surg_done.append(net)
           Path("hardware/pcb/targeted-relays/surgery101.kicad_pcb").write_text(surgery)
           print("SURGERY101_DONE",len(surg_done),surg_done)
+          # Direct negotiated candidate after removing R10_NO: use the known
+          # soft path for R16 contacts, then let KiCad identify any remaining
+          # hard conflicts. This avoids hard-A* refusing a diagnostically useful path.
+          direct=strip_target_copper(base,{"R10_NO","R16_NC","R16_NO"})
+          direct_done=[]
+          for rn,net,ps in surgery_order:
+            if net=="R10_NO": continue
+            a,b=ps; tmp=Path(f"/tmp/direct101-{net}.kicad_pcb"); tmp.write_text(direct)
+            cmd=["python3","hardware/pcb/tools/grid_router.py",str(tmp),"--net",net,
+                 "--start",f"{a[0]},{a[1]},B.Cu","--goal",f"{b[0]},{b[1]},B.Cu",
+                 "--step","0.5","--clearance","1.50","--margin","18","--via-cost","240",
+                 "--soft-congestion","--congestion-cost","5000"]
+            try: q=subprocess.run(cmd,text=True,capture_output=True,timeout=12)
+            except subprocess.TimeoutExpired:
+              print("DIRECT101_TIMEOUT",net); continue
+            if q.returncode!=0:
+              print("DIRECT101_FAIL",net,q.stderr.strip()); continue
+            pts=[]
+            for line in q.stdout.splitlines()[1:]:
+              x,y,la=line.split(","); pts.append((float(x),float(y),la))
+            if not pts: continue
+            pts.insert(0,(a[0],a[1],pts[0][2])); pts.append((b[0],b[1],pts[-1][2]))
+            items=[]
+            for u,v in zip(pts,pts[1:]):
+              if u[2]!=v[2]:
+                if math.hypot(u[0]-a[0],u[1]-a[1])<1.0 or math.hypot(u[0]-b[0],u[1]-b[1])<1.0: continue
+                items.append(f'\\t(via (at {u[0]} {u[1]}) (size 1.0) (drill 0.5) (layers "F.Cu" "B.Cu") (net {a[2]}))\\n')
+              else: items.append(f'\\t(segment (start {u[0]} {u[1]}) (end {v[0]} {v[1]}) (width 1.0) (layer "{u[2]}") (net {a[2]}))\\n')
+            idx=direct.rfind(")"); direct=direct[:idx]+''.join(items).encode().decode('unicode_escape')+direct[idx:]
+            direct_done.append(net); print("DIRECT101_ROUTE",net,len(pts))
+          Path("hardware/pcb/targeted-relays/direct101.kicad_pcb").write_text(direct)
+          print("DIRECT101_DONE",direct_done)
           # Negotiated-congestion diagnostic: reveal which existing track
           # corridors block each stubborn net. Pads/vias remain hard obstacles.
           for rn,net,ps in order:
