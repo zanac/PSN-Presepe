@@ -51,7 +51,7 @@ jobs:
           kicad-cli pcb drc --severity-error \
             --output hardware/pcb/build/drc-errors.txt \
             hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb || true
-          python3 hardware/pcb/tools/drc_gate.py hardware/pcb/build/drc-errors.txt --allow-unconnected 117
+          python3 hardware/pcb/tools/drc_gate.py hardware/pcb/build/drc-errors.txt --allow-unconnected 75
 
       - name: Export Gerbers and drill
         if: false
