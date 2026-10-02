@@ -140,7 +140,8 @@ def main():
     ap.add_argument("--start",required=True,help="x,y,layer"); ap.add_argument("--goal",required=True)
     ap.add_argument("--step",type=float,default=.5); ap.add_argument("--clearance",type=float,default=.35)
     ap.add_argument("--margin",type=float,default=15)
-    ap.add_argument("--no-vias",action="store_true")\n    ap.add_argument("--via-cost",type=int,default=18)
+    ap.add_argument("--no-vias",action="store_true")
+    ap.add_argument("--via-cost",type=int,default=18)
     a=ap.parse_args(); text=Path(a.pcb).read_text()
     def pt(s):
         x,y,la=s.split(","); return float(x),float(y),LAYERS[la]
