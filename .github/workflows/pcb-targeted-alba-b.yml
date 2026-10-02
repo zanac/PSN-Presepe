@@ -92,7 +92,7 @@ jobs:
               lane=edge_lane[net]
               class Q: pass
               q=Q(); q.returncode=0
-              q.stdout="ROUTE 4\\n"+f"{a[0]},{a[1]},B.Cu\\n{lane},{a[1]},B.Cu\\n{lane},{b[1]},B.Cu\\n{b[0]},{b[1]},B.Cu\\n"
+              q.stdout="ROUTE 4\n"+f"{a[0]},{a[1]},B.Cu\n{lane},{a[1]},B.Cu\n{lane},{b[1]},B.Cu\n{b[0]},{b[1]},B.Cu\n"
               p=q; print("ROUTED_EDGE",net,lane)
             if p is None: continue
             pts=[]
