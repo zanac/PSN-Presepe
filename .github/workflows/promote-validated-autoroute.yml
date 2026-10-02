@@ -18,18 +18,18 @@ jobs:
         with:
           name: targeted-relay-contact-candidate
           repository: zanac/PSN-Presepe
-          run-id: 36943389801
+          run-id: 36943951796
           github-token: ${{ github.token }}
           path: /tmp/relay
       - name: Verify and promote exact DRC-clean relay board
         run: |
           set -euo pipefail
-          test "$(sha256sum /tmp/relay/cumulative.kicad_pcb | awk '{print $1}')" = "01642550c0f636ab6f16eac70e85835b03d2992ee4d519754925e64f5eb1dd14"
-          grep -q "Found 76 unconnected pads" /tmp/relay/cumulative.drc.txt
+          test "$(sha256sum /tmp/relay/cumulative.kicad_pcb | awk '{print $1}')" = "ed264eeb748c4b587c9ff888959de9287d171df84009a3f2cff28f803e36cba7"
+          grep -q "Found 75 unconnected pads" /tmp/relay/cumulative.drc.txt
           ! grep -Eq '^\\[(clearance|shorting_items|tracks_crossing|track_dangling|hole_clearance|copper_edge_clearance|solder_mask_bridge)\\]' /tmp/relay/cumulative.drc.txt
           cp /tmp/relay/cumulative.kicad_pcb hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb
-          git commit -m "Promote DRC-clean 76-unconnected relay batch"
+          git commit -m "Promote DRC-clean 75-unconnected relay checkpoint"
           git push origin HEAD:dev
