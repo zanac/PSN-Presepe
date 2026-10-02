@@ -17,8 +17,10 @@ jobs:
     timeout-minutes: 7
     steps:
       - uses: actions/checkout@v4
-      - name: Verify KiCad CLI
-        run: kicad-cli version
+      - name: Verify KiCad CLI and router syntax
+        run: |
+          kicad-cli version
+          python3 -m py_compile hardware/pcb/tools/grid_router.py
       - name: Build obstacle-aware relay candidates
         run: |
           set -eu
