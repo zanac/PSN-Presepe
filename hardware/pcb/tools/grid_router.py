@@ -152,10 +152,26 @@ def main():
     blocked=extract_obstacles(text,a.net,step,a.clearance)
     soft=set()
     if a.soft_congestion:
-        # Only existing track corridors become negotiable. Pads and vias remain
-        # hard obstacles, so the search can discover where local rip-up is useful
-        # without ever proposing a route through component terminals.
-        net_names={int(n):name for n,name in re.findall('^ *[(]net ([0-9]+) "([^"]+)"[)] *
+        # Existing routed track corridors are negotiable at high cost.
+        # Pads and vias are re-applied as hard obstacles.
+        net_names={int(n):name for n,name in re.findall(r'^ *[(]net ([0-9]+) "([^"]+)"[)] *$',text,re.M)}
+        for seg in balanced_blocks(text,"(segment"):
+            st=re.search(r'[(]start ([0-9.-]+) ([0-9.-]+)[)]',seg)
+            en=re.search(r'[(]end ([0-9.-]+) ([0-9.-]+)[)]',seg)
+            wd=re.search(r'[(]width ([0-9.-]+)[)]',seg)
+            ly=re.search(r'[(]layer "?(F[.]Cu|B[.]Cu)"?[)]',seg)
+            nt=re.search(r'[(]net ([0-9]+)[)]',seg)
+            if not(st and en and wd and ly and nt) or net_names.get(int(nt.group(1)))==a.net:
+                continue
+            cells=set()
+            mark_segment(cells,float(st.group(1)),float(st.group(2)),float(en.group(1)),float(en.group(2)),
+                         float(wd.group(1))/2+a.clearance,LAYERS[ly.group(1)],step)
+            soft.update(cells)
+            blocked.difference_update(cells)
+        noseg=text
+        for seg in list(balanced_blocks(text,"(segment")):
+            noseg=noseg.replace(seg,"")
+        blocked.update(extract_obstacles(noseg,a.net,step,a.clearance))
     S=P(round(sx/step),round(sy/step),sl); G=P(round(gx/step),round(gy/step),gl)
     # Endpoints belong to target net; allow a small escape disk.
     # Only free the exact target endpoints. Clearing a disk around them allowed
