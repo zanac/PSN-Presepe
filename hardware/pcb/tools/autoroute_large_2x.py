@@ -40,7 +40,8 @@ for fp in blocks(text,"(footprint"):
         pads.setdefault((int(nm.group(1)),nm.group(2)),[]).append((x,y))
 
 pairs=[(nid,name,ps) for (nid,name),ps in pads.items() if len(ps)==2 and nid]
-pairs.sort(key=lambda z: math.dist(z[2][0],z[2][1]))
+hard={"R16_NO","R14_NC","R13_NO","R13_NC","R13_COM","D26_RELAY2","D36_RELAY12","D38_RELAY14","D40_RELAY16","D44_ALBA_R","D46_ALBA_B","D24_TEST","D22_START","D21_SCL","D20_SDA"}
+pairs.sort(key=lambda z: (0 if z[1] in hard else 1, math.dist(z[2][0],z[2][1])))
 print("PAIR_NETS",len(pairs))
 def drc_critical(board):
     report=Path("/tmp/large-step.drc.txt")
@@ -95,9 +96,9 @@ for k,(nid,name,ps) in enumerate(pairs,1):
             items=[]
             for u,v in zip(pts,pts[1:]):
                 if u[2]!=v[2]:
-                    items.append(f'\\t(via (at {u[0]} {u[1]}) (size 1.2) (drill 0.6) (layers "F.Cu" "B.Cu") (net {nid}))\\n')
+                    items.append(chr(9)+f'(via (at {u[0]} {u[1]}) (size 1.2) (drill 0.6) (layers "F.Cu" "B.Cu") (net {nid}))'+chr(10))
                 else:
-                    items.append(f'\\t(segment (start {u[0]} {u[1]}) (end {v[0]} {v[1]}) (width {width}) (layer "{u[2]}") (net {nid}))\\n')
+                    items.append(chr(9)+f'(segment (start {u[0]} {u[1]}) (end {v[0]} {v[1]}) (width {width}) (layer "{u[2]}") (net {nid}))'+chr(10))
             idx=text.rfind(")")
             candidate=text[:idx]+"".join(items)+text[idx:]
             check=Path("/tmp/large-candidate.kicad_pcb");check.write_text(candidate)
