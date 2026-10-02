@@ -8,6 +8,7 @@ on:
     paths:
       - hardware/pcb/tools/make_large_2x.py
       - hardware/pcb/tools/autoroute_large_2x.py
+      - hardware/pcb/tools/grid_router.py
       - .github/workflows/pcb-large-2x.yml
 
 jobs:
