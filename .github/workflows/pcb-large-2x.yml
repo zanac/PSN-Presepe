@@ -28,6 +28,8 @@ jobs:
         run: |
           kicad-cli pcb drc --severity-all --output hardware/pcb/kicad/PSN-Presepe-Mega-LARGE-2X.drc.txt hardware/pcb/kicad/PSN-Presepe-Mega-LARGE-2X.kicad_pcb || true
           grep -E 'Found|\\[.*\\]:' hardware/pcb/kicad/PSN-Presepe-Mega-LARGE-2X.drc.txt | tail -80 || true
+          echo "DRC_CATEGORY_COUNTS"
+          grep -oE '\\[[a-z_]+\\]' hardware/pcb/kicad/PSN-Presepe-Mega-LARGE-2X.drc.txt | sort | uniq -c | sort -nr || true
       - uses: actions/upload-artifact@v4
         with:
           name: pcb-large-2x
