@@ -95,3 +95,11 @@ Official board on `dev` has advanced from the 117-unconnected logic-complete bas
 ## Validated relay batch checkpoint (2026-10-02)
 Promoted exact artifact from relay run `36943389801` at commit `ce40b5714b637355b450c43f20231f18ec328107`: **76 unconnected** in candidate DRC, with no clearance/short/track-dangling error categories. This preserves the previously verified 93-unconnected clean baseline and adds 17 conservatively routed relay-contact nets. Expected remaining connectivity: **7 relay contacts + 69 power = 76**. Run normal official-board KiCad validation immediately after this checkpoint and treat that result as authoritative.
 \n- Relay cumulative A* candidate promoted by CI validation: 75 unconnected; no new electrical/geometry DRC classes.\n\n- Relay cumulative A* candidate promoted by CI validation: 74 unconnected; no new electrical/geometry DRC classes.\n
+
+## 2026-10-02 relay milestone
+- Official board reduced from 117 to 75 unconnected by cumulative DRC-clean relay-contact routing.
+- R11_NC (net 102) subsequently routed and promoted: official baseline now **74 unconnected**.
+- Promotion run: 36969265054; candidate reported unconnected=74 and no new critical DRC categories.
+- Remaining stubborn relay contacts: R14_COM, R15_NC, R16_COM, R16_NO, R16_NC.
+- Active strategy: dual-layer A* with high via cost plus multiresolution 0.5/0.25/0.125 mm search; do not reduce relay-contact search clearance below 1.50 mm in current experiments.
+- pcb_sanity whitelist updated for promoted net 102.
