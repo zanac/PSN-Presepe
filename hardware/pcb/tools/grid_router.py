@@ -16,8 +16,8 @@ LAYERS={"F.Cu":0,"B.Cu":1}
 @dataclass(frozen=True)
 class P: x:int; y:int; layer:int
 
-def astar(start,goal,blocked,bounds,via_cost=18,allow_vias=True):
-    q=[]; serial=0; heappush(q,(0,serial,start)); prev={start:None}; cost={start:0}
+def astar(start,goal,blocked,bounds,via_cost=18,allow_vias=True,soft_blocked=None,congestion_cost=5000):
+    soft_blocked=soft_blocked or set()\n    q=[]; serial=0; heappush(q,(0,serial,start)); prev={start:None}; cost={start:0}
     xmin,xmax,ymin,ymax=bounds
     # Grid edges only. Diagonal center-point routing can cut obstacle corners;
     # Manhattan edges are conservative and KiCad DRC-friendly.
@@ -141,12 +141,42 @@ def main():
     ap.add_argument("--step",type=float,default=.5); ap.add_argument("--clearance",type=float,default=.35)
     ap.add_argument("--margin",type=float,default=15)
     ap.add_argument("--no-vias",action="store_true")
-    ap.add_argument("--via-cost",type=int,default=18)
+    ap.add_argument("--via-cost",type=int,default=18)\n    ap.add_argument("--soft-congestion",action="store_true",help="allow foreign routed tracks at very high cost; pads/vias remain hard obstacles")\n    ap.add_argument("--congestion-cost",type=int,default=5000)
     a=ap.parse_args(); text=Path(a.pcb).read_text()
     def pt(s):
         x,y,la=s.split(","); return float(x),float(y),LAYERS[la]
     sx,sy,sl=pt(a.start); gx,gy,gl=pt(a.goal); step=a.step
     blocked=extract_obstacles(text,a.net,step,a.clearance)
+    soft=set()
+    if a.soft_congestion:
+        # Only existing track corridors become negotiable. Pads and vias remain
+        # hard obstacles, so the search can discover where local rip-up is useful
+        # without ever proposing a route through component terminals.
+        net_names={int(n):name for n,name in re.findall('^ *[(]net ([0-9]+) "([^"]+)"[)] *
+    S=P(round(sx/step),round(sy/step),sl); G=P(round(gx/step),round(gy/step),gl)
+    # Endpoints belong to target net; allow a small escape disk.
+    # Only free the exact target endpoints. Clearing a disk around them allowed
+    # routes to cut through neighboring copper immediately after the pad.
+    blocked.discard(S); blocked.discard(G)
+    bounds=(floor((min(sx,gx)-a.margin)/step),ceil((max(sx,gx)+a.margin)/step),
+            floor((min(sy,gy)-a.margin)/step),ceil((max(sy,gy)+a.margin)/step))
+    path=compress(astar(S,G,blocked,bounds,via_cost=a.via_cost,allow_vias=not a.no_vias,soft_blocked=soft,congestion_cost=a.congestion_cost))
+    if not path: raise SystemExit("NO_ROUTE")
+    print("ROUTE",len(path))
+    for p in path: print(f"{p.x*step:.3f},{p.y*step:.3f},{'F.Cu' if p.layer==0 else 'B.Cu'}")
+if __name__=="__main__": main()
+,text,re.M)}
+        for seg in balanced_blocks(text,"(segment"):
+            st=re.search(r'[(]start ([0-9.-]+) ([0-9.-]+)[)]',seg); en=re.search(r'[(]end ([0-9.-]+) ([0-9.-]+)[)]',seg)
+            wd=re.search(r'[(]width ([0-9.-]+)[)]',seg); ly=re.search(r'[(]layer "?(F[.]Cu|B[.]Cu)"?[)]',seg); nt=re.search(r'[(]net ([0-9]+)[)]',seg)
+            if not(st and en and wd and ly and nt) or net_names.get(int(nt.group(1)))==a.net: continue
+            cells=set(); mark_segment(cells,float(st.group(1)),float(st.group(2)),float(en.group(1)),float(en.group(2)),float(wd.group(1))/2+a.clearance,LAYERS[ly.group(1)],step)
+            soft.update(cells); blocked.difference_update(cells)
+        # Re-apply all non-track obstacles as hard by extracting from a copy
+        # with segments removed.
+        noseg=text
+        for seg in list(balanced_blocks(text,"(segment")): noseg=noseg.replace(seg,"")
+        blocked.update(extract_obstacles(noseg,a.net,step,a.clearance))
     S=P(round(sx/step),round(sy/step),sl); G=P(round(gx/step),round(gy/step),gl)
     # Endpoints belong to target net; allow a small escape disk.
     # Only free the exact target endpoints. Clearing a disk around them allowed
