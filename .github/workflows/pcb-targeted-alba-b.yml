@@ -73,7 +73,7 @@ jobs:
             a,b=ps
             tmp=Path(f"/tmp/cumulative-{net}.kicad_pcb"); tmp.write_text(work)
             p=None
-            for step,margin,to,via,clear in [("0.25","70",15,"180","1.75"),("0.25","90",18,"220","1.25"),("0.125","18",20,"260","1.25")]:
+            for step,margin,to,via,clear in [("0.25","70",12,"180","1.75"),("0.25","90",15,"220","1.25"),("0.25","110",18,"260","1.00"),("0.125","14",18,"300","1.00")]:
               cmd=["python3","hardware/pcb/tools/grid_router.py",str(tmp),"--net",net,
                    "--start",f"{a[0]},{a[1]},B.Cu","--goal",f"{b[0]},{b[1]},B.Cu",
                    "--step",step,"--clearance",clear,"--margin",margin,"--via-cost",via]
