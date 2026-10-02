@@ -291,29 +291,38 @@ jobs:
                       if line.startswith('[') and line[1:line.index(']')] in critical:
                           print("DETAIL",p.name,*lines[i:i+5],sep=" | ")
           PY
-      - name: Promote cumulative candidate when electrically clean
+      - name: Promote best electrically clean candidate
         run: |
           python3 - <<'PY'
           from pathlib import Path
           import re,shutil
-          drc=Path("hardware/pcb/targeted-relays/cumulative.drc.txt").read_text()
+          root=Path("hardware/pcb/targeted-relays")
           forbidden={"clearance","shorting_items","tracks_crossing","hole_clearance","solder_mask_bridge","track_dangling"}
-          cats={line[1:line.index("]")] for line in drc.splitlines() if line.startswith("[") and "]" in line}
-          m=re.search(r'Found +([0-9]+) +unconnected +(?:items|pads)',drc,re.I)
-          unc=int(m.group(1)) if m else 999
-          bad=sorted(cats & forbidden)
-          if bad or unc>=74:
-            print(f"NOT_PROMOTABLE unconnected={unc} bad={bad}")
+          ranked=[]
+          for drcp in root.glob("*.drc.txt"):
+            board=drcp.with_name(drcp.name.replace(".drc.txt",".kicad_pcb"))
+            if not board.exists(): continue
+            drc=drcp.read_text()
+            cats={line[1:line.index("]")] for line in drc.splitlines() if line.startswith("[") and "]" in line}
+            m=re.search(r'Found +([0-9]+) +unconnected +(?:items|pads)',drc,re.I)
+            unc=int(m.group(1)) if m else 999
+            bad=sorted(cats & forbidden)
+            print("PROMOTION_CANDIDATE",board.name,"unconnected=",unc,"critical=",bad or "none")
+            if not bad and unc<74: ranked.append((unc,board))
+          if not ranked:
+            print("NO_CLEAN_IMPROVEMENT")
             raise SystemExit(0)
-          shutil.copy2("hardware/pcb/targeted-relays/cumulative.kicad_pcb","hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb")
-          Path("hardware/pcb/worklog/CURRENT.md").write_text(Path("hardware/pcb/worklog/CURRENT.md").read_text()+f"\\n- Relay cumulative A* candidate promoted by CI validation: {unc} unconnected; no new electrical/geometry DRC classes.\\n")
-          print("PROMOTED",unc)
+          unc,best=min(ranked,key=lambda x:x[0])
+          shutil.copy2(best,"hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb")
+          p=Path("hardware/pcb/worklog/CURRENT.md")
+          p.write_text(p.read_text()+f"\n- Best DRC-clean relay candidate {best.name} promoted by CI: {unc} unconnected.\n")
+          print("PROMOTED_BEST",best.name,unc)
           PY
           git config --global --add safe.directory "$GITHUB_WORKSPACE"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb hardware/pcb/worklog/CURRENT.md
-          if git diff --cached --quiet; then echo "No promotable board change"; else git commit -m "Promote cumulative relay routing candidate"; git push; fi
+          if git diff --cached --quiet; then echo "No promotable board change"; else git commit -m "Promote best clean relay routing candidate"; git push; fi
       - uses: actions/upload-artifact@v4
         with:
           name: targeted-relay-contact-candidate
