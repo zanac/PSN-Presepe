@@ -140,7 +140,7 @@ def main():
     ap.add_argument("--start",required=True,help="x,y,layer"); ap.add_argument("--goal",required=True)
     ap.add_argument("--step",type=float,default=.5); ap.add_argument("--clearance",type=float,default=.35)
     ap.add_argument("--margin",type=float,default=15)
-    ap.add_argument("--no-vias",action="store_true")
+    ap.add_argument("--no-vias",action="store_true")\n    ap.add_argument("--via-cost",type=int,default=18)
     a=ap.parse_args(); text=Path(a.pcb).read_text()
     def pt(s):
         x,y,la=s.split(","); return float(x),float(y),LAYERS[la]
@@ -153,7 +153,7 @@ def main():
     blocked.discard(S); blocked.discard(G)
     bounds=(floor((min(sx,gx)-a.margin)/step),ceil((max(sx,gx)+a.margin)/step),
             floor((min(sy,gy)-a.margin)/step),ceil((max(sy,gy)+a.margin)/step))
-    path=compress(astar(S,G,blocked,bounds,allow_vias=not a.no_vias))
+    path=compress(astar(S,G,blocked,bounds,via_cost=a.via_cost,allow_vias=not a.no_vias))
     if not path: raise SystemExit("NO_ROUTE")
     print("ROUTE",len(path))
     for p in path: print(f"{p.x*step:.3f},{p.y*step:.3f},{'F.Cu' if p.layer==0 else 'B.Cu'}")
