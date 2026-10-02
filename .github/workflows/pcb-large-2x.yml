@@ -13,13 +13,12 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/linalinn/kicad:9.0
     steps:
       - uses: actions/checkout@v4
-      - name: Install KiCad
-        run: |
-          sudo add-apt-repository --yes ppa:kicad/kicad-9.0-releases
-          sudo apt-get update
-          sudo apt-get install -y kicad
+      - name: Verify KiCad container
+        run: kicad-cli --version
       - name: Build 2x board
         run: python3 hardware/pcb/tools/make_large_2x.py
       - name: Autoroute pair nets
