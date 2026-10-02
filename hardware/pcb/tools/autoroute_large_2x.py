@@ -70,7 +70,12 @@ for k,(nid,name,ps) in enumerate(pairs,1):
     # Try increasingly conservative geometry inside the same CI job.
     clearances=[2.10,2.50] if contact else [0.80,1.10,1.40]
     attempts=[("1.0","120","240",True),("0.5","180","300",True),
-              ("1.0","120","300",False),("0.5","180","360",False)]
+              ("1.0","120","80",False),("0.5","180","100",False)]
+    # Dense/hard nets get a fine-grid, low-via-cost escape attempt. On the
+    # oversized board it is preferable to change layer early rather than
+    # compete for the same local B.Cu corridor.
+    if name in hard:
+        attempts += [("0.25","240","40",False)]
     accepted=False
     had_route=False
     for clearance in clearances:
