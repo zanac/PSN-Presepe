@@ -134,7 +134,7 @@ jobs:
                     elif ch==")":
                       d-=1
                       if d==0: end=i+1; break
-                b=text[st:end]; m=re.search(r'\\(net (\\d+)\\)',b)
+                b=text[st:end]; m=re.search(r'[(]net ([0-9]+)[)]',b)
                 if not(m and int(m.group(1)) in ids): out.append(b)
                 pos=end
               text=''.join(out)
