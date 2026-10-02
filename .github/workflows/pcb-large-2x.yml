@@ -25,6 +25,12 @@ jobs:
         run: python3 hardware/pcb/tools/make_large_2x.py
       - name: Autoroute pair nets
         run: python3 hardware/pcb/tools/autoroute_large_2x.py
+      - name: Diagnose D32 local blockers
+        run: |
+          python3 hardware/pcb/tools/grid_router.py hardware/pcb/kicad/PSN-Presepe-Mega-LARGE-2X.kicad_pcb \
+            --net D32_RELAY8 --start 129.98,128.44,B.Cu --goal 250,121.78,B.Cu \
+            --step 0.5 --clearance 0.8 --margin 180 --via-cost 100 \
+            --soft-congestion --congestion-cost 5000 --report-blockers --blockers-only || true
       - name: DRC routed large board
         run: |
           kicad-cli pcb drc --severity-all --output hardware/pcb/kicad/PSN-Presepe-Mega-LARGE-2X.drc.txt hardware/pcb/kicad/PSN-Presepe-Mega-LARGE-2X.kicad_pcb || true
