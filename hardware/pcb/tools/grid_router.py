@@ -142,7 +142,9 @@ def main():
     ap.add_argument("--step",type=float,default=.5); ap.add_argument("--clearance",type=float,default=.35)
     ap.add_argument("--margin",type=float,default=15)
     ap.add_argument("--no-vias",action="store_true")
-    ap.add_argument("--via-cost",type=int,default=18)\n    ap.add_argument("--soft-congestion",action="store_true",help="allow foreign routed tracks at very high cost; pads/vias remain hard obstacles")\n    ap.add_argument("--congestion-cost",type=int,default=5000)
+    ap.add_argument("--via-cost",type=int,default=18)
+    ap.add_argument("--soft-congestion",action="store_true",help="allow foreign routed tracks at very high cost; pads/vias remain hard obstacles")
+    ap.add_argument("--congestion-cost",type=int,default=5000)
     a=ap.parse_args(); text=Path(a.pcb).read_text()
     def pt(s):
         x,y,la=s.split(","); return float(x),float(y),LAYERS[la]
