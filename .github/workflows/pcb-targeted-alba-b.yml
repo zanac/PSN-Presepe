@@ -179,17 +179,19 @@ jobs:
           # corridors block each stubborn net. Pads/vias remain hard obstacles.
           for rn,net,ps in order:
             a,b=ps; tmp=Path(f"/tmp/soft-{net}.kicad_pcb"); tmp.write_text(base)
-            cmd=["python3","hardware/pcb/tools/grid_router.py",str(tmp),"--net",net,
-                 "--start",f"{a[0]},{a[1]},B.Cu","--goal",f"{b[0]},{b[1]},B.Cu",
-                 "--step","0.25","--clearance","1.50","--margin","55","--via-cost","320",
-                 "--soft-congestion","--congestion-cost","5000"]
-            try: q=subprocess.run(cmd,text=True,capture_output=True,timeout=15)
-            except subprocess.TimeoutExpired:
-              print("SOFT_TIMEOUT",net); continue
-            if q.returncode==0:
-              print("SOFT_ROUTE",net,q.stdout.splitlines()[0])
-            else:
-              print("SOFT_NO_ROUTE",net,q.stderr.strip())
+            q=None
+            for step,margin,to,via in [("1.0","12",5,"180"),("0.5","16",8,"220"),("0.25","10",10,"300")]:
+              cmd=["python3","hardware/pcb/tools/grid_router.py",str(tmp),"--net",net,
+                   "--start",f"{a[0]},{a[1]},B.Cu","--goal",f"{b[0]},{b[1]},B.Cu",
+                   "--step",step,"--clearance","1.50","--margin",margin,"--via-cost",via,
+                   "--soft-congestion","--congestion-cost","5000"]
+              try: probe=subprocess.run(cmd,text=True,capture_output=True,timeout=to)
+              except subprocess.TimeoutExpired:
+                print("SOFT_TIMEOUT",net,step); continue
+              if probe.returncode==0:
+                q=probe; print("SOFT_ROUTE",net,"step",step,probe.stdout.splitlines()[0]); break
+              print("SOFT_NO_ROUTE",net,"step",step,probe.stderr.strip())
+            if q is None: print("SOFT_EXHAUSTED",net)
           # Fast isolation pass: test each stubborn net independently against the
           # known-clean baseline. This can harvest a clean partial win without
           # requiring all five routes to coexist.
