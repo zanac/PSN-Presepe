@@ -13,7 +13,7 @@ jobs:
     container:
       image: kicad/kicad:9.0
       options: --user 0
-    timeout-minutes: 6
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
       - name: Verify KiCad CLI
@@ -71,8 +71,8 @@ jobs:
             tmp=Path(f"/tmp/cumulative-{net}.kicad_pcb"); tmp.write_text(work)
             cmd=["python3","hardware/pcb/tools/grid_router.py",str(tmp),"--net",net,
                  "--start",f"{a[0]},{a[1]},B.Cu","--goal",f"{b[0]},{b[1]},B.Cu",
-                 "--step","0.25","--clearance","1.75","--margin","70"]
-            p=subprocess.run(cmd,text=True,capture_output=True,timeout=30)
+                 "--step","0.125","--clearance","1.75","--margin","90"]
+            p=subprocess.run(cmd,text=True,capture_output=True,timeout=55)
             if p.returncode:
               print("NO_ROUTE",net,p.stderr.strip()); continue
             pts=[]
@@ -173,7 +173,7 @@ jobs:
           m=re.search(r'Found +([0-9]+) +unconnected +(?:items|pads)',drc,re.I)
           unc=int(m.group(1)) if m else 999
           bad=sorted(cats & forbidden)
-          if bad or unc>=117: raise SystemExit(f"NOT_PROMOTABLE unconnected={unc} bad={bad}")
+          if bad or unc>=75: raise SystemExit(f"NOT_PROMOTABLE unconnected={unc} bad={bad}")
           shutil.copy2("hardware/pcb/targeted-relays/cumulative.kicad_pcb","hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb")
           Path("hardware/pcb/worklog/CURRENT.md").write_text(Path("hardware/pcb/worklog/CURRENT.md").read_text()+f"\\n- Relay cumulative A* candidate promoted by CI validation: {unc} unconnected; no new electrical/geometry DRC classes.\\n")
           print("PROMOTED",unc)
