@@ -149,6 +149,7 @@ def main():
     ap.add_argument("--soft-congestion",action="store_true",help="allow foreign routed tracks at very high cost; pads/vias remain hard obstacles")
     ap.add_argument("--congestion-cost",type=int,default=5000)
     ap.add_argument("--report-blockers",action="store_true")
+    ap.add_argument("--blockers-only",action="store_true",help="with soft congestion, print blocking routed nets and suppress route coordinates")
     a=ap.parse_args(); text=Path(a.pcb).read_text()
     def pt(s):
         x,y,la=s.split(","); return float(x),float(y),LAYERS[la]
@@ -225,6 +226,8 @@ def main():
             if path_cells & cells:
                 blockers.add(name or ("net-"+nt.group(1)))
         print("BLOCKERS",",".join(sorted(blockers)) if blockers else "none")
+    if a.blockers_only:
+        return
     print("ROUTE",len(path))
     for p in path:
         print(f"{p.x*step:.3f},{p.y*step:.3f},{'F.Cu' if p.layer==0 else 'B.Cu'}")
