@@ -181,6 +181,14 @@ def main():
     # Only free the exact target endpoints. Clearing a disk around them allowed
     # routes to cut through neighboring copper immediately after the pad.
     blocked.discard(S); blocked.discard(G)
+    # Permit a short orthogonal neck out of target pads. This only helps A*
+    # escape coarse rasterization around dense connector footprints; KiCad DRC
+    # still rejects any candidate that actually violates foreign copper.
+    escape=max(1,ceil((a.clearance+0.75)/step))
+    for E in (S,G):
+        for dx,dy in ((1,0),(-1,0),(0,1),(0,-1)):
+            for n in range(1,escape+1):
+                blocked.discard(P(E.x+dx*n,E.y+dy*n,E.layer))
     bounds=(floor((min(sx,gx)-a.margin)/step),ceil((max(sx,gx)+a.margin)/step),
             floor((min(sy,gy)-a.margin)/step),ceil((max(sy,gy)+a.margin)/step))
     path=compress(astar(S,G,blocked,bounds,via_cost=a.via_cost,allow_vias=not a.no_vias,soft_blocked=soft,congestion_cost=a.congestion_cost))
