@@ -42,7 +42,24 @@ for fp in blocks(text,"(footprint"):
 pairs=[(nid,name,ps) for (nid,name),ps in pads.items() if len(ps)==2 and nid]
 pairs.sort(key=lambda z: math.dist(z[2][0],z[2][1]))
 print("PAIR_NETS",len(pairs))
-done=[];failed=[]
+def drc_critical(board):
+    report=Path("/tmp/large-step.drc.txt")
+    subprocess.run(["kicad-cli","pcb","drc","--severity-all","--output",str(report),str(board)],
+                   stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
+    s=report.read_text() if report.exists() else ""
+    counts={}
+    for line in s.splitlines():
+        z=line.strip()
+        if z.startswith("[") and "]:" in z:
+            cat=z[1:z.index("]:")]
+            counts[cat]=counts.get(cat,0)+1
+    keys=("clearance","shorting_items","tracks_crossing","hole_clearance")
+    return sum(counts.get(k,0) for k in keys),counts
+
+base=Path("/tmp/large-base.kicad_pcb");base.write_text(text)
+baseline_critical,baseline_counts=drc_critical(base)
+print("BASE_CRITICAL",baseline_critical,baseline_counts)
+done=[];failed=[];rejected=[]
 for k,(nid,name,ps) in enumerate(pairs,1):
     a,b=ps
     tmp=Path("/tmp/large-work.kicad_pcb");tmp.write_text(text)
@@ -72,7 +89,16 @@ for k,(nid,name,ps) in enumerate(pairs,1):
             items.append(f'\t(via (at {u[0]} {u[1]}) (size 1.2) (drill 0.6) (layers "F.Cu" "B.Cu") (net {nid}))\n')
         else:
             items.append(f'\t(segment (start {u[0]} {u[1]}) (end {v[0]} {v[1]}) (width {width}) (layer "{u[2]}") (net {nid}))\n')
-    idx=text.rfind(")");text=text[:idx]+"".join(items)+text[idx:]
-    done.append(name);print("OK",k,name,"contact" if contact else "signal")
+    idx=text.rfind(")")
+    candidate=text[:idx]+"".join(items)+text[idx:]
+    check=Path("/tmp/large-candidate.kicad_pcb");check.write_text(candidate)
+    crit,counts=drc_critical(check)
+    if crit>baseline_critical:
+        rejected.append(name)
+        print("REJECT_DRC",k,name,"critical",crit,"baseline",baseline_critical,counts)
+        continue
+    text=candidate
+    baseline_critical=crit
+    done.append(name);print("OK_DRC",k,name,"critical",crit,"contact" if contact else "signal")
 PCB.write_text(text)
-print("ROUTED",len(done),"FAILED",len(failed),failed)
+print("ROUTED",len(done),"FAILED",len(failed),failed,"REJECTED_DRC",len(rejected),rejected,"FINAL_CRITICAL",baseline_critical)
