@@ -30,6 +30,17 @@ jobs:
           grep -E 'Found|\\[.*\\]:' hardware/pcb/kicad/PSN-Presepe-Mega-LARGE-2X.drc.txt | tail -80 || true
           echo "DRC_CATEGORY_COUNTS"
           grep -oE '\\[[a-z_]+\\]' hardware/pcb/kicad/PSN-Presepe-Mega-LARGE-2X.drc.txt | sort | uniq -c | sort -nr || true
+          python3 - <<'PY'
+          import re
+          from pathlib import Path
+          p=Path("hardware/pcb/kicad/PSN-Presepe-Mega-LARGE-2X.drc.txt")
+          s=p.read_text()
+          cats=sorted(set(re.findall(r'\\[([a-z_]+)\\]',s)))
+          forbidden={"clearance","shorting_items","tracks_crossing","hole_clearance","solder_mask_bridge"}
+          critical=sorted(forbidden & set(cats))
+          m=re.search(r"Found (\\d+) unconnected",s)
+          print("LARGE_DRC_GATE unconnected=",m.group(1) if m else "?","critical=",critical or "none")
+          PY
       - uses: actions/upload-artifact@v4
         with:
           name: pcb-large-2x
