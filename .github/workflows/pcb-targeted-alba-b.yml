@@ -112,7 +112,7 @@ jobs:
           # Fine-grid local repack: retry only the stubborn R14-R16 bundle after
           # removing its experimental target copper.  Existing unrelated copper,
           # footprints and placement stay fixed; KiCad DRC remains authoritative.
-          local_targets={"R14_COM","R15_NC","R15_NO","R16_COM","R16_NO","R16_NC"}
+          local_targets={"R13_COM","R13_NO","R13_NC","R14_COM","R14_NO","R14_NC","R15_COM","R15_NO","R15_NC","R16_COM","R16_NO","R16_NC"}
           def strip_target_copper(text,names):
             ids={int(n) for n,name in re.findall(r'\\(net (\\d+) "([^"]+)"\\)',text) if name in names}
             for token in ("(segment","(via"):
@@ -148,7 +148,7 @@ jobs:
             for net,ps in sorted(nets):
               if net in local_targets: repack_order.append((rn,net,ps))
           # Route the blocking existing lane first, then NC/COM/NO targets.
-          priority={"R15_NO":0,"R15_NC":1,"R16_NC":2,"R16_COM":3,"R16_NO":4,"R14_COM":5}
+          priority={"R13_COM":0,"R13_NO":1,"R13_NC":2,"R14_NO":3,"R14_NC":4,"R15_COM":5,"R15_NO":6,"R15_NC":7,"R16_NC":8,"R16_COM":9,"R16_NO":10,"R14_COM":11}
           repack_order.sort(key=lambda z:priority.get(z[1],99))
           for rn,net,ps in repack_order:
             a,b=ps; tmp=Path(f"/tmp/repack-{net}.kicad_pcb"); tmp.write_text(repack)
