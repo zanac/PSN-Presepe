@@ -175,6 +175,44 @@ jobs:
             repacked.append(net)
           Path("hardware/pcb/targeted-relays/repack.kicad_pcb").write_text(repack)
           print("LOCAL_REPACK_DONE",len(repacked),repacked)
+          # Surgical candidate: R10_NO (net 101) is the sole negotiated blocker
+          # for both R16_NC and R16_NO. Rip only these three nets, route the two
+          # R16 contacts first, then restore R10_NO.
+          surgery_names={"R10_NO","R16_NC","R16_NO"}
+          surgery=strip_target_copper(base,surgery_names)
+          surgery_order=[]
+          for rn,nets in sorted(byrelay.items()):
+            for net,ps in sorted(nets):
+              if net in surgery_names: surgery_order.append((rn,net,ps))
+          surgery_order.sort(key=lambda z:{"R16_NC":0,"R16_NO":1,"R10_NO":2}.get(z[1],9))
+          surg_done=[]
+          for rn,net,ps in surgery_order:
+            a,b=ps; tmp=Path(f"/tmp/surgery101-{net}.kicad_pcb"); tmp.write_text(surgery)
+            chosen=None
+            for step,margin,to,via in [("0.5","22",10,"240"),("0.25","18",15,"300"),("0.125","10",18,"380")]:
+              cmd=["python3","hardware/pcb/tools/grid_router.py",str(tmp),"--net",net,
+                   "--start",f"{a[0]},{a[1]},B.Cu","--goal",f"{b[0]},{b[1]},B.Cu",
+                   "--step",step,"--clearance","1.50","--margin",margin,"--via-cost",via]
+              try: q=subprocess.run(cmd,text=True,capture_output=True,timeout=to)
+              except subprocess.TimeoutExpired: continue
+              if q.returncode==0: chosen=q; print("SURGERY101_GRID",net,step); break
+            if chosen is None:
+              print("SURGERY101_FAIL",net); continue
+            pts=[]
+            for line in chosen.stdout.splitlines()[1:]:
+              x,y,la=line.split(","); pts.append((float(x),float(y),la))
+            pts.insert(0,(a[0],a[1],pts[0][2])); pts.append((b[0],b[1],pts[-1][2]))
+            items=[]
+            for u,v in zip(pts,pts[1:]):
+              if u[2]!=v[2]:
+                if math.hypot(u[0]-a[0],u[1]-a[1])<1.0 or math.hypot(u[0]-b[0],u[1]-b[1])<1.0: continue
+                items.append(f'\\t(via (at {u[0]} {u[1]}) (size 1.0) (drill 0.5) (layers "F.Cu" "B.Cu") (net {a[2]}))\\n')
+              else:
+                items.append(f'\\t(segment (start {u[0]} {u[1]}) (end {v[0]} {v[1]}) (width 1.0) (layer "{u[2]}") (net {a[2]}))\\n')
+            idx=surgery.rfind(")"); surgery=surgery[:idx]+''.join(items).encode().decode('unicode_escape')+surgery[idx:]
+            surg_done.append(net)
+          Path("hardware/pcb/targeted-relays/surgery101.kicad_pcb").write_text(surgery)
+          print("SURGERY101_DONE",len(surg_done),surg_done)
           # Negotiated-congestion diagnostic: reveal which existing track
           # corridors block each stubborn net. Pads/vias remain hard obstacles.
           for rn,net,ps in order:
