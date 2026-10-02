@@ -65,42 +65,52 @@ for k,(nid,name,ps) in enumerate(pairs,1):
     tmp=Path("/tmp/large-work.kicad_pcb");tmp.write_text(text)
     # Contact nets get the conservative 1.50 mm routing clearance.
     contact=bool(re.fullmatch(r"R[0-9]+_(COM|NO|NC)",name))
-    clearance="1.50" if contact else "0.50"
     width=1.0 if contact else 0.5
-    attempts=[("1.0","100","220",True),("0.5","160","280",True),("1.0","100","260",False),("0.5","160","320",False)]
-    q=None
-    for step,margin,via,no_vias in attempts:
-        cmd=["python3","hardware/pcb/tools/grid_router.py",str(tmp),"--net",name,
-             "--start",f"{a[0]},{a[1]},B.Cu","--goal",f"{b[0]},{b[1]},B.Cu",
-             "--step",step,"--clearance",clearance,"--margin",margin,"--via-cost",via]
-        if no_vias:
-            cmd.append("--no-vias")
-        r=subprocess.run(cmd,text=True,capture_output=True,timeout=15)
-        if r.returncode==0:q=r;break
-    if q is None:
-        failed.append(name);print("FAIL",k,name);continue
-    pts=[]
-    for line in q.stdout.splitlines():
-        if re.match(r"^-?[0-9]",line):
-            x,y,la=line.split(",");pts.append((float(x),float(y),la))
-    if not pts:failed.append(name);continue
-    pts[0]=(a[0],a[1],pts[0][2]);pts[-1]=(b[0],b[1],pts[-1][2])
-    items=[]
-    for u,v in zip(pts,pts[1:]):
-        if u[2]!=v[2]:
-            items.append(f'\t(via (at {u[0]} {u[1]}) (size 1.2) (drill 0.6) (layers "F.Cu" "B.Cu") (net {nid}))\n')
-        else:
-            items.append(f'\t(segment (start {u[0]} {u[1]}) (end {v[0]} {v[1]}) (width {width}) (layer "{u[2]}") (net {nid}))\n')
-    idx=text.rfind(")")
-    candidate=text[:idx]+"".join(items)+text[idx:]
-    check=Path("/tmp/large-candidate.kicad_pcb");check.write_text(candidate)
-    crit,counts=drc_critical(check)
-    if crit>baseline_critical:
-        rejected.append(name)
-        print("REJECT_DRC",k,name,"critical",crit,"baseline",baseline_critical,counts)
-        continue
-    text=candidate
-    baseline_critical=crit
-    done.append(name);print("OK_DRC",k,name,"critical",crit,"contact" if contact else "signal")
+    # Try increasingly conservative geometry inside the same CI job.
+    clearances=[2.10,2.50] if contact else [0.80,1.10,1.40]
+    attempts=[("1.0","120","240",True),("0.5","180","300",True),
+              ("1.0","120","300",False),("0.5","180","360",False)]
+    accepted=False
+    had_route=False
+    for clearance in clearances:
+        if accepted: break
+        for step,margin,via,no_vias in attempts:
+            tmp=Path("/tmp/large-work.kicad_pcb");tmp.write_text(text)
+            cmd=["python3","hardware/pcb/tools/grid_router.py",str(tmp),"--net",name,
+                 "--start",f"{a[0]},{a[1]},B.Cu","--goal",f"{b[0]},{b[1]},B.Cu",
+                 "--step",step,"--clearance",str(clearance),"--margin",margin,"--via-cost",via]
+            if no_vias: cmd.append("--no-vias")
+            try:
+                r=subprocess.run(cmd,text=True,capture_output=True,timeout=20)
+            except subprocess.TimeoutExpired:
+                continue
+            if r.returncode!=0: continue
+            had_route=True
+            pts=[]
+            for line in r.stdout.splitlines():
+                if re.match(r"^-?[0-9]",line):
+                    x,y,la=line.split(",");pts.append((float(x),float(y),la))
+            if not pts: continue
+            pts[0]=(a[0],a[1],pts[0][2]);pts[-1]=(b[0],b[1],pts[-1][2])
+            items=[]
+            for u,v in zip(pts,pts[1:]):
+                if u[2]!=v[2]:
+                    items.append(f'\\t(via (at {u[0]} {u[1]}) (size 1.2) (drill 0.6) (layers "F.Cu" "B.Cu") (net {nid}))\\n')
+                else:
+                    items.append(f'\\t(segment (start {u[0]} {u[1]}) (end {v[0]} {v[1]}) (width {width}) (layer "{u[2]}") (net {nid}))\\n')
+            idx=text.rfind(")")
+            candidate=text[:idx]+"".join(items)+text[idx:]
+            check=Path("/tmp/large-candidate.kicad_pcb");check.write_text(candidate)
+            crit,counts=drc_critical(check)
+            if crit<=baseline_critical:
+                text=candidate
+                baseline_critical=crit
+                done.append(name)
+                print("OK_DRC",k,name,"critical",crit,"clr",clearance,"step",step,"novia",no_vias)
+                accepted=True
+                break
+    if not accepted:
+        (rejected if had_route else failed).append(name)
+        print("REJECT_DRC" if had_route else "FAIL",k,name)
 PCB.write_text(text)
 print("ROUTED",len(done),"FAILED",len(failed),failed,"REJECTED_DRC",len(rejected),rejected,"FINAL_CRITICAL",baseline_critical)
