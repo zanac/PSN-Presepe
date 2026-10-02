@@ -50,7 +50,7 @@ for k,(nid,name,ps) in enumerate(pairs,1):
     contact=bool(re.fullmatch(r"R[0-9]+_(COM|NO|NC)",name))
     clearance="1.50" if contact else "0.50"
     width=1.0 if contact else 0.5
-    attempts=[("1.0","35","160"),("0.5","50","220")]
+    attempts=[("1.0","35","160"),("1.0","100","220"),("0.5","140","260")]
     q=None
     for step,margin,via in attempts:
         cmd=["python3","hardware/pcb/tools/grid_router.py",str(tmp),"--net",name,
