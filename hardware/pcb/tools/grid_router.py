@@ -184,27 +184,3 @@ def main():
     print("ROUTE",len(path))
     for p in path: print(f"{p.x*step:.3f},{p.y*step:.3f},{'F.Cu' if p.layer==0 else 'B.Cu'}")
 if __name__=="__main__": main()
-,text,re.M)}
-        for seg in balanced_blocks(text,"(segment"):
-            st=re.search(r'[(]start ([0-9.-]+) ([0-9.-]+)[)]',seg); en=re.search(r'[(]end ([0-9.-]+) ([0-9.-]+)[)]',seg)
-            wd=re.search(r'[(]width ([0-9.-]+)[)]',seg); ly=re.search(r'[(]layer "?(F[.]Cu|B[.]Cu)"?[)]',seg); nt=re.search(r'[(]net ([0-9]+)[)]',seg)
-            if not(st and en and wd and ly and nt) or net_names.get(int(nt.group(1)))==a.net: continue
-            cells=set(); mark_segment(cells,float(st.group(1)),float(st.group(2)),float(en.group(1)),float(en.group(2)),float(wd.group(1))/2+a.clearance,LAYERS[ly.group(1)],step)
-            soft.update(cells); blocked.difference_update(cells)
-        # Re-apply all non-track obstacles as hard by extracting from a copy
-        # with segments removed.
-        noseg=text
-        for seg in list(balanced_blocks(text,"(segment")): noseg=noseg.replace(seg,"")
-        blocked.update(extract_obstacles(noseg,a.net,step,a.clearance))
-    S=P(round(sx/step),round(sy/step),sl); G=P(round(gx/step),round(gy/step),gl)
-    # Endpoints belong to target net; allow a small escape disk.
-    # Only free the exact target endpoints. Clearing a disk around them allowed
-    # routes to cut through neighboring copper immediately after the pad.
-    blocked.discard(S); blocked.discard(G)
-    bounds=(floor((min(sx,gx)-a.margin)/step),ceil((max(sx,gx)+a.margin)/step),
-            floor((min(sy,gy)-a.margin)/step),ceil((max(sy,gy)+a.margin)/step))
-    path=compress(astar(S,G,blocked,bounds,via_cost=a.via_cost,allow_vias=not a.no_vias))
-    if not path: raise SystemExit("NO_ROUTE")
-    print("ROUTE",len(path))
-    for p in path: print(f"{p.x*step:.3f},{p.y*step:.3f},{'F.Cu' if p.layer==0 else 'B.Cu'}")
-if __name__=="__main__": main()
