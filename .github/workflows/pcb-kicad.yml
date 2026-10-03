@@ -175,19 +175,19 @@ jobs:
           echo REV_B_VALIDATION_PASS
       - name: Persist validated Rev-B schematic release files
         if: success()
-        working-directory: ${{ github.workspace }}
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add hardware/pcb/release/Rev-B/PSN-Presepe-Mega-RevB.kicad_sch
-          git add hardware/pcb/release/Rev-B/PSN-Presepe-Mega-RevB.sch
-          git add hardware/pcb/release/Rev-B/PSN-Presepe-Mega-RevB-cache.lib
-          git add hardware/pcb/release/Rev-B/PSN-Presepe-Mega-RevB-erc.txt
-          if git diff --cached --quiet; then
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          git -C "$GITHUB_WORKSPACE" config user.name "github-actions[bot]"
+          git -C "$GITHUB_WORKSPACE" config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git -C "$GITHUB_WORKSPACE" add hardware/pcb/release/Rev-B/PSN-Presepe-Mega-RevB.kicad_sch
+          git -C "$GITHUB_WORKSPACE" add hardware/pcb/release/Rev-B/PSN-Presepe-Mega-RevB.sch
+          git -C "$GITHUB_WORKSPACE" add hardware/pcb/release/Rev-B/PSN-Presepe-Mega-RevB-cache.lib
+          git -C "$GITHUB_WORKSPACE" add hardware/pcb/release/Rev-B/PSN-Presepe-Mega-RevB-erc.txt
+          if git -C "$GITHUB_WORKSPACE" diff --cached --quiet; then
             echo "Validated schematic release files already current"
           else
-            git commit -m "Publish validated Rev-B schematic and ERC files"
-            git push origin HEAD:dev
+            git -C "$GITHUB_WORKSPACE" commit -m "Publish validated Rev-B schematic and ERC files"
+            git -C "$GITHUB_WORKSPACE" push origin HEAD:dev
           fi
       - name: Upload validation report
         if: always()
