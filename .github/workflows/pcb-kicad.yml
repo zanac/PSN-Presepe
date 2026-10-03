@@ -54,6 +54,11 @@ jobs:
             hardware/pcb/release/Rev-B/PSN-Presepe-Mega-FREEROUTED.kicad_pcb \
             hardware/pcb/kicad/PSN-Presepe-Mega-RevB.kicad_sch
           test -s hardware/pcb/kicad/PSN-Presepe-Mega-RevB.kicad_sch
+      - name: Verify Rev-B schematic connectivity matches PCB
+        run: |
+          python3 hardware/pcb/tools/check_revb_schematic_connectivity.py \
+            hardware/pcb/release/Rev-B/PSN-Presepe-Mega-FREEROUTED.kicad_pcb \
+            hardware/pcb/kicad/PSN-Presepe-Mega-RevB.kicad_sch
       - name: Rev-B schematic ERC
         run: |
           mkdir -p hardware/pcb/build
