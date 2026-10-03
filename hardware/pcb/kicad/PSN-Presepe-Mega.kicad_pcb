@@ -187,7 +187,7 @@
 	(footprint "PSN_Presep_Custom:Relay_Omron_G5Q-1_SPDT"
 		(layer "F.Cu")
 		(uuid "06faaf70-065a-41b9-bf02-107e7a661353")
-		(at 258 115 90)
+		(at 330 115 90)
 		(property "Reference" "K15"
 			(at 8.5 -3 90)
 			(layer "F.Fab")
@@ -296,7 +296,7 @@
 	(footprint "PSN_Presep_Custom:TerminalBlock_Phoenix_MKDS-1.5-3-5.08"
 		(layer "F.Cu")
 		(uuid "092df6fb-fefd-4314-a094-c9189f5a5c0e")
-		(at 233 27)
+		(at 270 27 0)
 		(property "Reference" "JR5"
 			(at 5.08 -3 90)
 			(layer "F.Fab")
@@ -640,7 +640,7 @@
 	(footprint "PSN_Presep_Custom:Relay_Omron_G5Q-1_SPDT"
 		(layer "F.Cu")
 		(uuid "270a7653-5ea3-44d8-a0bb-67ab80848f06")
-		(at 204 115 90)
+		(at 240 115 90)
 		(property "Reference" "K12"
 			(at 8.5 -3 90)
 			(layer "F.Fab")
@@ -889,7 +889,7 @@
 	(footprint "PSN_Presep_Custom:TerminalBlock_Phoenix_MKDS-1.5-3-5.08"
 		(layer "F.Cu")
 		(uuid "2dd3494e-9da3-4271-8324-bbe9598295a7")
-		(at 312 128 90)
+		(at 392 138 90)
 		(property "Reference" "JR14"
 			(at 5.08 -3 90)
 			(layer "F.Fab")
@@ -1001,7 +1001,7 @@
 	(footprint "PSN_Presep_Custom:Relay_Omron_G5Q-1_SPDT"
 		(layer "F.Cu")
 		(uuid "2e39f23b-4764-4fce-9959-e006ab378963")
-		(at 240 115 90)
+		(at 300 115 90)
 		(property "Reference" "K14"
 			(at 8.5 -3 90)
 			(layer "F.Fab")
@@ -1110,7 +1110,7 @@
 	(footprint "PSN_Presep_Custom:TerminalBlock_Phoenix_MKDS-1.5-3-5.08"
 		(layer "F.Cu")
 		(uuid "30c9682c-4548-4533-95c1-091a4fee8189")
-		(at 199 27)
+		(at 210 27 0)
 		(property "Reference" "JR3"
 			(at 5.08 -3 90)
 			(layer "F.Fab")
@@ -1222,7 +1222,7 @@
 	(footprint "PSN_Presep_Custom:TerminalBlock_Phoenix_MKDS-1.5-3-5.08"
 		(layer "F.Cu")
 		(uuid "319a1c3e-77c1-478b-8b4f-480609825cf5")
-		(at 216 27)
+		(at 240 27 0)
 		(property "Reference" "JR4"
 			(at 5.08 -3 90)
 			(layer "F.Fab")
@@ -1448,7 +1448,7 @@
 	(footprint "PSN_Presep_Custom:TerminalBlock_Phoenix_MKDS-1.5-3-5.08"
 		(layer "F.Cu")
 		(uuid "36b0f7aa-80b8-4612-a485-11f0d0b1cfc1")
-		(at 165 27)
+		(at 150 27 0)
 		(property "Reference" "JR1"
 			(at 5.08 -3 90)
 			(layer "F.Fab")
@@ -3302,7 +3302,7 @@
 	(footprint "PSN_Presep_Custom:Relay_Omron_G5Q-1_SPDT"
 		(layer "F.Cu")
 		(uuid "45203809-8668-48db-b777-68f925cbdc0b")
-		(at 222 60 90)
+		(at 270 60 90)
 		(property "Reference" "K5"
 			(at 8.5 -3 90)
 			(layer "F.Fab")
@@ -3491,7 +3491,7 @@
 	(footprint "PSN_Presep_Custom:TerminalBlock_Phoenix_MKDS-1.5-3-5.08"
 		(layer "F.Cu")
 		(uuid "4c4099ac-d211-4817-9f1d-3a7c5155286c")
-		(at 250 27)
+		(at 300 27 0)
 		(property "Reference" "JR6"
 			(at 5.08 -3 90)
 			(layer "F.Fab")
@@ -3884,7 +3884,7 @@
 	(footprint "PSN_Presep_Custom:TerminalBlock_Phoenix_MKDS-1.5-3-5.08"
 		(layer "F.Cu")
 		(uuid "5320f48f-5211-4f8c-8309-d4dd01953b0e")
-		(at 182 27)
+		(at 180 27 0)
 		(property "Reference" "JR2"
 			(at 5.08 -3 90)
 			(layer "F.Fab")
@@ -4211,7 +4211,7 @@
 	(footprint "PSN_Presep_Custom:Relay_Omron_G5Q-1_SPDT"
 		(layer "F.Cu")
 		(uuid "54ea33a0-7502-4412-a0d5-947eec07e5ef")
-		(at 276 115 90)
+		(at 360 115 90)
 		(property "Reference" "K16"
 			(at 8.5 -3 90)
 			(layer "F.Fab")
@@ -4390,7 +4390,7 @@
 	(footprint "PSN_Presep_Custom:Relay_Omron_G5Q-1_SPDT"
 		(layer "F.Cu")
 		(uuid "57d65f19-7fa7-4dad-8c33-5321093747e7")
-		(at 186 60 90)
+		(at 210 60 90)
 		(property "Reference" "K3"
 			(at 8.5 -3 90)
 			(layer "F.Fab")
@@ -5169,7 +5169,7 @@
 	(footprint "PSN_Presep_Custom:TerminalBlock_Phoenix_MKDS-1.5-3-5.08"
 		(layer "F.Cu")
 		(uuid "6c1dcde5-88ba-4b50-aaf6-593ddf311284")
-		(at 312 48 90)
+		(at 392 48 90)
 		(property "Reference" "JR9"
 			(at 5.08 -3 90)
 			(layer "F.Fab")
@@ -5281,7 +5281,7 @@
 	(footprint "PSN_Presep_Custom:Relay_Omron_G5Q-1_SPDT"
 		(layer "F.Cu")
 		(uuid "6d6c3f8a-ecc4-4d8e-9f00-94769cde7cbc")
-		(at 168 60 90)
+		(at 180 60 90)
 		(property "Reference" "K2"
 			(at 8.5 -3 90)
 			(layer "F.Fab")
@@ -5943,7 +5943,7 @@
 	(footprint "PSN_Presep_Custom:Relay_Omron_G5Q-1_SPDT"
 		(layer "F.Cu")
 		(uuid "7ce15479-aefe-4037-8a84-cfa362e49346")
-		(at 168 115 90)
+		(at 180 115 90)
 		(property "Reference" "K10"
 			(at 8.5 -3 90)
 			(layer "F.Fab")
@@ -6138,7 +6138,7 @@
 	(footprint "PSN_Presep_Custom:Relay_Omron_G5Q-1_SPDT"
 		(layer "F.Cu")
 		(uuid "7e6b3a02-7fd4-4a21-80b2-f245ce26383e")
-		(at 258 60 90)
+		(at 330 60 90)
 		(property "Reference" "K7"
 			(at 8.5 -3 90)
 			(layer "F.Fab")
@@ -6618,7 +6618,7 @@
 	(footprint "PSN_Presep_Custom:Relay_Omron_G5Q-1_SPDT"
 		(layer "F.Cu")
 		(uuid "8bb74473-178b-4758-84cc-727b55dea106")
-		(at 276 60 90)
+		(at 360 60 90)
 		(property "Reference" "K8"
 			(at 8.5 -3 90)
 			(layer "F.Fab")
@@ -6727,7 +6727,7 @@
 	(footprint "PSN_Presep_Custom:TerminalBlock_Phoenix_MKDS-1.5-3-5.08"
 		(layer "F.Cu")
 		(uuid "8f537e18-d9db-42d9-912c-65974f048fce")
-		(at 312 112 90)
+		(at 392 120 90)
 		(property "Reference" "JR13"
 			(at 5.08 -3 90)
 			(layer "F.Fab")
@@ -6909,7 +6909,7 @@
 	(footprint "PSN_Presep_Custom:TerminalBlock_Phoenix_MKDS-1.5-3-5.08"
 		(layer "F.Cu")
 		(uuid "9acbd9f1-cb29-4797-bf37-66e9d4cec42d")
-		(at 312 64 90)
+		(at 392 66 90)
 		(property "Reference" "JR10"
 			(at 5.08 -3 90)
 			(layer "F.Fab")
@@ -7021,7 +7021,7 @@
 	(footprint "PSN_Presep_Custom:Relay_Omron_G5Q-1_SPDT"
 		(layer "F.Cu")
 		(uuid "a04c5086-ae5c-4684-8358-29a519774465")
-		(at 222 115 90)
+		(at 270 115 90)
 		(property "Reference" "K13"
 			(at 8.5 -3 90)
 			(layer "F.Fab")
@@ -7340,7 +7340,7 @@
 	(footprint "PSN_Presep_Custom:TerminalBlock_Phoenix_MKDS-1.5-3-5.08"
 		(layer "F.Cu")
 		(uuid "a519ee45-73a1-4fc8-b8f3-317fefd00c32")
-		(at 312 80 90)
+		(at 392 84 90)
 		(property "Reference" "JR11"
 			(at 5.08 -3 90)
 			(layer "F.Fab")
@@ -7452,7 +7452,7 @@
 	(footprint "PSN_Presep_Custom:TerminalBlock_Phoenix_MKDS-1.5-3-5.08"
 		(layer "F.Cu")
 		(uuid "a687d9a8-585a-430f-80a9-2f86c0719dea")
-		(at 284 27)
+		(at 360 27 0)
 		(property "Reference" "JR8"
 			(at 5.08 -3 90)
 			(layer "F.Fab")
@@ -7564,7 +7564,7 @@
 	(footprint "PSN_Presep_Custom:TerminalBlock_Phoenix_MKDS-1.5-3-5.08"
 		(layer "F.Cu")
 		(uuid "a975b62f-eb91-483d-a554-45003084813b")
-		(at 312 96 90)
+		(at 392 102 90)
 		(property "Reference" "JR12"
 			(at 5.08 -3 90)
 			(layer "F.Fab")
@@ -7676,7 +7676,7 @@
 	(footprint "PSN_Presep_Custom:Relay_Omron_G5Q-1_SPDT"
 		(layer "F.Cu")
 		(uuid "abfeb393-a0da-48d0-96f4-5a96a2bfeac2")
-		(at 204 60 90)
+		(at 240 60 90)
 		(property "Reference" "K4"
 			(at 8.5 -3 90)
 			(layer "F.Fab")
@@ -7865,7 +7865,7 @@
 	(footprint "PSN_Presep_Custom:TerminalBlock_Phoenix_MKDS-1.5-3-5.08"
 		(layer "F.Cu")
 		(uuid "b03d4e75-c4a6-4076-b4ff-684ff867936a")
-		(at 312 160 90)
+		(at 392 174 90)
 		(property "Reference" "JR16"
 			(at 5.08 -3 90)
 			(layer "F.Fab")
@@ -8392,7 +8392,7 @@
 	(footprint "PSN_Presep_Custom:Relay_Omron_G5Q-1_SPDT"
 		(layer "F.Cu")
 		(uuid "c09f9dbe-76e6-4f47-83dc-b02509d8a145")
-		(at 186 115 90)
+		(at 210 115 90)
 		(property "Reference" "K11"
 			(at 8.5 -3 90)
 			(layer "F.Fab")
@@ -8571,7 +8571,7 @@
 	(footprint "PSN_Presep_Custom:Relay_Omron_G5Q-1_SPDT"
 		(layer "F.Cu")
 		(uuid "c29062fd-ec43-48cd-8289-176b8c4f1956")
-		(at 240 60 90)
+		(at 300 60 90)
 		(property "Reference" "K6"
 			(at 8.5 -3 90)
 			(layer "F.Fab")
@@ -8992,7 +8992,7 @@
 	(footprint "PSN_Presep_Custom:TerminalBlock_Phoenix_MKDS-1.5-3-5.08"
 		(layer "F.Cu")
 		(uuid "d08c72d4-11de-4ca6-a70f-62da441d78b3")
-		(at 312 144 90)
+		(at 392 156 90)
 		(property "Reference" "JR15"
 			(at 5.08 -3 90)
 			(layer "F.Fab")
@@ -9456,7 +9456,7 @@
 	(footprint "PSN_Presep_Custom:TerminalBlock_Phoenix_MKDS-1.5-3-5.08"
 		(layer "F.Cu")
 		(uuid "e4a96546-f3be-4d9f-bab7-63f473ffe097")
-		(at 267 27)
+		(at 330 27 0)
 		(property "Reference" "JR7"
 			(at 5.08 -3 90)
 			(layer "F.Fab")
@@ -9648,7 +9648,7 @@
 	)
 	(gr_rect
 		(start 20 20)
-		(end 320 200)
+		(end 400 200)
 		(stroke
 			(width 0.5)
 			(type default)
