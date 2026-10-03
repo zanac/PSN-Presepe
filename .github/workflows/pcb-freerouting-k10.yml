@@ -116,9 +116,21 @@ jobs:
           )
           EOF
           kicad-cli pcb drc --severity-all --output positive-control.drc.txt positive-control.kicad_pcb || true
-          grep -q '\\[clearance\\]' positive-control.drc.txt || { echo "CUSTOM_RULE_POSITIVE_CONTROL failed"; exit 1; }
-          echo "CUSTOM_RULE_POSITIVE_CONTROL passed"
           kicad-cli pcb drc --severity-all --output freerouted-k10.drc.txt PSN-Presepe-Mega-FREEROUTED.kicad_pcb || true
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          def violations(path):
+              s=Path(path).read_text()
+              m=re.search(r"Found ([0-9]+) DRC violations",s,re.I)
+              return int(m.group(1)) if m else -1
+          base=violations("freerouted-k10.drc.txt")
+          control=violations("positive-control.drc.txt")
+          print("CUSTOM_RULE_POSITIVE_CONTROL baseline=",base,"forced=",control)
+          if base < 0 or control <= base:
+              raise SystemExit("CUSTOM_RULE_POSITIVE_CONTROL failed")
+          print("CUSTOM_RULE_POSITIVE_CONTROL passed")
+          PY
           grep -E 'Found|\\[.*\\]:' freerouted-k10.drc.txt | tail -160 || true
           python3 - <<'PY'
           from pathlib import Path
