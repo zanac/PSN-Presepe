@@ -230,9 +230,10 @@ jobs:
           import re
           dru=Path("PSN-Presepe-Mega-FREEROUTED.kicad_dru").read_text()
           drc=Path("freerouted-k10.drc.txt").read_text()
-          pairs=len(re.findall(r'\\(rule "Relay [0-9]+ to relay [0-9]+ contacts 6mm"',dru))
-          has_selv='rule "Relay contacts to SELV 6mm"' in dru
-          mins=len(re.findall(r'\\(constraint clearance \\(min 6mm\\)\\)',dru))
+          lines=dru.splitlines()
+          pairs=sum(1 for line in lines if line.strip().startswith('(rule "Relay ') and ' to relay ' in line and ' contacts 6mm"' in line)
+          has_selv=any(line.strip() == '(rule "Relay contacts to SELV 6mm"' for line in lines)
+          mins=sum(1 for line in lines if line.strip() == '(constraint clearance (min 6mm))')
           clearance_cats=re.findall(r'^\\[([^]]*clearance[^]]*)\\]',drc,re.I|re.M)
           print("RELAY_RULE_AUDIT pair_rules=",pairs,"selv_rule=",has_selv,"min6_constraints=",mins,"clearance_violations=",len(clearance_cats))
           if pairs != 120 or not has_selv or mins < 121 or clearance_cats:
