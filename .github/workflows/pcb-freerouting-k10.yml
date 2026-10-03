@@ -88,50 +88,27 @@ jobs:
         with:
           name: freerouting-output
           path: output
-      - name: Import SES into KiCad board
+      - name: Import SES, apply 6mm rule and run final DRC
         run: |
           python3 - <<'PY'
-          import pcbnew,glob
+          import pcbnew, glob, shutil
           src=glob.glob("input/**/*.kicad_pcb",recursive=True)[0]
           ses=glob.glob("output/**/*.ses",recursive=True)[0]
+          dru=glob.glob("input/**/*.kicad_dru",recursive=True)[0]
           out="PSN-Presepe-Mega-FREEROUTED.kicad_pcb"
-          # Keep the custom-rule basename beside the final board so KiCad CLI loads it.
-          import shutil
-          dru=glob.glob("input/**/*.kicad_dru",recursive=True)
-          if dru:
-              print("CUSTOM_RULE_SOURCE",dru[0])
-              print("CUSTOM_RULE_6MM_PRESENT", "min 6mm" in open(dru[0]).read())
+          print("CUSTOM_RULE_SOURCE",dru)
+          print("CUSTOM_RULE_6MM_PRESENT","min 6mm" in open(dru).read())
           b=pcbnew.LoadBoard(src)
           ok=pcbnew.ImportSpecctraSES(b,ses)
           print("IMPORT_SES",ok,ses)
           if not ok: raise SystemExit(1)
           pcbnew.SaveBoard(out,b)
-          if dru:
-              shutil.copyfile(dru[0],"PSN-Presepe-Mega-FREEROUTED.kicad_dru")
-              print("CUSTOM_RULE_COPIED_AFTER_SAVE", __import__("os").path.exists("PSN-Presepe-Mega-FREEROUTED.kicad_dru"))
+          shutil.copyfile(dru,"PSN-Presepe-Mega-FREEROUTED.kicad_dru")
           PY
-      - name: KiCad 10 final DRC and connectivity
-        run: |
-          cp hardware/pcb/kicad/PSN-Presepe-Mega.kicad_dru PSN-Presepe-Mega-FREEROUTED.kicad_dru
           test -f PSN-Presepe-Mega-FREEROUTED.kicad_dru
-          echo "CUSTOM_RULE_FILE:"
-          ls -l PSN-Presepe-Mega-FREEROUTED*.dru || true
-          grep -n "Relay contacts to SELV 6mm\|min 6mm" PSN-Presepe-Mega-FREEROUTED*.dru || { echo "CUSTOM_RULE_GATE missing"; exit 1; }
+          grep -n "Relay contacts to SELV 6mm\|min 6mm" PSN-Presepe-Mega-FREEROUTED.kicad_dru
           kicad-cli pcb drc --severity-all --output freerouted-k10.drc.txt PSN-Presepe-Mega-FREEROUTED.kicad_pcb || true
-          grep -E 'Found|\\[.*\\]:' freerouted-k10.drc.txt | tail -120 || true
-          python3 - <<'PY'
-          from pathlib import Path
-          import re
-          s=Path("freerouted-k10.drc.txt").read_text()
-          m=re.findall(r"Found ([0-9]+) unconnected",s,re.I)
-          critical=[]
-          for cat in ["clearance","shorting_items","tracks_crossing","hole_clearance","solder_mask_bridge"]:
-              if re.search(r"\\["+re.escape(cat)+r"\\]",s): critical.append(cat)
-          print("FREEROUTING_UNCONNECTED",m[-1] if m else "unknown")
-          print("FREEROUTING_CRITICAL",critical or "none")
-          PY
-      - name: Strict final routing gate
-        run: |
+          grep -E 'Found|\\[.*\\]:' freerouted-k10.drc.txt | tail -160 || true
           python3 - <<'PY'
           from pathlib import Path
           import re
