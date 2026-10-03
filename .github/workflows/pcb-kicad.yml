@@ -10,14 +10,11 @@ on:
       - ".github/workflows/pcb-kicad.yml"
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
   group: pcb-kicad-dev
   cancel-in-progress: true
-
-permissions:
-  contents: write
 
 jobs:
   validate-pcb:
