@@ -1,0 +1,83 @@
+name: PCB Route Candidate
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [dev]
+    paths:
+      - "hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb"
+      - "hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pro"
+      - "hardware/pcb/kicad/fp-lib-table"
+      - "hardware/pcb/kicad/PSN_Presep_Custom.pretty/**"
+      - "hardware/pcb/tools/make_route_candidate.py"
+      - "hardware/pcb/tools/pcb_sanity.py"
+      - "hardware/pcb/tools/drc_summary.py"
+      - "hardware/pcb/tools/compare_unconnected.py"
+      - ".github/workflows/pcb-route-candidate.yml"
+
+permissions:
+  contents: read
+
+env:
+  KICAD9_FOOTPRINT_DIR: /usr/share/kicad/footprints
+
+concurrency:
+  group: pcb-route-candidate-dev
+  cancel-in-progress: true
+
+jobs:
+  candidate:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate production source
+        run: python3 hardware/pcb/tools/pcb_sanity.py hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb
+
+      - name: Install KiCad 9
+        run: |
+          sudo add-apt-repository --yes ppa:kicad/kicad-9.0-releases
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends kicad kicad-footprints
+          kicad-cli --version
+
+      - name: Baseline DRC
+        run: |
+          mkdir -p hardware/pcb/build
+          kicad-cli pcb drc --severity-all             --output hardware/pcb/build/route-baseline-drc.txt             hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb
+
+      - name: Build routing candidate
+        run: |
+          python3 hardware/pcb/tools/make_route_candidate.py             hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb             hardware/pcb/kicad/PSN-Presepe-Mega.route-candidate.kicad_pcb
+          ALLOW_ROUTING=1 python3 hardware/pcb/tools/pcb_sanity.py             hardware/pcb/kicad/PSN-Presepe-Mega.route-candidate.kicad_pcb
+
+      - name: Candidate DRC
+        run: |
+          kicad-cli pcb drc --severity-all             --output hardware/pcb/build/route-candidate-drc.txt             hardware/pcb/kicad/PSN-Presepe-Mega.route-candidate.kicad_pcb
+          kicad-cli pcb drc --severity-error             --output hardware/pcb/build/route-candidate-errors.txt             hardware/pcb/kicad/PSN-Presepe-Mega.route-candidate.kicad_pcb
+
+      - name: Verify candidate improves connectivity
+        run: |
+          python3 hardware/pcb/tools/drc_summary.py hardware/pcb/build/route-candidate-drc.txt
+          python3 hardware/pcb/tools/compare_unconnected.py             hardware/pcb/build/route-baseline-drc.txt             hardware/pcb/build/route-candidate-drc.txt
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          s=Path("hardware/pcb/build/route-candidate-errors.txt").read_text()
+          cats=[x for x in re.findall(r'^\[([^\]]+)\]:',s,re.M) if x!="unconnected_items"]
+          if cats:
+              raise SystemExit(f"Candidate has error-severity DRC violations: {cats}")
+          print("Candidate has zero error-severity DRC violations")
+          PY
+
+      - name: Upload candidate evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: PCB-route-candidate
+          path: |
+            hardware/pcb/kicad/PSN-Presepe-Mega.route-candidate.kicad_pcb
+            hardware/pcb/build/route-baseline-drc.txt
+            hardware/pcb/build/route-candidate-drc.txt
+            hardware/pcb/build/route-candidate-errors.txt
+          if-no-files-found: warn

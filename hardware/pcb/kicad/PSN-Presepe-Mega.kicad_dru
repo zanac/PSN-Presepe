@@ -1,0 +1,492 @@
+(version 1)
+
+# PSN-Presepe internal safety design rule.
+# Relay contact nets may carry mains voltage. Keep them separated from SELV/control copper.
+# 6 mm is a conservative project design target, not a statement of regulatory certification.
+(rule "Relay contacts to SELV 6mm"
+  (condition "((A.NetName =~ 'R[0-9]+_(COM|NO|NC)') && !(B.NetName =~ 'R[0-9]+_(COM|NO|NC)')) || ((B.NetName =~ 'R[0-9]+_(COM|NO|NC)') && !(A.NetName =~ 'R[0-9]+_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+
+# Different relay contact groups: 6 mm internal design target.
+# Same-relay COM/NO/NC is excluded because the selected terminal block is 5.08 mm pitch.
+(rule "Relay 1 to relay 2 contacts 6mm"
+  (condition "((A.NetName =~ 'R1_(COM|NO|NC)') && (B.NetName =~ 'R2_(COM|NO|NC)')) || ((B.NetName =~ 'R1_(COM|NO|NC)') && (A.NetName =~ 'R2_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 1 to relay 3 contacts 6mm"
+  (condition "((A.NetName =~ 'R1_(COM|NO|NC)') && (B.NetName =~ 'R3_(COM|NO|NC)')) || ((B.NetName =~ 'R1_(COM|NO|NC)') && (A.NetName =~ 'R3_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 1 to relay 4 contacts 6mm"
+  (condition "((A.NetName =~ 'R1_(COM|NO|NC)') && (B.NetName =~ 'R4_(COM|NO|NC)')) || ((B.NetName =~ 'R1_(COM|NO|NC)') && (A.NetName =~ 'R4_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 1 to relay 5 contacts 6mm"
+  (condition "((A.NetName =~ 'R1_(COM|NO|NC)') && (B.NetName =~ 'R5_(COM|NO|NC)')) || ((B.NetName =~ 'R1_(COM|NO|NC)') && (A.NetName =~ 'R5_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 1 to relay 6 contacts 6mm"
+  (condition "((A.NetName =~ 'R1_(COM|NO|NC)') && (B.NetName =~ 'R6_(COM|NO|NC)')) || ((B.NetName =~ 'R1_(COM|NO|NC)') && (A.NetName =~ 'R6_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 1 to relay 7 contacts 6mm"
+  (condition "((A.NetName =~ 'R1_(COM|NO|NC)') && (B.NetName =~ 'R7_(COM|NO|NC)')) || ((B.NetName =~ 'R1_(COM|NO|NC)') && (A.NetName =~ 'R7_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 1 to relay 8 contacts 6mm"
+  (condition "((A.NetName =~ 'R1_(COM|NO|NC)') && (B.NetName =~ 'R8_(COM|NO|NC)')) || ((B.NetName =~ 'R1_(COM|NO|NC)') && (A.NetName =~ 'R8_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 1 to relay 9 contacts 6mm"
+  (condition "((A.NetName =~ 'R1_(COM|NO|NC)') && (B.NetName =~ 'R9_(COM|NO|NC)')) || ((B.NetName =~ 'R1_(COM|NO|NC)') && (A.NetName =~ 'R9_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 1 to relay 10 contacts 6mm"
+  (condition "((A.NetName =~ 'R1_(COM|NO|NC)') && (B.NetName =~ 'R10_(COM|NO|NC)')) || ((B.NetName =~ 'R1_(COM|NO|NC)') && (A.NetName =~ 'R10_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 1 to relay 11 contacts 6mm"
+  (condition "((A.NetName =~ 'R1_(COM|NO|NC)') && (B.NetName =~ 'R11_(COM|NO|NC)')) || ((B.NetName =~ 'R1_(COM|NO|NC)') && (A.NetName =~ 'R11_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 1 to relay 12 contacts 6mm"
+  (condition "((A.NetName =~ 'R1_(COM|NO|NC)') && (B.NetName =~ 'R12_(COM|NO|NC)')) || ((B.NetName =~ 'R1_(COM|NO|NC)') && (A.NetName =~ 'R12_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 1 to relay 13 contacts 6mm"
+  (condition "((A.NetName =~ 'R1_(COM|NO|NC)') && (B.NetName =~ 'R13_(COM|NO|NC)')) || ((B.NetName =~ 'R1_(COM|NO|NC)') && (A.NetName =~ 'R13_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 1 to relay 14 contacts 6mm"
+  (condition "((A.NetName =~ 'R1_(COM|NO|NC)') && (B.NetName =~ 'R14_(COM|NO|NC)')) || ((B.NetName =~ 'R1_(COM|NO|NC)') && (A.NetName =~ 'R14_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 1 to relay 15 contacts 6mm"
+  (condition "((A.NetName =~ 'R1_(COM|NO|NC)') && (B.NetName =~ 'R15_(COM|NO|NC)')) || ((B.NetName =~ 'R1_(COM|NO|NC)') && (A.NetName =~ 'R15_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 1 to relay 16 contacts 6mm"
+  (condition "((A.NetName =~ 'R1_(COM|NO|NC)') && (B.NetName =~ 'R16_(COM|NO|NC)')) || ((B.NetName =~ 'R1_(COM|NO|NC)') && (A.NetName =~ 'R16_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 2 to relay 3 contacts 6mm"
+  (condition "((A.NetName =~ 'R2_(COM|NO|NC)') && (B.NetName =~ 'R3_(COM|NO|NC)')) || ((B.NetName =~ 'R2_(COM|NO|NC)') && (A.NetName =~ 'R3_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 2 to relay 4 contacts 6mm"
+  (condition "((A.NetName =~ 'R2_(COM|NO|NC)') && (B.NetName =~ 'R4_(COM|NO|NC)')) || ((B.NetName =~ 'R2_(COM|NO|NC)') && (A.NetName =~ 'R4_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 2 to relay 5 contacts 6mm"
+  (condition "((A.NetName =~ 'R2_(COM|NO|NC)') && (B.NetName =~ 'R5_(COM|NO|NC)')) || ((B.NetName =~ 'R2_(COM|NO|NC)') && (A.NetName =~ 'R5_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 2 to relay 6 contacts 6mm"
+  (condition "((A.NetName =~ 'R2_(COM|NO|NC)') && (B.NetName =~ 'R6_(COM|NO|NC)')) || ((B.NetName =~ 'R2_(COM|NO|NC)') && (A.NetName =~ 'R6_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 2 to relay 7 contacts 6mm"
+  (condition "((A.NetName =~ 'R2_(COM|NO|NC)') && (B.NetName =~ 'R7_(COM|NO|NC)')) || ((B.NetName =~ 'R2_(COM|NO|NC)') && (A.NetName =~ 'R7_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 2 to relay 8 contacts 6mm"
+  (condition "((A.NetName =~ 'R2_(COM|NO|NC)') && (B.NetName =~ 'R8_(COM|NO|NC)')) || ((B.NetName =~ 'R2_(COM|NO|NC)') && (A.NetName =~ 'R8_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 2 to relay 9 contacts 6mm"
+  (condition "((A.NetName =~ 'R2_(COM|NO|NC)') && (B.NetName =~ 'R9_(COM|NO|NC)')) || ((B.NetName =~ 'R2_(COM|NO|NC)') && (A.NetName =~ 'R9_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 2 to relay 10 contacts 6mm"
+  (condition "((A.NetName =~ 'R2_(COM|NO|NC)') && (B.NetName =~ 'R10_(COM|NO|NC)')) || ((B.NetName =~ 'R2_(COM|NO|NC)') && (A.NetName =~ 'R10_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 2 to relay 11 contacts 6mm"
+  (condition "((A.NetName =~ 'R2_(COM|NO|NC)') && (B.NetName =~ 'R11_(COM|NO|NC)')) || ((B.NetName =~ 'R2_(COM|NO|NC)') && (A.NetName =~ 'R11_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 2 to relay 12 contacts 6mm"
+  (condition "((A.NetName =~ 'R2_(COM|NO|NC)') && (B.NetName =~ 'R12_(COM|NO|NC)')) || ((B.NetName =~ 'R2_(COM|NO|NC)') && (A.NetName =~ 'R12_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 2 to relay 13 contacts 6mm"
+  (condition "((A.NetName =~ 'R2_(COM|NO|NC)') && (B.NetName =~ 'R13_(COM|NO|NC)')) || ((B.NetName =~ 'R2_(COM|NO|NC)') && (A.NetName =~ 'R13_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 2 to relay 14 contacts 6mm"
+  (condition "((A.NetName =~ 'R2_(COM|NO|NC)') && (B.NetName =~ 'R14_(COM|NO|NC)')) || ((B.NetName =~ 'R2_(COM|NO|NC)') && (A.NetName =~ 'R14_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 2 to relay 15 contacts 6mm"
+  (condition "((A.NetName =~ 'R2_(COM|NO|NC)') && (B.NetName =~ 'R15_(COM|NO|NC)')) || ((B.NetName =~ 'R2_(COM|NO|NC)') && (A.NetName =~ 'R15_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 2 to relay 16 contacts 6mm"
+  (condition "((A.NetName =~ 'R2_(COM|NO|NC)') && (B.NetName =~ 'R16_(COM|NO|NC)')) || ((B.NetName =~ 'R2_(COM|NO|NC)') && (A.NetName =~ 'R16_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 3 to relay 4 contacts 6mm"
+  (condition "((A.NetName =~ 'R3_(COM|NO|NC)') && (B.NetName =~ 'R4_(COM|NO|NC)')) || ((B.NetName =~ 'R3_(COM|NO|NC)') && (A.NetName =~ 'R4_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 3 to relay 5 contacts 6mm"
+  (condition "((A.NetName =~ 'R3_(COM|NO|NC)') && (B.NetName =~ 'R5_(COM|NO|NC)')) || ((B.NetName =~ 'R3_(COM|NO|NC)') && (A.NetName =~ 'R5_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 3 to relay 6 contacts 6mm"
+  (condition "((A.NetName =~ 'R3_(COM|NO|NC)') && (B.NetName =~ 'R6_(COM|NO|NC)')) || ((B.NetName =~ 'R3_(COM|NO|NC)') && (A.NetName =~ 'R6_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 3 to relay 7 contacts 6mm"
+  (condition "((A.NetName =~ 'R3_(COM|NO|NC)') && (B.NetName =~ 'R7_(COM|NO|NC)')) || ((B.NetName =~ 'R3_(COM|NO|NC)') && (A.NetName =~ 'R7_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 3 to relay 8 contacts 6mm"
+  (condition "((A.NetName =~ 'R3_(COM|NO|NC)') && (B.NetName =~ 'R8_(COM|NO|NC)')) || ((B.NetName =~ 'R3_(COM|NO|NC)') && (A.NetName =~ 'R8_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 3 to relay 9 contacts 6mm"
+  (condition "((A.NetName =~ 'R3_(COM|NO|NC)') && (B.NetName =~ 'R9_(COM|NO|NC)')) || ((B.NetName =~ 'R3_(COM|NO|NC)') && (A.NetName =~ 'R9_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 3 to relay 10 contacts 6mm"
+  (condition "((A.NetName =~ 'R3_(COM|NO|NC)') && (B.NetName =~ 'R10_(COM|NO|NC)')) || ((B.NetName =~ 'R3_(COM|NO|NC)') && (A.NetName =~ 'R10_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 3 to relay 11 contacts 6mm"
+  (condition "((A.NetName =~ 'R3_(COM|NO|NC)') && (B.NetName =~ 'R11_(COM|NO|NC)')) || ((B.NetName =~ 'R3_(COM|NO|NC)') && (A.NetName =~ 'R11_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 3 to relay 12 contacts 6mm"
+  (condition "((A.NetName =~ 'R3_(COM|NO|NC)') && (B.NetName =~ 'R12_(COM|NO|NC)')) || ((B.NetName =~ 'R3_(COM|NO|NC)') && (A.NetName =~ 'R12_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 3 to relay 13 contacts 6mm"
+  (condition "((A.NetName =~ 'R3_(COM|NO|NC)') && (B.NetName =~ 'R13_(COM|NO|NC)')) || ((B.NetName =~ 'R3_(COM|NO|NC)') && (A.NetName =~ 'R13_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 3 to relay 14 contacts 6mm"
+  (condition "((A.NetName =~ 'R3_(COM|NO|NC)') && (B.NetName =~ 'R14_(COM|NO|NC)')) || ((B.NetName =~ 'R3_(COM|NO|NC)') && (A.NetName =~ 'R14_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 3 to relay 15 contacts 6mm"
+  (condition "((A.NetName =~ 'R3_(COM|NO|NC)') && (B.NetName =~ 'R15_(COM|NO|NC)')) || ((B.NetName =~ 'R3_(COM|NO|NC)') && (A.NetName =~ 'R15_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 3 to relay 16 contacts 6mm"
+  (condition "((A.NetName =~ 'R3_(COM|NO|NC)') && (B.NetName =~ 'R16_(COM|NO|NC)')) || ((B.NetName =~ 'R3_(COM|NO|NC)') && (A.NetName =~ 'R16_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 4 to relay 5 contacts 6mm"
+  (condition "((A.NetName =~ 'R4_(COM|NO|NC)') && (B.NetName =~ 'R5_(COM|NO|NC)')) || ((B.NetName =~ 'R4_(COM|NO|NC)') && (A.NetName =~ 'R5_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 4 to relay 6 contacts 6mm"
+  (condition "((A.NetName =~ 'R4_(COM|NO|NC)') && (B.NetName =~ 'R6_(COM|NO|NC)')) || ((B.NetName =~ 'R4_(COM|NO|NC)') && (A.NetName =~ 'R6_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 4 to relay 7 contacts 6mm"
+  (condition "((A.NetName =~ 'R4_(COM|NO|NC)') && (B.NetName =~ 'R7_(COM|NO|NC)')) || ((B.NetName =~ 'R4_(COM|NO|NC)') && (A.NetName =~ 'R7_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 4 to relay 8 contacts 6mm"
+  (condition "((A.NetName =~ 'R4_(COM|NO|NC)') && (B.NetName =~ 'R8_(COM|NO|NC)')) || ((B.NetName =~ 'R4_(COM|NO|NC)') && (A.NetName =~ 'R8_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 4 to relay 9 contacts 6mm"
+  (condition "((A.NetName =~ 'R4_(COM|NO|NC)') && (B.NetName =~ 'R9_(COM|NO|NC)')) || ((B.NetName =~ 'R4_(COM|NO|NC)') && (A.NetName =~ 'R9_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 4 to relay 10 contacts 6mm"
+  (condition "((A.NetName =~ 'R4_(COM|NO|NC)') && (B.NetName =~ 'R10_(COM|NO|NC)')) || ((B.NetName =~ 'R4_(COM|NO|NC)') && (A.NetName =~ 'R10_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 4 to relay 11 contacts 6mm"
+  (condition "((A.NetName =~ 'R4_(COM|NO|NC)') && (B.NetName =~ 'R11_(COM|NO|NC)')) || ((B.NetName =~ 'R4_(COM|NO|NC)') && (A.NetName =~ 'R11_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 4 to relay 12 contacts 6mm"
+  (condition "((A.NetName =~ 'R4_(COM|NO|NC)') && (B.NetName =~ 'R12_(COM|NO|NC)')) || ((B.NetName =~ 'R4_(COM|NO|NC)') && (A.NetName =~ 'R12_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 4 to relay 13 contacts 6mm"
+  (condition "((A.NetName =~ 'R4_(COM|NO|NC)') && (B.NetName =~ 'R13_(COM|NO|NC)')) || ((B.NetName =~ 'R4_(COM|NO|NC)') && (A.NetName =~ 'R13_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 4 to relay 14 contacts 6mm"
+  (condition "((A.NetName =~ 'R4_(COM|NO|NC)') && (B.NetName =~ 'R14_(COM|NO|NC)')) || ((B.NetName =~ 'R4_(COM|NO|NC)') && (A.NetName =~ 'R14_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 4 to relay 15 contacts 6mm"
+  (condition "((A.NetName =~ 'R4_(COM|NO|NC)') && (B.NetName =~ 'R15_(COM|NO|NC)')) || ((B.NetName =~ 'R4_(COM|NO|NC)') && (A.NetName =~ 'R15_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 4 to relay 16 contacts 6mm"
+  (condition "((A.NetName =~ 'R4_(COM|NO|NC)') && (B.NetName =~ 'R16_(COM|NO|NC)')) || ((B.NetName =~ 'R4_(COM|NO|NC)') && (A.NetName =~ 'R16_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 5 to relay 6 contacts 6mm"
+  (condition "((A.NetName =~ 'R5_(COM|NO|NC)') && (B.NetName =~ 'R6_(COM|NO|NC)')) || ((B.NetName =~ 'R5_(COM|NO|NC)') && (A.NetName =~ 'R6_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 5 to relay 7 contacts 6mm"
+  (condition "((A.NetName =~ 'R5_(COM|NO|NC)') && (B.NetName =~ 'R7_(COM|NO|NC)')) || ((B.NetName =~ 'R5_(COM|NO|NC)') && (A.NetName =~ 'R7_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 5 to relay 8 contacts 6mm"
+  (condition "((A.NetName =~ 'R5_(COM|NO|NC)') && (B.NetName =~ 'R8_(COM|NO|NC)')) || ((B.NetName =~ 'R5_(COM|NO|NC)') && (A.NetName =~ 'R8_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 5 to relay 9 contacts 6mm"
+  (condition "((A.NetName =~ 'R5_(COM|NO|NC)') && (B.NetName =~ 'R9_(COM|NO|NC)')) || ((B.NetName =~ 'R5_(COM|NO|NC)') && (A.NetName =~ 'R9_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 5 to relay 10 contacts 6mm"
+  (condition "((A.NetName =~ 'R5_(COM|NO|NC)') && (B.NetName =~ 'R10_(COM|NO|NC)')) || ((B.NetName =~ 'R5_(COM|NO|NC)') && (A.NetName =~ 'R10_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 5 to relay 11 contacts 6mm"
+  (condition "((A.NetName =~ 'R5_(COM|NO|NC)') && (B.NetName =~ 'R11_(COM|NO|NC)')) || ((B.NetName =~ 'R5_(COM|NO|NC)') && (A.NetName =~ 'R11_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 5 to relay 12 contacts 6mm"
+  (condition "((A.NetName =~ 'R5_(COM|NO|NC)') && (B.NetName =~ 'R12_(COM|NO|NC)')) || ((B.NetName =~ 'R5_(COM|NO|NC)') && (A.NetName =~ 'R12_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 5 to relay 13 contacts 6mm"
+  (condition "((A.NetName =~ 'R5_(COM|NO|NC)') && (B.NetName =~ 'R13_(COM|NO|NC)')) || ((B.NetName =~ 'R5_(COM|NO|NC)') && (A.NetName =~ 'R13_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 5 to relay 14 contacts 6mm"
+  (condition "((A.NetName =~ 'R5_(COM|NO|NC)') && (B.NetName =~ 'R14_(COM|NO|NC)')) || ((B.NetName =~ 'R5_(COM|NO|NC)') && (A.NetName =~ 'R14_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 5 to relay 15 contacts 6mm"
+  (condition "((A.NetName =~ 'R5_(COM|NO|NC)') && (B.NetName =~ 'R15_(COM|NO|NC)')) || ((B.NetName =~ 'R5_(COM|NO|NC)') && (A.NetName =~ 'R15_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 5 to relay 16 contacts 6mm"
+  (condition "((A.NetName =~ 'R5_(COM|NO|NC)') && (B.NetName =~ 'R16_(COM|NO|NC)')) || ((B.NetName =~ 'R5_(COM|NO|NC)') && (A.NetName =~ 'R16_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 6 to relay 7 contacts 6mm"
+  (condition "((A.NetName =~ 'R6_(COM|NO|NC)') && (B.NetName =~ 'R7_(COM|NO|NC)')) || ((B.NetName =~ 'R6_(COM|NO|NC)') && (A.NetName =~ 'R7_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 6 to relay 8 contacts 6mm"
+  (condition "((A.NetName =~ 'R6_(COM|NO|NC)') && (B.NetName =~ 'R8_(COM|NO|NC)')) || ((B.NetName =~ 'R6_(COM|NO|NC)') && (A.NetName =~ 'R8_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 6 to relay 9 contacts 6mm"
+  (condition "((A.NetName =~ 'R6_(COM|NO|NC)') && (B.NetName =~ 'R9_(COM|NO|NC)')) || ((B.NetName =~ 'R6_(COM|NO|NC)') && (A.NetName =~ 'R9_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 6 to relay 10 contacts 6mm"
+  (condition "((A.NetName =~ 'R6_(COM|NO|NC)') && (B.NetName =~ 'R10_(COM|NO|NC)')) || ((B.NetName =~ 'R6_(COM|NO|NC)') && (A.NetName =~ 'R10_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 6 to relay 11 contacts 6mm"
+  (condition "((A.NetName =~ 'R6_(COM|NO|NC)') && (B.NetName =~ 'R11_(COM|NO|NC)')) || ((B.NetName =~ 'R6_(COM|NO|NC)') && (A.NetName =~ 'R11_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 6 to relay 12 contacts 6mm"
+  (condition "((A.NetName =~ 'R6_(COM|NO|NC)') && (B.NetName =~ 'R12_(COM|NO|NC)')) || ((B.NetName =~ 'R6_(COM|NO|NC)') && (A.NetName =~ 'R12_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 6 to relay 13 contacts 6mm"
+  (condition "((A.NetName =~ 'R6_(COM|NO|NC)') && (B.NetName =~ 'R13_(COM|NO|NC)')) || ((B.NetName =~ 'R6_(COM|NO|NC)') && (A.NetName =~ 'R13_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 6 to relay 14 contacts 6mm"
+  (condition "((A.NetName =~ 'R6_(COM|NO|NC)') && (B.NetName =~ 'R14_(COM|NO|NC)')) || ((B.NetName =~ 'R6_(COM|NO|NC)') && (A.NetName =~ 'R14_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 6 to relay 15 contacts 6mm"
+  (condition "((A.NetName =~ 'R6_(COM|NO|NC)') && (B.NetName =~ 'R15_(COM|NO|NC)')) || ((B.NetName =~ 'R6_(COM|NO|NC)') && (A.NetName =~ 'R15_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 6 to relay 16 contacts 6mm"
+  (condition "((A.NetName =~ 'R6_(COM|NO|NC)') && (B.NetName =~ 'R16_(COM|NO|NC)')) || ((B.NetName =~ 'R6_(COM|NO|NC)') && (A.NetName =~ 'R16_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 7 to relay 8 contacts 6mm"
+  (condition "((A.NetName =~ 'R7_(COM|NO|NC)') && (B.NetName =~ 'R8_(COM|NO|NC)')) || ((B.NetName =~ 'R7_(COM|NO|NC)') && (A.NetName =~ 'R8_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 7 to relay 9 contacts 6mm"
+  (condition "((A.NetName =~ 'R7_(COM|NO|NC)') && (B.NetName =~ 'R9_(COM|NO|NC)')) || ((B.NetName =~ 'R7_(COM|NO|NC)') && (A.NetName =~ 'R9_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 7 to relay 10 contacts 6mm"
+  (condition "((A.NetName =~ 'R7_(COM|NO|NC)') && (B.NetName =~ 'R10_(COM|NO|NC)')) || ((B.NetName =~ 'R7_(COM|NO|NC)') && (A.NetName =~ 'R10_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 7 to relay 11 contacts 6mm"
+  (condition "((A.NetName =~ 'R7_(COM|NO|NC)') && (B.NetName =~ 'R11_(COM|NO|NC)')) || ((B.NetName =~ 'R7_(COM|NO|NC)') && (A.NetName =~ 'R11_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 7 to relay 12 contacts 6mm"
+  (condition "((A.NetName =~ 'R7_(COM|NO|NC)') && (B.NetName =~ 'R12_(COM|NO|NC)')) || ((B.NetName =~ 'R7_(COM|NO|NC)') && (A.NetName =~ 'R12_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 7 to relay 13 contacts 6mm"
+  (condition "((A.NetName =~ 'R7_(COM|NO|NC)') && (B.NetName =~ 'R13_(COM|NO|NC)')) || ((B.NetName =~ 'R7_(COM|NO|NC)') && (A.NetName =~ 'R13_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 7 to relay 14 contacts 6mm"
+  (condition "((A.NetName =~ 'R7_(COM|NO|NC)') && (B.NetName =~ 'R14_(COM|NO|NC)')) || ((B.NetName =~ 'R7_(COM|NO|NC)') && (A.NetName =~ 'R14_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 7 to relay 15 contacts 6mm"
+  (condition "((A.NetName =~ 'R7_(COM|NO|NC)') && (B.NetName =~ 'R15_(COM|NO|NC)')) || ((B.NetName =~ 'R7_(COM|NO|NC)') && (A.NetName =~ 'R15_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 7 to relay 16 contacts 6mm"
+  (condition "((A.NetName =~ 'R7_(COM|NO|NC)') && (B.NetName =~ 'R16_(COM|NO|NC)')) || ((B.NetName =~ 'R7_(COM|NO|NC)') && (A.NetName =~ 'R16_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 8 to relay 9 contacts 6mm"
+  (condition "((A.NetName =~ 'R8_(COM|NO|NC)') && (B.NetName =~ 'R9_(COM|NO|NC)')) || ((B.NetName =~ 'R8_(COM|NO|NC)') && (A.NetName =~ 'R9_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 8 to relay 10 contacts 6mm"
+  (condition "((A.NetName =~ 'R8_(COM|NO|NC)') && (B.NetName =~ 'R10_(COM|NO|NC)')) || ((B.NetName =~ 'R8_(COM|NO|NC)') && (A.NetName =~ 'R10_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 8 to relay 11 contacts 6mm"
+  (condition "((A.NetName =~ 'R8_(COM|NO|NC)') && (B.NetName =~ 'R11_(COM|NO|NC)')) || ((B.NetName =~ 'R8_(COM|NO|NC)') && (A.NetName =~ 'R11_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 8 to relay 12 contacts 6mm"
+  (condition "((A.NetName =~ 'R8_(COM|NO|NC)') && (B.NetName =~ 'R12_(COM|NO|NC)')) || ((B.NetName =~ 'R8_(COM|NO|NC)') && (A.NetName =~ 'R12_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 8 to relay 13 contacts 6mm"
+  (condition "((A.NetName =~ 'R8_(COM|NO|NC)') && (B.NetName =~ 'R13_(COM|NO|NC)')) || ((B.NetName =~ 'R8_(COM|NO|NC)') && (A.NetName =~ 'R13_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 8 to relay 14 contacts 6mm"
+  (condition "((A.NetName =~ 'R8_(COM|NO|NC)') && (B.NetName =~ 'R14_(COM|NO|NC)')) || ((B.NetName =~ 'R8_(COM|NO|NC)') && (A.NetName =~ 'R14_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 8 to relay 15 contacts 6mm"
+  (condition "((A.NetName =~ 'R8_(COM|NO|NC)') && (B.NetName =~ 'R15_(COM|NO|NC)')) || ((B.NetName =~ 'R8_(COM|NO|NC)') && (A.NetName =~ 'R15_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 8 to relay 16 contacts 6mm"
+  (condition "((A.NetName =~ 'R8_(COM|NO|NC)') && (B.NetName =~ 'R16_(COM|NO|NC)')) || ((B.NetName =~ 'R8_(COM|NO|NC)') && (A.NetName =~ 'R16_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 9 to relay 10 contacts 6mm"
+  (condition "((A.NetName =~ 'R9_(COM|NO|NC)') && (B.NetName =~ 'R10_(COM|NO|NC)')) || ((B.NetName =~ 'R9_(COM|NO|NC)') && (A.NetName =~ 'R10_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 9 to relay 11 contacts 6mm"
+  (condition "((A.NetName =~ 'R9_(COM|NO|NC)') && (B.NetName =~ 'R11_(COM|NO|NC)')) || ((B.NetName =~ 'R9_(COM|NO|NC)') && (A.NetName =~ 'R11_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 9 to relay 12 contacts 6mm"
+  (condition "((A.NetName =~ 'R9_(COM|NO|NC)') && (B.NetName =~ 'R12_(COM|NO|NC)')) || ((B.NetName =~ 'R9_(COM|NO|NC)') && (A.NetName =~ 'R12_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 9 to relay 13 contacts 6mm"
+  (condition "((A.NetName =~ 'R9_(COM|NO|NC)') && (B.NetName =~ 'R13_(COM|NO|NC)')) || ((B.NetName =~ 'R9_(COM|NO|NC)') && (A.NetName =~ 'R13_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 9 to relay 14 contacts 6mm"
+  (condition "((A.NetName =~ 'R9_(COM|NO|NC)') && (B.NetName =~ 'R14_(COM|NO|NC)')) || ((B.NetName =~ 'R9_(COM|NO|NC)') && (A.NetName =~ 'R14_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 9 to relay 15 contacts 6mm"
+  (condition "((A.NetName =~ 'R9_(COM|NO|NC)') && (B.NetName =~ 'R15_(COM|NO|NC)')) || ((B.NetName =~ 'R9_(COM|NO|NC)') && (A.NetName =~ 'R15_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 9 to relay 16 contacts 6mm"
+  (condition "((A.NetName =~ 'R9_(COM|NO|NC)') && (B.NetName =~ 'R16_(COM|NO|NC)')) || ((B.NetName =~ 'R9_(COM|NO|NC)') && (A.NetName =~ 'R16_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 10 to relay 11 contacts 6mm"
+  (condition "((A.NetName =~ 'R10_(COM|NO|NC)') && (B.NetName =~ 'R11_(COM|NO|NC)')) || ((B.NetName =~ 'R10_(COM|NO|NC)') && (A.NetName =~ 'R11_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 10 to relay 12 contacts 6mm"
+  (condition "((A.NetName =~ 'R10_(COM|NO|NC)') && (B.NetName =~ 'R12_(COM|NO|NC)')) || ((B.NetName =~ 'R10_(COM|NO|NC)') && (A.NetName =~ 'R12_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 10 to relay 13 contacts 6mm"
+  (condition "((A.NetName =~ 'R10_(COM|NO|NC)') && (B.NetName =~ 'R13_(COM|NO|NC)')) || ((B.NetName =~ 'R10_(COM|NO|NC)') && (A.NetName =~ 'R13_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 10 to relay 14 contacts 6mm"
+  (condition "((A.NetName =~ 'R10_(COM|NO|NC)') && (B.NetName =~ 'R14_(COM|NO|NC)')) || ((B.NetName =~ 'R10_(COM|NO|NC)') && (A.NetName =~ 'R14_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 10 to relay 15 contacts 6mm"
+  (condition "((A.NetName =~ 'R10_(COM|NO|NC)') && (B.NetName =~ 'R15_(COM|NO|NC)')) || ((B.NetName =~ 'R10_(COM|NO|NC)') && (A.NetName =~ 'R15_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 10 to relay 16 contacts 6mm"
+  (condition "((A.NetName =~ 'R10_(COM|NO|NC)') && (B.NetName =~ 'R16_(COM|NO|NC)')) || ((B.NetName =~ 'R10_(COM|NO|NC)') && (A.NetName =~ 'R16_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 11 to relay 12 contacts 6mm"
+  (condition "((A.NetName =~ 'R11_(COM|NO|NC)') && (B.NetName =~ 'R12_(COM|NO|NC)')) || ((B.NetName =~ 'R11_(COM|NO|NC)') && (A.NetName =~ 'R12_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 11 to relay 13 contacts 6mm"
+  (condition "((A.NetName =~ 'R11_(COM|NO|NC)') && (B.NetName =~ 'R13_(COM|NO|NC)')) || ((B.NetName =~ 'R11_(COM|NO|NC)') && (A.NetName =~ 'R13_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 11 to relay 14 contacts 6mm"
+  (condition "((A.NetName =~ 'R11_(COM|NO|NC)') && (B.NetName =~ 'R14_(COM|NO|NC)')) || ((B.NetName =~ 'R11_(COM|NO|NC)') && (A.NetName =~ 'R14_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 11 to relay 15 contacts 6mm"
+  (condition "((A.NetName =~ 'R11_(COM|NO|NC)') && (B.NetName =~ 'R15_(COM|NO|NC)')) || ((B.NetName =~ 'R11_(COM|NO|NC)') && (A.NetName =~ 'R15_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 11 to relay 16 contacts 6mm"
+  (condition "((A.NetName =~ 'R11_(COM|NO|NC)') && (B.NetName =~ 'R16_(COM|NO|NC)')) || ((B.NetName =~ 'R11_(COM|NO|NC)') && (A.NetName =~ 'R16_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 12 to relay 13 contacts 6mm"
+  (condition "((A.NetName =~ 'R12_(COM|NO|NC)') && (B.NetName =~ 'R13_(COM|NO|NC)')) || ((B.NetName =~ 'R12_(COM|NO|NC)') && (A.NetName =~ 'R13_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 12 to relay 14 contacts 6mm"
+  (condition "((A.NetName =~ 'R12_(COM|NO|NC)') && (B.NetName =~ 'R14_(COM|NO|NC)')) || ((B.NetName =~ 'R12_(COM|NO|NC)') && (A.NetName =~ 'R14_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 12 to relay 15 contacts 6mm"
+  (condition "((A.NetName =~ 'R12_(COM|NO|NC)') && (B.NetName =~ 'R15_(COM|NO|NC)')) || ((B.NetName =~ 'R12_(COM|NO|NC)') && (A.NetName =~ 'R15_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 12 to relay 16 contacts 6mm"
+  (condition "((A.NetName =~ 'R12_(COM|NO|NC)') && (B.NetName =~ 'R16_(COM|NO|NC)')) || ((B.NetName =~ 'R12_(COM|NO|NC)') && (A.NetName =~ 'R16_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 13 to relay 14 contacts 6mm"
+  (condition "((A.NetName =~ 'R13_(COM|NO|NC)') && (B.NetName =~ 'R14_(COM|NO|NC)')) || ((B.NetName =~ 'R13_(COM|NO|NC)') && (A.NetName =~ 'R14_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 13 to relay 15 contacts 6mm"
+  (condition "((A.NetName =~ 'R13_(COM|NO|NC)') && (B.NetName =~ 'R15_(COM|NO|NC)')) || ((B.NetName =~ 'R13_(COM|NO|NC)') && (A.NetName =~ 'R15_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 13 to relay 16 contacts 6mm"
+  (condition "((A.NetName =~ 'R13_(COM|NO|NC)') && (B.NetName =~ 'R16_(COM|NO|NC)')) || ((B.NetName =~ 'R13_(COM|NO|NC)') && (A.NetName =~ 'R16_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 14 to relay 15 contacts 6mm"
+  (condition "((A.NetName =~ 'R14_(COM|NO|NC)') && (B.NetName =~ 'R15_(COM|NO|NC)')) || ((B.NetName =~ 'R14_(COM|NO|NC)') && (A.NetName =~ 'R15_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 14 to relay 16 contacts 6mm"
+  (condition "((A.NetName =~ 'R14_(COM|NO|NC)') && (B.NetName =~ 'R16_(COM|NO|NC)')) || ((B.NetName =~ 'R14_(COM|NO|NC)') && (A.NetName =~ 'R16_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
+(rule "Relay 15 to relay 16 contacts 6mm"
+  (condition "((A.NetName =~ 'R15_(COM|NO|NC)') && (B.NetName =~ 'R16_(COM|NO|NC)')) || ((B.NetName =~ 'R15_(COM|NO|NC)') && (A.NetName =~ 'R16_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)

@@ -1,0 +1,269 @@
+name: PCB Original KiCad10 Freerouting
+
+permissions:
+  contents: write
+# 280x170 production routing pipeline
+# trigger: newline-repair-verified
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [dev]
+    paths:
+      - '.github/workflows/pcb-freerouting-k10.yml'
+      - 'hardware/pcb/kicad/PSN-Presepe-Mega.kicad_dru'
+      - 'hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb'
+      - 'hardware/pcb/kicad/fp-lib-table'
+      - 'hardware/pcb/tools/make_clean_board.py'
+      - 'hardware/pcb/tools/check_mega_stackable.py'
+      - 'hardware/pcb/tools/check_mega_pinmap.py'
+      - 'hardware/pcb/tools/check_mega_mechanical_bom.py'
+      - 'hardware/pcb/BOM.md'
+      - 'hardware/pcb/tools/check_terminal_silkscreen.py'
+      - 'hardware/pcb/ASSEMBLY.md'
+
+jobs:
+  export-dsn:
+    runs-on: ubuntu-latest
+    container:
+      image: kicad/kicad:10.0
+      options: --user 0
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify KiCad 10
+        run: kicad-cli --version
+      - name: Verify Mega stackable expansion envelope
+        run: python3 hardware/pcb/tools/check_mega_stackable.py
+
+      - name: Verify Mega physical pin mapping
+        run: python3 hardware/pcb/tools/check_mega_pinmap.py
+
+      - name: Verify Mega mechanical geometry and mandatory assembly BOM
+        run: python3 hardware/pcb/tools/check_mega_mechanical_bom.py
+
+      - name: Verify terminal silkscreen labels
+        run: python3 hardware/pcb/tools/check_terminal_silkscreen.py
+
+      - name: Prepare clean original 280x170 PCB and export Specctra DSN
+        run: |
+          python3 hardware/pcb/tools/make_clean_board.py --output hardware/pcb/kicad/PSN-Presepe-Mega-CLEAN.kicad_pcb
+          python3 - <<'PY'
+          import pcbnew
+          src="hardware/pcb/kicad/PSN-Presepe-Mega-CLEAN.kicad_pcb"
+          out="hardware/pcb/kicad/PSN-Presepe-Mega.dsn"
+          b=pcbnew.LoadBoard(src)
+          ok=pcbnew.ExportSpecctraDSN(b,out)
+          print("EXPORT_DSN",ok,out)
+          print("DSN_RELAY_RULE_LINES")
+          for line in open(out,errors="ignore"):
+              if "R1_COM" in line or "clearance" in line.lower(): print(line.rstrip())
+          if not ok: raise SystemExit(1)
+          PY
+      - name: Configure KiCad footprint libraries for DRC
+        run: |
+          mkdir -p /root/.config/kicad/10.0
+          cat > /root/.config/kicad/10.0/fp-lib-table <<'EOF'
+          (fp_lib_table
+            (lib (name "PSN_Presep_Custom")(type "KiCad")(uri "${KIPRJMOD}/hardware/pcb/kicad/PSN_Presep_Custom.pretty")(options "")(descr ""))
+            (lib (name "Resistor_THT")(type "KiCad")(uri "${KICAD10_FOOTPRINT_DIR}/Resistor_THT.pretty")(options "")(descr ""))
+            (lib (name "Capacitor_THT")(type "KiCad")(uri "${KICAD10_FOOTPRINT_DIR}/Capacitor_THT.pretty")(options "")(descr ""))
+            (lib (name "Package_TO_SOT_THT")(type "KiCad")(uri "${KICAD10_FOOTPRINT_DIR}/Package_TO_SOT_THT.pretty")(options "")(descr ""))
+            (lib (name "Potentiometer_THT")(type "KiCad")(uri "${KICAD10_FOOTPRINT_DIR}/Potentiometer_THT.pretty")(options "")(descr ""))
+            (lib (name "Buzzer_Beeper")(type "KiCad")(uri "${KICAD10_FOOTPRINT_DIR}/Buzzer_Beeper.pretty")(options "")(descr ""))
+          )
+          EOF
+
+      - name: DRC baseline under KiCad 10
+        run: |
+          kicad-cli pcb drc --severity-all --output hardware/pcb/kicad/baseline-k10.drc.txt hardware/pcb/kicad/PSN-Presepe-Mega-CLEAN.kicad_pcb || true
+          grep -E 'Found|\\[.*\\]:' hardware/pcb/kicad/baseline-k10.drc.txt | tail -80 || true
+      - uses: actions/upload-artifact@v4
+        with:
+          name: freerouting-input
+          path: |
+            hardware/pcb/kicad/PSN-Presepe-Mega-CLEAN.kicad_pcb
+            hardware/pcb/kicad/PSN-Presepe-Mega.dsn
+            hardware/pcb/kicad/baseline-k10.drc.txt
+            hardware/pcb/kicad/PSN-Presepe-Mega.kicad_dru
+
+  freeroute:
+    needs: export-dsn
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/freerouting/freerouting:2.2.4
+      options: --user 0
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: freerouting-input
+          path: work
+      - name: Freerouting 2.2.4 headless
+        run: |
+          find work -type f -maxdepth 6 -print
+          DSN=$(find work -name '*.dsn' | head -1)
+          echo "DSN=$DSN"
+          java -jar /app/freerouting-executable.jar --gui.enabled=false -de "$DSN" -do work/routed.ses -mp 100
+          test -s work/routed.ses
+      - uses: actions/upload-artifact@v4
+        with:
+          name: freerouting-output
+          path: work/routed.ses
+
+  import-and-drc:
+    needs: [export-dsn, freeroute]
+    runs-on: ubuntu-latest
+    container:
+      image: kicad/kicad:10.0
+      options: --user 0
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: freerouting-input
+          path: input
+      - uses: actions/download-artifact@v4
+        with:
+          name: freerouting-output
+          path: output
+      - name: Configure KiCad footprint libraries for final DRC
+        run: |
+          mkdir -p /root/.config/kicad/10.0
+          cat > /root/.config/kicad/10.0/fp-lib-table <<'EOF'
+          (fp_lib_table
+            (lib (name "PSN_Presep_Custom")(type "KiCad")(uri "${KIPRJMOD}/hardware/pcb/kicad/PSN_Presep_Custom.pretty")(options "")(descr ""))
+            (lib (name "Resistor_THT")(type "KiCad")(uri "${KICAD10_FOOTPRINT_DIR}/Resistor_THT.pretty")(options "")(descr ""))
+            (lib (name "Capacitor_THT")(type "KiCad")(uri "${KICAD10_FOOTPRINT_DIR}/Capacitor_THT.pretty")(options "")(descr ""))
+            (lib (name "Package_TO_SOT_THT")(type "KiCad")(uri "${KICAD10_FOOTPRINT_DIR}/Package_TO_SOT_THT.pretty")(options "")(descr ""))
+            (lib (name "Potentiometer_THT")(type "KiCad")(uri "${KICAD10_FOOTPRINT_DIR}/Potentiometer_THT.pretty")(options "")(descr ""))
+            (lib (name "Buzzer_Beeper")(type "KiCad")(uri "${KICAD10_FOOTPRINT_DIR}/Buzzer_Beeper.pretty")(options "")(descr ""))
+          )
+          EOF
+
+      - name: Import SES, apply 6mm rule and run final DRC
+        run: |
+          python3 - <<'PY'
+          import pcbnew, glob, shutil
+          src=glob.glob("input/**/*.kicad_pcb",recursive=True)[0]
+          ses=glob.glob("output/**/*.ses",recursive=True)[0]
+          dru=glob.glob("input/**/*.kicad_dru",recursive=True)[0]
+          out="PSN-Presepe-Mega-FREEROUTED.kicad_pcb"
+          print("CUSTOM_RULE_SOURCE",dru)
+          print("CUSTOM_RULE_6MM_PRESENT","min 6mm" in open(dru).read())
+          b=pcbnew.LoadBoard(src)
+          ok=pcbnew.ImportSpecctraSES(b,ses)
+          print("IMPORT_SES",ok,ses)
+          if not ok: raise SystemExit(1)
+          pcbnew.SaveBoard(out,b)
+          shutil.copyfile(dru,"PSN-Presepe-Mega-FREEROUTED.kicad_dru")
+          PY
+          test -f PSN-Presepe-Mega-FREEROUTED.kicad_dru
+          grep -n "Relay contacts to SELV 6mm\|min 6mm" PSN-Presepe-Mega-FREEROUTED.kicad_dru
+          cp PSN-Presepe-Mega-FREEROUTED.kicad_pcb positive-control.kicad_pcb
+          cat > positive-control.kicad_dru <<'EOF'
+          (version 1)
+          (rule "CI positive control 100mm"
+            (condition "A.Type == 'Track' && B.Type == 'Track' && A.Net != B.Net")
+            (constraint clearance (min 100mm))
+          )
+          EOF
+          kicad-cli pcb drc --severity-all --output positive-control.drc.txt positive-control.kicad_pcb || true
+          kicad-cli pcb drc --severity-all --output freerouted-k10.drc.txt PSN-Presepe-Mega-FREEROUTED.kicad_pcb || true
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          def violations(path):
+              s=Path(path).read_text()
+              m=re.search(r"Found ([0-9]+) DRC violations",s,re.I)
+              return int(m.group(1)) if m else -1
+          base=violations("freerouted-k10.drc.txt")
+          control=violations("positive-control.drc.txt")
+          print("CUSTOM_RULE_POSITIVE_CONTROL baseline=",base,"forced=",control)
+          if base < 0 or control <= base:
+              raise SystemExit("CUSTOM_RULE_POSITIVE_CONTROL failed")
+          print("CUSTOM_RULE_POSITIVE_CONTROL passed")
+          PY
+          grep -E 'Found|\\[.*\\]:' freerouted-k10.drc.txt | tail -160 || true
+          echo '--- FULL UNEXPECTED DRC DETAILS ---'
+          cat freerouted-k10.drc.txt
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          s=Path("freerouted-k10.drc.txt").read_text()
+          m=re.findall(r"Found ([0-9]+) unconnected",s,re.I)
+          n=int(m[-1]) if m else -1
+          cats=[line[1:line.index("]")] for line in s.splitlines() if line.startswith("[") and "]" in line]
+          allowed={"lib_footprint_issues"}
+          bad=sorted(set(cats)-allowed)
+          print("FINAL_GATE unconnected=",n,"categories=",sorted(set(cats)),"unexpected=",bad or "none")
+          if n != 0 or bad:
+              raise SystemExit(1)
+          PY
+      - name: Generate production Gerbers and drill files
+        run: |
+          mkdir -p manufacturing/gerbers
+          kicad-cli pcb export gerbers -l F.Cu,B.Cu,F.Mask,B.Mask,F.Silkscreen,B.Silkscreen,Edge.Cuts -o manufacturing/gerbers/ PSN-Presepe-Mega-FREEROUTED.kicad_pcb
+          kicad-cli pcb export drill -o manufacturing/gerbers/ PSN-Presepe-Mega-FREEROUTED.kicad_pcb
+          test -f manufacturing/gerbers/PSN-Presepe-Mega-FREEROUTED-F_Cu.gtl
+          # This board intentionally has no plotted solder-mask content; KiCad omits empty F.Mask/B.Mask Gerbers.
+          test -n "$(find manufacturing/gerbers -type f \( -name '*.drl' -o -name '*.xln' \) -print -quit)"
+          find manufacturing/gerbers -type f -maxdepth 1 -printf '%f\n' | sort
+      - uses: actions/checkout@v4
+        with:
+          path: repo
+      - name: Generate BOM CPL and complete manufacturing package
+        run: |
+          python3 repo/hardware/pcb/tools/export_bom_cpl.py PSN-Presepe-Mega-FREEROUTED.kicad_pcb manufacturing/
+          cp PSN-Presepe-Mega-FREEROUTED.kicad_pcb manufacturing/
+          cp PSN-Presepe-Mega-FREEROUTED.kicad_dru manufacturing/
+          cp freerouted-k10.drc.txt manufacturing/
+          test -s manufacturing/BOM.csv
+          test -s manufacturing/CPL.csv
+          test -s manufacturing/PSN-Presepe-Mega-FREEROUTED.kicad_pcb
+          test -s manufacturing/freerouted-k10.drc.txt
+          echo "MANUFACTURING_PACKAGE_PASS"
+      - name: Commit validated Rev-A manufacturing release
+        run: |
+          RELEASE=repo/hardware/pcb/release/Rev-A
+          rm -rf "$RELEASE"
+          mkdir -p "$RELEASE"
+          cp -a manufacturing/. "$RELEASE/"
+          cat > "$RELEASE/README.md" <<'EOF'
+          # PSN-Presepe PCB Manufacturing Release — Rev A
+
+          This directory is the validated manufacturing snapshot produced by the KiCad 10 / Freerouting CI pipeline.
+
+          Contents:
+          - final routed KiCad PCB and design rules
+          - final DRC report
+          - BOM.csv
+          - CPL.csv
+          - Gerber copper, silkscreen and board outline
+          - Excellon drill file and Gerber job file
+
+          Validation gates include 0 unconnected pads, relay/contact 6 mm clearance rule, Mega mechanical/pin/stackable checks, terminal silkscreen checks, and manufacturing export checks.
+
+          F.Mask/B.Mask are accepted by KiCad but contain no plottable content on this design, so KiCad omits empty .gts/.gbs files rather than generating synthetic empty masks.
+
+          Generated from GitHub Actions run associated with the parent source commit. Do not edit generated manufacturing files manually.
+          EOF
+          cd repo
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add hardware/pcb/release/Rev-A
+          if git diff --cached --quiet; then
+            echo "RELEASE_ALREADY_CURRENT"
+          else
+            git commit -m "Add validated Rev-A PCB manufacturing release [skip ci]"
+            git push origin HEAD:dev
+          fi
+      - uses: actions/upload-artifact@v4
+        with:
+          name: pcb-manufacturing-complete
+          path: manufacturing/
+          if-no-files-found: error
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: pcb-freerouted-k10
+          path: |
+            PSN-Presepe-Mega-FREEROUTED.kicad_pcb
+            freerouted-k10.drc.txt

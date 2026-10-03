@@ -1,0 +1,60 @@
+name: PCB Routing WIP
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - 'wip/pcb-routing'
+    paths:
+      - "hardware/pcb/**"
+      - ".github/workflows/pcb-routing-wip.yml"
+
+permissions:
+  contents: read
+
+env:
+  KICAD9_FOOTPRINT_DIR: /usr/share/kicad/footprints
+
+concurrency:
+  group: pcb-routing-wip
+  cancel-in-progress: true
+
+jobs:
+  route-candidate:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Source sanity
+        run: python3 hardware/pcb/tools/pcb_sanity.py hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb
+      - name: Install KiCad 9
+        run: |
+          sudo add-apt-repository --yes ppa:kicad/kicad-9.0-releases
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends kicad kicad-footprints
+      - name: Build candidate
+        run: |
+          python3 hardware/pcb/tools/make_route_candidate.py \
+            hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb \
+            hardware/pcb/kicad/route-candidate.kicad_pcb
+          cp hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pro hardware/pcb/kicad/route-candidate.kicad_pro
+          ALLOW_ROUTING=1 python3 hardware/pcb/tools/pcb_sanity.py hardware/pcb/kicad/route-candidate.kicad_pcb
+      - name: DRC baseline and candidate
+        run: |
+          mkdir -p hardware/pcb/build
+          kicad-cli pcb drc --severity-all --output hardware/pcb/build/drc-report.txt hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb
+          kicad-cli pcb drc --severity-all --output hardware/pcb/build/route-candidate-drc.txt hardware/pcb/kicad/route-candidate.kicad_pcb
+      - name: Prove candidate improvement
+        run: |
+          python3 hardware/pcb/tools/drc_summary.py hardware/pcb/build/drc-report.txt
+          python3 hardware/pcb/tools/drc_summary.py hardware/pcb/build/route-candidate-drc.txt
+          python3 hardware/pcb/tools/drc_details.py hardware/pcb/build/route-candidate-drc.txt
+          CANDIDATE_MODE=improve python3 hardware/pcb/tools/compare_unconnected.py hardware/pcb/build/drc-report.txt hardware/pcb/build/route-candidate-drc.txt
+      - name: Upload routing evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: PCB-routing-WIP-evidence
+          path: |
+            hardware/pcb/build/drc-report.txt
+            hardware/pcb/build/route-candidate-drc.txt
+          if-no-files-found: warn

@@ -1,0 +1,423 @@
+name: PCB Relay Contact Batch
+on:
+  workflow_dispatch:
+  push:
+    branches: [dev]
+    paths:
+      - ".github/workflows/pcb-targeted-alba-b.yml"
+      - "hardware/pcb/tools/grid_router.py"
+permissions:
+  contents: write
+jobs:
+  route:
+    runs-on: ubuntu-24.04
+    container:
+      image: kicad/kicad:9.0
+      options: --user 0
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify KiCad CLI and router syntax
+        run: |
+          kicad-cli version
+          python3 -m py_compile hardware/pcb/tools/grid_router.py
+      - name: Build obstacle-aware relay candidates
+        run: |
+          set -eu
+          mkdir -p hardware/pcb/targeted-relays
+          python3 - <<'PY'
+          from pathlib import Path
+          import math,re,subprocess,tempfile
+          base=Path("hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb").read_text()
+          def blocks(text,token):
+            p=0
+            while True:
+              st=text.find(token,p)
+              if st<0:return
+              d=0;q=False;esc=False
+              for i in range(st,len(text)):
+                ch=text[i]
+                if q:
+                  if esc:esc=False
+                  elif ch=="\\":esc=True
+                  elif ch=='"':q=False
+                else:
+                  if ch=='"':q=True
+                  elif ch=="(":d+=1
+                  elif ch==")":
+                    d-=1
+                    if d==0: yield text[st:i+1];p=i+1;break
+          pads={}
+          for fp in blocks(base,"(footprint"):
+            rm=re.search(r'\(property "Reference" "([^"]+)"',fp); am=re.search(r'\(at ([-\d.]+) ([-\d.]+)(?: ([-\d.]+))?\)',fp)
+            if not(rm and am):continue
+            ref=rm.group(1)
+            if not(re.fullmatch(r'K\d+',ref) or re.fullmatch(r'JR\d+',ref)):continue
+            fx,fy,rot=float(am.group(1)),float(am.group(2)),float(am.group(3) or 0); aa=math.radians(-rot)
+            for pb in blocks(fp,"(pad"):
+              nm=re.search(r'\(net (\d+) "(R\d+_(?:COM|NO|NC))"\)',pb); pm=re.search(r'\(at ([-\d.]+) ([-\d.]+)',pb)
+              if not(nm and pm):continue
+              px,py=float(pm.group(1)),float(pm.group(2)); x=fx+px*math.cos(aa)-py*math.sin(aa); y=fy+px*math.sin(aa)+py*math.cos(aa)
+              pads.setdefault(nm.group(2),[]).append((x,y,int(nm.group(1)),ref))
+          byrelay={}
+          for net,ps in pads.items():
+            if len(ps)==2: byrelay.setdefault(int(net[1:net.index('_')]),[]).append((net,ps))
+          targets={"R16_COM","R16_NO","R16_NC","R14_COM","R15_NC"}
+          edge_lane={"R14_COM":297.0,"R15_NC":294.0,"R16_COM":291.0,"R16_NO":288.0,"R16_NC":285.0}
+          print("RELAY_MAP",len(byrelay),sorted((k,len(v)) for k,v in byrelay.items()))
+          work=base; solved=[]
+          order=[]
+          for rn,nets in sorted(byrelay.items()):
+            for net,ps in sorted(nets):
+              if net in targets: order.append((rn,net,ps))
+          for rn,net,ps in order:
+            a,b=ps
+            tmp=Path(f"/tmp/cumulative-{net}.kicad_pcb"); tmp.write_text(work)
+            p=None
+            attempts=[("0.5","120",8,"220","1.75"),("0.25","45",12,"260","1.75"),("0.5","150",10,"280","1.50"),("0.25","55",16,"320","1.50"),("0.125","10",15,"360","1.50"),("0.10","10",18,"420","1.50")]
+            if net=="R11_NC": attempts=[("0.25","80",12,"200","1.75"),("0.25","95",45,"240","1.50"),("0.25","105",35,"260","1.45")]
+            for step,margin,to,via,clear in attempts:
+              cmd=["python3","hardware/pcb/tools/grid_router.py",str(tmp),"--net",net,
+                   "--start",f"{a[0]},{a[1]},B.Cu","--goal",f"{b[0]},{b[1]},B.Cu",
+                   "--step",step,"--clearance",clear,"--margin",margin,"--via-cost",via]
+              try:
+                q=subprocess.run(cmd,text=True,capture_output=True,timeout=to)
+              except subprocess.TimeoutExpired:
+                print("TIMEOUT",net,"step",step,"clear",clear); continue
+              if q.returncode==0:
+                p=q; print("ROUTED_GRID",net,step,"clear",clear); break
+              print("NO_ROUTE_GRID",net,step,"clear",clear,q.stderr.strip())
+            if p is None and net in edge_lane:
+              # Deterministic B.Cu perimeter corridor candidate; DRC remains authority.
+              lane=edge_lane[net]
+              class Q: pass
+              q=Q(); q.returncode=0
+              q.stdout="ROUTE 4\n"+f"{a[0]},{a[1]},B.Cu\n{lane},{a[1]},B.Cu\n{lane},{b[1]},B.Cu\n{b[0]},{b[1]},B.Cu\n"
+              p=q; print("ROUTED_EDGE",net,lane)
+            if p is None: continue
+            pts=[]
+            for line in p.stdout.splitlines()[1:]:
+              x,y,la=line.split(","); pts.append((float(x),float(y),la))
+            if not pts: continue
+            pts.insert(0,(a[0],a[1],pts[0][2])); pts.append((b[0],b[1],pts[-1][2]))
+            items=[]
+            for u,v in zip(pts,pts[1:]):
+              if u[2]!=v[2]:
+                if math.hypot(u[0]-a[0],u[1]-a[1])<1.0 or math.hypot(u[0]-b[0],u[1]-b[1])<1.0: continue
+                items.append(f'\\t(via (at {u[0]} {u[1]}) (size 1.0) (drill 0.5) (layers "F.Cu" "B.Cu") (net {a[2]}))\\n')
+              else:
+                items.append(f'\\t(segment (start {u[0]} {u[1]}) (end {v[0]} {v[1]}) (width 1.0) (layer "{u[2]}") (net {a[2]}))\\n')
+            idx=work.rfind(")"); work=work[:idx]+''.join(items).encode().decode('unicode_escape')+work[idx:]
+            solved.append(net); print("CUMULATIVE",len(solved),net,len(pts))
+          # Fine-grid local repack: retry only the stubborn R14-R16 bundle after
+          # removing its experimental target copper.  Existing unrelated copper,
+          # footprints and placement stay fixed; KiCad DRC remains authoritative.
+          local_targets={"R13_COM","R13_NO","R13_NC","R14_COM","R14_NO","R14_NC","R15_COM","R15_NO","R15_NC","R16_COM","R16_NO","R16_NC"}
+          def strip_target_copper(text,names):
+            ids={int(n) for n,name in re.findall(r'[(]net ([0-9]+) "([^"]+)"[)]',text) if name in names}
+            print("STRIP_IDS",sorted(names),sorted(ids))
+            for token in ("(segment","(via"):
+              out=[]; pos=0
+              while True:
+                st=text.find(token,pos)
+                if st<0: out.append(text[pos:]); break
+                out.append(text[pos:st]); d=0; q=False; esc=False; end=None
+                for i in range(st,len(text)):
+                  ch=text[i]
+                  if q:
+                    if esc: esc=False
+                    elif ch=="\\\\": esc=True
+                    elif ch=='"': q=False
+                  else:
+                    if ch=='"': q=True
+                    elif ch=="(": d+=1
+                    elif ch==")":
+                      d-=1
+                      if d==0: end=i+1; break
+                b=text[st:end]; m=re.search(r'[(]net ([0-9]+)[)]',b)
+                if not(m and int(m.group(1)) in ids): out.append(b)
+                pos=end
+              text=''.join(out)
+            return text
+          repack=strip_target_copper(base,local_targets)
+          repacked=[]
+          # Include the already-routed R15_NO because its x~286.5/292 corridor is
+          # the principal blocker for R16_COM/R16_NC. Repack it together with
+          # the five stubborn nets instead of treating it as immutable copper.
+          repack_order=[]
+          for rn,nets in sorted(byrelay.items()):
+            for net,ps in sorted(nets):
+              if net in local_targets: repack_order.append((rn,net,ps))
+          # Route the blocking existing lane first, then NC/COM/NO targets.
+          priority={"R13_COM":0,"R13_NO":1,"R13_NC":2,"R14_NO":3,"R14_NC":4,"R15_COM":5,"R15_NO":6,"R15_NC":7,"R16_NC":8,"R16_COM":9,"R16_NO":10,"R14_COM":11}
+          repack_order.sort(key=lambda z:priority.get(z[1],99))
+          for rn,net,ps in repack_order:
+            a,b=ps; tmp=Path(f"/tmp/repack-{net}.kicad_pcb"); tmp.write_text(repack)
+            chosen=None
+            for step,margin,to,via,clear in [("0.25","35",12,"260","1.50"),("0.125","24",20,"360","1.50"),("0.10","12",18,"420","1.50")]:
+              cmd=["python3","hardware/pcb/tools/grid_router.py",str(tmp),"--net",net,
+                   "--start",f"{a[0]},{a[1]},B.Cu","--goal",f"{b[0]},{b[1]},B.Cu",
+                   "--step",step,"--clearance",clear,"--margin",margin,"--via-cost",via]
+              try: q=subprocess.run(cmd,text=True,capture_output=True,timeout=to)
+              except subprocess.TimeoutExpired: continue
+              if q.returncode==0: chosen=q; print("REPACK_GRID",net,step); break
+            if chosen is None: continue
+            pts=[]
+            for line in chosen.stdout.splitlines()[1:]:
+              x,y,la=line.split(","); pts.append((float(x),float(y),la))
+            pts.insert(0,(a[0],a[1],pts[0][2])); pts.append((b[0],b[1],pts[-1][2]))
+            items=[]
+            for u,v in zip(pts,pts[1:]):
+              if u[2]!=v[2]:
+                if math.hypot(u[0]-a[0],u[1]-a[1])<1.0 or math.hypot(u[0]-b[0],u[1]-b[1])<1.0: continue
+                items.append(f'\\t(via (at {u[0]} {u[1]}) (size 1.0) (drill 0.5) (layers "F.Cu" "B.Cu") (net {a[2]}))\\n')
+              else: items.append(f'\\t(segment (start {u[0]} {u[1]}) (end {v[0]} {v[1]}) (width 1.0) (layer "{u[2]}") (net {a[2]}))\\n')
+            idx=repack.rfind(")"); repack=repack[:idx]+''.join(items).encode().decode('unicode_escape')+repack[idx:]
+            repacked.append(net)
+          Path("hardware/pcb/targeted-relays/repack.kicad_pcb").write_text(repack)
+          print("LOCAL_REPACK_DONE",len(repacked),repacked)
+          # Surgical candidate: R10_NO (net 101) is the sole negotiated blocker
+          # for both R16_NC and R16_NO. Rip only these three nets, route the two
+          # R16 contacts first, then restore R10_NO.
+          surgery_names={"R10_NO","R16_NC","R16_NO"}
+          surgery=strip_target_copper(base,surgery_names)
+          surgery_order=[]
+          for rn,nets in sorted(byrelay.items()):
+            for net,ps in sorted(nets):
+              if net in surgery_names: surgery_order.append((rn,net,ps))
+          surgery_order.sort(key=lambda z:{"R16_NC":0,"R16_NO":1,"R10_NO":2}.get(z[1],9))
+          surg_done=[]
+          for rn,net,ps in surgery_order:
+            a,b=ps; tmp=Path(f"/tmp/surgery101-{net}.kicad_pcb"); tmp.write_text(surgery)
+            chosen=None
+            for step,margin,to,via in [("0.5","22",10,"240"),("0.25","18",15,"300"),("0.125","10",18,"380")]:
+              cmd=["python3","hardware/pcb/tools/grid_router.py",str(tmp),"--net",net,
+                   "--start",f"{a[0]},{a[1]},B.Cu","--goal",f"{b[0]},{b[1]},B.Cu",
+                   "--step",step,"--clearance","1.50","--margin",margin,"--via-cost",via]
+              try: q=subprocess.run(cmd,text=True,capture_output=True,timeout=to)
+              except subprocess.TimeoutExpired: continue
+              if q.returncode==0: chosen=q; print("SURGERY101_GRID",net,step); break
+            if chosen is None:
+              print("SURGERY101_FAIL",net); continue
+            pts=[]
+            for line in chosen.stdout.splitlines()[1:]:
+              x,y,la=line.split(","); pts.append((float(x),float(y),la))
+            pts.insert(0,(a[0],a[1],pts[0][2])); pts.append((b[0],b[1],pts[-1][2]))
+            items=[]
+            for u,v in zip(pts,pts[1:]):
+              if u[2]!=v[2]:
+                if math.hypot(u[0]-a[0],u[1]-a[1])<1.0 or math.hypot(u[0]-b[0],u[1]-b[1])<1.0: continue
+                items.append(f'\\t(via (at {u[0]} {u[1]}) (size 1.0) (drill 0.5) (layers "F.Cu" "B.Cu") (net {a[2]}))\\n')
+              else:
+                items.append(f'\\t(segment (start {u[0]} {u[1]}) (end {v[0]} {v[1]}) (width 1.0) (layer "{u[2]}") (net {a[2]}))\\n')
+            idx=surgery.rfind(")"); surgery=surgery[:idx]+''.join(items).encode().decode('unicode_escape')+surgery[idx:]
+            surg_done.append(net)
+          Path("hardware/pcb/targeted-relays/surgery101.kicad_pcb").write_text(surgery)
+          print("SURGERY101_DONE",len(surg_done),surg_done)
+          # Direct negotiated candidate after removing R10_NO: use the known
+          # soft path for R16 contacts, then let KiCad identify any remaining
+          # hard conflicts. This avoids hard-A* refusing a diagnostically useful path.
+          direct=strip_target_copper(base,{"R10_NO","R16_NC","R16_NO"})
+          # Assert using complete balanced KiCad blocks, not the first ')'.
+          direct_ids={101,117,119}
+          direct_left=[]
+          for tok in ("(segment","(via"):
+            for b in blocks(direct,tok):
+              m=re.search(r'[(]net ([0-9]+)[)]',b)
+              if m and int(m.group(1)) in direct_ids:
+                direct_left.append((tok,int(m.group(1)),b[:180]))
+          print("DIRECT101_LEFT_AFTER_STRIP",len(direct_left),direct_left[:3])
+          if direct_left:
+            raise RuntimeError("surgical strip left target copper: "+repr(direct_left[:3]))
+          direct_done=[]
+          for rn,net,ps in surgery_order:
+            if net=="R10_NO": continue
+            a,b=ps; tmp=Path(f"/tmp/direct101-{net}.kicad_pcb"); tmp.write_text(direct)
+            cmd=["python3","hardware/pcb/tools/grid_router.py",str(tmp),"--net",net,
+                 "--start",f"{a[0]},{a[1]},B.Cu","--goal",f"{b[0]},{b[1]},B.Cu",
+                 "--step","0.5","--clearance","1.50","--margin","18","--via-cost","240",
+                 "--soft-congestion","--congestion-cost","5000"]
+            try: q=subprocess.run(cmd,text=True,capture_output=True,timeout=12)
+            except subprocess.TimeoutExpired:
+              print("DIRECT101_TIMEOUT",net); continue
+            if q.returncode!=0:
+              print("DIRECT101_FAIL",net,q.stderr.strip()); continue
+            pts=[]
+            for line in q.stdout.splitlines()[1:]:
+              x,y,la=line.split(","); pts.append((float(x),float(y),la))
+            if not pts: continue
+            pts.insert(0,(a[0],a[1],pts[0][2])); pts.append((b[0],b[1],pts[-1][2]))
+            items=[]
+            for u,v in zip(pts,pts[1:]):
+              if u[2]!=v[2]:
+                if math.hypot(u[0]-a[0],u[1]-a[1])<1.0 or math.hypot(u[0]-b[0],u[1]-b[1])<1.0: continue
+                items.append(f'\\t(via (at {u[0]} {u[1]}) (size 1.0) (drill 0.5) (layers "F.Cu" "B.Cu") (net {a[2]}))\\n')
+              else: items.append(f'\\t(segment (start {u[0]} {u[1]}) (end {v[0]} {v[1]}) (width 1.0) (layer "{u[2]}") (net {a[2]}))\\n')
+            idx=direct.rfind(")"); direct=direct[:idx]+''.join(items).encode().decode('unicode_escape')+direct[idx:]
+            direct_done.append(net); print("DIRECT101_ROUTE",net,len(pts))
+          Path("hardware/pcb/targeted-relays/direct101.kicad_pcb").write_text(direct)
+          print("DIRECT101_DONE",direct_done)
+          # Negotiated-congestion diagnostic: reveal which existing track
+          # corridors block each stubborn net. Pads/vias remain hard obstacles.
+          for rn,net,ps in order:
+            a,b=ps; tmp=Path(f"/tmp/soft-{net}.kicad_pcb"); tmp.write_text(base)
+            q=None
+            for step,margin,to,via in [("1.0","12",5,"180"),("0.5","16",8,"220"),("0.25","10",10,"300")]:
+              cmd=["python3","hardware/pcb/tools/grid_router.py",str(tmp),"--net",net,
+                   "--start",f"{a[0]},{a[1]},B.Cu","--goal",f"{b[0]},{b[1]},B.Cu",
+                   "--step",step,"--clearance","1.50","--margin",margin,"--via-cost",via,
+                   "--soft-congestion","--congestion-cost","5000","--report-blockers"]
+              try: probe=subprocess.run(cmd,text=True,capture_output=True,timeout=to)
+              except subprocess.TimeoutExpired:
+                print("SOFT_TIMEOUT",net,step); continue
+              if probe.returncode==0:
+                q=probe; print("SOFT_ROUTE",net,"step",step,probe.stdout.splitlines()[0]); break
+              print("SOFT_NO_ROUTE",net,"step",step,probe.stderr.strip())
+            if q is None: print("SOFT_EXHAUSTED",net)
+          # Fast isolation pass: test each stubborn net independently against the
+          # known-clean baseline. This can harvest a clean partial win without
+          # requiring all five routes to coexist.
+          for rn,net,ps in order:
+            a,b=ps; tmp=Path(f"/tmp/single-{net}.kicad_pcb"); tmp.write_text(base)
+            chosen=None
+            for step,margin,to,via,clear in [("0.5","120",5,"220","1.75"),("0.25","45",8,"260","1.50"),("0.125","10",10,"360","1.50")]:
+              cmd=["python3","hardware/pcb/tools/grid_router.py",str(tmp),"--net",net,
+                   "--start",f"{a[0]},{a[1]},B.Cu","--goal",f"{b[0]},{b[1]},B.Cu",
+                   "--step",step,"--clearance",clear,"--margin",margin,"--via-cost",via]
+              try: q=subprocess.run(cmd,text=True,capture_output=True,timeout=to)
+              except subprocess.TimeoutExpired: continue
+              if q.returncode==0: chosen=q; break
+            if chosen is None: continue
+            pts=[]
+            for line in chosen.stdout.splitlines()[1:]:
+              x,y,la=line.split(","); pts.append((float(x),float(y),la))
+            if not pts: continue
+            pts.insert(0,(a[0],a[1],pts[0][2])); pts.append((b[0],b[1],pts[-1][2]))
+            single=base; items=[]
+            for u,v in zip(pts,pts[1:]):
+              if u[2]!=v[2]:
+                if math.hypot(u[0]-a[0],u[1]-a[1])<1.0 or math.hypot(u[0]-b[0],u[1]-b[1])<1.0: continue
+                items.append(f'\\t(via (at {u[0]} {u[1]}) (size 1.0) (drill 0.5) (layers "F.Cu" "B.Cu") (net {a[2]}))\\n')
+              else: items.append(f'\\t(segment (start {u[0]} {u[1]}) (end {v[0]} {v[1]}) (width 1.0) (layer "{u[2]}") (net {a[2]}))\\n')
+            idx=single.rfind(")"); single=single[:idx]+''.join(items).encode().decode('unicode_escape')+single[idx:]
+            Path(f"hardware/pcb/targeted-relays/single-{net}.kicad_pcb").write_text(single)
+            print("SINGLE_CANDIDATE",net,len(pts))
+          Path("hardware/pcb/targeted-relays/cumulative.kicad_pcb").write_text(work)
+          print("CUMULATIVE_DONE",len(solved),solved)
+          PY
+      - name: Build selective clearance-cleanup candidate
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          p=Path("hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb")
+          t=p.read_text()
+          bad={"R9_NC","R14_COM","R3_NO","R3_COM","R10_COM","R10_NO","R4_NO","R4_COM","R5_NO","R5_COM","R1_COM","R1_NO","R6_COM","R6_NO","R2_COM","R2_NO","R8_NC","R8_COM"}
+          ids={int(n) for n,name in re.findall(r'\(net (\d+) "([^"]+)"\)',t) if name in bad}
+          def strip_blocks(text,token):
+            out=[]; pos=0
+            while True:
+              st=text.find(token,pos)
+              if st<0: out.append(text[pos:]); break
+              out.append(text[pos:st]); d=0; q=False; esc=False; end=None
+              for i in range(st,len(text)):
+                ch=text[i]
+                if q:
+                  if esc: esc=False
+                  elif ch=="\\\\": esc=True
+                  elif ch=='"': q=False
+                else:
+                  if ch=='"': q=True
+                  elif ch=="(": d+=1
+                  elif ch==")":
+                    d-=1
+                    if d==0: end=i+1; break
+              b=text[st:end]
+              m=re.search(r'[(]net ([0-9]+)[)]',b)
+              if not(m and int(m.group(1)) in ids): out.append(b)
+              pos=end
+            return ''.join(out)
+          t=strip_blocks(t,"(segment")
+          t=strip_blocks(t,"(via")
+          out=Path("hardware/pcb/targeted-relays/cleanup.kicad_pcb"); out.parent.mkdir(parents=True,exist_ok=True); out.write_text(t)
+          print("CLEANUP_NETS",len(ids),sorted(bad))
+          PY
+      - name: DRC all candidates
+        run: |
+          set -u
+          for pcb in hardware/pcb/targeted-relays/*.kicad_pcb; do
+            echo "DRC $pcb"
+            n="${pcb%.kicad_pcb}"
+            rm -rf /tmp/kicadctx && mkdir -p /tmp/kicadctx
+            cp -a hardware/pcb/kicad/. /tmp/kicadctx/
+            cp "$pcb" /tmp/kicadctx/PSN-Presepe-Mega.kicad_pcb
+            (cd /tmp/kicadctx && kicad-cli pcb drc --severity-all --output /tmp/candidate.drc.txt PSN-Presepe-Mega.kicad_pcb) || true
+            cp /tmp/candidate.drc.txt "${n}.drc.txt"
+            echo "REPORT ${n}.drc.txt"; grep -E "^Found|^\\[" "${n}.drc.txt" | head -80 || true
+          done
+      - name: Rank candidates
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          for p in sorted(Path("hardware/pcb/targeted-relays").glob("*.drc.txt")):
+              t=p.read_text()
+              m=re.search(r'Found +([0-9]+) +unconnected +(items|pads)',t,re.I)
+              u=int(m.group(1)) if m else t.count('[unconnected_items]')
+              cats=[x[1:x.index(']')] for x in t.splitlines() if x.startswith('[') and ']' in x]
+              # hole_to_hole and the single via_dangling are established baseline
+              # categories on the official board; reject only newly introduced electrical/geometry classes here.
+              critical=sorted({x for x in cats if x not in {'unconnected_items','lib_footprint_mismatch','hole_to_hole','via_dangling'}})
+              print(p.name,"unconnected=",u,"critical=",critical or "none")
+              if critical:
+                  lines=t.splitlines()
+                  for i,line in enumerate(lines):
+                      if line.startswith('[') and line[1:line.index(']')] in critical:
+                          print("DETAIL",p.name,*lines[i:i+5],sep=" | ")
+          PY
+      - name: Promote best electrically clean candidate
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re,shutil
+          root=Path("hardware/pcb/targeted-relays")
+          forbidden={"clearance","shorting_items","tracks_crossing","hole_clearance","solder_mask_bridge","track_dangling"}
+          ranked=[]
+          for drcp in root.glob("*.drc.txt"):
+            board=drcp.with_name(drcp.name.replace(".drc.txt",".kicad_pcb"))
+            if not board.exists(): continue
+            drc=drcp.read_text()
+            cats={line[1:line.index("]")] for line in drc.splitlines() if line.startswith("[") and "]" in line}
+            m=re.search(r'Found +([0-9]+) +unconnected +(?:items|pads)',drc,re.I)
+            unc=int(m.group(1)) if m else 999
+            bad=sorted(cats & forbidden)
+            print("PROMOTION_CANDIDATE",board.name,"unconnected=",unc,"critical=",bad or "none")
+            if not bad and unc<74: ranked.append((unc,board))
+          if not ranked:
+            print("NO_CLEAN_IMPROVEMENT")
+            raise SystemExit(0)
+          unc,best=min(ranked,key=lambda x:x[0])
+          shutil.copy2(best,"hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb")
+          p=Path("hardware/pcb/worklog/CURRENT.md")
+          p.write_text(p.read_text()+f"\n- Best DRC-clean relay candidate {best.name} promoted by CI: {unc} unconnected.\n")
+          print("PROMOTED_BEST",best.name,unc)
+          PY
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb hardware/pcb/worklog/CURRENT.md
+          if git diff --cached --quiet; then echo "No promotable board change"; else git commit -m "Promote best clean relay routing candidate"; git push; fi
+      - uses: actions/upload-artifact@v4
+        with:
+          name: targeted-relay-contact-candidate
+          path: hardware/pcb/targeted-relays/
+
+
+
+
+
+
+
+
+
+

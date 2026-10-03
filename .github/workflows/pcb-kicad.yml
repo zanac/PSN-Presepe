@@ -1,0 +1,90 @@
+name: PCB KiCad Validation
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - dev
+    paths:
+      - "hardware/pcb/**"
+      - ".github/workflows/pcb-kicad.yml"
+
+permissions:
+  contents: read
+
+env:
+  KICAD9_FOOTPRINT_DIR: /usr/share/kicad/footprints
+
+concurrency:
+  group: pcb-kicad-dev
+  cancel-in-progress: true
+
+jobs:
+  validate-pcb:
+    runs-on: ubuntu-24.04
+    container:
+      image: kicad/kicad:9.0
+      options: --user 0
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: PCB source sanity check
+        run: python3 hardware/pcb/tools/pcb_sanity.py hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb
+
+      - name: Verify KiCad 9 CLI
+        run: kicad-cli version
+
+      - name: PCB DRC full report
+        run: |
+          mkdir -p hardware/pcb/build
+          kicad-cli pcb drc --severity-all \
+            --output hardware/pcb/build/drc-report.txt \
+            hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb || true
+
+      - name: Summarize DRC
+        run: python3 hardware/pcb/tools/drc_summary.py hardware/pcb/build/drc-report.txt
+
+      - name: PCB DRC and connectivity gate
+        id: fabrication_gate
+        run: |
+          kicad-cli pcb drc --severity-error \
+            --output hardware/pcb/build/drc-errors.txt \
+            hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb || true
+          python3 hardware/pcb/tools/drc_gate.py hardware/pcb/build/drc-errors.txt --allow-unconnected 74
+
+      - name: Export Gerbers and drill
+        if: false
+        run: |
+          mkdir -p hardware/pcb/build/gerbers
+          kicad-cli pcb export gerbers \
+            --output hardware/pcb/build/gerbers/ \
+            --layers F.Cu,B.Cu,F.Silkscreen,B.Silkscreen,F.Mask,B.Mask,Edge.Cuts \
+            hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb
+          kicad-cli pcb export drill \
+            --output hardware/pcb/build/gerbers/ \
+            --format excellon --generate-map \
+            hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb
+
+      - name: Package fabrication preview
+        if: false
+        run: |
+          cd hardware/pcb/build/gerbers
+          zip -9 ../PSN-Presepe-RevA-Gerber-DRAFT.zip ./*
+
+      - name: Upload DRC report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: PCB-DRC-report
+          path: |
+            hardware/pcb/build/drc-report.txt
+            hardware/pcb/build/drc-errors.txt
+          if-no-files-found: warn
+
+      - name: Upload draft Gerbers
+        if: false
+        uses: actions/upload-artifact@v4
+        with:
+          name: PSN-Presepe-RevA-Gerber-DRAFT
+          path: hardware/pcb/build/PSN-Presepe-RevA-Gerber-DRAFT.zip

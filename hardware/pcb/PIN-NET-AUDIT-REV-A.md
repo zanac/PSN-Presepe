@@ -1,0 +1,328 @@
+# Rev A PCB pin-to-net audit
+
+Generated from `PSN-Presepe-Mega.kicad_pcb` on branch `dev`. This is an audit/reference file, not a substitute for KiCad ERC.
+
+| Ref | Value | Pad | Net |
+|---|---|---:|---|
+| BZ1 | PASSIVE_BUZZER_D6 | 1 | D6_BUZZER |
+| BZ1 | PASSIVE_BUZZER_D6 | 2 | GND |
+| C1 | 470uF_25V_RELAY_BULK | 1 | +12V |
+| C1 | 470uF_25V_RELAY_BULK | 2 | GND |
+| C2 | 100nF_ULN1 | 1 | +12V |
+| C2 | 100nF_ULN1 | 2 | GND |
+| C3 | 100nF_ULN2 | 1 | +12V |
+| C3 | 100nF_ULN2 | 2 | GND |
+| J_ALBA | ALBA_12V_R_G_B | 1 | +12V |
+| J_ALBA | ALBA_12V_R_G_B | 2 | ALBA_R_NEG |
+| J_ALBA | ALBA_12V_R_G_B | 3 | ALBA_G_NEG |
+| J_ALBA | ALBA_12V_R_G_B | 4 | ALBA_B_NEG |
+| J_CASETTE | CASETTE_12V_GND_DATA | 1 | +12V |
+| J_CASETTE | CASETTE_12V_GND_DATA | 2 | GND |
+| J_CASETTE | CASETTE_12V_GND_DATA | 3 | D8_CASETTE_DATA |
+| J_CIELO | CIELO_12V_R_G_B | 1 | +12V |
+| J_CIELO | CIELO_12V_R_G_B | 2 | CIELO_R_NEG |
+| J_CIELO | CIELO_12V_R_G_B | 3 | CIELO_G_NEG |
+| J_CIELO | CIELO_12V_R_G_B | 4 | CIELO_B_NEG |
+| J_NEXT | NEXT_GND | 1 | D23_NEXT |
+| J_NEXT | NEXT_GND | 2 | GND |
+| J_OLED | OLED_5V_GND_SDA_SCL | 1 | +5V_MEGA |
+| J_OLED | OLED_5V_GND_SDA_SCL | 2 | GND |
+| J_OLED | OLED_5V_GND_SDA_SCL | 3 | D20_SDA |
+| J_OLED | OLED_5V_GND_SDA_SCL | 4 | D21_SCL |
+| J_START | START_GND | 1 | D22_START |
+| J_START | START_GND | 2 | GND |
+| J_STELLE | STELLE_12V_GND_DATA | 1 | +12V |
+| J_STELLE | STELLE_12V_GND_DATA | 2 | GND |
+| J_STELLE | STELLE_12V_GND_DATA | 3 | D5_STELLE_DATA |
+| J_TEST | TEST_GND | 1 | D24_TEST |
+| J_TEST | TEST_GND | 2 | GND |
+| J_TRAMONTO | TRAMONTO_12V_R_G_B | 1 | +12V |
+| J_TRAMONTO | TRAMONTO_12V_R_G_B | 2 | TRAM_R_NEG |
+| J_TRAMONTO | TRAMONTO_12V_R_G_B | 3 | TRAM_G_NEG |
+| J_TRAMONTO | TRAMONTO_12V_R_G_B | 4 | TRAM_B_NEG |
+| J1 | 12V_IN | 1 | +12V |
+| J1 | 12V_IN | 2 | GND |
+| JR1 | COM_NO_NC | 1 | R1_COM |
+| JR1 | COM_NO_NC | 2 | R1_NO |
+| JR1 | COM_NO_NC | 3 | R1_NC |
+| JR2 | COM_NO_NC | 1 | R2_COM |
+| JR2 | COM_NO_NC | 2 | R2_NO |
+| JR2 | COM_NO_NC | 3 | R2_NC |
+| JR3 | COM_NO_NC | 1 | R3_COM |
+| JR3 | COM_NO_NC | 2 | R3_NO |
+| JR3 | COM_NO_NC | 3 | R3_NC |
+| JR4 | COM_NO_NC | 1 | R4_COM |
+| JR4 | COM_NO_NC | 2 | R4_NO |
+| JR4 | COM_NO_NC | 3 | R4_NC |
+| JR5 | COM_NO_NC | 1 | R5_COM |
+| JR5 | COM_NO_NC | 2 | R5_NO |
+| JR5 | COM_NO_NC | 3 | R5_NC |
+| JR6 | COM_NO_NC | 1 | R6_COM |
+| JR6 | COM_NO_NC | 2 | R6_NO |
+| JR6 | COM_NO_NC | 3 | R6_NC |
+| JR7 | COM_NO_NC | 1 | R7_COM |
+| JR7 | COM_NO_NC | 2 | R7_NO |
+| JR7 | COM_NO_NC | 3 | R7_NC |
+| JR8 | COM_NO_NC | 1 | R8_COM |
+| JR8 | COM_NO_NC | 2 | R8_NO |
+| JR8 | COM_NO_NC | 3 | R8_NC |
+| JR9 | COM_NO_NC | 1 | R9_COM |
+| JR9 | COM_NO_NC | 2 | R9_NO |
+| JR9 | COM_NO_NC | 3 | R9_NC |
+| JR10 | COM_NO_NC | 1 | R10_COM |
+| JR10 | COM_NO_NC | 2 | R10_NO |
+| JR10 | COM_NO_NC | 3 | R10_NC |
+| JR11 | COM_NO_NC | 1 | R11_COM |
+| JR11 | COM_NO_NC | 2 | R11_NO |
+| JR11 | COM_NO_NC | 3 | R11_NC |
+| JR12 | COM_NO_NC | 1 | R12_COM |
+| JR12 | COM_NO_NC | 2 | R12_NO |
+| JR12 | COM_NO_NC | 3 | R12_NC |
+| JR13 | COM_NO_NC | 1 | R13_COM |
+| JR13 | COM_NO_NC | 2 | R13_NO |
+| JR13 | COM_NO_NC | 3 | R13_NC |
+| JR14 | COM_NO_NC | 1 | R14_COM |
+| JR14 | COM_NO_NC | 2 | R14_NO |
+| JR14 | COM_NO_NC | 3 | R14_NC |
+| JR15 | COM_NO_NC | 1 | R15_COM |
+| JR15 | COM_NO_NC | 2 | R15_NO |
+| JR15 | COM_NO_NC | 3 | R15_NC |
+| JR16 | COM_NO_NC | 1 | R16_COM |
+| JR16 | COM_NO_NC | 2 | R16_NO |
+| JR16 | COM_NO_NC | 3 | R16_NC |
+| K1 | G5Q-1_DC12 | 1 | +12V |
+| K1 | G5Q-1_DC12 | 2 | R1_COM |
+| K1 | G5Q-1_DC12 | 3 | R1_NC |
+| K1 | G5Q-1_DC12 | 4 | R1_NO |
+| K1 | G5Q-1_DC12 | 5 | RELAY1_COIL_LOW |
+| K2 | G5Q-1_DC12 | 1 | +12V |
+| K2 | G5Q-1_DC12 | 2 | R2_COM |
+| K2 | G5Q-1_DC12 | 3 | R2_NC |
+| K2 | G5Q-1_DC12 | 4 | R2_NO |
+| K2 | G5Q-1_DC12 | 5 | RELAY2_COIL_LOW |
+| K3 | G5Q-1_DC12 | 1 | +12V |
+| K3 | G5Q-1_DC12 | 2 | R3_COM |
+| K3 | G5Q-1_DC12 | 3 | R3_NC |
+| K3 | G5Q-1_DC12 | 4 | R3_NO |
+| K3 | G5Q-1_DC12 | 5 | RELAY3_COIL_LOW |
+| K4 | G5Q-1_DC12 | 1 | +12V |
+| K4 | G5Q-1_DC12 | 2 | R4_COM |
+| K4 | G5Q-1_DC12 | 3 | R4_NC |
+| K4 | G5Q-1_DC12 | 4 | R4_NO |
+| K4 | G5Q-1_DC12 | 5 | RELAY4_COIL_LOW |
+| K5 | G5Q-1_DC12 | 1 | +12V |
+| K5 | G5Q-1_DC12 | 2 | R5_COM |
+| K5 | G5Q-1_DC12 | 3 | R5_NC |
+| K5 | G5Q-1_DC12 | 4 | R5_NO |
+| K5 | G5Q-1_DC12 | 5 | RELAY5_COIL_LOW |
+| K6 | G5Q-1_DC12 | 1 | +12V |
+| K6 | G5Q-1_DC12 | 2 | R6_COM |
+| K6 | G5Q-1_DC12 | 3 | R6_NC |
+| K6 | G5Q-1_DC12 | 4 | R6_NO |
+| K6 | G5Q-1_DC12 | 5 | RELAY6_COIL_LOW |
+| K7 | G5Q-1_DC12 | 1 | +12V |
+| K7 | G5Q-1_DC12 | 2 | R7_COM |
+| K7 | G5Q-1_DC12 | 3 | R7_NC |
+| K7 | G5Q-1_DC12 | 4 | R7_NO |
+| K7 | G5Q-1_DC12 | 5 | RELAY7_COIL_LOW |
+| K8 | G5Q-1_DC12 | 1 | +12V |
+| K8 | G5Q-1_DC12 | 2 | R8_COM |
+| K8 | G5Q-1_DC12 | 3 | R8_NC |
+| K8 | G5Q-1_DC12 | 4 | R8_NO |
+| K8 | G5Q-1_DC12 | 5 | RELAY8_COIL_LOW |
+| K9 | G5Q-1_DC12 | 1 | +12V |
+| K9 | G5Q-1_DC12 | 2 | R9_COM |
+| K9 | G5Q-1_DC12 | 3 | R9_NC |
+| K9 | G5Q-1_DC12 | 4 | R9_NO |
+| K9 | G5Q-1_DC12 | 5 | RELAY9_COIL_LOW |
+| K10 | G5Q-1_DC12 | 1 | +12V |
+| K10 | G5Q-1_DC12 | 2 | R10_COM |
+| K10 | G5Q-1_DC12 | 3 | R10_NC |
+| K10 | G5Q-1_DC12 | 4 | R10_NO |
+| K10 | G5Q-1_DC12 | 5 | RELAY10_COIL_LOW |
+| K11 | G5Q-1_DC12 | 1 | +12V |
+| K11 | G5Q-1_DC12 | 2 | R11_COM |
+| K11 | G5Q-1_DC12 | 3 | R11_NC |
+| K11 | G5Q-1_DC12 | 4 | R11_NO |
+| K11 | G5Q-1_DC12 | 5 | RELAY11_COIL_LOW |
+| K12 | G5Q-1_DC12 | 1 | +12V |
+| K12 | G5Q-1_DC12 | 2 | R12_COM |
+| K12 | G5Q-1_DC12 | 3 | R12_NC |
+| K12 | G5Q-1_DC12 | 4 | R12_NO |
+| K12 | G5Q-1_DC12 | 5 | RELAY12_COIL_LOW |
+| K13 | G5Q-1_DC12 | 1 | +12V |
+| K13 | G5Q-1_DC12 | 2 | R13_COM |
+| K13 | G5Q-1_DC12 | 3 | R13_NC |
+| K13 | G5Q-1_DC12 | 4 | R13_NO |
+| K13 | G5Q-1_DC12 | 5 | RELAY13_COIL_LOW |
+| K14 | G5Q-1_DC12 | 1 | +12V |
+| K14 | G5Q-1_DC12 | 2 | R14_COM |
+| K14 | G5Q-1_DC12 | 3 | R14_NC |
+| K14 | G5Q-1_DC12 | 4 | R14_NO |
+| K14 | G5Q-1_DC12 | 5 | RELAY14_COIL_LOW |
+| K15 | G5Q-1_DC12 | 1 | +12V |
+| K15 | G5Q-1_DC12 | 2 | R15_COM |
+| K15 | G5Q-1_DC12 | 3 | R15_NC |
+| K15 | G5Q-1_DC12 | 4 | R15_NO |
+| K15 | G5Q-1_DC12 | 5 | RELAY15_COIL_LOW |
+| K16 | G5Q-1_DC12 | 1 | +12V |
+| K16 | G5Q-1_DC12 | 2 | R16_COM |
+| K16 | G5Q-1_DC12 | 3 | R16_NC |
+| K16 | G5Q-1_DC12 | 4 | R16_NO |
+| K16 | G5Q-1_DC12 | 5 | RELAY16_COIL_LOW |
+| MCU1 | Arduino Mega 2560 R3 | 5V1 | +5V_MEGA |
+| MCU1 | Arduino Mega 2560 R3 | 5V2 | +5V_MEGA |
+| MCU1 | Arduino Mega 2560 R3 | 5V3 | +5V_MEGA |
+| MCU1 | Arduino Mega 2560 R3 | 5V4 | +5V_MEGA |
+| MCU1 | Arduino Mega 2560 R3 | A0 | A0_POT |
+| MCU1 | Arduino Mega 2560 R3 | D2 | D2_CIELO_R |
+| MCU1 | Arduino Mega 2560 R3 | D3 | D3_CIELO_G |
+| MCU1 | Arduino Mega 2560 R3 | D4 | D4_CIELO_B |
+| MCU1 | Arduino Mega 2560 R3 | D5 | D5_STELLE_DATA |
+| MCU1 | Arduino Mega 2560 R3 | D6 | D6_BUZZER |
+| MCU1 | Arduino Mega 2560 R3 | D7 | D7_TRAM_R |
+| MCU1 | Arduino Mega 2560 R3 | D8 | D8_CASETTE_DATA |
+| MCU1 | Arduino Mega 2560 R3 | D11 | D11_TRAM_G |
+| MCU1 | Arduino Mega 2560 R3 | D12 | D12_TRAM_B |
+| MCU1 | Arduino Mega 2560 R3 | D20 | D20_SDA |
+| MCU1 | Arduino Mega 2560 R3 | D21 | D21_SCL |
+| MCU1 | Arduino Mega 2560 R3 | D22 | D22_START |
+| MCU1 | Arduino Mega 2560 R3 | D23 | D23_NEXT |
+| MCU1 | Arduino Mega 2560 R3 | D24 | D24_TEST |
+| MCU1 | Arduino Mega 2560 R3 | D25 | D25_RELAY1 |
+| MCU1 | Arduino Mega 2560 R3 | D26 | D26_RELAY2 |
+| MCU1 | Arduino Mega 2560 R3 | D27 | D27_RELAY3 |
+| MCU1 | Arduino Mega 2560 R3 | D28 | D28_RELAY4 |
+| MCU1 | Arduino Mega 2560 R3 | D29 | D29_RELAY5 |
+| MCU1 | Arduino Mega 2560 R3 | D30 | D30_RELAY6 |
+| MCU1 | Arduino Mega 2560 R3 | D31 | D31_RELAY7 |
+| MCU1 | Arduino Mega 2560 R3 | D32 | D32_RELAY8 |
+| MCU1 | Arduino Mega 2560 R3 | D33 | D33_RELAY9 |
+| MCU1 | Arduino Mega 2560 R3 | D34 | D34_RELAY10 |
+| MCU1 | Arduino Mega 2560 R3 | D35 | D35_RELAY11 |
+| MCU1 | Arduino Mega 2560 R3 | D36 | D36_RELAY12 |
+| MCU1 | Arduino Mega 2560 R3 | D37 | D37_RELAY13 |
+| MCU1 | Arduino Mega 2560 R3 | D38 | D38_RELAY14 |
+| MCU1 | Arduino Mega 2560 R3 | D39 | D39_RELAY15 |
+| MCU1 | Arduino Mega 2560 R3 | D40 | D40_RELAY16 |
+| MCU1 | Arduino Mega 2560 R3 | D44 | D44_ALBA_R |
+| MCU1 | Arduino Mega 2560 R3 | D45 | D45_ALBA_G |
+| MCU1 | Arduino Mega 2560 R3 | D46 | D46_ALBA_B |
+| MCU1 | Arduino Mega 2560 R3 | GND1 | GND |
+| MCU1 | Arduino Mega 2560 R3 | GND2 | GND |
+| MCU1 | Arduino Mega 2560 R3 | GND3 | GND |
+| MCU1 | Arduino Mega 2560 R3 | GND4 | GND |
+| MCU1 | Arduino Mega 2560 R3 | GND5 | GND |
+| MCU1 | Arduino Mega 2560 R3 | GND6 | GND |
+| MCU1 | Arduino Mega 2560 R3 | VIN | +12V |
+| Q1 | IRLZ44N_CIELO_R | 1 | GATE_Q1 |
+| Q1 | IRLZ44N_CIELO_R | 2 | CIELO_R_NEG |
+| Q1 | IRLZ44N_CIELO_R | 3 | GND |
+| Q2 | IRLZ44N_CIELO_G | 1 | GATE_Q2 |
+| Q2 | IRLZ44N_CIELO_G | 2 | CIELO_G_NEG |
+| Q2 | IRLZ44N_CIELO_G | 3 | GND |
+| Q3 | IRLZ44N_CIELO_B | 1 | GATE_Q3 |
+| Q3 | IRLZ44N_CIELO_B | 2 | CIELO_B_NEG |
+| Q3 | IRLZ44N_CIELO_B | 3 | GND |
+| Q4 | IRLZ44N_TRAM_R | 1 | GATE_Q4 |
+| Q4 | IRLZ44N_TRAM_R | 2 | TRAM_R_NEG |
+| Q4 | IRLZ44N_TRAM_R | 3 | GND |
+| Q5 | IRLZ44N_TRAM_G | 1 | GATE_Q5 |
+| Q5 | IRLZ44N_TRAM_G | 2 | TRAM_G_NEG |
+| Q5 | IRLZ44N_TRAM_G | 3 | GND |
+| Q6 | IRLZ44N_TRAM_B | 1 | GATE_Q6 |
+| Q6 | IRLZ44N_TRAM_B | 2 | TRAM_B_NEG |
+| Q6 | IRLZ44N_TRAM_B | 3 | GND |
+| Q7 | IRLZ44N_ALBA_R | 1 | GATE_Q7 |
+| Q7 | IRLZ44N_ALBA_R | 2 | ALBA_R_NEG |
+| Q7 | IRLZ44N_ALBA_R | 3 | GND |
+| Q8 | IRLZ44N_ALBA_G | 1 | GATE_Q8 |
+| Q8 | IRLZ44N_ALBA_G | 2 | ALBA_G_NEG |
+| Q8 | IRLZ44N_ALBA_G | 3 | GND |
+| Q9 | IRLZ44N_ALBA_B | 1 | GATE_Q9 |
+| Q9 | IRLZ44N_ALBA_B | 2 | ALBA_B_NEG |
+| Q9 | IRLZ44N_ALBA_B | 3 | GND |
+| RG1 | 100R_GATE | 1 | D2_CIELO_R |
+| RG1 | 100R_GATE | 2 | GATE_Q1 |
+| RG2 | 100R_GATE | 1 | D3_CIELO_G |
+| RG2 | 100R_GATE | 2 | GATE_Q2 |
+| RG3 | 100R_GATE | 1 | D4_CIELO_B |
+| RG3 | 100R_GATE | 2 | GATE_Q3 |
+| RG4 | 100R_GATE | 1 | D7_TRAM_R |
+| RG4 | 100R_GATE | 2 | GATE_Q4 |
+| RG5 | 100R_GATE | 1 | D11_TRAM_G |
+| RG5 | 100R_GATE | 2 | GATE_Q5 |
+| RG6 | 100R_GATE | 1 | D12_TRAM_B |
+| RG6 | 100R_GATE | 2 | GATE_Q6 |
+| RG7 | 100R_GATE | 1 | D44_ALBA_R |
+| RG7 | 100R_GATE | 2 | GATE_Q7 |
+| RG8 | 100R_GATE | 1 | D45_ALBA_G |
+| RG8 | 100R_GATE | 2 | GATE_Q8 |
+| RG9 | 100R_GATE | 1 | D46_ALBA_B |
+| RG9 | 100R_GATE | 2 | GATE_Q9 |
+| RPD1 | 100K_PULLDOWN | 1 | GATE_Q1 |
+| RPD1 | 100K_PULLDOWN | 2 | GND |
+| RPD2 | 100K_PULLDOWN | 1 | GATE_Q2 |
+| RPD2 | 100K_PULLDOWN | 2 | GND |
+| RPD3 | 100K_PULLDOWN | 1 | GATE_Q3 |
+| RPD3 | 100K_PULLDOWN | 2 | GND |
+| RPD4 | 100K_PULLDOWN | 1 | GATE_Q4 |
+| RPD4 | 100K_PULLDOWN | 2 | GND |
+| RPD5 | 100K_PULLDOWN | 1 | GATE_Q5 |
+| RPD5 | 100K_PULLDOWN | 2 | GND |
+| RPD6 | 100K_PULLDOWN | 1 | GATE_Q6 |
+| RPD6 | 100K_PULLDOWN | 2 | GND |
+| RPD7 | 100K_PULLDOWN | 1 | GATE_Q7 |
+| RPD7 | 100K_PULLDOWN | 2 | GND |
+| RPD8 | 100K_PULLDOWN | 1 | GATE_Q8 |
+| RPD8 | 100K_PULLDOWN | 2 | GND |
+| RPD9 | 100K_PULLDOWN | 1 | GATE_Q9 |
+| RPD9 | 100K_PULLDOWN | 2 | GND |
+| RV1 | B10K | 1 | GND |
+| RV1 | B10K | 2 | A0_POT |
+| RV1 | B10K | 3 | +5V_MEGA |
+| U1 | ULN2803C | 1 | D25_RELAY1 |
+| U1 | ULN2803C | 2 | D26_RELAY2 |
+| U1 | ULN2803C | 3 | D27_RELAY3 |
+| U1 | ULN2803C | 4 | D28_RELAY4 |
+| U1 | ULN2803C | 5 | D29_RELAY5 |
+| U1 | ULN2803C | 6 | D30_RELAY6 |
+| U1 | ULN2803C | 7 | D31_RELAY7 |
+| U1 | ULN2803C | 8 | D32_RELAY8 |
+| U1 | ULN2803C | 9 | GND |
+| U1 | ULN2803C | 10 | +12V |
+| U1 | ULN2803C | 11 | RELAY8_COIL_LOW |
+| U1 | ULN2803C | 12 | RELAY7_COIL_LOW |
+| U1 | ULN2803C | 13 | RELAY6_COIL_LOW |
+| U1 | ULN2803C | 14 | RELAY5_COIL_LOW |
+| U1 | ULN2803C | 15 | RELAY4_COIL_LOW |
+| U1 | ULN2803C | 16 | RELAY3_COIL_LOW |
+| U1 | ULN2803C | 17 | RELAY2_COIL_LOW |
+| U1 | ULN2803C | 18 | RELAY1_COIL_LOW |
+| U2 | ULN2803C | 1 | D33_RELAY9 |
+| U2 | ULN2803C | 2 | D34_RELAY10 |
+| U2 | ULN2803C | 3 | D35_RELAY11 |
+| U2 | ULN2803C | 4 | D36_RELAY12 |
+| U2 | ULN2803C | 5 | D37_RELAY13 |
+| U2 | ULN2803C | 6 | D38_RELAY14 |
+| U2 | ULN2803C | 7 | D39_RELAY15 |
+| U2 | ULN2803C | 8 | D40_RELAY16 |
+| U2 | ULN2803C | 9 | GND |
+| U2 | ULN2803C | 10 | +12V |
+| U2 | ULN2803C | 11 | RELAY16_COIL_LOW |
+| U2 | ULN2803C | 12 | RELAY15_COIL_LOW |
+| U2 | ULN2803C | 13 | RELAY14_COIL_LOW |
+| U2 | ULN2803C | 14 | RELAY13_COIL_LOW |
+| U2 | ULN2803C | 15 | RELAY12_COIL_LOW |
+| U2 | ULN2803C | 16 | RELAY11_COIL_LOW |
+| U2 | ULN2803C | 17 | RELAY10_COIL_LOW |
+| U2 | ULN2803C | 18 | RELAY9_COIL_LOW |
+
+## Relay contact invariant
+For every Omron G5Q-1 SPDT relay K1..K16: pad 2 = COM, pad 3 = NC, pad 4 = NO; pads 1 and 5 are the coil. Relay output terminal JR1..JR16 remains pad 1 = COM, pad 2 = NO, pad 3 = NC.
+
+## Notes
+- Pads without a net are intentionally omitted.
+- Mega unused header pins remain unassigned.
+- Relay contacts are independent nets; there is no shared mains phase or neutral bus.
+- Final authority remains the KiCad PCB plus a future ERC-checked schematic.

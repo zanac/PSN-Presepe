@@ -1,0 +1,189 @@
+name: PCB Autoroute Candidate
+# baseline-118: target final logic connection ALBA_B_NEG
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [dev]
+    paths: [".github/workflows/pcb-autoroute-candidate.yml"]
+
+permissions:
+  contents: write
+
+env:
+  KICAD9_FOOTPRINT_DIR: /usr/share/kicad/footprints
+
+concurrency:
+  group: pcb-autoroute-dev
+  cancel-in-progress: true
+
+jobs:
+  autoroute:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install KiCad 9
+        run: |
+          sudo add-apt-repository --yes ppa:kicad/kicad-9.0-releases
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends kicad kicad-footprints curl
+
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '25'
+
+      - name: Export Specctra DSN
+        run: |
+          mkdir -p hardware/pcb/route-candidate
+          python3 - <<'PY'
+          import sys
+          sys.path.append('/usr/lib/python3/dist-packages')
+          import pcbnew
+          src='hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb'
+          out='hardware/pcb/route-candidate/PSN-Presepe-Mega.dsn'
+          b=pcbnew.LoadBoard(src)
+          assert b is not None
+          assert pcbnew.ExportSpecctraDSN(b,out)
+          PY
+          sed -i 's/(class RELAY_CONTACT,Default /(class RELAY_CONTACT /; s/(class SELV_POWER,Default /(class SELV_POWER /' hardware/pcb/route-candidate/PSN-Presepe-Mega.dsn
+
+      - name: Download Freerouting 2.4.1
+        run: |
+          python3 - <<'PY'
+          import json, urllib.request
+          api='https://api.github.com/repos/freerouting/freerouting/releases/tags/v2.4.1'
+          req=urllib.request.Request(api,headers={'User-Agent':'PSN-Presepe-CI'})
+          data=json.load(urllib.request.urlopen(req))
+          assets=[a for a in data['assets'] if a['name'].endswith('.jar') and 'sources' not in a['name'] and 'javadoc' not in a['name']]
+          assert assets
+          urllib.request.urlretrieve(assets[0]['browser_download_url'],'hardware/pcb/route-candidate/freerouting.jar')
+          PY
+
+      - name: Autoroute raw candidate
+        run: |
+          java -jar hardware/pcb/route-candidate/freerouting.jar \
+            --gui.enabled=false -da -dct 0 -mp 50 \
+            -de hardware/pcb/route-candidate/PSN-Presepe-Mega.dsn \
+            -do hardware/pcb/route-candidate/PSN-Presepe-Mega.ses
+
+      - name: Import and strip protected routing
+        run: |
+          cp hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb hardware/pcb/route-candidate/PSN-Presepe-Mega-routed.kicad_pcb
+          cp hardware/pcb/kicad/fp-lib-table hardware/pcb/route-candidate/fp-lib-table
+          cp -a hardware/pcb/kicad/PSN_Presep_Custom.pretty hardware/pcb/route-candidate/
+          python3 - <<'PY'
+          import re, sys
+          sys.path.append('/usr/lib/python3/dist-packages')
+          import pcbnew
+          boardfile='hardware/pcb/route-candidate/PSN-Presepe-Mega-routed.kicad_pcb'
+          ses='hardware/pcb/route-candidate/PSN-Presepe-Mega.ses'
+          b=pcbnew.LoadBoard(boardfile)
+          assert b is not None
+          assert pcbnew.ImportSpecctraSES(b,ses)
+          protected=re.compile(r'^R[0-9]+_(COM|NO|NC)$')
+          power={'+12V','GND','+5V_MEGA'}
+          removed=0
+          for item in list(b.GetTracks()):
+              net=item.GetNetname()
+              if protected.fullmatch(net) or net in power:
+                  b.Remove(item)
+                  removed+=1
+          print('Removed protected/power routing items:',removed)
+          assert pcbnew.SaveBoard(boardfile,b)
+          PY
+
+      - name: Validate protected nets and routed-net preservation
+        run: |
+          python3 - <<'PY'
+          import sys
+          sys.path.append('/usr/lib/python3/dist-packages')
+          import pcbnew
+
+          baseline='hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb'
+          candidate='hardware/pcb/route-candidate/PSN-Presepe-Mega-routed.kicad_pcb'
+          b0=pcbnew.LoadBoard(baseline)
+          b1=pcbnew.LoadBoard(candidate)
+          assert b0 is not None and b1 is not None
+
+          power=set(['+12V','GND','+5V_MEGA'])
+          def protected(n):
+              relay_contact=n.startswith('R') and (n.endswith('_COM') or n.endswith('_NO') or n.endswith('_NC'))
+              return n in power or relay_contact
+          def routed_nets(board):
+              return set(t.GetNetname() for t in board.GetTracks() if t.GetNetname())
+
+          base_nets=routed_nets(b0)
+          cand_nets=routed_nets(b1)
+          protected_after=sorted(n for n in cand_nets if protected(n))
+          missing_existing=sorted(n for n in base_nets if not protected(n) and n not in cand_nets)
+          added_logic=sorted(n for n in cand_nets-base_nets if not protected(n))
+
+          print('New autorouted logic nets:', added_logic)
+          print('Protected routed nets after strip:', protected_after or 'none')
+          print('Previously routed non-protected nets missing:', missing_existing or 'none')
+          assert not protected_after, 'Protected nets still contain autorouted copper: '+str(protected_after)
+          assert not missing_existing, 'Candidate lost previously routed nets: '+str(missing_existing)
+          PY
+      - name: KiCad DRC on stripped candidate
+        continue-on-error: true
+        run: |
+          kicad-cli pcb drc --severity-all --output hardware/pcb/route-candidate/drc-routed.txt hardware/pcb/route-candidate/PSN-Presepe-Mega-routed.kicad_pcb
+          kicad-cli pcb drc --severity-error --output hardware/pcb/route-candidate/drc-errors.txt hardware/pcb/route-candidate/PSN-Presepe-Mega-routed.kicad_pcb
+
+      - name: Candidate statistics
+        if: always()
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('hardware/pcb/route-candidate/PSN-Presepe-Mega-routed.kicad_pcb')
+          if p.exists():
+              s=p.read_text()
+              print('segments',s.count('(segment'))
+              print('vias',s.count('(via'))
+          for name in ('drc-routed.txt','drc-errors.txt'):
+              r=Path('hardware/pcb/route-candidate')/name
+              if r.exists():
+                  print(name)
+                  for line in r.read_text().splitlines():
+                      if 'Found ' in line:
+                          print(line)
+          PY
+
+      - name: Compare candidate with production baseline
+        run: |
+          kicad-cli pcb drc --severity-all --output hardware/pcb/route-candidate/drc-baseline.txt hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb || true
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          def count(path):
+              t=Path(path).read_text()
+              m=re.search(r'Found +([0-9]+) +unconnected +(items|pads)',t,re.I)
+              if m: return int(m.group(1))
+              return t.count('[unconnected_items]')
+          base=count('hardware/pcb/route-candidate/drc-baseline.txt')
+          cand=count('hardware/pcb/route-candidate/drc-routed.txt')
+          errors=Path('hardware/pcb/route-candidate/drc-errors.txt').read_text()
+          cats=[line[1:line.index(']')] for line in errors.splitlines() if line.startswith('[') and ']' in line]
+          ignored={'unconnected_items','lib_footprint_mismatch'}
+          critical=sorted({c for c in cats if c not in ignored})
+          clean=not critical
+          print(f'Baseline unconnected: {base}')
+          print(f'Autoroute candidate unconnected: {cand}')
+          print(f'Reduction: {base-cand}')
+          print(f'Critical DRC categories: {critical or "none"}')
+          Path('hardware/pcb/route-candidate/COMPARISON.txt').write_text(
+              f'baseline_unconnected={base}\\ncandidate_unconnected={cand}\\nreduction={base-cand}\\ncritical_drc={",".join(critical) or "none"}\\n')
+          # Laboratory only: never promote automatically.
+          assert cand < base, 'Autorouter did not improve connectivity'
+          assert clean, f'Autorouter candidate has critical DRC categories: {critical}'
+          PY
+
+      - name: Upload autoroute candidate
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: PSN-Presepe-RevA-Autoroute-Candidate
+          path: hardware/pcb/route-candidate/
