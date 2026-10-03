@@ -47,7 +47,7 @@ elif segments == 0:
     print("WARNING: ALLOW_ROUTING=1 but candidate still has zero routed segments")
 
 
-# Omron G5Q-1 SPDT contact mapping: 1/5 coil, 2 COM, 3 NC, 4 NO.
+# Omron G5Q-1 SPDT component-side mapping: 1/5 coil, 2 COM, 3 NO, 4 NC.
 for i in range(1, 17):
     marker = f'(property "Reference" "K{i}"'
     ri = s.find(marker)
@@ -57,7 +57,7 @@ for i in range(1, 17):
     if end < 0:
         end = s.find('\n  (gr_', ri)
     block = s[start:end]
-    expected = {"2": f"R{i}_COM", "3": f"R{i}_NC", "4": f"R{i}_NO"}
+    expected = {"2": f"R{i}_COM", "3": f"R{i}_NO", "4": f"R{i}_NC"}
     for pad, net in expected.items():
         assert re.search(rf'\(pad "{pad}"[\s\S]{{0,800}}?\(net \d+ "{net}"\)', block), f"K{i} pad {pad} must be {net}"
     assert re.search(r'\(pad "3"[\s\S]{0,300}?\(at 17\.78 0(?: 90)?\)', block), f"K{i} pad 3 geometry must be x=17.78 mm"
