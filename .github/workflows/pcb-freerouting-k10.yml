@@ -46,6 +46,20 @@ jobs:
               if "R1_COM" in line or "clearance" in line.lower(): print(line.rstrip())
           if not ok: raise SystemExit(1)
           PY
+      - name: Configure KiCad footprint libraries for DRC
+        run: |
+          mkdir -p /root/.config/kicad/10.0
+          cat > /root/.config/kicad/10.0/fp-lib-table <<'EOF'
+          (fp_lib_table
+            (lib (name "PSN_Presep_Custom")(type "KiCad")(uri "${KIPRJMOD}/hardware/pcb/kicad/PSN_Presep_Custom.pretty")(options "")(descr ""))
+            (lib (name "Resistor_THT")(type "KiCad")(uri "${KICAD10_FOOTPRINT_DIR}/Resistor_THT.pretty")(options "")(descr ""))
+            (lib (name "Capacitor_THT")(type "KiCad")(uri "${KICAD10_FOOTPRINT_DIR}/Capacitor_THT.pretty")(options "")(descr ""))
+            (lib (name "Package_TO_SOT_THT")(type "KiCad")(uri "${KICAD10_FOOTPRINT_DIR}/Package_TO_SOT_THT.pretty")(options "")(descr ""))
+            (lib (name "Potentiometer_THT")(type "KiCad")(uri "${KICAD10_FOOTPRINT_DIR}/Potentiometer_THT.pretty")(options "")(descr ""))
+            (lib (name "Buzzer_Beeper")(type "KiCad")(uri "${KICAD10_FOOTPRINT_DIR}/Buzzer_Beeper.pretty")(options "")(descr ""))
+          )
+          EOF
+
       - name: DRC baseline under KiCad 10
         run: |
           kicad-cli pcb drc --severity-all --output hardware/pcb/kicad/baseline-k10.drc.txt hardware/pcb/kicad/PSN-Presepe-Mega-CLEAN.kicad_pcb || true
