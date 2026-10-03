@@ -124,16 +124,20 @@ jobs:
           rows=list(csv.DictReader(open(mp,encoding="utf-8"),delimiter="\t"))
           expected_refs={r["ref"] for r in rows if not r["ref"].startswith("H")}
           expected_pins=len([r for r in rows if not r["ref"].startswith("H")])
-          libdefs=len(re.findall(r'^    \\(symbol "PSN:',s,re.M))
-          instances=len(re.findall(r'^  \\(symbol \\(lib_id "PSN:',s,re.M))
-          pin_instances=len(re.findall(r'^    \\(pin "[^"]+" \\(uuid ',s,re.M))
-          labels=len(re.findall(r'^  \\(global_label "',s,re.M))
+          libdefs=len(re.findall(r'\\(symbol "PSN:[^"]+"',s))
+          instances=len(re.findall(r'\\(symbol\\s+\\(lib_id "PSN:[^"]+"\\)',s))
+          pin_instances=len(re.findall(r'\\(pin "[^"]+" \\(uuid "[^"]+"\\)\\)',s))
+          labels=len(re.findall(r'\\(global_label "[^"]+"',s))
+          missing_refs=sorted(r for r in expected_refs if f'(reference "{r}")' not in s)
           diag=("REAL_SCHEMATIC_GATE expected_refs=%d expected_pins=%d libdefs=%d instances=%d pin_instances=%d labels=%d" %
                 (len(expected_refs),expected_pins,libdefs,instances,pin_instances,labels))
           print(diag)
           open("hardware/pcb/build/revb-real-gate.log","w").write(diag+"\\n")
           if not expected_refs or expected_pins < 1:
               raise SystemExit("PCB connectivity map unexpectedly empty")
+          if missing_refs:
+              print("MISSING_REFS",missing_refs)
+              raise SystemExit("Connected PCB references missing from schematic instances")
           if libdefs != len(expected_refs) or instances != len(expected_refs):
               raise SystemExit("Schematic component count does not match connected PCB references")
           if pin_instances != expected_pins or labels != expected_pins:
