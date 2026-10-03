@@ -65,7 +65,7 @@ jobs:
           python3 - <<'PY'
           import re
           d=open("hardware/pcb/kicad/PSN-Presepe-Mega.dsn",errors="ignore").read()
-          widths=sorted(set(re.findall(r"\\(width\\s+([0-9.]+)",d)))
+          widths=sorted(set(re.findall(r"\(width\s+([0-9.]+)",d)))
           print("DSN_WIDTH_VALUES",widths)
           print("DSN_SIZE",len(d))
           for expected in ("3000","2000","1500"):
