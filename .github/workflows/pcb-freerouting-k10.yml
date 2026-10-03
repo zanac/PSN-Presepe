@@ -99,7 +99,6 @@ jobs:
           import shutil
           dru=glob.glob("input/**/*.kicad_dru",recursive=True)
           if dru:
-              shutil.copyfile(dru[0],"PSN-Presepe-Mega-FREEROUTED.kicad_dru")
               print("CUSTOM_RULE_SOURCE",dru[0])
               print("CUSTOM_RULE_6MM_PRESENT", "min 6mm" in open(dru[0]).read())
           b=pcbnew.LoadBoard(src)
@@ -107,6 +106,9 @@ jobs:
           print("IMPORT_SES",ok,ses)
           if not ok: raise SystemExit(1)
           pcbnew.SaveBoard(out,b)
+          if dru:
+              shutil.copyfile(dru[0],"PSN-Presepe-Mega-FREEROUTED.kicad_dru")
+              print("CUSTOM_RULE_COPIED_AFTER_SAVE", __import__("os").path.exists("PSN-Presepe-Mega-FREEROUTED.kicad_dru"))
           PY
       - name: KiCad 10 final DRC and connectivity
         run: |
