@@ -266,24 +266,43 @@ jobs:
       - name: Generate production Gerbers and drill files
         run: |
           mkdir -p manufacturing/gerbers
-          kicad-cli pcb export gerbers -l F.Cu,B.Cu,F.Mask,B.Mask,F.Silkscreen,B.Silkscreen,Edge.Cuts -o manufacturing/gerbers/ PSN-Presepe-Mega-FREEROUTED.kicad_pcb
+          python3 - <<'PY'
+          import pcbnew
+          b=pcbnew.LoadBoard("PSN-Presepe-Mega-FREEROUTED.kicad_pcb")
+          pads=list(b.GetPads())
+          both=[p for p in pads if p.IsOnLayer(pcbnew.F_Mask) and p.IsOnLayer(pcbnew.B_Mask)]
+          front=[p for p in pads if p.IsOnLayer(pcbnew.F_Mask)]
+          back=[p for p in pads if p.IsOnLayer(pcbnew.B_Mask)]
+          print("FINAL_MASK_PAD_AUDIT total=",len(pads),"front=",len(front),"back=",len(back),"both=",len(both))
+          if not front or not back:
+              raise SystemExit("Final board lost solder-mask pad layers")
+
+          pc=pcbnew.PLOT_CONTROLLER(b)
+          po=pc.GetPlotOptions()
+          po.SetOutputDirectory("manufacturing/gerbers")
+          po.SetPlotFrameRef(False)
+          po.SetUseGerberAttributes(True)
+          po.SetUseGerberProtelExtensions(True)
+          for layer,comment in ((pcbnew.F_Mask,"Front solder mask"),(pcbnew.B_Mask,"Back solder mask")):
+              pc.SetLayer(layer)
+              if not pc.OpenPlotfile("PSN-Presepe-Mega-FREEROUTED",pcbnew.PLOT_FORMAT_GERBER,comment):
+                  raise SystemExit("Cannot open mask Gerber plot")
+              if not pc.PlotLayer():
+                  raise SystemExit("Cannot plot mask Gerber layer")
+              pc.ClosePlot()
+          print("SOLDER_MASK_API_PLOT_PASS")
+          PY
+          kicad-cli pcb export gerbers -l F.Cu,B.Cu,F.Silkscreen,B.Silkscreen,Edge.Cuts -o manufacturing/gerbers/ PSN-Presepe-Mega-FREEROUTED.kicad_pcb
           kicad-cli pcb export drill -o manufacturing/gerbers/ PSN-Presepe-Mega-FREEROUTED.kicad_pcb
-          test -f manufacturing/gerbers/PSN-Presepe-Mega-FREEROUTED-F_Cu.gtl
-          # KiCad may omit an otherwise valid solder-mask layer from the combined
-          # Gerber command when the layer has no plotted graphics after SES import.
-          # Export masks explicitly and require non-empty fabrication files.
-          mkdir -p manufacturing/mask-front manufacturing/mask-back
-          kicad-cli pcb export gerbers -l F.Mask -o manufacturing/mask-front/ PSN-Presepe-Mega-FREEROUTED.kicad_pcb
-          kicad-cli pcb export gerbers -l B.Mask -o manufacturing/mask-back/ PSN-Presepe-Mega-FREEROUTED.kicad_pcb
-          FMASK="$(find manufacturing/mask-front -maxdepth 1 -type f -name '*.gts' -print -quit)"
-          BMASK="$(find manufacturing/mask-back -maxdepth 1 -type f -name '*.gbs' -print -quit)"
+          test -s manufacturing/gerbers/PSN-Presepe-Mega-FREEROUTED-F_Cu.gtl
+          FMASK="$(find manufacturing/gerbers -maxdepth 1 -type f -name '*.gts' -print -quit)"
+          BMASK="$(find manufacturing/gerbers -maxdepth 1 -type f -name '*.gbs' -print -quit)"
+          echo "FMASK=$FMASK BMASK=$BMASK"
           test -n "$FMASK" && test -s "$FMASK"
           test -n "$BMASK" && test -s "$BMASK"
-          cp "$FMASK" manufacturing/gerbers/PSN-Presepe-Mega-FREEROUTED-F_Mask.gts
-          cp "$BMASK" manufacturing/gerbers/PSN-Presepe-Mega-FREEROUTED-B_Mask.gbs
           echo "SOLDER_MASK_GERBERS_PASS"
           test -n "$(find manufacturing/gerbers -type f \( -name '*.drl' -o -name '*.xln' \) -print -quit)"
-          find manufacturing/gerbers -type f -maxdepth 1 -printf '%f\n' | sort
+          find manufacturing/gerbers -maxdepth 1 -type f -printf '%f\n' | sort
       - uses: actions/checkout@v4
         with:
           path: repo
