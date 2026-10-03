@@ -15,6 +15,14 @@ for label,pred,width in groups:
  quoted=" ".join(f'"{n}"' for n in ns)
  rules.append(f'    (class "{label}" {quoted}\n      (rule (width {width}))\n    )')
  print(label,"width",width,"nets",len(ns))
+
+# Remove target nets from pre-existing DSN classes so each production net has exactly one class/rule.
+# Duplicate class membership lets Freerouting select the earlier/default class width.
+for label,pred,width in groups:
+ ns=sorted(n for n in names if pred(n))
+ for n in ns:
+  # class membership is token based; remove quoted/unquoted occurrences only inside class headers
+  s=re.sub(r'(\\(class\\s+"?[^"\\s()]+"?[^\\n]*?)("?'+re.escape(n)+r'"?)(?=\\s|\\))', r'\\1', s)
 idx=s.rfind("(network")
 if idx<0: raise SystemExit("network section not found")
 depth=0; end=None
