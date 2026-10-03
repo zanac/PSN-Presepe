@@ -158,6 +158,12 @@ jobs:
           mkdir -p hardware/pcb/build
           kicad-cli sch erc --severity-all --output hardware/pcb/build/revb-erc.txt hardware/pcb/kicad/PSN-Presepe-Mega-RevB.kicad_sch
           echo ERC_PASS
+      - name: Stage validated Rev-B schematics and ERC
+        run: |
+          cp hardware/pcb/kicad/PSN-Presepe-Mega-RevB.kicad_sch hardware/pcb/release/Rev-B/
+          cp hardware/pcb/build/PSN-Presepe-Mega-RevB.sch hardware/pcb/release/Rev-B/
+          cp hardware/pcb/build/PSN-Presepe-Mega-RevB-cache.lib hardware/pcb/release/Rev-B/
+          cp hardware/pcb/build/revb-erc.txt hardware/pcb/release/Rev-B/PSN-Presepe-Mega-RevB-erc.txt
       - name: Validate Rev-B release PCB with KiCad 10
         run: |
           mkdir -p hardware/pcb/build
