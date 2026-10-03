@@ -9,9 +9,11 @@ Contents:
 - CPL.csv
 - Gerber copper, silkscreen and board outline
 - Excellon drill file and Gerber job file
+- front/back solder-mask Gerbers (.gts/.gbs), generated from the final routed PCB
+- high-resolution technical and manual/documentation PNG previews, plus vector silkscreen SVG
 
-Validation gates include 0 unconnected pads, relay/contact 6 mm clearance rule, Mega mechanical/pin/stackable checks, terminal silkscreen checks, and manufacturing export checks.
+Validation gates include 0 unconnected pads, relay/contact 6 mm clearance rule, Mega mechanical/pin/stackable checks, terminal silkscreen checks, production copper-width checks (+12V/GND, +5V_MEGA, RGB loads and relay contacts), solder-mask pad audit, and manufacturing export checks.
 
-F.Mask/B.Mask are accepted by KiCad but contain no plottable content on this design, so KiCad omits empty .gts/.gbs files rather than generating synthetic empty masks.
+Solder-mask Gerbers are mandatory: CI audits F.Mask/B.Mask pad membership on the final post-SES PCB and requires non-empty .gts/.gbs fabrication files.
 
 Generated from GitHub Actions run associated with the parent source commit. Do not edit generated manufacturing files manually.
