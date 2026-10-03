@@ -76,6 +76,14 @@ jobs:
           kicad-cli create-project --help 2>&1 | tee hardware/pcb/build/kicad-create-project-help.txt || true
           # Legacy source and cache must both be non-empty; conversion to modern
           # format is the next hard gate before ERC.
+      - name: Validate KiCad 10 real-schematic fixture
+        run: |
+          python3 hardware/pcb/tools/generate_kicad10_schematic_fixture.py hardware/pcb/build/kicad10-fixture.kicad_sch
+          kicad-cli sch export netlist --output hardware/pcb/build/kicad10-fixture.net hardware/pcb/build/kicad10-fixture.kicad_sch
+          test -s hardware/pcb/build/kicad10-fixture.net
+          grep -q 'NET_A' hardware/pcb/build/kicad10-fixture.net
+          grep -q 'NET_B' hardware/pcb/build/kicad10-fixture.net
+          grep -q 'J1' hardware/pcb/build/kicad10-fixture.net
       - name: Generate Rev-B schematic from validated PCB netlist
         run: |
           python3 hardware/pcb/tools/generate_revb_schematic.py \
@@ -128,6 +136,8 @@ jobs:
             hardware/pcb/build/revb-pin-net-map.tsv
             hardware/pcb/build/kicad-sch-help.txt
             hardware/pcb/build/eeschema-probe.txt
+            hardware/pcb/build/kicad10-fixture.kicad_sch
+            hardware/pcb/build/kicad10-fixture.net
             hardware/pcb/build/kicad-create-project-help.txt
             hardware/pcb/build/PSN-Presepe-Mega-RevB.sch
             hardware/pcb/build/PSN-Presepe-Mega-RevB-cache.lib
