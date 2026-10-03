@@ -63,7 +63,6 @@ jobs:
           PY
           python3 hardware/pcb/tools/patch_dsn_rules.py hardware/pcb/kicad/PSN-Presepe-Mega.dsn
           python3 - <<'PY'
-          import re
           d=open("hardware/pcb/kicad/PSN-Presepe-Mega.dsn",errors="ignore").read()
           widths=sorted(set(re.findall(r"\(width\s+([0-9.]+)",d)))
           print("DSN_WIDTH_VALUES",widths)
@@ -234,7 +233,7 @@ jobs:
           pairs=sum(1 for line in lines if line.strip().startswith('(rule "Relay ') and ' to relay ' in line and ' contacts 6mm"' in line)
           has_selv=any(line.strip() == '(rule "Relay contacts to SELV 6mm"' for line in lines)
           mins=sum(1 for line in lines if line.strip() == '(constraint clearance (min 6mm))')
-          clearance_cats=re.findall(r'^\\[([^]]*clearance[^]]*)\\]',drc,re.I|re.M)
+          clearance_cats=[line for line in drc.splitlines() if line.startswith('[') and 'clearance' in line.lower()]
           print("RELAY_RULE_AUDIT pair_rules=",pairs,"selv_rule=",has_selv,"min6_constraints=",mins,"clearance_violations=",len(clearance_cats))
           if pairs != 120 or not has_selv or mins < 121 or clearance_cats:
               raise SystemExit(1)
