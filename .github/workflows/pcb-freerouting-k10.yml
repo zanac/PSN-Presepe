@@ -1,4 +1,4 @@
-name: PCB KiCad10 Freerouting Clean Experiment
+name: PCB KiCad10 Freerouting
 
 on:
   workflow_dispatch:
@@ -110,6 +110,20 @@ jobs:
               if re.search(r"\\["+re.escape(cat)+r"\\]",s): critical.append(cat)
           print("FREEROUTING_UNCONNECTED",m[-1] if m else "unknown")
           print("FREEROUTING_CRITICAL",critical or "none")
+          PY
+      - name: Strict final routing gate
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          s=Path("freerouted-k10.drc.txt").read_text()
+          m=re.findall(r"Found ([0-9]+) unconnected",s,re.I)
+          n=int(m[-1]) if m else -1
+          forbidden=["clearance","shorting_items","tracks_crossing","hole_clearance","solder_mask_bridge"]
+          bad=[x for x in forbidden if re.search(r"\\["+re.escape(x)+r"\\]",s)]
+          print("FINAL_GATE unconnected=",n,"critical=",bad or "none")
+          if n != 0 or bad:
+              raise SystemExit(1)
           PY
       - uses: actions/upload-artifact@v4
         with:
