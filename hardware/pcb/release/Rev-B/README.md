@@ -1,3 +1,8 @@
+# Rev-B — SUPERSEDED / DO NOT FABRICATE
+
+**Rev-B is retained for engineering history only. Do not order or manufacture this revision.**
+It was superseded by Rev-C after independent review identified incorrect G5Q-1 and ULN2803 physical footprints, reversed relay NO/NC mapping, and ineffective 6 mm relay-contact isolation enforcement in the routed layout.
+
 # PSN-Presepe PCB Manufacturing Release — Rev B
 
 This directory is the validated manufacturing snapshot produced by the KiCad 10 / Freerouting CI pipeline.
