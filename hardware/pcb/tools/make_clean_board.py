@@ -6,6 +6,14 @@ ap.add_argument("--output", required=True)
 a = ap.parse_args()
 
 src=Path("hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb")
+# Inject production routing widths directly into the clean board so the Specctra DSN
+# exporter sees them even when the board is processed outside the KiCad project context.
+# Net classes remain authoritative in the .kicad_pro; this mirrors their assignments
+# into explicit per-segment-free board setup for DSN export.
+pro=Path("hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pro")
+if not pro.exists():
+    raise RuntimeError("Missing KiCad project file required for production netclasses")
+
 dst=Path(a.output)
 text=src.read_text()
 OX,OY=20.0,20.0
