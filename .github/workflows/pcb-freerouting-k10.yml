@@ -116,7 +116,7 @@ jobs:
           find work -type f -maxdepth 6 -print
           DSN=$(find work -name '*.dsn' | head -1)
           echo "DSN=$DSN"
-          java -jar /app/freerouting-executable.jar --gui.enabled=false -de "$DSN" -do work/routed.ses -mp 100
+          java -jar /app/freerouting-executable.jar --gui.enabled=false -de "$DSN" -do work/routed.ses -mp 300
           test -s work/routed.ses
       - uses: actions/upload-artifact@v4
         with:
