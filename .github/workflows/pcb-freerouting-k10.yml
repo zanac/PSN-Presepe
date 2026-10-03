@@ -1,4 +1,7 @@
 name: PCB Original KiCad10 Freerouting
+
+permissions:
+  contents: write
 # 280x170 production routing pipeline
 # trigger: newline-repair-verified
 
@@ -217,6 +220,41 @@ jobs:
           test -s manufacturing/PSN-Presepe-Mega-FREEROUTED.kicad_pcb
           test -s manufacturing/freerouted-k10.drc.txt
           echo "MANUFACTURING_PACKAGE_PASS"
+      - name: Commit validated Rev-A manufacturing release
+        run: |
+          RELEASE=repo/hardware/pcb/release/Rev-A
+          rm -rf "$RELEASE"
+          mkdir -p "$RELEASE"
+          cp -a manufacturing/. "$RELEASE/"
+          cat > "$RELEASE/README.md" <<'EOF'
+          # PSN-Presepe PCB Manufacturing Release — Rev A
+
+          This directory is the validated manufacturing snapshot produced by the KiCad 10 / Freerouting CI pipeline.
+
+          Contents:
+          - final routed KiCad PCB and design rules
+          - final DRC report
+          - BOM.csv
+          - CPL.csv
+          - Gerber copper, silkscreen and board outline
+          - Excellon drill file and Gerber job file
+
+          Validation gates include 0 unconnected pads, relay/contact 6 mm clearance rule, Mega mechanical/pin/stackable checks, terminal silkscreen checks, and manufacturing export checks.
+
+          F.Mask/B.Mask are accepted by KiCad but contain no plottable content on this design, so KiCad omits empty .gts/.gbs files rather than generating synthetic empty masks.
+
+          Generated from GitHub Actions run associated with the parent source commit. Do not edit generated manufacturing files manually.
+          EOF
+          cd repo
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add hardware/pcb/release/Rev-A
+          if git diff --cached --quiet; then
+            echo "RELEASE_ALREADY_CURRENT"
+          else
+            git commit -m "Add validated Rev-A PCB manufacturing release [skip ci]"
+            git push origin HEAD:dev
+          fi
       - uses: actions/upload-artifact@v4
         with:
           name: pcb-manufacturing-complete
