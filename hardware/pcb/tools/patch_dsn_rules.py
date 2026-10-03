@@ -49,8 +49,12 @@ for label,pred,width in groups:
     ns=sorted(n for n in names if pred(n))
     if not ns: raise SystemExit(f"{label}: no matching nets in DSN")
     quoted=" ".join(f'"{n}"' for n in ns)
-    rules.append(f'    (class "{label}" {quoted}\n      (rule (width {width}))\n    )')
-    print(label,"width",width,"nets",len(ns))
+    # Relay contacts need both production width and real router clearance.
+    # Specctra clearance units follow the DSN coordinate scale (1000 = 1 mm here).
+    clearance = 6000 if label == "RELAY_CONTACT" else None
+    cr = f" (clearance {clearance})" if clearance else ""
+    rules.append(f'    (class "{label}" {quoted}\n      (rule (width {width}){cr})\n    )')
+    print(label,"width",width,"clearance",clearance,"nets",len(ns))
 
 idx=s.rfind("(network")
 if idx<0: raise SystemExit("network section not found")
