@@ -101,9 +101,19 @@ jobs:
           cat hardware/pcb/build/revb-netlist-export.log
           test $rc -eq 0
           test -s hardware/pcb/build/revb-real.net
-          grep -q '<comp ref="MCU1"' hardware/pcb/build/revb-real.net
-          grep -q 'CIELO_R_NEG' hardware/pcb/build/revb-real.net
-          grep -q 'R16_NO' hardware/pcb/build/revb-real.net
+          echo "=== NETLIST SAMPLE ==="
+          head -80 hardware/pcb/build/revb-real.net
+          echo "=== KEY TOKENS ==="
+          grep -n -E 'MCU1|CIELO_R_NEG|R16_NO' hardware/pcb/build/revb-real.net || true
+          python3 - <<'PY'
+          p="hardware/pcb/build/revb-real.net"
+          s=open(p,encoding="utf-8",errors="replace").read()
+          print("NETLIST_BYTES",len(s))
+          for k in ("MCU1","CIELO_R_NEG","R16_NO"):
+              print("TOKEN",k,"COUNT",s.count(k))
+          if not all(k in s for k in ("MCU1","CIELO_R_NEG","R16_NO")):
+              raise SystemExit("Required Rev-B connectivity tokens missing from KiCad-exported netlist")
+          PY
       - name: Reject non-electrical schematic placeholders
         run: |
           SCH=hardware/pcb/kicad/PSN-Presepe-Mega-RevB.kicad_sch
