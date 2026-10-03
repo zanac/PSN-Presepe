@@ -3,9 +3,10 @@ name: PCB KiCad Validation
 on:
   workflow_dispatch:
   push:
-    branches: [dev]
+    branches:
+      - dev
     paths:
-      - "hardware/pcb/**"\n      - "hardware/pcb/tools/**"
+      - "hardware/pcb/**"
       - ".github/workflows/pcb-kicad.yml"
 
 permissions:
