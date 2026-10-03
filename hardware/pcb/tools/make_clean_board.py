@@ -61,24 +61,20 @@ new=f'''(gr_rect
 		(end {20+w:.4f} {20+h:.4f})'''
 if old not in text: raise RuntimeError("Edge.Cuts rectangle not found")
 text=text.replace(old,new,1)
-# Pre-route the GND backbone sections that Freerouting otherwise necks down over
-# long distances. They are locked so DSN exports them as protected/fixed copper;
-# Freerouting routes the remaining ratsnest around them.
+# Reserve a deliberate 3 mm GND power spine below the MOSFET matrix, away
+# from the Q1..Q9 pads. Freerouting will connect the local GND branches to it.
 preroutes=[
-    ((114.6576,137.7002),(108.3602,137.7002),"F.Cu"),
-    ((114.6576,167.7002),(108.3602,167.7002),"F.Cu"),
-    ((94.6576,167.7002),(88.3602,167.7002),"B.Cu"),
-    ((115.08,135.0),(115.08,150.0),"B.Cu"),
-    ((115.08,150.0),(115.08,165.0),"B.Cu"),
+    ((52.0,176.0),(122.0,176.0),"B.Cu"),
+    ((122.0,176.0),(122.0,128.0),"B.Cu"),
 ]
 segments=[]
 for idx,(p1,p2,layer) in enumerate(preroutes,1):
-    uid=uuid.uuid5(uuid.NAMESPACE_URL,f"PSN-Presepe-GND-preroute-{idx}")
+    uid=uuid.uuid5(uuid.NAMESPACE_URL,f"PSN-Presepe-GND-spine-{idx}")
     segments.append(f'''\n\t(segment\n\t\t(start {p1[0]} {p1[1]})\n\t\t(end {p2[0]} {p2[1]})\n\t\t(width 3)\n\t\t(layer "{layer}")\n\t\t(locked yes)\n\t\t(net "GND")\n\t\t(uuid "{uid}")\n\t)''')
 end=text.rfind(")")
 if end<0: raise RuntimeError("Board closing parenthesis not found")
 text=text[:end]+"".join(segments)+"\n"+text[end:]
-print(f"PREROUTE_GND locked_segments={len(preroutes)} width=3.0mm")
+print(f"PREROUTE_GND_SPINE locked_segments={len(preroutes)} width=3.0mm corridor_y=176mm")
 
 dst.parent.mkdir(parents=True,exist_ok=True);dst.write_text(text)
 print(f"CLEAN board={w:.1f}x{h:.1f}mm footprints={len(blocks(text,'(footprint'))}")
