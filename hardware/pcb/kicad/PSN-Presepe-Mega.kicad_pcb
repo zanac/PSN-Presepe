@@ -9701,15 +9701,6 @@
 			)
 		)
 	)
-	(gr_text "ALL TERMINAL WIRE ENTRY OUTWARD"
-		(at 160 188 0)
-		(layer "F.SilkS")
-		(uuid "7e0a771c-08fe-4ca2-965f-ed913fc7293e")
-		(effects
-			(font
-				(size 0.9 0.9)
-				(thickness 0.16)
-			)
 		)
 	)
 	(gr_text "PSN-PRESEPE REV A - DRAFT NOT FOR FABRICATION"
