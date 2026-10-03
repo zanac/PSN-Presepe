@@ -11,6 +11,8 @@ on:
       - 'hardware/pcb/kicad/PSN-Presepe-Mega.kicad_dru'
       - 'hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb'
       - 'hardware/pcb/tools/make_clean_board.py'
+      - 'hardware/pcb/tools/check_mega_stackable.py'
+      - 'hardware/pcb/tools/check_terminal_silkscreen.py'
 
 jobs:
   export-dsn:
@@ -24,6 +26,9 @@ jobs:
         run: kicad-cli --version
       - name: Verify Mega stackable expansion envelope
         run: python3 hardware/pcb/tools/check_mega_stackable.py
+
+      - name: Verify terminal silkscreen labels
+        run: python3 hardware/pcb/tools/check_terminal_silkscreen.py
 
       - name: Prepare clean original 280x170 PCB and export Specctra DSN
         run: |
