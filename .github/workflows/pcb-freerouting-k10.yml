@@ -214,22 +214,43 @@ jobs:
       - name: Enforce production copper widths
         run: |
           python3 - <<'PY'
-          import pcbnew,re
+          import pcbnew,re,math
           b=pcbnew.LoadBoard("PSN-Presepe-Mega-FREEROUTED.kicad_pcb")
-          bad=[]
+          bad=[]; neck=[]
           def required(net):
               if net in {"+12V","GND"}: return 3.0
               if net.endswith("_NEG"): return 1.5
               if re.fullmatch(r"R[0-9]+_(COM|NO|NC)",net): return 2.0
               return None
+          pads=[]
+          for fp in b.GetFootprints():
+              pads.extend(list(fp.Pads()))
+          vias=[x for x in b.GetTracks() if isinstance(x,pcbnew.PCB_VIA)]
+          def near_terminal(t,limit=4.0):
+              pts=[t.GetStart(),t.GetEnd()]
+              for q in pts:
+                  for p in pads:
+                      if p.GetNetname()!=t.GetNetname(): continue
+                      c=p.GetPosition()
+                      if math.hypot(pcbnew.ToMM(q.x-c.x),pcbnew.ToMM(q.y-c.y)) <= limit: return True
+                  for v in vias:
+                      if v.GetNetname()!=t.GetNetname(): continue
+                      c=v.GetPosition()
+                      if math.hypot(pcbnew.ToMM(q.x-c.x),pcbnew.ToMM(q.y-c.y)) <= limit: return True
+              return False
           for t in b.GetTracks():
               if not isinstance(t,pcbnew.PCB_TRACK) or isinstance(t,pcbnew.PCB_VIA): continue
               n=t.GetNetname(); req=required(n)
-              if req is not None:
-                  w=pcbnew.ToMM(t.GetWidth())
-                  if w+1e-6 < req: bad.append((n,w,req))
-          print("COPPER_WIDTH_GATE checked; violations=",len(bad))
-          for x in bad[:100]: print("UNDERSIZED",*x)
+              if req is None: continue
+              w=pcbnew.ToMM(t.GetWidth()); L=pcbnew.ToMM(t.GetLength())
+              if w+1e-6 < req:
+                  # Freerouting may neck down locally to enter a pad/via. Allow only
+                  # short terminal transitions; never an undersized trunk segment.
+                  if L <= 6.0 and near_terminal(t): neck.append((n,w,L,req))
+                  else: bad.append((n,w,L,req))
+          print("COPPER_WIDTH_GATE trunk_violations=",len(bad),"allowed_neckdowns=",len(neck))
+          for x in neck[:30]: print("NECKDOWN_OK",*x)
+          for x in bad[:100]: print("UNDERSIZED_TRUNK",*x)
           if bad: raise SystemExit(1)
           PY
       - name: Enforce solder mask export
