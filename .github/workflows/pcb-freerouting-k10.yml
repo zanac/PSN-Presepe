@@ -53,12 +53,40 @@ jobs:
           src="hardware/pcb/kicad/PSN-Presepe-Mega-CLEAN.kicad_pcb"
           out="hardware/pcb/kicad/PSN-Presepe-Mega.dsn"
           b=pcbnew.LoadBoard(src)
+          # KiCad's Python board loader does not automatically bind the sibling
+          # project netclass settings in this headless context. Set production
+          # widths on the board design settings before exporting the DSN.
+          ds=b.GetDesignSettings()
+          ncs=ds.GetNetClasses()
+          required={"Default":0.3,"SELV_POWER":0.8,"HIGH_CURRENT_12V":3.0,"RGB_LOAD":1.5,"RELAY_CONTACT":2.0}
+          for name,width in required.items():
+              if name in ncs:
+                  ncs[name].SetTrackWidth(pcbnew.FromMM(width))
+          # Explicitly assign the critical nets to classes on the loaded board.
+          for ni in b.GetNetInfo().NetsByName().values():
+              name=ni.GetNetname()
+              cls=None
+              if name in ("+12V","GND"): cls="HIGH_CURRENT_12V"
+              elif name.endswith("_NEG"): cls="RGB_LOAD"
+              elif __import__("re").fullmatch(r"R[0-9]+_(COM|NO|NC)",name): cls="RELAY_CONTACT"
+              elif name=="+5V_MEGA": cls="SELV_POWER"
+              if cls:
+                  try: ni.SetNetClassName(cls)
+                  except AttributeError: pass
           ok=pcbnew.ExportSpecctraDSN(b,out)
           print("EXPORT_DSN",ok,out)
           print("DSN_RELAY_RULE_LINES")
           for line in open(out,errors="ignore"):
               if "R1_COM" in line or "clearance" in line.lower(): print(line.rstrip())
           if not ok: raise SystemExit(1)
+          # Fail before Freerouting if DSN does not carry multiple production widths.
+          import re
+          d=open(out,errors="ignore").read()
+          widths=sorted(set(re.findall(r"\(width\s+([0-9.]+)",d)))
+          print("DSN_WIDTH_VALUES",widths)
+          print("DSN_SIZE",len(d))
+          if len(widths) < 3:
+              raise SystemExit("DSN width classes missing; refusing to route")
           PY
       - name: Configure KiCad footprint libraries for DRC
         run: |
