@@ -52,10 +52,10 @@ for st,en,b in reversed(blocks(text,"(footprint")):
     nb=b[:m.start()]+f"(at {nx:.4f} {ny:.4f}{m.group(3)})"+b[m.end():]
     text=text[:st]+nb+text[en:]
 
-w=300*factor; h=180*factor
+w=380*factor; h=180*factor
 old='''(gr_rect
 		(start 20 20)
-		(end 320 200)'''
+		(end 400 200)'''
 new=f'''(gr_rect
 		(start 20 20)
 		(end {20+w:.4f} {20+h:.4f})'''
