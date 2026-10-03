@@ -197,7 +197,7 @@ jobs:
       - name: Generate production Gerbers and drill files
         run: |
           mkdir -p manufacturing/gerbers
-          kicad-cli pcb export gerbers -l F.Cu,B.Cu,F.Soldermask,B.Soldermask,F.Silkscreen,B.Silkscreen,Edge.Cuts -o manufacturing/gerbers/ PSN-Presepe-Mega-FREEROUTED.kicad_pcb
+          kicad-cli pcb export gerbers -l F.Cu,B.Cu,F.Mask,B.Mask,F.Silkscreen,B.Silkscreen,Edge.Cuts -o manufacturing/gerbers/ PSN-Presepe-Mega-FREEROUTED.kicad_pcb
           kicad-cli pcb export drill -o manufacturing/gerbers/ PSN-Presepe-Mega-FREEROUTED.kicad_pcb
           test -f manufacturing/gerbers/PSN-Presepe-Mega-FREEROUTED-F_Cu.gtl
           test -f manufacturing/gerbers/PSN-Presepe-Mega-FREEROUTED-F_Soldermask.gts
