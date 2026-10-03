@@ -383,6 +383,23 @@
 			(uuid "7a580c5d-bb79-4890-9f26-7d19b8749246")
 		)
 		(embedded_fonts no)
+	
+		(fp_text user "COM"
+			(at 0 -4)
+			(layer "F.SilkS")
+			(effects (font (size 0.8 0.8) (thickness 0.12)))
+		)
+		(fp_text user "NO"
+			(at 5.08 -4)
+			(layer "F.SilkS")
+			(effects (font (size 0.8 0.8) (thickness 0.12)))
+		)
+		(fp_text user "NC"
+			(at 10.16 -4)
+			(layer "F.SilkS")
+			(effects (font (size 0.8 0.8) (thickness 0.12)))
+		)
+		(fp_text user "TERMINAL_LABELS" (at 0 0) (layer "F.Fab") hide (effects (font (size 0.01 0.01))))
 	)
 	(footprint "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal"
 		(layer "F.Cu")
@@ -603,6 +620,18 @@
 			(uuid "5fb7aafa-1385-4f27-b96f-9469b8621007")
 		)
 		(embedded_fonts no)
+	
+		(fp_text user "START"
+			(at 0 -4)
+			(layer "F.SilkS")
+			(effects (font (size 0.8 0.8) (thickness 0.12)))
+		)
+		(fp_text user "GND"
+			(at 5.08 -4)
+			(layer "F.SilkS")
+			(effects (font (size 0.8 0.8) (thickness 0.12)))
+		)
+		(fp_text user "TERMINAL_LABELS" (at 0 0) (layer "F.Fab") hide (effects (font (size 0.01 0.01))))
 	)
 	(footprint "PSN_Presep_Custom:Relay_Omron_G5Q-1_SPDT"
 		(layer "F.Cu")
@@ -943,6 +972,23 @@
 			(uuid "15b1f679-49df-4e48-943c-191aeb19fbc1")
 		)
 		(embedded_fonts no)
+	
+		(fp_text user "COM"
+			(at 0 -4)
+			(layer "F.SilkS")
+			(effects (font (size 0.8 0.8) (thickness 0.12)))
+		)
+		(fp_text user "NO"
+			(at 5.08 -4)
+			(layer "F.SilkS")
+			(effects (font (size 0.8 0.8) (thickness 0.12)))
+		)
+		(fp_text user "NC"
+			(at 10.16 -4)
+			(layer "F.SilkS")
+			(effects (font (size 0.8 0.8) (thickness 0.12)))
+		)
+		(fp_text user "TERMINAL_LABELS" (at 0 0) (layer "F.Fab") hide (effects (font (size 0.01 0.01))))
 	)
 	(footprint "PSN_Presep_Custom:Relay_Omron_G5Q-1_SPDT"
 		(layer "F.Cu")
@@ -1143,6 +1189,23 @@
 			(uuid "1a73a5de-d52c-4faf-8408-3276dc338d6b")
 		)
 		(embedded_fonts no)
+	
+		(fp_text user "COM"
+			(at 0 -4)
+			(layer "F.SilkS")
+			(effects (font (size 0.8 0.8) (thickness 0.12)))
+		)
+		(fp_text user "NO"
+			(at 5.08 -4)
+			(layer "F.SilkS")
+			(effects (font (size 0.8 0.8) (thickness 0.12)))
+		)
+		(fp_text user "NC"
+			(at 10.16 -4)
+			(layer "F.SilkS")
+			(effects (font (size 0.8 0.8) (thickness 0.12)))
+		)
+		(fp_text user "TERMINAL_LABELS" (at 0 0) (layer "F.Fab") hide (effects (font (size 0.01 0.01))))
 	)
 	(footprint "PSN_Presep_Custom:TerminalBlock_Phoenix_MKDS-1.5-3-5.08"
 		(layer "F.Cu")
@@ -1234,6 +1297,23 @@
 			(uuid "2bbb4d0e-0df1-4922-a960-3947dfbebee3")
 		)
 		(embedded_fonts no)
+	
+		(fp_text user "COM"
+			(at 0 -4)
+			(layer "F.SilkS")
+			(effects (font (size 0.8 0.8) (thickness 0.12)))
+		)
+		(fp_text user "NO"
+			(at 5.08 -4)
+			(layer "F.SilkS")
+			(effects (font (size 0.8 0.8) (thickness 0.12)))
+		)
+		(fp_text user "NC"
+			(at 10.16 -4)
+			(layer "F.SilkS")
+			(effects (font (size 0.8 0.8) (thickness 0.12)))
+		)
+		(fp_text user "TERMINAL_LABELS" (at 0 0) (layer "F.Fab") hide (effects (font (size 0.01 0.01))))
 	)
 	(footprint "PSN_Presep_Custom:TRAMONTO_12V_R_G_B"
 		(layer "F.Cu")
@@ -1322,6 +1402,28 @@
 			(uuid "adac107f-bca1-48ec-b359-04bd4859ffd6")
 		)
 		(embedded_fonts no)
+	
+		(fp_text user "12V"
+			(at 0 -4)
+			(layer "F.SilkS")
+			(effects (font (size 0.8 0.8) (thickness 0.12)))
+		)
+		(fp_text user "R"
+			(at 5.08 -4)
+			(layer "F.SilkS")
+			(effects (font (size 0.8 0.8) (thickness 0.12)))
+		)
+		(fp_text user "G"
+			(at 10.16 -4)
+			(layer "F.SilkS")
+			(effects (font (size 0.8 0.8) (thickness 0.12)))
+		)
+		(fp_text user "B"
+			(at 15.24 -4)
+			(layer "F.SilkS")
+			(effects (font (size 0.8 0.8) (thickness 0.12)))
+		)
+		(fp_text user "TERMINAL_LABELS" (at 0 0) (layer "F.Fab") hide (effects (font (size 0.01 0.01))))
 	)
 	(footprint "PSN_Presep_Custom:TerminalBlock_Phoenix_MKDS-1.5-3-5.08"
 		(layer "F.Cu")
@@ -1413,6 +1515,23 @@
 			(uuid "171e8ce4-5c6a-4503-992c-09e8d8ce6787")
 		)
 		(embedded_fonts no)
+	
+		(fp_text user "COM"
+			(at 0 -4)
+			(layer "F.SilkS")
+			(effects (font (size 0.8 0.8) (thickness 0.12)))
+		)
+		(fp_text user "NO"
+			(at 5.08 -4)
+			(layer "F.SilkS")
+			(effects (font (size 0.8 0.8) (thickness 0.12)))
+		)
+		(fp_text user "NC"
+			(at 10.16 -4)
+			(layer "F.SilkS")
+			(effects (font (size 0.8 0.8) (thickness 0.12)))
+		)
+		(fp_text user "TERMINAL_LABELS" (at 0 0) (layer "F.Fab") hide (effects (font (size 0.01 0.01))))
 	)
 	(footprint "Capacitor_THT:C_Radial_D10.0mm_H12.5mm_P5.00mm"
 		(layer "F.Cu")
@@ -3435,6 +3554,23 @@
 			(uuid "43314329-45b3-4c48-8e67-b37c1eebac9f")
 		)
 		(embedded_fonts no)
+	
+		(fp_text user "COM"
+			(at 0 -4)
+			(layer "F.SilkS")
+			(effects (font (size 0.8 0.8) (thickness 0.12)))
+		)
+		(fp_text user "NO"
+			(at 5.08 -4)
+			(layer "F.SilkS")
+			(effects (font (size 0.8 0.8) (thickness 0.12)))
+		)
+		(fp_text user "NC"
+			(at 10.16 -4)
+			(layer "F.SilkS")
+			(effects (font (size 0.8 0.8) (thickness 0.12)))
+		)
+		(fp_text user "TERMINAL_LABELS" (at 0 0) (layer "F.Fab") hide (effects (font (size 0.01 0.01))))
 	)
 	(footprint "PSN_Presep_Custom:CASETTE_12V_GND_DATA"
 		(layer "F.Cu")
@@ -3514,6 +3650,23 @@
 			(uuid "ee406836-8b80-4737-878a-357008e23b95")
 		)
 		(embedded_fonts no)
+	
+		(fp_text user "12V"
+			(at 0 -4)
+			(layer "F.SilkS")
+			(effects (font (size 0.8 0.8) (thickness 0.12)))
+		)
+		(fp_text user "GND"
+			(at 5.08 -4)
+			(layer "F.SilkS")
+			(effects (font (size 0.8 0.8) (thickness 0.12)))
+		)
+		(fp_text user "DATA"
+			(at 10.16 -4)
+			(layer "F.SilkS")
+			(effects (font (size 0.8 0.8) (thickness 0.12)))
+		)
+		(fp_text user "TERMINAL_LABELS" (at 0 0) (layer "F.Fab") hide (effects (font (size 0.01 0.01))))
 	)
 	(footprint "MountingHole_1"
 		(layer "F.Cu")
@@ -3674,6 +3827,23 @@
 			(uuid "745d73c3-fa06-4a57-9a2e-947a836cf39d")
 		)
 		(embedded_fonts no)
+	
+		(fp_text user "12V"
+			(at 0 -4)
+			(layer "F.SilkS")
+			(effects (font (size 0.8 0.8) (thickness 0.12)))
+		)
+		(fp_text user "GND"
+			(at 5.08 -4)
+			(layer "F.SilkS")
+			(effects (font (size 0.8 0.8) (thickness 0.12)))
+		)
+		(fp_text user "DATA"
+			(at 10.16 -4)
+			(layer "F.SilkS")
+			(effects (font (size 0.8 0.8) (thickness 0.12)))
+		)
+		(fp_text user "TERMINAL_LABELS" (at 0 0) (layer "F.Fab") hide (effects (font (size 0.01 0.01))))
 	)
 	(footprint "PSN_Presep_Custom:TerminalBlock_Phoenix_MKDS-1.5-3-5.08"
 		(layer "F.Cu")
@@ -3765,6 +3935,23 @@
 			(uuid "63b2376d-1e70-4a28-ab3e-c31eeaad0a51")
 		)
 		(embedded_fonts no)
+	
+		(fp_text user "COM"
+			(at 0 -4)
+			(layer "F.SilkS")
+			(effects (font (size 0.8 0.8) (thickness 0.12)))
+		)
+		(fp_text user "NO"
+			(at 5.08 -4)
+			(layer "F.SilkS")
+			(effects (font (size 0.8 0.8) (thickness 0.12)))
+		)
+		(fp_text user "NC"
+			(at 10.16 -4)
+			(layer "F.SilkS")
+			(effects (font (size 0.8 0.8) (thickness 0.12)))
+		)
+		(fp_text user "TERMINAL_LABELS" (at 0 0) (layer "F.Fab") hide (effects (font (size 0.01 0.01))))
 	)
 	(footprint "PSN_Presep_Custom:ULN2803C_DIP18"
 		(layer "F.Cu")
@@ -4426,6 +4613,28 @@
 			(uuid "3fe40d64-dbae-4db4-8c8a-fff2de5d0a3f")
 		)
 		(embedded_fonts no)
+	
+		(fp_text user "12V"
+			(at 0 -4)
+			(layer "F.SilkS")
+			(effects (font (size 0.8 0.8) (thickness 0.12)))
+		)
+		(fp_text user "R"
+			(at 5.08 -4)
+			(layer "F.SilkS")
+			(effects (font (size 0.8 0.8) (thickness 0.12)))
+		)
+		(fp_text user "G"
+			(at 10.16 -4)
+			(layer "F.SilkS")
+			(effects (font (size 0.8 0.8) (thickness 0.12)))
+		)
+		(fp_text user "B"
+			(at 15.24 -4)
+			(layer "F.SilkS")
+			(effects (font (size 0.8 0.8) (thickness 0.12)))
+		)
+		(fp_text user "TERMINAL_LABELS" (at 0 0) (layer "F.Fab") hide (effects (font (size 0.01 0.01))))
 	)
 	(footprint "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal"
 		(layer "F.Cu")
@@ -4706,6 +4915,18 @@
 			(uuid "56fe7957-8668-416a-bcb0-bcb3c40e45f9")
 		)
 		(embedded_fonts no)
+	
+		(fp_text user "TEST"
+			(at 0 -4)
+			(layer "F.SilkS")
+			(effects (font (size 0.8 0.8) (thickness 0.12)))
+		)
+		(fp_text user "GND"
+			(at 5.08 -4)
+			(layer "F.SilkS")
+			(effects (font (size 0.8 0.8) (thickness 0.12)))
+		)
+		(fp_text user "TERMINAL_LABELS" (at 0 0) (layer "F.Fab") hide (effects (font (size 0.01 0.01))))
 	)
 	(footprint "Package_TO_SOT_THT:TO-220-3_Vertical"
 		(layer "F.Cu")
@@ -4874,6 +5095,28 @@
 			(uuid "24f18225-d21f-4240-90d0-50d54649b858")
 		)
 		(embedded_fonts no)
+	
+		(fp_text user "12V"
+			(at 0 -4)
+			(layer "F.SilkS")
+			(effects (font (size 0.8 0.8) (thickness 0.12)))
+		)
+		(fp_text user "R"
+			(at 5.08 -4)
+			(layer "F.SilkS")
+			(effects (font (size 0.8 0.8) (thickness 0.12)))
+		)
+		(fp_text user "G"
+			(at 10.16 -4)
+			(layer "F.SilkS")
+			(effects (font (size 0.8 0.8) (thickness 0.12)))
+		)
+		(fp_text user "B"
+			(at 15.24 -4)
+			(layer "F.SilkS")
+			(effects (font (size 0.8 0.8) (thickness 0.12)))
+		)
+		(fp_text user "TERMINAL_LABELS" (at 0 0) (layer "F.Fab") hide (effects (font (size 0.01 0.01))))
 	)
 	(footprint "PSN_Presep_Custom:TerminalBlock_Phoenix_MKDS-1.5-3-5.08"
 		(layer "F.Cu")
@@ -4965,6 +5208,23 @@
 			(uuid "67c4720c-a511-41ae-af13-0e317b6e8946")
 		)
 		(embedded_fonts no)
+	
+		(fp_text user "COM"
+			(at 0 -4)
+			(layer "F.SilkS")
+			(effects (font (size 0.8 0.8) (thickness 0.12)))
+		)
+		(fp_text user "NO"
+			(at 5.08 -4)
+			(layer "F.SilkS")
+			(effects (font (size 0.8 0.8) (thickness 0.12)))
+		)
+		(fp_text user "NC"
+			(at 10.16 -4)
+			(layer "F.SilkS")
+			(effects (font (size 0.8 0.8) (thickness 0.12)))
+		)
+		(fp_text user "TERMINAL_LABELS" (at 0 0) (layer "F.Fab") hide (effects (font (size 0.01 0.01))))
 	)
 	(footprint "PSN_Presep_Custom:Relay_Omron_G5Q-1_SPDT"
 		(layer "F.Cu")
@@ -5806,6 +6066,18 @@
 			(uuid "152a0405-02ca-45f6-af40-fe5653e2d629")
 		)
 		(embedded_fonts no)
+	
+		(fp_text user "12V"
+			(at 0 -4)
+			(layer "F.SilkS")
+			(effects (font (size 0.8 0.8) (thickness 0.12)))
+		)
+		(fp_text user "GND"
+			(at 5.08 -4)
+			(layer "F.SilkS")
+			(effects (font (size 0.8 0.8) (thickness 0.12)))
+		)
+		(fp_text user "TERMINAL_LABELS" (at 0 0) (layer "F.Fab") hide (effects (font (size 0.01 0.01))))
 	)
 	(footprint "PSN_Presep_Custom:Relay_Omron_G5Q-1_SPDT"
 		(layer "F.Cu")
@@ -6486,6 +6758,23 @@
 			(uuid "ed2d3ebd-52ff-4914-b308-03b31c843a50")
 		)
 		(embedded_fonts no)
+	
+		(fp_text user "COM"
+			(at 0 -4)
+			(layer "F.SilkS")
+			(effects (font (size 0.8 0.8) (thickness 0.12)))
+		)
+		(fp_text user "NO"
+			(at 5.08 -4)
+			(layer "F.SilkS")
+			(effects (font (size 0.8 0.8) (thickness 0.12)))
+		)
+		(fp_text user "NC"
+			(at 10.16 -4)
+			(layer "F.SilkS")
+			(effects (font (size 0.8 0.8) (thickness 0.12)))
+		)
+		(fp_text user "TERMINAL_LABELS" (at 0 0) (layer "F.Fab") hide (effects (font (size 0.01 0.01))))
 	)
 	(footprint "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal"
 		(layer "F.Cu")
@@ -6647,6 +6936,23 @@
 			(uuid "6f199374-4916-494d-a2f4-b11d60c83c32")
 		)
 		(embedded_fonts no)
+	
+		(fp_text user "COM"
+			(at 0 -4)
+			(layer "F.SilkS")
+			(effects (font (size 0.8 0.8) (thickness 0.12)))
+		)
+		(fp_text user "NO"
+			(at 5.08 -4)
+			(layer "F.SilkS")
+			(effects (font (size 0.8 0.8) (thickness 0.12)))
+		)
+		(fp_text user "NC"
+			(at 10.16 -4)
+			(layer "F.SilkS")
+			(effects (font (size 0.8 0.8) (thickness 0.12)))
+		)
+		(fp_text user "TERMINAL_LABELS" (at 0 0) (layer "F.Fab") hide (effects (font (size 0.01 0.01))))
 	)
 	(footprint "PSN_Presep_Custom:Relay_Omron_G5Q-1_SPDT"
 		(layer "F.Cu")
@@ -7057,6 +7363,23 @@
 			(uuid "82958094-31d2-4c0e-8462-c8f2f06f9bd8")
 		)
 		(embedded_fonts no)
+	
+		(fp_text user "COM"
+			(at 0 -4)
+			(layer "F.SilkS")
+			(effects (font (size 0.8 0.8) (thickness 0.12)))
+		)
+		(fp_text user "NO"
+			(at 5.08 -4)
+			(layer "F.SilkS")
+			(effects (font (size 0.8 0.8) (thickness 0.12)))
+		)
+		(fp_text user "NC"
+			(at 10.16 -4)
+			(layer "F.SilkS")
+			(effects (font (size 0.8 0.8) (thickness 0.12)))
+		)
+		(fp_text user "TERMINAL_LABELS" (at 0 0) (layer "F.Fab") hide (effects (font (size 0.01 0.01))))
 	)
 	(footprint "PSN_Presep_Custom:TerminalBlock_Phoenix_MKDS-1.5-3-5.08"
 		(layer "F.Cu")
@@ -7148,6 +7471,23 @@
 			(uuid "b13f6f25-2fae-432c-8653-9bbfddb10fbb")
 		)
 		(embedded_fonts no)
+	
+		(fp_text user "COM"
+			(at 0 -4)
+			(layer "F.SilkS")
+			(effects (font (size 0.8 0.8) (thickness 0.12)))
+		)
+		(fp_text user "NO"
+			(at 5.08 -4)
+			(layer "F.SilkS")
+			(effects (font (size 0.8 0.8) (thickness 0.12)))
+		)
+		(fp_text user "NC"
+			(at 10.16 -4)
+			(layer "F.SilkS")
+			(effects (font (size 0.8 0.8) (thickness 0.12)))
+		)
+		(fp_text user "TERMINAL_LABELS" (at 0 0) (layer "F.Fab") hide (effects (font (size 0.01 0.01))))
 	)
 	(footprint "PSN_Presep_Custom:TerminalBlock_Phoenix_MKDS-1.5-3-5.08"
 		(layer "F.Cu")
@@ -7239,6 +7579,23 @@
 			(uuid "0541f085-617d-466a-a073-7106e58ad47c")
 		)
 		(embedded_fonts no)
+	
+		(fp_text user "COM"
+			(at 0 -4)
+			(layer "F.SilkS")
+			(effects (font (size 0.8 0.8) (thickness 0.12)))
+		)
+		(fp_text user "NO"
+			(at 5.08 -4)
+			(layer "F.SilkS")
+			(effects (font (size 0.8 0.8) (thickness 0.12)))
+		)
+		(fp_text user "NC"
+			(at 10.16 -4)
+			(layer "F.SilkS")
+			(effects (font (size 0.8 0.8) (thickness 0.12)))
+		)
+		(fp_text user "TERMINAL_LABELS" (at 0 0) (layer "F.Fab") hide (effects (font (size 0.01 0.01))))
 	)
 	(footprint "PSN_Presep_Custom:Relay_Omron_G5Q-1_SPDT"
 		(layer "F.Cu")
@@ -7519,6 +7876,23 @@
 			(uuid "7ff11c26-60bc-4333-b7cd-4ea76c1ce72a")
 		)
 		(embedded_fonts no)
+	
+		(fp_text user "COM"
+			(at 0 -4)
+			(layer "F.SilkS")
+			(effects (font (size 0.8 0.8) (thickness 0.12)))
+		)
+		(fp_text user "NO"
+			(at 5.08 -4)
+			(layer "F.SilkS")
+			(effects (font (size 0.8 0.8) (thickness 0.12)))
+		)
+		(fp_text user "NC"
+			(at 10.16 -4)
+			(layer "F.SilkS")
+			(effects (font (size 0.8 0.8) (thickness 0.12)))
+		)
+		(fp_text user "TERMINAL_LABELS" (at 0 0) (layer "F.Fab") hide (effects (font (size 0.01 0.01))))
 	)
 	(footprint "PSN_Presep_Custom:OLED_5V_GND_SDA_SCL"
 		(layer "F.Cu")
@@ -7607,6 +7981,28 @@
 			(uuid "2b98fcf2-d9a3-4aba-b9b1-c8a7fceb2453")
 		)
 		(embedded_fonts no)
+	
+		(fp_text user "5V"
+			(at 0 -4)
+			(layer "F.SilkS")
+			(effects (font (size 0.8 0.8) (thickness 0.12)))
+		)
+		(fp_text user "GND"
+			(at 5.08 -4)
+			(layer "F.SilkS")
+			(effects (font (size 0.8 0.8) (thickness 0.12)))
+		)
+		(fp_text user "SDA"
+			(at 10.16 -4)
+			(layer "F.SilkS")
+			(effects (font (size 0.8 0.8) (thickness 0.12)))
+		)
+		(fp_text user "SCL"
+			(at 15.24 -4)
+			(layer "F.SilkS")
+			(effects (font (size 0.8 0.8) (thickness 0.12)))
+		)
+		(fp_text user "TERMINAL_LABELS" (at 0 0) (layer "F.Fab") hide (effects (font (size 0.01 0.01))))
 	)
 	(footprint "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal"
 		(layer "F.Cu")
@@ -8599,6 +8995,23 @@
 			(uuid "2e5b0eb9-9020-422f-8439-fff597466e4f")
 		)
 		(embedded_fonts no)
+	
+		(fp_text user "COM"
+			(at 0 -4)
+			(layer "F.SilkS")
+			(effects (font (size 0.8 0.8) (thickness 0.12)))
+		)
+		(fp_text user "NO"
+			(at 5.08 -4)
+			(layer "F.SilkS")
+			(effects (font (size 0.8 0.8) (thickness 0.12)))
+		)
+		(fp_text user "NC"
+			(at 10.16 -4)
+			(layer "F.SilkS")
+			(effects (font (size 0.8 0.8) (thickness 0.12)))
+		)
+		(fp_text user "TERMINAL_LABELS" (at 0 0) (layer "F.Fab") hide (effects (font (size 0.01 0.01))))
 	)
 	(footprint "PSN_Presep_Custom:NEXT_GND"
 		(layer "F.Cu")
@@ -8669,6 +9082,18 @@
 			(uuid "d2e32167-68a4-40e7-b525-99327f568f94")
 		)
 		(embedded_fonts no)
+	
+		(fp_text user "NEXT"
+			(at 0 -4)
+			(layer "F.SilkS")
+			(effects (font (size 0.8 0.8) (thickness 0.12)))
+		)
+		(fp_text user "GND"
+			(at 5.08 -4)
+			(layer "F.SilkS")
+			(effects (font (size 0.8 0.8) (thickness 0.12)))
+		)
+		(fp_text user "TERMINAL_LABELS" (at 0 0) (layer "F.Fab") hide (effects (font (size 0.01 0.01))))
 	)
 	(footprint "Package_TO_SOT_THT:TO-220-3_Vertical"
 		(layer "F.Cu")
@@ -9030,6 +9455,23 @@
 			(uuid "559c66fa-34ac-4912-bf1c-540f3f2eed4b")
 		)
 		(embedded_fonts no)
+	
+		(fp_text user "COM"
+			(at 0 -4)
+			(layer "F.SilkS")
+			(effects (font (size 0.8 0.8) (thickness 0.12)))
+		)
+		(fp_text user "NO"
+			(at 5.08 -4)
+			(layer "F.SilkS")
+			(effects (font (size 0.8 0.8) (thickness 0.12)))
+		)
+		(fp_text user "NC"
+			(at 10.16 -4)
+			(layer "F.SilkS")
+			(effects (font (size 0.8 0.8) (thickness 0.12)))
+		)
+		(fp_text user "TERMINAL_LABELS" (at 0 0) (layer "F.Fab") hide (effects (font (size 0.01 0.01))))
 	)
 	(footprint "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal"
 		(layer "F.Cu")
