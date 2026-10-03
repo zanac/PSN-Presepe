@@ -138,8 +138,7 @@ jobs:
           s=Path("freerouted-k10.drc.txt").read_text()
           m=re.findall(r"Found ([0-9]+) unconnected",s,re.I)
           n=int(m[-1]) if m else -1
-          cats=re.findall(r"\\[([A-Za-z0-9_]+)\\]",s)
-          allowed={"lib_footprint_issues"}
+          cats=[line[1:line.index("]")] for line in s.splitlines() if line.startswith("[") and "]" in line]\n          allowed={"lib_footprint_issues"}
           bad=sorted(set(cats)-allowed)
           print("FINAL_GATE unconnected=",n,"categories=",sorted(set(cats)),"unexpected=",bad or "none")
           if n != 0 or bad:
