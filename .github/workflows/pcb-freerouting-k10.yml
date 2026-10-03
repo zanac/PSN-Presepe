@@ -22,6 +22,7 @@ on:
       - 'hardware/pcb/tools/check_mega_mechanical_bom.py'
       - 'hardware/pcb/BOM.md'
       - 'hardware/pcb/tools/check_terminal_silkscreen.py'
+      - 'hardware/pcb/tools/check_critical_footprints.py'
       - 'hardware/pcb/ASSEMBLY.md'
 
 jobs:
@@ -45,6 +46,9 @@ jobs:
 
       - name: Verify terminal silkscreen labels
         run: python3 hardware/pcb/tools/check_terminal_silkscreen.py
+
+      - name: Verify critical physical footprints and relay contact mapping
+        run: python3 hardware/pcb/tools/check_critical_footprints.py
 
       - name: Prepare clean original 280x170 PCB and export Specctra DSN
         run: |
@@ -179,14 +183,25 @@ jobs:
           test -f PSN-Presepe-Mega-FREEROUTED.kicad_dru
           grep -n "Relay contacts to SELV 6mm\|min 6mm" PSN-Presepe-Mega-FREEROUTED.kicad_dru
           cp PSN-Presepe-Mega-FREEROUTED.kicad_pcb positive-control.kicad_pcb
-          cat > positive-control.kicad_dru <<'EOF'
-          (version 1)
-          (rule "CI positive control 100mm"
-            (condition "A.Type == 'Track' && B.Type == 'Track' && A.Net != B.Net")
-            (constraint clearance (min 100mm))
-          )
-          EOF
+          cp PSN-Presepe-Mega-FREEROUTED.kicad_dru positive-control.kicad_dru
+          python3 - <<'PY'
+          import pcbnew
+          b=pcbnew.LoadBoard("positive-control.kicad_pcb")
+          def add(net,y):
+              t=pcbnew.PCB_TRACK(b)
+              t.SetStart(pcbnew.VECTOR2I(pcbnew.FromMM(25),pcbnew.FromMM(y)))
+              t.SetEnd(pcbnew.VECTOR2I(pcbnew.FromMM(35),pcbnew.FromMM(y)))
+              t.SetWidth(pcbnew.FromMM(0.3))
+              t.SetLayer(pcbnew.F_Cu)
+              t.SetNetCode(b.FindNet(net).GetNetCode())
+              b.Add(t)
+          add("R1_NO",25.0)
+          add("+12V",25.2)
+          pcbnew.SaveBoard("positive-control.kicad_pcb",b)
+          PY
           kicad-cli pcb drc --severity-all --output positive-control.drc.txt positive-control.kicad_pcb || true
+          grep -q "Relay contacts to SELV 6mm" positive-control.drc.txt || { echo "RELAY_6MM_RULE_DID_NOT_FIRE"; cat positive-control.drc.txt; exit 1; }
+          echo "RELAY_6MM_RULE_POSITIVE_CONTROL_PASS"
           kicad-cli pcb drc --severity-all --output freerouted-k10.drc.txt PSN-Presepe-Mega-FREEROUTED.kicad_pcb || true
           python3 - <<'PY'
           from pathlib import Path
