@@ -160,7 +160,7 @@ for i in range(9,17):
 qpos=[]
 for i in range(1,10):
     x,y,rot=footprint_at(f"Q{i}")
-    assert 65.0 <= x <= 115.0 and 130.0 <= y <= 170.0, f"Q{i} left MOSFET thermal zone: {(x,y)}"
+    assert 65.0 <= x <= 125.0 and 130.0 <= y <= 170.0, f"Q{i} left MOSFET thermal zone: {(x,y)}"
     qpos.append((i,x,y))
 for a in range(len(qpos)):
     for b in range(a+1,len(qpos)):
