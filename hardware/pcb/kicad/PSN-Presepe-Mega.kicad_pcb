@@ -408,7 +408,7 @@
 	(footprint "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal"
 		(layer "F.Cu")
 		(uuid "0aa561d7-64ef-4bc0-8284-d30ae5922f6c")
-		(at 98 147.5)
+		(at 108 147.5)
 		(property "Reference" "RG6"
 			(at 5.08 -2 0)
 			(layer "F.Fab")
@@ -3411,7 +3411,7 @@
 	(footprint "Package_TO_SOT_THT:TO-220-3_Vertical"
 		(layer "F.Cu")
 		(uuid "4b74eaa2-bb80-4829-ad87-64d8b0ad6a24")
-		(at 110 165)
+		(at 120 165)
 		(property "Reference" "Q9"
 			(at 2.54 -4 0)
 			(layer "F.Fab")
@@ -4683,7 +4683,7 @@
 	(footprint "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal"
 		(layer "F.Cu")
 		(uuid "5ffaeccf-a3b9-4dc6-8ab0-6c2f3c25fbac")
-		(at 98 162.5)
+		(at 108 162.5)
 		(property "Reference" "RG9"
 			(at 5.08 -2 0)
 			(layer "F.Fab")
@@ -6327,7 +6327,7 @@
 	(footprint "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal"
 		(layer "F.Cu")
 		(uuid "7ecffab5-1507-44e3-a902-7e7f2b37ce5a")
-		(at 98 137.5)
+		(at 108 137.5)
 		(property "Reference" "RPD3"
 			(at 5.08 -2 0)
 			(layer "F.Fab")
@@ -6397,7 +6397,7 @@
 	(footprint "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal"
 		(layer "F.Cu")
 		(uuid "86185abc-af8e-49ec-bba6-8658efd7fb6b")
-		(at 98 152.5)
+		(at 108 152.5)
 		(property "Reference" "RPD6"
 			(at 5.08 -2 0)
 			(layer "F.Fab")
@@ -7785,7 +7785,7 @@
 	(footprint "Package_TO_SOT_THT:TO-220-3_Vertical"
 		(layer "F.Cu")
 		(uuid "ace26169-ce07-4305-8be0-68dfccf412b8")
-		(at 110 135)
+		(at 120 135)
 		(property "Reference" "Q3"
 			(at 2.54 -4 0)
 			(layer "F.Fab")
@@ -8312,7 +8312,7 @@
 	(footprint "Package_TO_SOT_THT:TO-220-3_Vertical"
 		(layer "F.Cu")
 		(uuid "c0475b54-ed7b-4b79-82c2-d99f70458721")
-		(at 110 150)
+		(at 120 150)
 		(property "Reference" "Q6"
 			(at 2.54 -4 0)
 			(layer "F.Fab")
@@ -8680,7 +8680,7 @@
 	(footprint "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal"
 		(layer "F.Cu")
 		(uuid "c52b1917-ec77-482d-97e5-d0b456449395")
-		(at 98 167.5)
+		(at 108 167.5)
 		(property "Reference" "RPD9"
 			(at 5.08 -2 0)
 			(layer "F.Fab")
@@ -9568,7 +9568,7 @@
 	(footprint "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal"
 		(layer "F.Cu")
 		(uuid "f1a9f765-d833-46eb-aeb1-a40846bf3ac8")
-		(at 98 132.5)
+		(at 108 132.5)
 		(property "Reference" "RG3"
 			(at 5.08 -2 0)
 			(layer "F.Fab")
