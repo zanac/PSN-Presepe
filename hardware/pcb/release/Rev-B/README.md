@@ -5,6 +5,9 @@ This directory is the validated manufacturing snapshot produced by the KiCad 10 
 Contents:
 - final routed KiCad PCB and design rules
 - final DRC report
+- validated KiCad 10 electrical schematic (.kicad_sch)
+- equivalent legacy Eeschema schematic (.sch + cache library)
+- schematic ERC report
 - BOM.csv
 - CPL.csv
 - Gerber copper, silkscreen and board outline
@@ -12,7 +15,7 @@ Contents:
 - front/back solder-mask Gerbers (.gts/.gbs), generated from the final routed PCB
 - high-resolution technical and manual/documentation PNG previews, plus vector silkscreen SVG
 
-Validation gates include 0 unconnected pads, relay/contact 6 mm clearance rule, Mega mechanical/pin/stackable checks, terminal silkscreen checks, production copper-width checks (+12V/GND, +5V_MEGA, RGB loads and relay contacts), solder-mask pad audit, and manufacturing export checks.
+Validation gates include KiCad 10 schematic parsing, schematic-to-PCB connectivity coverage through a KiCad-exported netlist, schematic ERC, 0 unconnected pads, relay/contact 6 mm clearance rule, Mega mechanical/pin/stackable checks, terminal silkscreen checks, production copper-width checks (+12V/GND, +5V_MEGA, RGB loads and relay contacts), solder-mask pad audit, and manufacturing export checks.
 
 Solder-mask Gerbers are mandatory: CI audits F.Mask/B.Mask pad membership on the final post-SES PCB and requires non-empty .gts/.gbs fabrication files.
 
