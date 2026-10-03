@@ -3,7 +3,7 @@ name: PCB Original KiCad10 Freerouting
 permissions:
   contents: write
 # 280x170 production routing pipeline
-# trigger: newline-repair-verified
+# trigger: Rev-C current-head rerun after routing/sanity gate fixes
 
 on:
   workflow_dispatch:
