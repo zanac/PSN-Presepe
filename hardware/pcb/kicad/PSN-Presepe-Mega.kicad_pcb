@@ -9701,9 +9701,7 @@
 			)
 		)
 	)
-		)
-	)
-	(gr_text "PSN-PRESEPE REV A - DRAFT NOT FOR FABRICATION"
+	(gr_text "PSN-PRESEPE REV C - WORK IN PROGRESS - DO NOT FABRICATE"
 		(at 80 24 0)
 		(layer "F.SilkS")
 		(uuid "ae80eab2-894e-4b0d-8966-49aa8ce38627")
