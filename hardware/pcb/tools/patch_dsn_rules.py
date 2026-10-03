@@ -7,8 +7,11 @@ names=set(re.findall(r'\(net\s+"?([^"\s()]+)"?',s))
 groups=[
  ("HIGH_CURRENT_12V",lambda n:n in {"+12V","GND"},3000),
  ("RGB_LOAD",lambda n:n.endswith("_NEG"),1500),
- ("RELAY_CONTACT",lambda n:re.fullmatch(r"R[0-9]+_(COM|NO|NC)",n) is not None,2000),
  ("SELV_POWER",lambda n:n=="+5V_MEGA",800)]
+# Each relay gets its own class so COM/NO/NC of the same physical relay are
+# not forced 6 mm apart, while different relays can receive pairwise spacing.
+relay_groups=[(f"RELAY_{i}_CONTACT",lambda n,i=i: re.fullmatch(fr"R{i}_(COM|NO|NC)",n) is not None,2000) for i in range(1,17)]
+groups=groups[:-1]+relay_groups+groups[-1:]
 targets={n for _,pred,_ in groups for n in names if pred(n)}
 
 # Parse every existing (class ...) S-expression and remove production nets
@@ -51,7 +54,7 @@ for label,pred,width in groups:
     quoted=" ".join(f'"{n}"' for n in ns)
     # Relay contacts need both production width and real router clearance.
     # Specctra clearance units follow the DSN coordinate scale (1000 = 1 mm here).
-    clearance = 6000 if label == "RELAY_CONTACT" else None
+    clearance = None
     cr = f" (clearance {clearance})" if clearance else ""
     rules.append(f'    (class "{label}" {quoted}\n      (rule (width {width}){cr})\n    )')
     print(label,"width",width,"clearance",clearance,"nets",len(ns))
