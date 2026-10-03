@@ -218,6 +218,43 @@ jobs:
           if n != 0 or bad:
               raise SystemExit(1)
           PY
+      - name: Independent relay isolation audit
+        run: |
+          python3 - <<'PY'
+          import pcbnew,re,math
+          b=pcbnew.LoadBoard("PSN-Presepe-Mega-FREEROUTED.kicad_pcb")
+          rx=re.compile(r"^R([0-9]+)_(COM|NO|NC)$")
+          contact=[]; selv=[]
+          def bbox(item):
+              q=item.GetBoundingBox(); return (pcbnew.ToMM(q.GetX()),pcbnew.ToMM(q.GetY()),pcbnew.ToMM(q.GetRight()),pcbnew.ToMM(q.GetBottom()))
+          def dist(a,b):
+              ax0,ay0,ax1,ay1=a; bx0,by0,bx1,by1=b
+              dx=max(bx0-ax1,ax0-bx1,0); dy=max(by0-ay1,ay0-by1,0)
+              return math.hypot(dx,dy)
+          items=[]
+          for t in b.GetTracks(): items.append(t)
+          for p in b.GetPads(): items.append(p)
+          for x in items:
+              n=x.GetNetname()
+              if not n: continue
+              m=rx.match(n)
+              (contact if m else selv).append((n,m.group(1) if m else None,bbox(x)))
+          bad=[]; minimum=999
+          for n,g,a in contact:
+              for n2,g2,bx in selv:
+                  d=dist(a,bx); minimum=min(minimum,d)
+                  if d+1e-6<6: bad.append((n,n2,d))
+              for n2,g2,bx in contact:
+                  if g2==g: continue
+                  d=dist(a,bx); minimum=min(minimum,d)
+                  if d+1e-6<6: bad.append((n,n2,d))
+          # Bounding-box distance is deliberately conservative. KiCad DRC remains
+          # authoritative for exact copper geometry; this catches gross rule bypasses.
+          print("RELAY_ISOLATION_AUDIT min_bbox_clearance_mm=",minimum,"violations=",len(bad))
+          for x in bad[:50]: print("RELAY_ISOLATION_BBOX_WARN",*x)
+          if bad: raise SystemExit(1)
+          print("RELAY_ISOLATION_AUDIT_PASS")
+          PY
       - name: Enforce production copper widths
         run: |
           python3 - <<'PY'
