@@ -48,7 +48,7 @@ try:
         ref=fp.GetReference()
         if ref not in required: continue
         for item in fp.GraphicalItems():
-            if not isinstance(item, pcbnew.FP_TEXT): continue
+            if not hasattr(item, "GetText") or not hasattr(item, "GetBoundingBox"): continue
             if item.GetLayer()!=pcbnew.F_SilkS: continue
             if item.GetText() not in required[ref]: continue
             box=item.GetBoundingBox()
