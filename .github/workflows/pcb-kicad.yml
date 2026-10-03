@@ -92,8 +92,14 @@ jobs:
           test -s hardware/pcb/kicad/PSN-Presepe-Mega-RevB.kicad_sch
       - name: Export real Rev-B schematic netlist
         run: |
+          set +e
           kicad-cli sch export netlist --output hardware/pcb/build/revb-real.net \
-            hardware/pcb/kicad/PSN-Presepe-Mega-RevB.kicad_sch
+            hardware/pcb/kicad/PSN-Presepe-Mega-RevB.kicad_sch \
+            >hardware/pcb/build/revb-netlist-export.log 2>&1
+          rc=$?
+          set -e
+          cat hardware/pcb/build/revb-netlist-export.log
+          test $rc -eq 0
           test -s hardware/pcb/build/revb-real.net
           grep -q '<comp ref="MCU1"' hardware/pcb/build/revb-real.net
           grep -q 'CIELO_R_NEG' hardware/pcb/build/revb-real.net
@@ -142,6 +148,7 @@ jobs:
             hardware/pcb/build/kicad10-fixture.kicad_sch
             hardware/pcb/build/kicad10-fixture.net
             hardware/pcb/build/revb-real.net
+            hardware/pcb/build/revb-netlist-export.log
             hardware/pcb/build/kicad-create-project-help.txt
             hardware/pcb/build/PSN-Presepe-Mega-RevB.sch
             hardware/pcb/build/PSN-Presepe-Mega-RevB-cache.lib
