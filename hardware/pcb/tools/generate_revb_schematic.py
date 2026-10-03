@@ -7,10 +7,7 @@ out=Path(sys.argv[2])
 # schematic is a connectivity/audit sheet: every PCB net is represented by
 # a hierarchical label, making KiCad ERC parse and validate the electrical
 # source while the PCB remains the routing authority for this revision.
-nets=[]
-for n,name in re.findall(r'\(net\s+(\d+)\s+"([^"]*)"\)',pcb):
-    if name and name not in nets: nets.append(name)
-def uid(): return str(uuid.uuid4())
+nets=sorted({p.GetNetname() for fp in board.GetFootprints() for p in fp.Pads() if p.GetNetname()} | {t.GetNetname() for t in board.GetTracks() if t.GetNetname()})\ndef uid(): return str(uuid.uuid4())
 root=uid()
 lines=['(kicad_sch','  (version 20250114)','  (generator "eeschema")',
 '  (generator_version "10.0")','  (uuid '+root+')','  (paper "A3")',
