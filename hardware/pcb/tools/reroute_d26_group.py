@@ -3,7 +3,7 @@ from pathlib import Path
 import re, math, subprocess
 
 PCB=Path("hardware/pcb/kicad/PSN-Presepe-Mega-LARGE-2X.kicad_pcb")
-TARGETS=["D26_RELAY2","D30_RELAY6","D4_CIELO_B"]
+TARGETS=["D4_CIELO_B","D26_RELAY2","D30_RELAY6"]
 text=PCB.read_text()
 
 def blocks_pos(s,token):
