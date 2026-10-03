@@ -13,6 +13,7 @@ on:
       - '.github/workflows/pcb-freerouting-k10.yml'
       - 'hardware/pcb/kicad/PSN-Presepe-Mega.kicad_dru'
       - 'hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb'
+      - 'hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pro'
       - 'hardware/pcb/kicad/fp-lib-table'
       - 'hardware/pcb/tools/make_clean_board.py'
       - 'hardware/pcb/tools/check_mega_stackable.py'
@@ -85,6 +86,7 @@ jobs:
             hardware/pcb/kicad/PSN-Presepe-Mega.dsn
             hardware/pcb/kicad/baseline-k10.drc.txt
             hardware/pcb/kicad/PSN-Presepe-Mega.kicad_dru
+            hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pro
 
   freeroute:
     needs: export-dsn
@@ -197,13 +199,38 @@ jobs:
           if n != 0 or bad:
               raise SystemExit(1)
           PY
+      - name: Enforce production copper widths
+        run: |
+          python3 - <<'PY'
+          import pcbnew,re
+          b=pcbnew.LoadBoard("PSN-Presepe-Mega-FREEROUTED.kicad_pcb")
+          bad=[]
+          def required(net):
+              if net in {"+12V","GND"}: return 3.0
+              if net.endswith("_NEG"): return 1.0
+              if re.fullmatch(r"R[0-9]+_(COM|NO|NC)",net): return 2.0
+              return None
+          for t in b.GetTracks():
+              if not isinstance(t,pcbnew.PCB_TRACK) or isinstance(t,pcbnew.PCB_VIA): continue
+              n=t.GetNetname(); req=required(n)
+              if req is not None:
+                  w=pcbnew.ToMM(t.GetWidth())
+                  if w+1e-6 < req: bad.append((n,w,req))
+          print("COPPER_WIDTH_GATE checked; violations=",len(bad))
+          for x in bad[:100]: print("UNDERSIZED",*x)
+          if bad: raise SystemExit(1)
+          PY
+      - name: Enforce solder mask export
+        run: |
+          echo "Mask files are mandatory; Gerber step below must generate both sides."
       - name: Generate production Gerbers and drill files
         run: |
           mkdir -p manufacturing/gerbers
           kicad-cli pcb export gerbers -l F.Cu,B.Cu,F.Mask,B.Mask,F.Silkscreen,B.Silkscreen,Edge.Cuts -o manufacturing/gerbers/ PSN-Presepe-Mega-FREEROUTED.kicad_pcb
           kicad-cli pcb export drill -o manufacturing/gerbers/ PSN-Presepe-Mega-FREEROUTED.kicad_pcb
           test -f manufacturing/gerbers/PSN-Presepe-Mega-FREEROUTED-F_Cu.gtl
-          # This board intentionally has no plotted solder-mask content; KiCad omits empty F.Mask/B.Mask Gerbers.
+          test -n "$(find manufacturing/gerbers -type f -iname '*F_Mask*' -o -iname '*.gts' | head -1)"
+          test -n "$(find manufacturing/gerbers -type f -iname '*B_Mask*' -o -iname '*.gbs' | head -1)"
           test -n "$(find manufacturing/gerbers -type f \( -name '*.drl' -o -name '*.xln' \) -print -quit)"
           find manufacturing/gerbers -type f -maxdepth 1 -printf '%f\n' | sort
       - uses: actions/checkout@v4
