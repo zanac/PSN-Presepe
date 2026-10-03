@@ -98,7 +98,7 @@ jobs:
           # Keep the custom-rule basename beside the final board so KiCad CLI loads it.
           import shutil
           dru=glob.glob("input/**/*.kicad_dru",recursive=True)
-          if dru: shutil.copyfile(dru[0],"PSN-Presepe-Mega-FREEROUTED.kicad_dru")
+          if dru:\n    shutil.copyfile(dru[0],"PSN-Presepe-Mega-FREEROUTED.kicad_dru")\n    shutil.copyfile(dru[0],"PSN-Presepe-Mega-FREEROUTED.kicad_pro.dru")\n    print("CUSTOM_RULE_SOURCE",dru[0])\n    print("CUSTOM_RULE_6MM_PRESENT", "min 6mm" in open(dru[0]).read())
           b=pcbnew.LoadBoard(src)
           ok=pcbnew.ImportSpecctraSES(b,ses)
           print("IMPORT_SES",ok,ses)
@@ -107,7 +107,7 @@ jobs:
           PY
       - name: KiCad 10 final DRC and connectivity
         run: |
-          kicad-cli pcb drc --severity-all --output freerouted-k10.drc.txt PSN-Presepe-Mega-FREEROUTED.kicad_pcb || true
+          echo "CUSTOM_RULE_FILE:"; ls -l PSN-Presepe-Mega-FREEROUTED*.dru || true\n          grep -n "Relay contacts to SELV 6mm\|min 6mm" PSN-Presepe-Mega-FREEROUTED*.dru || { echo "CUSTOM_RULE_GATE missing"; exit 1; }\n          kicad-cli pcb drc --severity-all --output freerouted-k10.drc.txt PSN-Presepe-Mega-FREEROUTED.kicad_pcb || true
           grep -E 'Found|\\[.*\\]:' freerouted-k10.drc.txt | tail -120 || true
           python3 - <<'PY'
           from pathlib import Path
