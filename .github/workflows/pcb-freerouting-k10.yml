@@ -68,7 +68,7 @@ jobs:
           widths=sorted(set(re.findall(r"\(width\s+([0-9.]+)",d)))
           print("DSN_WIDTH_VALUES",widths)
           print("DSN_SIZE",len(d))
-          for expected in ("3000","2000","1500"):
+          for expected in ("3300","2000","1500"):
               if expected not in widths:
                   raise SystemExit("DSN production width missing: "+expected)
           PY
