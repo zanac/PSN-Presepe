@@ -66,5 +66,8 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: PCB-RevB-validation-report
-          path: hardware/pcb/build/revb-drc.txt
+          path: |
+            hardware/pcb/build/revb-drc.txt
+            hardware/pcb/build/revb-erc.txt
+            hardware/pcb/kicad/PSN-Presepe-Mega-RevB.kicad_sch
           if-no-files-found: warn
