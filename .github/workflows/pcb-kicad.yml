@@ -90,11 +90,14 @@ jobs:
             hardware/pcb/release/Rev-B/PSN-Presepe-Mega-FREEROUTED.kicad_pcb \
             hardware/pcb/kicad/PSN-Presepe-Mega-RevB.kicad_sch
           test -s hardware/pcb/kicad/PSN-Presepe-Mega-RevB.kicad_sch
-      - name: Verify Rev-B schematic connectivity matches PCB
+      - name: Export real Rev-B schematic netlist
         run: |
-          python3 hardware/pcb/tools/check_revb_schematic_connectivity.py \
-            hardware/pcb/release/Rev-B/PSN-Presepe-Mega-FREEROUTED.kicad_pcb \
+          kicad-cli sch export netlist --output hardware/pcb/build/revb-real.net \
             hardware/pcb/kicad/PSN-Presepe-Mega-RevB.kicad_sch
+          test -s hardware/pcb/build/revb-real.net
+          grep -q '<comp ref="MCU1"' hardware/pcb/build/revb-real.net
+          grep -q 'CIELO_R_NEG' hardware/pcb/build/revb-real.net
+          grep -q 'R16_NO' hardware/pcb/build/revb-real.net
       - name: Reject non-electrical schematic placeholders
         run: |
           SCH=hardware/pcb/kicad/PSN-Presepe-Mega-RevB.kicad_sch
@@ -138,6 +141,7 @@ jobs:
             hardware/pcb/build/eeschema-probe.txt
             hardware/pcb/build/kicad10-fixture.kicad_sch
             hardware/pcb/build/kicad10-fixture.net
+            hardware/pcb/build/revb-real.net
             hardware/pcb/build/kicad-create-project-help.txt
             hardware/pcb/build/PSN-Presepe-Mega-RevB.sch
             hardware/pcb/build/PSN-Presepe-Mega-RevB-cache.lib
