@@ -13,6 +13,8 @@ on:
       - 'hardware/pcb/kicad/fp-lib-table'
       - 'hardware/pcb/tools/make_clean_board.py'
       - 'hardware/pcb/tools/check_mega_stackable.py'
+      - 'hardware/pcb/tools/check_mega_mechanical_bom.py'
+      - 'hardware/pcb/BOM.md'
       - 'hardware/pcb/tools/check_terminal_silkscreen.py'
       - 'hardware/pcb/ASSEMBLY.md'
 
@@ -28,6 +30,9 @@ jobs:
         run: kicad-cli --version
       - name: Verify Mega stackable expansion envelope
         run: python3 hardware/pcb/tools/check_mega_stackable.py
+
+      - name: Verify Mega mechanical geometry and mandatory assembly BOM
+        run: python3 hardware/pcb/tools/check_mega_mechanical_bom.py
 
       - name: Verify terminal silkscreen labels
         run: python3 hardware/pcb/tools/check_terminal_silkscreen.py
