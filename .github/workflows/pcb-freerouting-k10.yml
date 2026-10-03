@@ -315,6 +315,10 @@ jobs:
               pc.ClosePlot()
           print("SOLDER_MASK_API_PLOT_PASS")
           PY
+          FMASK="$(find manufacturing/gerbers -maxdepth 1 -type f -name '*.gts' -print -quit)"
+          BMASK="$(find manufacturing/gerbers -maxdepth 1 -type f -name '*.gbs' -print -quit)"
+          test -n "$FMASK" && mv "$FMASK" manufacturing/gerbers/PSN-Presepe-Mega-FREEROUTED.gts
+          test -n "$BMASK" && mv "$BMASK" manufacturing/gerbers/PSN-Presepe-Mega-FREEROUTED.gbs
           kicad-cli pcb export gerbers -l F.Cu,B.Cu,F.Silkscreen,B.Silkscreen,Edge.Cuts -o manufacturing/gerbers/ PSN-Presepe-Mega-FREEROUTED.kicad_pcb
           kicad-cli pcb export drill -o manufacturing/gerbers/ PSN-Presepe-Mega-FREEROUTED.kicad_pcb
           test -s manufacturing/gerbers/PSN-Presepe-Mega-FREEROUTED-F_Cu.gtl
