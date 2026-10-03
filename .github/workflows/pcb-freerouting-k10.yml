@@ -17,11 +17,12 @@ jobs:
       - uses: actions/checkout@v4
       - name: Verify KiCad 10
         run: kicad-cli --version
-      - name: Export Specctra DSN with pcbnew
+      - name: Prepare clean original 280x170 PCB and export Specctra DSN
         run: |
+          python3 hardware/pcb/tools/make_scaled_board.py --scale 0.50 --output hardware/pcb/kicad/PSN-Presepe-Mega-CLEAN.kicad_pcb
           python3 - <<'PY'
           import pcbnew
-          src="hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb"
+          src="hardware/pcb/kicad/PSN-Presepe-Mega-CLEAN.kicad_pcb"
           out="hardware/pcb/kicad/PSN-Presepe-Mega.dsn"
           b=pcbnew.LoadBoard(src)
           ok=pcbnew.ExportSpecctraDSN(b,out)
@@ -30,13 +31,13 @@ jobs:
           PY
       - name: DRC baseline under KiCad 10
         run: |
-          kicad-cli pcb drc --severity-all --output hardware/pcb/kicad/baseline-k10.drc.txt hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb || true
+          kicad-cli pcb drc --severity-all --output hardware/pcb/kicad/baseline-k10.drc.txt hardware/pcb/kicad/PSN-Presepe-Mega-CLEAN.kicad_pcb || true
           grep -E 'Found|\\[.*\\]:' hardware/pcb/kicad/baseline-k10.drc.txt | tail -80 || true
       - uses: actions/upload-artifact@v4
         with:
           name: freerouting-input
           path: |
-            hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb
+            hardware/pcb/kicad/PSN-Presepe-Mega-CLEAN.kicad_pcb
             hardware/pcb/kicad/PSN-Presepe-Mega.dsn
             hardware/pcb/kicad/baseline-k10.drc.txt
 
