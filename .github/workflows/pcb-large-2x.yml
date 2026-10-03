@@ -31,6 +31,27 @@ jobs:
         run: python3 hardware/pcb/tools/reroute_d32_group.py
       - name: Local reroute D26 blocker group
         run: python3 hardware/pcb/tools/reroute_d26_group.py
+      - name: Batch diagnose remaining pair nets
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import subprocess
+          p=Path("hardware/pcb/kicad/PSN-Presepe-Mega-LARGE-2X.kicad_pcb")
+          ns={}
+          exec(open("hardware/pcb/tools/autoroute_large_2x.py").read().split('print("PAIR_NETS"')[0],ns)
+          pairs=ns["pairs"]
+          for name in ["D38_RELAY14","D24_TEST","D22_START","D21_SCL","D20_SDA"]:
+              z=[x for x in pairs if x[1]==name]
+              if not z:
+                  print("BATCH_MISSING",name); continue
+              a,b=z[0][2]
+              print("BATCH_TARGET",name,flush=True)
+              cmd=["python3","hardware/pcb/tools/grid_router.py",str(p),"--net",name,
+                   "--start",f"{a[0]},{a[1]},B.Cu","--goal",f"{b[0]},{b[1]},B.Cu",
+                   "--step","0.5","--clearance","0.8","--margin","180","--via-cost","100",
+                   "--soft-congestion","--congestion-cost","5000","--report-blockers","--blockers-only"]
+              subprocess.run(cmd,check=False,timeout=35)
+          PY
       - name: Diagnose D26 local blockers
         run: |
           python3 - <<'PY'
