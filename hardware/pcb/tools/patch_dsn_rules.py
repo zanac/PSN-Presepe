@@ -64,6 +64,22 @@ if idx<0: raise SystemExit("network section not found")
 end=sexpr_end(s,idx)-1
 s=s[:end]+"\n"+"\n".join(rules)+"\n"+s[end:]
 
+# Specctra/Freerouting class-to-class clearance matrix.
+# Keep the three contacts of one relay in the same class; enforce 6 mm only
+# against other relay contact classes and all non-contact classes.
+relay_labels=[f"RELAY_{i}_CONTACT" for i in range(1,17)]
+nonrelay_labels=[label for label,_,_ in groups if not label.startswith("RELAY_")]
+matrix=[]
+for i,a in enumerate(relay_labels):
+    for b in relay_labels[i+1:]:
+        matrix.append(f'    (class_class "{a}" "{b}" (rule (clearance 6000)))')
+    for b in nonrelay_labels:
+        matrix.append(f'    (class_class "{a}" "{b}" (rule (clearance 6000)))')
+nidx=s.rfind("(network")
+nend=sexpr_end(s,nidx)-1
+s=s[:nend]+"\n"+"\n".join(matrix)+"\n"+s[nend:]
+print("DSN_RELAY_CLEARANCE_MATRIX_PASS entries",len(matrix),"clearance",6000)
+
 # Hard validation: every production net must occur in exactly one class header.
 class_headers=re.findall(r'^\s*\(class\s+[^\n]+',s,re.M)
 for n in sorted(targets):
