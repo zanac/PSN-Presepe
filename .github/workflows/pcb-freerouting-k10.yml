@@ -269,8 +269,13 @@ jobs:
           kicad-cli pcb export gerbers -l F.Cu,B.Cu,F.Mask,B.Mask,F.Silkscreen,B.Silkscreen,Edge.Cuts -o manufacturing/gerbers/ PSN-Presepe-Mega-FREEROUTED.kicad_pcb
           kicad-cli pcb export drill -o manufacturing/gerbers/ PSN-Presepe-Mega-FREEROUTED.kicad_pcb
           test -f manufacturing/gerbers/PSN-Presepe-Mega-FREEROUTED-F_Cu.gtl
-          test -n "$(find manufacturing/gerbers -type f -iname '*F_Mask*' -o -iname '*.gts' | head -1)"
-          test -n "$(find manufacturing/gerbers -type f -iname '*B_Mask*' -o -iname '*.gbs' | head -1)"
+          # KiCad may omit an otherwise valid solder-mask layer from the combined
+          # Gerber command when the layer has no plotted graphics after SES import.
+          # Export masks explicitly and require non-empty fabrication files.
+          kicad-cli pcb export gerber -l F.Mask -o manufacturing/gerbers/PSN-Presepe-Mega-FREEROUTED-F_Mask.gts PSN-Presepe-Mega-FREEROUTED.kicad_pcb
+          kicad-cli pcb export gerber -l B.Mask -o manufacturing/gerbers/PSN-Presepe-Mega-FREEROUTED-B_Mask.gbs PSN-Presepe-Mega-FREEROUTED.kicad_pcb
+          test -s manufacturing/gerbers/PSN-Presepe-Mega-FREEROUTED-F_Mask.gts
+          test -s manufacturing/gerbers/PSN-Presepe-Mega-FREEROUTED-B_Mask.gbs
           test -n "$(find manufacturing/gerbers -type f \( -name '*.drl' -o -name '*.xln' \) -print -quit)"
           find manufacturing/gerbers -type f -maxdepth 1 -printf '%f\n' | sort
       - uses: actions/checkout@v4
@@ -280,16 +285,16 @@ jobs:
         run: |
           mkdir -p manufacturing/previews
           kicad-cli pcb render --help
-          kicad-cli pcb render --output manufacturing/previews/PSN-Presepe-RevA-technical.png --width 7680 --height 4663 --quality high --side top PSN-Presepe-Mega-FREEROUTED.kicad_pcb
-          kicad-cli pcb export svg -l F.Silkscreen,Edge.Cuts --page-size-mode 2 --exclude-drawing-sheet -o manufacturing/previews/PSN-Presepe-RevA-manual.svg PSN-Presepe-Mega-FREEROUTED.kicad_pcb
+          kicad-cli pcb render --output manufacturing/previews/PSN-Presepe-RevB-technical.png --width 7680 --height 4663 --quality high --side top PSN-Presepe-Mega-FREEROUTED.kicad_pcb
+          kicad-cli pcb export svg -l F.Silkscreen,Edge.Cuts --page-size-mode 2 --exclude-drawing-sheet -o manufacturing/previews/PSN-Presepe-RevB-manual.svg PSN-Presepe-Mega-FREEROUTED.kicad_pcb
           python3 - <<'PY'
           import cairosvg
-          cairosvg.svg2png(url='manufacturing/previews/PSN-Presepe-RevA-manual.svg',
-                           write_to='manufacturing/previews/PSN-Presepe-RevA-manual-silkscreen.png',
+          cairosvg.svg2png(url='manufacturing/previews/PSN-Presepe-RevB-manual.svg',
+                           write_to='manufacturing/previews/PSN-Presepe-RevB-manual-silkscreen.png',
                            output_width=7680)
           PY
-          test -s manufacturing/previews/PSN-Presepe-RevA-technical.png
-          test -s manufacturing/previews/PSN-Presepe-RevA-manual-silkscreen.png
+          test -s manufacturing/previews/PSN-Presepe-RevB-technical.png
+          test -s manufacturing/previews/PSN-Presepe-RevB-manual-silkscreen.png
           echo "PCB_PREVIEWS_PASS"
       - name: Generate BOM CPL and complete manufacturing package
         run: |
@@ -302,14 +307,14 @@ jobs:
           test -s manufacturing/PSN-Presepe-Mega-FREEROUTED.kicad_pcb
           test -s manufacturing/freerouted-k10.drc.txt
           echo "MANUFACTURING_PACKAGE_PASS"
-      - name: Commit validated Rev-A manufacturing release
+      - name: Commit validated Rev-B manufacturing release
         run: |
-          RELEASE=repo/hardware/pcb/release/Rev-A
+          RELEASE=repo/hardware/pcb/release/Rev-B
           rm -rf "$RELEASE"
           mkdir -p "$RELEASE"
           cp -a manufacturing/. "$RELEASE/"
           cat > "$RELEASE/README.md" <<'EOF'
-          # PSN-Presepe PCB Manufacturing Release — Rev A
+          # PSN-Presepe PCB Manufacturing Release — Rev B
 
           This directory is the validated manufacturing snapshot produced by the KiCad 10 / Freerouting CI pipeline.
 
@@ -330,11 +335,11 @@ jobs:
           cd repo
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add hardware/pcb/release/Rev-A
+          git add hardware/pcb/release/Rev-B
           if git diff --cached --quiet; then
             echo "RELEASE_ALREADY_CURRENT"
           else
-            git commit -m "Add validated Rev-A PCB manufacturing release [skip ci]"
+            git commit -m "Add validated Rev-B PCB manufacturing release [skip ci]"
             git push origin HEAD:dev
           fi
       - uses: actions/upload-artifact@v4
