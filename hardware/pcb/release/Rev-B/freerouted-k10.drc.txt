@@ -1,5 +1,5 @@
 ** Drc report for PSN-Presepe-Mega-FREEROUTED.kicad_pcb **
-** Created on 2026-10-03T14:45:12 **
+** Created on 2026-10-03T18:24:23 **
 ** Report includes: Errors, Warnings, Exclusions **
 
 ** Found 77 DRC violations **
@@ -11,13 +11,13 @@
     @(233.0000 mm, 27.0000 mm): Footprint JR5
 [lib_footprint_issues]: The current configuration does not include the footprint library 'Resistor_THT'
     Local override; warning
-    @(98.0000 mm, 147.5000 mm): Footprint RG6
+    @(108.0000 mm, 147.5000 mm): Footprint RG6
 [lib_footprint_issues]: The current configuration does not include the footprint library 'Package_TO_SOT_THT'
     Local override; warning
     @(90.0000 mm, 165.0000 mm): Footprint Q8
 [lib_footprint_issues]: The current configuration does not include the footprint library 'PSN_Presep_Custom'
     Local override; warning
-    @(65.0000 mm, 184.0000 mm): Footprint J_START
+    @(65.0000 mm, 194.0000 mm): Footprint J_START
 [lib_footprint_issues]: The current configuration does not include the footprint library 'PSN_Presep_Custom'
     Local override; warning
     @(204.0000 mm, 115.0000 mm): Footprint K12
@@ -29,7 +29,7 @@
     @(78.0000 mm, 162.5000 mm): Footprint RG8
 [lib_footprint_issues]: The current configuration does not include the footprint library 'PSN_Presep_Custom'
     Local override; warning
-    @(292.0000 mm, 128.0000 mm): Footprint JR14
+    @(312.0000 mm, 128.0000 mm): Footprint JR14
 [lib_footprint_issues]: The current configuration does not include the footprint library 'PSN_Presep_Custom'
     Local override; warning
     @(240.0000 mm, 115.0000 mm): Footprint K14
@@ -41,7 +41,7 @@
     @(216.0000 mm, 27.0000 mm): Footprint JR4
 [lib_footprint_issues]: The current configuration does not include the footprint library 'PSN_Presep_Custom'
     Local override; warning
-    @(132.0000 mm, 184.0000 mm): Footprint J_TRAMONTO
+    @(132.0000 mm, 194.0000 mm): Footprint J_TRAMONTO
 [lib_footprint_issues]: The current configuration does not include the footprint library 'PSN_Presep_Custom'
     Local override; warning
     @(165.0000 mm, 27.0000 mm): Footprint JR1
@@ -56,16 +56,16 @@
     @(222.0000 mm, 60.0000 mm): Footprint K5
 [lib_footprint_issues]: The current configuration does not include the footprint library 'Package_TO_SOT_THT'
     Local override; warning
-    @(110.0000 mm, 165.0000 mm): Footprint Q9
+    @(120.0000 mm, 165.0000 mm): Footprint Q9
 [lib_footprint_issues]: The current configuration does not include the footprint library 'PSN_Presep_Custom'
     Local override; warning
     @(250.0000 mm, 27.0000 mm): Footprint JR6
 [lib_footprint_issues]: The current configuration does not include the footprint library 'PSN_Presep_Custom'
     Local override; warning
-    @(198.0000 mm, 184.0000 mm): Footprint J_CASETTE
+    @(198.0000 mm, 194.0000 mm): Footprint J_CASETTE
 [lib_footprint_issues]: The current configuration does not include the footprint library 'PSN_Presep_Custom'
     Local override; warning
-    @(180.0000 mm, 184.0000 mm): Footprint J_STELLE
+    @(180.0000 mm, 194.0000 mm): Footprint J_STELLE
 [lib_footprint_issues]: The current configuration does not include the footprint library 'PSN_Presep_Custom'
     Local override; warning
     @(182.0000 mm, 27.0000 mm): Footprint JR2
@@ -86,10 +86,10 @@
     @(78.0000 mm, 132.5000 mm): Footprint RG2
 [lib_footprint_issues]: The current configuration does not include the footprint library 'PSN_Presep_Custom'
     Local override; warning
-    @(156.0000 mm, 184.0000 mm): Footprint J_ALBA
+    @(156.0000 mm, 194.0000 mm): Footprint J_ALBA
 [lib_footprint_issues]: The current configuration does not include the footprint library 'Resistor_THT'
     Local override; warning
-    @(98.0000 mm, 162.5000 mm): Footprint RG9
+    @(108.0000 mm, 162.5000 mm): Footprint RG9
 [lib_footprint_issues]: The current configuration does not include the footprint library 'Capacitor_THT'
     Local override; warning
     @(132.0000 mm, 86.0000 mm): Footprint C3
@@ -98,16 +98,16 @@
     @(58.0000 mm, 162.5000 mm): Footprint RG7
 [lib_footprint_issues]: The current configuration does not include the footprint library 'PSN_Presep_Custom'
     Local override; warning
-    @(91.0000 mm, 184.0000 mm): Footprint J_TEST
+    @(91.0000 mm, 194.0000 mm): Footprint J_TEST
 [lib_footprint_issues]: The current configuration does not include the footprint library 'Package_TO_SOT_THT'
     Local override; warning
     @(90.0000 mm, 150.0000 mm): Footprint Q5
 [lib_footprint_issues]: The current configuration does not include the footprint library 'PSN_Presep_Custom'
     Local override; warning
-    @(108.0000 mm, 184.0000 mm): Footprint J_CIELO
+    @(108.0000 mm, 194.0000 mm): Footprint J_CIELO
 [lib_footprint_issues]: The current configuration does not include the footprint library 'PSN_Presep_Custom'
     Local override; warning
-    @(292.0000 mm, 48.0000 mm): Footprint JR9
+    @(312.0000 mm, 48.0000 mm): Footprint JR9
 [lib_footprint_issues]: The current configuration does not include the footprint library 'PSN_Presep_Custom'
     Local override; warning
     @(168.0000 mm, 60.0000 mm): Footprint K2
@@ -131,7 +131,7 @@
     @(168.0000 mm, 115.0000 mm): Footprint K10
 [lib_footprint_issues]: The current configuration does not include the footprint library 'PSN_Presep_Custom'
     Local override; warning
-    @(28.0000 mm, 184.0000 mm): Footprint J1
+    @(28.0000 mm, 194.0000 mm): Footprint J1
 [lib_footprint_issues]: The current configuration does not include the footprint library 'PSN_Presep_Custom'
     Local override; warning
     @(258.0000 mm, 60.0000 mm): Footprint K7
@@ -140,10 +140,10 @@
     @(70.0000 mm, 165.0000 mm): Footprint Q7
 [lib_footprint_issues]: The current configuration does not include the footprint library 'Resistor_THT'
     Local override; warning
-    @(98.0000 mm, 137.5000 mm): Footprint RPD3
+    @(108.0000 mm, 137.5000 mm): Footprint RPD3
 [lib_footprint_issues]: The current configuration does not include the footprint library 'Resistor_THT'
     Local override; warning
-    @(98.0000 mm, 152.5000 mm): Footprint RPD6
+    @(108.0000 mm, 152.5000 mm): Footprint RPD6
 [lib_footprint_issues]: The current configuration does not include the footprint library 'Resistor_THT'
     Local override; warning
     @(58.0000 mm, 167.5000 mm): Footprint RPD7
@@ -152,13 +152,13 @@
     @(276.0000 mm, 60.0000 mm): Footprint K8
 [lib_footprint_issues]: The current configuration does not include the footprint library 'PSN_Presep_Custom'
     Local override; warning
-    @(292.0000 mm, 112.0000 mm): Footprint JR13
+    @(312.0000 mm, 112.0000 mm): Footprint JR13
 [lib_footprint_issues]: The current configuration does not include the footprint library 'Resistor_THT'
     Local override; warning
     @(78.0000 mm, 137.5000 mm): Footprint RPD2
 [lib_footprint_issues]: The current configuration does not include the footprint library 'PSN_Presep_Custom'
     Local override; warning
-    @(292.0000 mm, 64.0000 mm): Footprint JR10
+    @(312.0000 mm, 64.0000 mm): Footprint JR10
 [lib_footprint_issues]: The current configuration does not include the footprint library 'PSN_Presep_Custom'
     Local override; warning
     @(222.0000 mm, 115.0000 mm): Footprint K13
@@ -173,25 +173,25 @@
     @(78.0000 mm, 147.5000 mm): Footprint RG5
 [lib_footprint_issues]: The current configuration does not include the footprint library 'PSN_Presep_Custom'
     Local override; warning
-    @(292.0000 mm, 80.0000 mm): Footprint JR11
+    @(312.0000 mm, 80.0000 mm): Footprint JR11
 [lib_footprint_issues]: The current configuration does not include the footprint library 'PSN_Presep_Custom'
     Local override; warning
     @(284.0000 mm, 27.0000 mm): Footprint JR8
 [lib_footprint_issues]: The current configuration does not include the footprint library 'PSN_Presep_Custom'
     Local override; warning
-    @(292.0000 mm, 96.0000 mm): Footprint JR12
+    @(312.0000 mm, 96.0000 mm): Footprint JR12
 [lib_footprint_issues]: The current configuration does not include the footprint library 'PSN_Presep_Custom'
     Local override; warning
     @(204.0000 mm, 60.0000 mm): Footprint K4
 [lib_footprint_issues]: The current configuration does not include the footprint library 'Package_TO_SOT_THT'
     Local override; warning
-    @(110.0000 mm, 135.0000 mm): Footprint Q3
+    @(120.0000 mm, 135.0000 mm): Footprint Q3
 [lib_footprint_issues]: The current configuration does not include the footprint library 'PSN_Presep_Custom'
     Local override; warning
-    @(292.0000 mm, 160.0000 mm): Footprint JR16
+    @(312.0000 mm, 160.0000 mm): Footprint JR16
 [lib_footprint_issues]: The current configuration does not include the footprint library 'PSN_Presep_Custom'
     Local override; warning
-    @(42.0000 mm, 184.0000 mm): Footprint J_OLED
+    @(42.0000 mm, 194.0000 mm): Footprint J_OLED
 [lib_footprint_issues]: The current configuration does not include the footprint library 'Resistor_THT'
     Local override; warning
     @(58.0000 mm, 137.5000 mm): Footprint RPD1
@@ -200,7 +200,7 @@
     @(78.0000 mm, 167.5000 mm): Footprint RPD8
 [lib_footprint_issues]: The current configuration does not include the footprint library 'Package_TO_SOT_THT'
     Local override; warning
-    @(110.0000 mm, 150.0000 mm): Footprint Q6
+    @(120.0000 mm, 150.0000 mm): Footprint Q6
 [lib_footprint_issues]: The current configuration does not include the footprint library 'PSN_Presep_Custom'
     Local override; warning
     @(186.0000 mm, 115.0000 mm): Footprint K11
@@ -212,16 +212,16 @@
     @(240.0000 mm, 60.0000 mm): Footprint K6
 [lib_footprint_issues]: The current configuration does not include the footprint library 'Resistor_THT'
     Local override; warning
-    @(98.0000 mm, 167.5000 mm): Footprint RPD9
+    @(108.0000 mm, 167.5000 mm): Footprint RPD9
 [lib_footprint_issues]: The current configuration does not include the footprint library 'Package_TO_SOT_THT'
     Local override; warning
     @(70.0000 mm, 135.0000 mm): Footprint Q1
 [lib_footprint_issues]: The current configuration does not include the footprint library 'PSN_Presep_Custom'
     Local override; warning
-    @(292.0000 mm, 144.0000 mm): Footprint JR15
+    @(312.0000 mm, 144.0000 mm): Footprint JR15
 [lib_footprint_issues]: The current configuration does not include the footprint library 'PSN_Presep_Custom'
     Local override; warning
-    @(78.0000 mm, 184.0000 mm): Footprint J_NEXT
+    @(78.0000 mm, 194.0000 mm): Footprint J_NEXT
 [lib_footprint_issues]: The current configuration does not include the footprint library 'Package_TO_SOT_THT'
     Local override; warning
     @(70.0000 mm, 150.0000 mm): Footprint Q4
@@ -233,7 +233,7 @@
     @(267.0000 mm, 27.0000 mm): Footprint JR7
 [lib_footprint_issues]: The current configuration does not include the footprint library 'Resistor_THT'
     Local override; warning
-    @(98.0000 mm, 132.5000 mm): Footprint RG3
+    @(108.0000 mm, 132.5000 mm): Footprint RG3
 
 ** Found 0 unconnected pads **
 

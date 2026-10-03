@@ -408,7 +408,7 @@
 	(footprint "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal"
 		(layer "F.Cu")
 		(uuid "0aa561d7-64ef-4bc0-8284-d30ae5922f6c")
-		(at 98 147.5)
+		(at 108 147.5)
 		(property "Reference" "RG6"
 			(at 5.08 -2 0)
 			(layer "F.Fab")
@@ -558,7 +558,7 @@
 	(footprint "PSN_Presep_Custom:START_GND"
 		(layer "F.Cu")
 		(uuid "22848fd0-cf65-441d-b730-3f815f3cfae5")
-		(at 65 184)
+		(at 65 194)
 		(property "Reference" "J_START"
 			(at 2.54 -3 0)
 			(layer "F.Fab")
@@ -889,7 +889,7 @@
 	(footprint "PSN_Presep_Custom:TerminalBlock_Phoenix_MKDS-1.5-3-5.08"
 		(layer "F.Cu")
 		(uuid "2dd3494e-9da3-4271-8324-bbe9598295a7")
-		(at 292 128 90)
+		(at 312 128 90)
 		(property "Reference" "JR14"
 			(at 5.08 -3 90)
 			(layer "F.Fab")
@@ -1334,7 +1334,7 @@
 	(footprint "PSN_Presep_Custom:TRAMONTO_12V_R_G_B"
 		(layer "F.Cu")
 		(uuid "3292ffa7-7053-4866-bfc6-8c1e4e023ac3")
-		(at 132 184)
+		(at 132 194)
 		(property "Reference" "J_TRAMONTO"
 			(at 7.62 -3 0)
 			(layer "F.Fab")
@@ -3411,7 +3411,7 @@
 	(footprint "Package_TO_SOT_THT:TO-220-3_Vertical"
 		(layer "F.Cu")
 		(uuid "4b74eaa2-bb80-4829-ad87-64d8b0ad6a24")
-		(at 110 165)
+		(at 120 165)
 		(property "Reference" "Q9"
 			(at 2.54 -4 0)
 			(layer "F.Fab")
@@ -3603,7 +3603,7 @@
 	(footprint "PSN_Presep_Custom:CASETTE_12V_GND_DATA"
 		(layer "F.Cu")
 		(uuid "4fb3cadc-8e24-4e29-b398-4a1d98a4a5d4")
-		(at 198 184)
+		(at 198 194)
 		(property "Reference" "J_CASETTE"
 			(at 5.08 -3 0)
 			(layer "F.Fab")
@@ -3784,7 +3784,7 @@
 	(footprint "PSN_Presep_Custom:STELLE_12V_GND_DATA"
 		(layer "F.Cu")
 		(uuid "52b6c62e-deb4-4f3f-84b9-a5a2288c16ca")
-		(at 180 184)
+		(at 180 194)
 		(property "Reference" "J_STELLE"
 			(at 5.08 -3 0)
 			(layer "F.Fab")
@@ -4569,7 +4569,7 @@
 	(footprint "PSN_Presep_Custom:ALBA_12V_R_G_B"
 		(layer "F.Cu")
 		(uuid "5d9dcf40-ecc0-4895-80e7-268a3962086f")
-		(at 156 184)
+		(at 156 194)
 		(property "Reference" "J_ALBA"
 			(at 7.62 -3 0)
 			(layer "F.Fab")
@@ -4683,7 +4683,7 @@
 	(footprint "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal"
 		(layer "F.Cu")
 		(uuid "5ffaeccf-a3b9-4dc6-8ab0-6c2f3c25fbac")
-		(at 98 162.5)
+		(at 108 162.5)
 		(property "Reference" "RG9"
 			(at 5.08 -2 0)
 			(layer "F.Fab")
@@ -4893,7 +4893,7 @@
 	(footprint "PSN_Presep_Custom:TEST_GND"
 		(layer "F.Cu")
 		(uuid "64a04a2a-4ca1-47db-b3cc-5303aa4f4354")
-		(at 91 184)
+		(at 91 194)
 		(property "Reference" "J_TEST"
 			(at 2.54 -3 0)
 			(layer "F.Fab")
@@ -5055,7 +5055,7 @@
 	(footprint "PSN_Presep_Custom:CIELO_12V_R_G_B"
 		(layer "F.Cu")
 		(uuid "6bd1c0dd-1052-4b6a-8926-ee80c791059b")
-		(at 108 184)
+		(at 108 194)
 		(property "Reference" "J_CIELO"
 			(at 7.62 -3 0)
 			(layer "F.Fab")
@@ -5169,7 +5169,7 @@
 	(footprint "PSN_Presep_Custom:TerminalBlock_Phoenix_MKDS-1.5-3-5.08"
 		(layer "F.Cu")
 		(uuid "6c1dcde5-88ba-4b50-aaf6-593ddf311284")
-		(at 292 48 90)
+		(at 312 48 90)
 		(property "Reference" "JR9"
 			(at 5.08 -3 90)
 			(layer "F.Fab")
@@ -6052,7 +6052,7 @@
 	(footprint "PSN_Presep_Custom:12V_IN"
 		(layer "F.Cu")
 		(uuid "7d64c2b3-bb56-41fb-8e8c-e8ad8f265997")
-		(at 28 184)
+		(at 28 194)
 		(property "Reference" "J1"
 			(at 2.54 -3 0)
 			(layer "F.Fab")
@@ -6327,7 +6327,7 @@
 	(footprint "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal"
 		(layer "F.Cu")
 		(uuid "7ecffab5-1507-44e3-a902-7e7f2b37ce5a")
-		(at 98 137.5)
+		(at 108 137.5)
 		(property "Reference" "RPD3"
 			(at 5.08 -2 0)
 			(layer "F.Fab")
@@ -6397,7 +6397,7 @@
 	(footprint "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal"
 		(layer "F.Cu")
 		(uuid "86185abc-af8e-49ec-bba6-8658efd7fb6b")
-		(at 98 152.5)
+		(at 108 152.5)
 		(property "Reference" "RPD6"
 			(at 5.08 -2 0)
 			(layer "F.Fab")
@@ -6727,7 +6727,7 @@
 	(footprint "PSN_Presep_Custom:TerminalBlock_Phoenix_MKDS-1.5-3-5.08"
 		(layer "F.Cu")
 		(uuid "8f537e18-d9db-42d9-912c-65974f048fce")
-		(at 292 112 90)
+		(at 312 112 90)
 		(property "Reference" "JR13"
 			(at 5.08 -3 90)
 			(layer "F.Fab")
@@ -6909,7 +6909,7 @@
 	(footprint "PSN_Presep_Custom:TerminalBlock_Phoenix_MKDS-1.5-3-5.08"
 		(layer "F.Cu")
 		(uuid "9acbd9f1-cb29-4797-bf37-66e9d4cec42d")
-		(at 292 64 90)
+		(at 312 64 90)
 		(property "Reference" "JR10"
 			(at 5.08 -3 90)
 			(layer "F.Fab")
@@ -7340,7 +7340,7 @@
 	(footprint "PSN_Presep_Custom:TerminalBlock_Phoenix_MKDS-1.5-3-5.08"
 		(layer "F.Cu")
 		(uuid "a519ee45-73a1-4fc8-b8f3-317fefd00c32")
-		(at 292 80 90)
+		(at 312 80 90)
 		(property "Reference" "JR11"
 			(at 5.08 -3 90)
 			(layer "F.Fab")
@@ -7564,7 +7564,7 @@
 	(footprint "PSN_Presep_Custom:TerminalBlock_Phoenix_MKDS-1.5-3-5.08"
 		(layer "F.Cu")
 		(uuid "a975b62f-eb91-483d-a554-45003084813b")
-		(at 292 96 90)
+		(at 312 96 90)
 		(property "Reference" "JR12"
 			(at 5.08 -3 90)
 			(layer "F.Fab")
@@ -7785,7 +7785,7 @@
 	(footprint "Package_TO_SOT_THT:TO-220-3_Vertical"
 		(layer "F.Cu")
 		(uuid "ace26169-ce07-4305-8be0-68dfccf412b8")
-		(at 110 135)
+		(at 120 135)
 		(property "Reference" "Q3"
 			(at 2.54 -4 0)
 			(layer "F.Fab")
@@ -7865,7 +7865,7 @@
 	(footprint "PSN_Presep_Custom:TerminalBlock_Phoenix_MKDS-1.5-3-5.08"
 		(layer "F.Cu")
 		(uuid "b03d4e75-c4a6-4076-b4ff-684ff867936a")
-		(at 292 160 90)
+		(at 312 160 90)
 		(property "Reference" "JR16"
 			(at 5.08 -3 90)
 			(layer "F.Fab")
@@ -7977,7 +7977,7 @@
 	(footprint "PSN_Presep_Custom:OLED_5V_GND_SDA_SCL"
 		(layer "F.Cu")
 		(uuid "b391b499-4e28-41b5-a2b9-b306a81e2617")
-		(at 42 184)
+		(at 42 194)
 		(property "Reference" "J_OLED"
 			(at 7.62 -3 0)
 			(layer "F.Fab")
@@ -8312,7 +8312,7 @@
 	(footprint "Package_TO_SOT_THT:TO-220-3_Vertical"
 		(layer "F.Cu")
 		(uuid "c0475b54-ed7b-4b79-82c2-d99f70458721")
-		(at 110 150)
+		(at 120 150)
 		(property "Reference" "Q6"
 			(at 2.54 -4 0)
 			(layer "F.Fab")
@@ -8680,7 +8680,7 @@
 	(footprint "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal"
 		(layer "F.Cu")
 		(uuid "c52b1917-ec77-482d-97e5-d0b456449395")
-		(at 98 167.5)
+		(at 108 167.5)
 		(property "Reference" "RPD9"
 			(at 5.08 -2 0)
 			(layer "F.Fab")
@@ -8831,7 +8831,7 @@
 	(footprint "MountingHole_3"
 		(layer "F.Cu")
 		(uuid "cc9b51a1-db42-4c39-aa98-2e9df738a23f")
-		(at 27 170)
+		(at 100 185)
 		(property "Reference" "H3"
 			(at 0 -4 0)
 			(layer "F.Fab")
@@ -8992,7 +8992,7 @@
 	(footprint "PSN_Presep_Custom:TerminalBlock_Phoenix_MKDS-1.5-3-5.08"
 		(layer "F.Cu")
 		(uuid "d08c72d4-11de-4ca6-a70f-62da441d78b3")
-		(at 292 144 90)
+		(at 312 144 90)
 		(property "Reference" "JR15"
 			(at 5.08 -3 90)
 			(layer "F.Fab")
@@ -9104,7 +9104,7 @@
 	(footprint "PSN_Presep_Custom:NEXT_GND"
 		(layer "F.Cu")
 		(uuid "d613ccf5-9c8f-4a20-94c9-83b622e4fe09")
-		(at 78 184)
+		(at 78 194)
 		(property "Reference" "J_NEXT"
 			(at 2.54 -3 0)
 			(layer "F.Fab")
@@ -9266,7 +9266,7 @@
 	(footprint "MountingHole_4"
 		(layer "F.Cu")
 		(uuid "dcb9a633-a5ed-4133-b00a-c4bf7151e15f")
-		(at 293 183)
+		(at 313 193)
 		(property "Reference" "H4"
 			(at 0 -4 0)
 			(layer "F.Fab")
@@ -9568,7 +9568,7 @@
 	(footprint "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal"
 		(layer "F.Cu")
 		(uuid "f1a9f765-d833-46eb-aeb1-a40846bf3ac8")
-		(at 98 132.5)
+		(at 108 132.5)
 		(property "Reference" "RG3"
 			(at 5.08 -2 0)
 			(layer "F.Fab")
@@ -9648,7 +9648,7 @@
 	)
 	(gr_rect
 		(start 20 20)
-		(end 300 190)
+		(end 320 200)
 		(stroke
 			(width 0.5)
 			(type default)

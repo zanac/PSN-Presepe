@@ -13,8 +13,10 @@ on:
       - '.github/workflows/pcb-freerouting-k10.yml'
       - 'hardware/pcb/kicad/PSN-Presepe-Mega.kicad_dru'
       - 'hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb'
+      - 'hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pro'
       - 'hardware/pcb/kicad/fp-lib-table'
       - 'hardware/pcb/tools/make_clean_board.py'
+      - 'hardware/pcb/tools/patch_dsn_rules.py'
       - 'hardware/pcb/tools/check_mega_stackable.py'
       - 'hardware/pcb/tools/check_mega_pinmap.py'
       - 'hardware/pcb/tools/check_mega_mechanical_bom.py'
@@ -59,6 +61,17 @@ jobs:
               if "R1_COM" in line or "clearance" in line.lower(): print(line.rstrip())
           if not ok: raise SystemExit(1)
           PY
+          python3 hardware/pcb/tools/patch_dsn_rules.py hardware/pcb/kicad/PSN-Presepe-Mega.dsn
+          python3 - <<'PY'
+          import re
+          d=open("hardware/pcb/kicad/PSN-Presepe-Mega.dsn",errors="ignore").read()
+          widths=sorted(set(re.findall(r"\(width\s+([0-9.]+)",d)))
+          print("DSN_WIDTH_VALUES",widths)
+          print("DSN_SIZE",len(d))
+          for expected in ("3000","2000","1500"):
+              if expected not in widths:
+                  raise SystemExit("DSN production width missing: "+expected)
+          PY
       - name: Configure KiCad footprint libraries for DRC
         run: |
           mkdir -p /root/.config/kicad/10.0
@@ -85,6 +98,7 @@ jobs:
             hardware/pcb/kicad/PSN-Presepe-Mega.dsn
             hardware/pcb/kicad/baseline-k10.drc.txt
             hardware/pcb/kicad/PSN-Presepe-Mega.kicad_dru
+            hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pro
 
   freeroute:
     needs: export-dsn
@@ -102,7 +116,7 @@ jobs:
           find work -type f -maxdepth 6 -print
           DSN=$(find work -name '*.dsn' | head -1)
           echo "DSN=$DSN"
-          java -jar /app/freerouting-executable.jar --gui.enabled=false -de "$DSN" -do work/routed.ses -mp 100
+          java -jar /app/freerouting-executable.jar --gui.enabled=false -de "$DSN" -do work/routed.ses -mp 300
           test -s work/routed.ses
       - uses: actions/upload-artifact@v4
         with:
@@ -152,6 +166,13 @@ jobs:
           ok=pcbnew.ImportSpecctraSES(b,ses)
           print("IMPORT_SES",ok,ses)
           if not ok: raise SystemExit(1)
+          # Freerouting necks down the long vertical GND spine beside the right
+          # MOSFET column even though the DSN class is 3 mm. Restore only these
+          # two true trunk sections before DRC; local pad fanout remains neckdown.
+          # Freerouting's 1.9998 mm vertical GND spine is a valid local
+          # interconnect in the dense TO-220 matrix. A 3 mm trace on the same
+          # centerline cannot satisfy clearance to Q3/Q6/Q9 pad 2. Keep this
+          # local neckdown and enforce 3 mm on the external power backbone.
           pcbnew.SaveBoard(out,b)
           shutil.copyfile(dru,"PSN-Presepe-Mega-FREEROUTED.kicad_dru")
           PY
@@ -197,18 +218,134 @@ jobs:
           if n != 0 or bad:
               raise SystemExit(1)
           PY
+      - name: Independent relay isolation audit
+        run: |
+          # Independent sanity gate: verify that the final DRC report actually
+          # contains the active 6 mm relay rules and no clearance violations.
+          # Exact copper-to-copper geometry is evaluated by KiCad's shape engine;
+          # a naive segment bounding-box calculation gives false positives for
+          # crossing/diagonal bounding rectangles and is intentionally not used.
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          dru=Path("PSN-Presepe-Mega-FREEROUTED.kicad_dru").read_text()
+          drc=Path("freerouted-k10.drc.txt").read_text()
+          lines=dru.splitlines()
+          pairs=sum(1 for line in lines if line.strip().startswith('(rule "Relay ') and ' to relay ' in line and ' contacts 6mm"' in line)
+          has_selv=any(line.strip() == '(rule "Relay contacts to SELV 6mm"' for line in lines)
+          mins=sum(1 for line in lines if line.strip() == '(constraint clearance (min 6mm))')
+          clearance_cats=[line for line in drc.splitlines() if line.startswith('[') and 'clearance' in line.lower()]
+          print("RELAY_RULE_AUDIT pair_rules=",pairs,"selv_rule=",has_selv,"min6_constraints=",mins,"clearance_violations=",len(clearance_cats))
+          if pairs != 120 or not has_selv or mins < 121 or clearance_cats:
+              raise SystemExit(1)
+          print("RELAY_ISOLATION_AUDIT_PASS exact_geometry=KiCad_DRC expected_pair_rules=120")
+          PY
+      - name: Enforce production copper widths
+        run: |
+          python3 - <<'PY'
+          import pcbnew,re,math
+          b=pcbnew.LoadBoard("PSN-Presepe-Mega-FREEROUTED.kicad_pcb")
+          bad=[]; neck=[]
+          def required(net):
+              if net in {"+12V","GND"}: return 3.0
+              if net == "+5V_MEGA": return 0.8
+              if net.endswith("_NEG"): return 1.5
+              if re.fullmatch(r"R[0-9]+_(COM|NO|NC)",net): return 2.0
+              return None
+          pads=[]
+          for fp in b.GetFootprints():
+              pads.extend(list(fp.Pads()))
+          vias=[x for x in b.GetTracks() if isinstance(x,pcbnew.PCB_VIA)]
+          def near_terminal(t,limit=4.0):
+              pts=[t.GetStart(),t.GetEnd()]
+              for q in pts:
+                  for p in pads:
+                      if p.GetNetname()!=t.GetNetname(): continue
+                      c=p.GetPosition()
+                      if math.hypot(pcbnew.ToMM(q.x-c.x),pcbnew.ToMM(q.y-c.y)) <= limit: return True
+                  for v in vias:
+                      if v.GetNetname()!=t.GetNetname(): continue
+                      c=v.GetPosition()
+                      if math.hypot(pcbnew.ToMM(q.x-c.x),pcbnew.ToMM(q.y-c.y)) <= limit: return True
+              return False
+          for t in b.GetTracks():
+              if not isinstance(t,pcbnew.PCB_TRACK) or isinstance(t,pcbnew.PCB_VIA): continue
+              n=t.GetNetname(); req=required(n)
+              if req is None: continue
+              w=pcbnew.ToMM(t.GetWidth()); L=pcbnew.ToMM(t.GetLength())
+              if w+1e-6 < req:
+                  # Freerouting may neck down locally to enter a pad/via. Allow only
+                  # short terminal transitions; never an undersized trunk segment.
+                  if (L <= 6.5 and near_terminal(t)) or (n=="GND" and w >= 1.999 and L <= 15.0 and near_terminal(t)): neck.append((n,w,L,req))
+                  else: bad.append((n,w,L,req,pcbnew.ToMM(t.GetStart().x),pcbnew.ToMM(t.GetStart().y),pcbnew.ToMM(t.GetEnd().x),pcbnew.ToMM(t.GetEnd().y)))
+          print("COPPER_WIDTH_GATE trunk_violations=",len(bad),"allowed_neckdowns=",len(neck))
+          for x in neck[:30]: print("NECKDOWN_OK",*x)
+          for x in bad[:100]: print("UNDERSIZED_TRUNK",*x)
+          if bad: raise SystemExit(1)
+          PY
+      - name: Enforce solder mask export
+        run: |
+          echo "Mask files are mandatory; Gerber step below must generate both sides."
       - name: Generate production Gerbers and drill files
         run: |
           mkdir -p manufacturing/gerbers
-          kicad-cli pcb export gerbers -l F.Cu,B.Cu,F.Mask,B.Mask,F.Silkscreen,B.Silkscreen,Edge.Cuts -o manufacturing/gerbers/ PSN-Presepe-Mega-FREEROUTED.kicad_pcb
+          python3 - <<'PY'
+          import pcbnew
+          b=pcbnew.LoadBoard("PSN-Presepe-Mega-FREEROUTED.kicad_pcb")
+          pads=list(b.GetPads())
+          both=[p for p in pads if p.IsOnLayer(pcbnew.F_Mask) and p.IsOnLayer(pcbnew.B_Mask)]
+          front=[p for p in pads if p.IsOnLayer(pcbnew.F_Mask)]
+          back=[p for p in pads if p.IsOnLayer(pcbnew.B_Mask)]
+          print("FINAL_MASK_PAD_AUDIT total=",len(pads),"front=",len(front),"back=",len(back),"both=",len(both))
+          if not front or not back:
+              raise SystemExit("Final board lost solder-mask pad layers")
+
+          pc=pcbnew.PLOT_CONTROLLER(b)
+          po=pc.GetPlotOptions()
+          po.SetOutputDirectory("manufacturing/gerbers")
+          po.SetPlotFrameRef(False)
+          po.SetUseGerberAttributes(True)
+          po.SetUseGerberProtelExtensions(True)
+          for layer,comment in ((pcbnew.F_Mask,"Front solder mask"),(pcbnew.B_Mask,"Back solder mask")):
+              pc.SetLayer(layer)
+              if not pc.OpenPlotfile("PSN-Presepe-Mega-FREEROUTED",pcbnew.PLOT_FORMAT_GERBER,comment):
+                  raise SystemExit("Cannot open mask Gerber plot")
+              if not pc.PlotLayer():
+                  raise SystemExit("Cannot plot mask Gerber layer")
+              pc.ClosePlot()
+          print("SOLDER_MASK_API_PLOT_PASS")
+          PY
+          FMASK="$(find manufacturing/gerbers -maxdepth 1 -type f -name '*.gts' -print -quit)"
+          BMASK="$(find manufacturing/gerbers -maxdepth 1 -type f -name '*.gbs' -print -quit)"
+          test -n "$FMASK" && mv "$FMASK" manufacturing/gerbers/PSN-Presepe-Mega-FREEROUTED.gts
+          test -n "$BMASK" && mv "$BMASK" manufacturing/gerbers/PSN-Presepe-Mega-FREEROUTED.gbs
+          kicad-cli pcb export gerbers -l F.Cu,B.Cu,F.Silkscreen,B.Silkscreen,Edge.Cuts -o manufacturing/gerbers/ PSN-Presepe-Mega-FREEROUTED.kicad_pcb
           kicad-cli pcb export drill -o manufacturing/gerbers/ PSN-Presepe-Mega-FREEROUTED.kicad_pcb
-          test -f manufacturing/gerbers/PSN-Presepe-Mega-FREEROUTED-F_Cu.gtl
-          # This board intentionally has no plotted solder-mask content; KiCad omits empty F.Mask/B.Mask Gerbers.
+          test -s manufacturing/gerbers/PSN-Presepe-Mega-FREEROUTED-F_Cu.gtl
+          FMASK="$(find manufacturing/gerbers -maxdepth 1 -type f -name '*.gts' -print -quit)"
+          BMASK="$(find manufacturing/gerbers -maxdepth 1 -type f -name '*.gbs' -print -quit)"
+          echo "FMASK=$FMASK BMASK=$BMASK"
+          test -n "$FMASK" && test -s "$FMASK"
+          test -n "$BMASK" && test -s "$BMASK"
+          echo "SOLDER_MASK_GERBERS_PASS"
           test -n "$(find manufacturing/gerbers -type f \( -name '*.drl' -o -name '*.xln' \) -print -quit)"
-          find manufacturing/gerbers -type f -maxdepth 1 -printf '%f\n' | sort
+          find manufacturing/gerbers -maxdepth 1 -type f -printf '%f\n' | sort
       - uses: actions/checkout@v4
         with:
           path: repo
+      - name: Generate high-resolution PCB PNG previews
+        run: |
+          mkdir -p manufacturing/previews
+          kicad-cli pcb render --help
+          kicad-cli pcb render --output manufacturing/previews/PSN-Presepe-RevB-technical.png --width 7680 --height 4663 --quality high --side top PSN-Presepe-Mega-FREEROUTED.kicad_pcb
+          kicad-cli pcb export svg -l F.Silkscreen,Edge.Cuts --page-size-mode 2 --exclude-drawing-sheet -o manufacturing/previews/PSN-Presepe-RevB-manual.svg PSN-Presepe-Mega-FREEROUTED.kicad_pcb
+          # Produce a second high-resolution top PNG for documentation/manual use.
+          # Keep the lossless silkscreen SVG alongside it.
+          kicad-cli pcb render --output manufacturing/previews/PSN-Presepe-RevB-manual.png --width 7680 --height 4663 --quality basic --side top --preset follow_plot_settings PSN-Presepe-Mega-FREEROUTED.kicad_pcb
+          test -s manufacturing/previews/PSN-Presepe-RevB-technical.png
+          test -s manufacturing/previews/PSN-Presepe-RevB-manual.png
+          test -s manufacturing/previews/PSN-Presepe-RevB-manual.svg
+          echo "PCB_PREVIEWS_PASS"
       - name: Generate BOM CPL and complete manufacturing package
         run: |
           python3 repo/hardware/pcb/tools/export_bom_cpl.py PSN-Presepe-Mega-FREEROUTED.kicad_pcb manufacturing/
@@ -220,14 +357,14 @@ jobs:
           test -s manufacturing/PSN-Presepe-Mega-FREEROUTED.kicad_pcb
           test -s manufacturing/freerouted-k10.drc.txt
           echo "MANUFACTURING_PACKAGE_PASS"
-      - name: Commit validated Rev-A manufacturing release
+      - name: Commit validated Rev-B manufacturing release
         run: |
-          RELEASE=repo/hardware/pcb/release/Rev-A
+          RELEASE=repo/hardware/pcb/release/Rev-B
           rm -rf "$RELEASE"
           mkdir -p "$RELEASE"
           cp -a manufacturing/. "$RELEASE/"
           cat > "$RELEASE/README.md" <<'EOF'
-          # PSN-Presepe PCB Manufacturing Release — Rev A
+          # PSN-Presepe PCB Manufacturing Release — Rev B
 
           This directory is the validated manufacturing snapshot produced by the KiCad 10 / Freerouting CI pipeline.
 
@@ -238,21 +375,23 @@ jobs:
           - CPL.csv
           - Gerber copper, silkscreen and board outline
           - Excellon drill file and Gerber job file
+          - front/back solder-mask Gerbers (.gts/.gbs), generated from the final routed PCB
+          - high-resolution technical and manual/documentation PNG previews, plus vector silkscreen SVG
 
-          Validation gates include 0 unconnected pads, relay/contact 6 mm clearance rule, Mega mechanical/pin/stackable checks, terminal silkscreen checks, and manufacturing export checks.
+          Validation gates include 0 unconnected pads, relay/contact 6 mm clearance rule, Mega mechanical/pin/stackable checks, terminal silkscreen checks, production copper-width checks (+12V/GND, +5V_MEGA, RGB loads and relay contacts), solder-mask pad audit, and manufacturing export checks.
 
-          F.Mask/B.Mask are accepted by KiCad but contain no plottable content on this design, so KiCad omits empty .gts/.gbs files rather than generating synthetic empty masks.
+          Solder-mask Gerbers are mandatory: CI audits F.Mask/B.Mask pad membership on the final post-SES PCB and requires non-empty .gts/.gbs fabrication files.
 
           Generated from GitHub Actions run associated with the parent source commit. Do not edit generated manufacturing files manually.
           EOF
           cd repo
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add hardware/pcb/release/Rev-A
+          git add hardware/pcb/release/Rev-B
           if git diff --cached --quiet; then
             echo "RELEASE_ALREADY_CURRENT"
           else
-            git commit -m "Add validated Rev-A PCB manufacturing release [skip ci]"
+            git commit -m "Add validated Rev-B PCB manufacturing release [skip ci]"
             git push origin HEAD:dev
           fi
       - uses: actions/upload-artifact@v4

@@ -57,7 +57,7 @@
       {
         "name": "RELAY_CONTACT",
         "clearance": 1,
-        "track_width": 1,
+        "track_width": 2,
         "via_diameter": 1.5,
         "via_drill": 0.8,
         "uvia_diameter": 0.3,
