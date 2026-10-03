@@ -1,0 +1,64 @@
+name: PCB Size Sweep
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [dev]
+    paths:
+      - '.github/workflows/pcb-size-sweep.yml'
+
+jobs:
+  sweep:
+    strategy:
+      fail-fast: false
+      matrix:
+        scale: ["0.90","0.80","0.70","0.60","0.50"]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Generate scaled clean PCB and export DSN
+        run: |
+          docker run --rm --user 0 -v "$PWD:/work" -w /work kicad/kicad:10.0 bash -lc '
+            python3 hardware/pcb/tools/make_scaled_board.py --scale ${{ matrix.scale }} --output sweep.kicad_pcb
+            python3 - <<"PY"
+import pcbnew
+b=pcbnew.LoadBoard("sweep.kicad_pcb")
+ok=pcbnew.ExportSpecctraDSN(b,"sweep.dsn")
+print("EXPORT_DSN",ok)
+if not ok: raise SystemExit(1)
+PY
+          '
+      - name: Freeroute
+        run: |
+          docker run --rm --user 0 -v "$PWD:/work" -w /work ghcr.io/freerouting/freerouting:2.2.4             java -jar /app/freerouting-executable.jar --gui.enabled=false -de /work/sweep.dsn -do /work/routed.ses -mp 100
+          test -s routed.ses
+      - name: Import and DRC
+        run: |
+          docker run --rm --user 0 -v "$PWD:/work" -w /work kicad/kicad:10.0 bash -lc '
+            python3 - <<"PY"
+import pcbnew
+b=pcbnew.LoadBoard("sweep.kicad_pcb")
+ok=pcbnew.ImportSpecctraSES(b,"routed.ses")
+print("IMPORT_SES",ok)
+if not ok: raise SystemExit(1)
+pcbnew.SaveBoard("sweep-routed.kicad_pcb",b)
+PY
+            kicad-cli pcb drc --severity-all --output sweep.drc.txt sweep-routed.kicad_pcb || true
+            grep -E "Found|\\[.*\\]:" sweep.drc.txt | tail -100 || true
+            python3 - <<"PY"
+from pathlib import Path
+import re
+s=Path("sweep.drc.txt").read_text()
+m=re.findall(r"Found ([0-9]+) unconnected",s,re.I)
+n=int(m[-1]) if m else -1
+cats=["clearance","shorting_items","tracks_crossing","hole_clearance","solder_mask_bridge"]
+bad=[x for x in cats if re.search(r"\\["+re.escape(x)+r"\\]",s)]
+print("SWEEP_RESULT scale=${{ matrix.scale }} unconnected=",n,"critical=",bad or "none")
+PY
+          '
+      - uses: actions/upload-artifact@v4
+        with:
+          name: pcb-sweep-${{ matrix.scale }}
+          path: |
+            sweep-routed.kicad_pcb
+            sweep.drc.txt
