@@ -19,7 +19,7 @@ jobs:
         run: kicad-cli --version
       - name: Prepare clean original 280x170 PCB and export Specctra DSN
         run: |
-          python3 hardware/pcb/tools/make_scaled_board.py --scale 0.50 --output hardware/pcb/kicad/PSN-Presepe-Mega-CLEAN.kicad_pcb
+          python3 hardware/pcb/tools/make_clean_board.py --output hardware/pcb/kicad/PSN-Presepe-Mega-CLEAN.kicad_pcb
           python3 - <<'PY'
           import pcbnew
           src="hardware/pcb/kicad/PSN-Presepe-Mega-CLEAN.kicad_pcb"
