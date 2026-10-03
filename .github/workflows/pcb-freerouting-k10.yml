@@ -272,10 +272,16 @@ jobs:
           # KiCad may omit an otherwise valid solder-mask layer from the combined
           # Gerber command when the layer has no plotted graphics after SES import.
           # Export masks explicitly and require non-empty fabrication files.
-          kicad-cli pcb export gerber -l F.Mask -o manufacturing/gerbers/PSN-Presepe-Mega-FREEROUTED-F_Mask.gts PSN-Presepe-Mega-FREEROUTED.kicad_pcb
-          kicad-cli pcb export gerber -l B.Mask -o manufacturing/gerbers/PSN-Presepe-Mega-FREEROUTED-B_Mask.gbs PSN-Presepe-Mega-FREEROUTED.kicad_pcb
-          test -s manufacturing/gerbers/PSN-Presepe-Mega-FREEROUTED-F_Mask.gts
-          test -s manufacturing/gerbers/PSN-Presepe-Mega-FREEROUTED-B_Mask.gbs
+          mkdir -p manufacturing/mask-front manufacturing/mask-back
+          kicad-cli pcb export gerbers -l F.Mask -o manufacturing/mask-front/ PSN-Presepe-Mega-FREEROUTED.kicad_pcb
+          kicad-cli pcb export gerbers -l B.Mask -o manufacturing/mask-back/ PSN-Presepe-Mega-FREEROUTED.kicad_pcb
+          FMASK="$(find manufacturing/mask-front -maxdepth 1 -type f -name '*.gts' -print -quit)"
+          BMASK="$(find manufacturing/mask-back -maxdepth 1 -type f -name '*.gbs' -print -quit)"
+          test -n "$FMASK" && test -s "$FMASK"
+          test -n "$BMASK" && test -s "$BMASK"
+          cp "$FMASK" manufacturing/gerbers/PSN-Presepe-Mega-FREEROUTED-F_Mask.gts
+          cp "$BMASK" manufacturing/gerbers/PSN-Presepe-Mega-FREEROUTED-B_Mask.gbs
+          echo "SOLDER_MASK_GERBERS_PASS"
           test -n "$(find manufacturing/gerbers -type f \( -name '*.drl' -o -name '*.xln' \) -print -quit)"
           find manufacturing/gerbers -type f -maxdepth 1 -printf '%f\n' | sort
       - uses: actions/checkout@v4
