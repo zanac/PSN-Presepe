@@ -40,6 +40,17 @@ jobs:
           python3 hardware/pcb/tools/check_mega_pinmap.py
           python3 hardware/pcb/tools/check_mega_mechanical_bom.py
           python3 hardware/pcb/tools/check_terminal_silkscreen.py
+      - name: Generate Rev-B schematic from validated PCB netlist
+        run: |
+          python3 hardware/pcb/tools/generate_revb_schematic.py \
+            hardware/pcb/release/Rev-B/PSN-Presepe-Mega-FREEROUTED.kicad_pcb \
+            hardware/pcb/kicad/PSN-Presepe-Mega-RevB.kicad_sch
+          test -s hardware/pcb/kicad/PSN-Presepe-Mega-RevB.kicad_sch
+      - name: Rev-B schematic ERC
+        run: |
+          mkdir -p hardware/pcb/build
+          kicad-cli sch erc --severity-all --output hardware/pcb/build/revb-erc.txt hardware/pcb/kicad/PSN-Presepe-Mega-RevB.kicad_sch
+          echo ERC_PASS
       - name: Validate Rev-B release PCB with KiCad 10
         run: |
           mkdir -p hardware/pcb/build
