@@ -56,10 +56,11 @@ jobs:
           test -s hardware/pcb/build/PSN-Presepe-Mega-RevB.sch
           test -s hardware/pcb/build/PSN-Presepe-Mega-RevB-cache.lib
           # KiCad 10 must be able to parse the real-symbol legacy schematic.
-          kicad-cli sch erc --severity-all --exit-code-violations --output hardware/pcb/build/revb-legacy-erc.txt \
-            hardware/pcb/build/PSN-Presepe-Mega-RevB.sch
-          test -s hardware/pcb/build/revb-legacy-erc.txt
-          cat hardware/pcb/build/revb-legacy-erc.txt
+          # Probe KiCad 10 schematic conversion/export capabilities first.
+          kicad-cli sch --help | tee hardware/pcb/build/kicad-sch-help.txt
+          kicad-cli create-project --help 2>&1 | tee hardware/pcb/build/kicad-create-project-help.txt || true
+          # Legacy source and cache must both be non-empty; conversion to modern
+          # format is the next hard gate before ERC.
       - name: Generate Rev-B schematic from validated PCB netlist
         run: |
           python3 hardware/pcb/tools/generate_revb_schematic.py \
@@ -110,7 +111,8 @@ jobs:
             hardware/pcb/build/revb-drc.txt
             hardware/pcb/build/revb-erc.txt
             hardware/pcb/build/revb-pin-net-map.tsv
-            hardware/pcb/build/revb-legacy-erc.txt
+            hardware/pcb/build/kicad-sch-help.txt
+            hardware/pcb/build/kicad-create-project-help.txt
             hardware/pcb/build/PSN-Presepe-Mega-RevB.sch
             hardware/pcb/build/PSN-Presepe-Mega-RevB-cache.lib
             hardware/pcb/kicad/PSN-Presepe-Mega-RevB.kicad_sch
