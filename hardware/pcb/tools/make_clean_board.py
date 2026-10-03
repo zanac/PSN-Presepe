@@ -2,7 +2,8 @@ from pathlib import Path
 import argparse,re
 
 ap=argparse.ArgumentParser()
-ap.add_argument("--output",required=True)\na=ap.parse_args()
+ap.add_argument("--output", required=True)
+a = ap.parse_args()
 
 src=Path("hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb")
 dst=Path(a.output)
