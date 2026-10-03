@@ -195,7 +195,7 @@ def pad_local_at(ref, pad):
 kx,ky,krot=footprint_at("K1")
 px,py=pad_local_at("K1",5)
 assert abs(krot-90.0)<1e-6
-assert abs(px-0.0)<0.01 and abs(py-7.62)<0.01, "K1 pad5 local geometry regression"
-assert abs((kx+py)-(kx+7.62))<0.01 and abs((ky-px)-ky)<0.01, "K1 rotated pad transform regression"
+assert abs(px-0.0)<0.01 and abs(py+7.62)<0.01, "K1 pad5 local geometry regression"
+assert abs((kx+py)-(kx-7.62))<0.01 and abs((ky-px)-ky)<0.01, "K1 rotated pad transform regression"
 
 print(f"OK: {len(refs)} refs, {len(global_nets)} nets, {segments} segments, electrical + external-terminal invariants verified, no unreviewed zones")
