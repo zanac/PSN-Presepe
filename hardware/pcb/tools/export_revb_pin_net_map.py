@@ -10,7 +10,10 @@ for fp in sorted(b.GetFootprints(), key=lambda x: x.GetReference()):
     if ref.startswith("H"):
         continue
     for p in sorted(fp.Pads(), key=lambda x: x.GetNumber()):
-        rows.append((ref, value, p.GetNumber(), p.GetNetname()))
+        net = p.GetNetname()
+        if not net:
+            continue
+        rows.append((ref, value, p.GetNumber(), net))
 for r in rows:
     print("\t".join(r))
 if len(rows) < 100:
