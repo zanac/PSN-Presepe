@@ -1,0 +1,9 @@
+(version 1)
+
+# PSN-Presepe internal safety design rule.
+# Relay contact nets may carry mains voltage. Keep them separated from SELV/control copper.
+# 6 mm is a conservative project design target, not a statement of regulatory certification.
+(rule "Relay contacts to SELV 6mm"
+  (condition "((A.NetName =~ 'R[0-9]+_(COM|NO|NC)') && !(B.NetName =~ 'R[0-9]+_(COM|NO|NC)')) || ((B.NetName =~ 'R[0-9]+_(COM|NO|NC)') && !(A.NetName =~ 'R[0-9]+_(COM|NO|NC)'))")
+  (constraint clearance (min 6mm))
+)
