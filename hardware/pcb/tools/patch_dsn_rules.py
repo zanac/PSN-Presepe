@@ -4,7 +4,7 @@ import re,sys
 p=Path(sys.argv[1]); s=p.read_text()
 names=set(re.findall(r'\(net\s+"?([^"\s()]+)"?',s))
 groups=[
- ("HIGH_CURRENT_12V",lambda n:n in {"+12V","GND"},3000),
+ ("HIGH_CURRENT_12V",lambda n:n in {"+12V","GND"},3300),
  ("RGB_LOAD",lambda n:n.endswith("_NEG"),1500),
  ("RELAY_CONTACT",lambda n:re.fullmatch(r"R[0-9]+_(COM|NO|NC)",n) is not None,2000),
  ("SELV_POWER",lambda n:n=="+5V_MEGA",800)]
