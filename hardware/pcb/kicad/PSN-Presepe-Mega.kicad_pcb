@@ -8831,7 +8831,7 @@
 	(footprint "MountingHole_3"
 		(layer "F.Cu")
 		(uuid "cc9b51a1-db42-4c39-aa98-2e9df738a23f")
-		(at 27 190)
+		(at 40 190)
 		(property "Reference" "H3"
 			(at 0 -4 0)
 			(layer "F.Fab")
