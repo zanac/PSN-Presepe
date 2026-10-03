@@ -84,8 +84,14 @@ try:
         b=footprint_block(ref)
         pole_labels=labels[:-1] if len(labels)>2 and labels[-1] in ({'POWER','OLED','CIELO','TRAMONTO','ALBA','STELLE','CASETTE'} | {f'R{i}' for i in range(1,17)}) else labels
         for label in pole_labels:
-            m=re.search(r'\\(fp_text user "'+re.escape(label)+r'"\\s+\\(at [-0-9.]+ (-?[0-9.]+)',b)
-            if not m or float(m.group(1)) > -3.5:
+            needle='(fp_text user "'+label+'"' 
+            start=b.find(needle)
+            if start<0:
+                own_errors.append(f"{ref}:{label} text block missing"); continue
+            at=b.find('(at ',start)
+            close=b.find(')',at)
+            parts=b[at+4:close].split()
+            if len(parts)<2 or float(parts[1]) > -3.5:
                 own_errors.append(f"{ref}:{label} not on terminal wiring/access side")
     if own_errors:
         print("\\n".join("TERMINAL_OWN_BODY_FAIL "+x for x in own_errors)); sys.exit(1)
