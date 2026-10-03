@@ -4093,7 +4093,7 @@
 	(footprint "Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm"
 		(layer "F.Cu")
 		(uuid "57bec463-49aa-4e04-8f8f-02f50d6e6eb2")
-		(at 128 56)
+		(at 132 56)
 		(property "Reference" "C2"
 			(at 2.5 -2.5 0)
 			(layer "F.Fab")
@@ -4500,7 +4500,7 @@
 	(footprint "Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm"
 		(layer "F.Cu")
 		(uuid "610f9c72-28f8-4a0d-839a-ca6a0a51549d")
-		(at 128 86)
+		(at 132 86)
 		(property "Reference" "C3"
 			(at 2.5 -2.5 0)
 			(layer "F.Fab")
@@ -6139,7 +6139,7 @@
 	(footprint "MountingHole_2"
 		(layer "F.Cu")
 		(uuid "88bf7664-d40a-4235-b385-bc7cf146a74e")
-		(at 293 30)
+		(at 293 38)
 		(property "Reference" "H2"
 			(at 0 -4 0)
 			(layer "F.Fab")
