@@ -134,7 +134,7 @@ jobs:
               raise SystemExit("CUSTOM_RULE_POSITIVE_CONTROL failed")
           print("CUSTOM_RULE_POSITIVE_CONTROL passed")
           PY
-          grep -E 'Found|\\[.*\\]:' freerouted-k10.drc.txt | tail -160 || true
+          grep -E 'Found|\\[.*\\]:' freerouted-k10.drc.txt | tail -160 || true\n          echo '--- FULL UNEXPECTED DRC DETAILS ---'\n          cat freerouted-k10.drc.txt
           python3 - <<'PY'
           from pathlib import Path
           import re
