@@ -33,3 +33,13 @@ Required labels include:
 - Every relay terminal JR1..JR16: `COM`, `NO`, `NC`, with relay/channel identification.
 
 Gerber/manufacturing release is blocked until a CI/mechanical check confirms these terminal labels are present on silkscreen and do not overlap pads, board edges, or other critical markings.
+
+### Silkscreen visibility after assembly
+
+Terminal and connection labels must remain readable on the fully assembled PCB. A label passing copper/pad DRC is not sufficient.
+
+- Do not place functional connection labels underneath relays, terminal blocks, capacitors, heatsinks, headers, or any other fitted component body.
+- Keep labels outside the physical body/courtyard of fitted components wherever possible.
+- Place terminal pole labels on the wiring/access side of the terminal block so they remain visible while connecting wires.
+- Relay `COM / NO / NC` and channel identification must remain visible with the relay and terminal block installed.
+- The production release must include a mechanical/silkscreen visibility review of the fully populated board before Gerber approval.
