@@ -64,8 +64,8 @@ text=text.replace(old,new,1)
 # Reserve a deliberate 3 mm GND power spine below the MOSFET matrix, away
 # from the Q1..Q9 pads. Freerouting will connect the local GND branches to it.
 preroutes=[
-    ((52.0,176.0),(122.0,176.0),"B.Cu"),
-    ((122.0,176.0),(122.0,128.0),"B.Cu"),
+    ((52.0,176.0),(130.0,176.0),"B.Cu"),
+    ((130.0,176.0),(130.0,128.0),"B.Cu"),
 ]
 segments=[]
 for idx,(p1,p2,layer) in enumerate(preroutes,1):
