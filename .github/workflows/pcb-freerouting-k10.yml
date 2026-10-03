@@ -111,6 +111,20 @@ jobs:
         with:
           name: freerouting-output
           path: output
+      - name: Configure KiCad footprint libraries for final DRC
+        run: |
+          mkdir -p /root/.config/kicad/10.0
+          cat > /root/.config/kicad/10.0/fp-lib-table <<'EOF'
+          (fp_lib_table
+            (lib (name "PSN_Presep_Custom")(type "KiCad")(uri "${KIPRJMOD}/hardware/pcb/kicad/PSN_Presep_Custom.pretty")(options "")(descr ""))
+            (lib (name "Resistor_THT")(type "KiCad")(uri "${KICAD10_FOOTPRINT_DIR}/Resistor_THT.pretty")(options "")(descr ""))
+            (lib (name "Capacitor_THT")(type "KiCad")(uri "${KICAD10_FOOTPRINT_DIR}/Capacitor_THT.pretty")(options "")(descr ""))
+            (lib (name "Package_TO_SOT_THT")(type "KiCad")(uri "${KICAD10_FOOTPRINT_DIR}/Package_TO_SOT_THT.pretty")(options "")(descr ""))
+            (lib (name "Potentiometer_THT")(type "KiCad")(uri "${KICAD10_FOOTPRINT_DIR}/Potentiometer_THT.pretty")(options "")(descr ""))
+            (lib (name "Buzzer_Beeper")(type "KiCad")(uri "${KICAD10_FOOTPRINT_DIR}/Buzzer_Beeper.pretty")(options "")(descr ""))
+          )
+          EOF
+
       - name: Import SES, apply 6mm rule and run final DRC
         run: |
           python3 - <<'PY'
