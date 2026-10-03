@@ -28,6 +28,26 @@ jobs:
         run: python3 hardware/pcb/tools/autoroute_large_2x.py
       - name: Local reroute D32 blocker group
         run: python3 hardware/pcb/tools/reroute_d32_group.py
+      - name: Diagnose D26 local blockers
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re,math,subprocess
+          p=Path("hardware/pcb/kicad/PSN-Presepe-Mega-LARGE-2X.kicad_pcb")
+          s=p.read_text()
+          # Coordinates on LARGE are deterministic: footprint origins are doubled
+          # from (20,20), while pad-local offsets stay unchanged.
+          # U1 pad2: original (135,64.54) -> LARGE footprint origin (250,104), pad => (250,106.54)
+          # Arduino D26 pad coordinate is obtained by the same generated-board parser in autoroute.
+          exec(open("hardware/pcb/tools/autoroute_large_2x.py").read().split('print("PAIR_NETS"')[0])
+          ps=[z[2] for z in pairs if z[1]=="D26_RELAY2"][0]
+          a,b=ps
+          cmd=["python3","hardware/pcb/tools/grid_router.py",str(p),"--net","D26_RELAY2",
+               "--start",f"{a[0]},{a[1]},B.Cu","--goal",f"{b[0]},{b[1]},B.Cu",
+               "--step","0.5","--clearance","0.8","--margin","180","--via-cost","100",
+               "--soft-congestion","--congestion-cost","5000","--report-blockers","--blockers-only"]
+          subprocess.run(cmd,check=False)
+          PY
       - name: Diagnose D32 local blockers
         run: |
           python3 hardware/pcb/tools/grid_router.py hardware/pcb/kicad/PSN-Presepe-Mega-LARGE-2X.kicad_pcb \
