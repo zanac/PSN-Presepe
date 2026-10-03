@@ -209,6 +209,21 @@ jobs:
       - uses: actions/checkout@v4
         with:
           path: repo
+      - name: Generate high-resolution PCB PNG previews
+        run: |
+          mkdir -p manufacturing/previews
+          kicad-cli pcb render --help
+          kicad-cli pcb render --output manufacturing/previews/PSN-Presepe-RevA-technical.png --width 7680 --height 4663 --quality high --side top PSN-Presepe-Mega-FREEROUTED.kicad_pcb
+          kicad-cli pcb export svg -l F.Silkscreen,Edge.Cuts --page-size-mode 2 --exclude-drawing-sheet -o manufacturing/previews/PSN-Presepe-RevA-manual.svg PSN-Presepe-Mega-FREEROUTED.kicad_pcb
+          python3 - <<'PY'
+          import cairosvg
+          cairosvg.svg2png(url='manufacturing/previews/PSN-Presepe-RevA-manual.svg',
+                           write_to='manufacturing/previews/PSN-Presepe-RevA-manual-silkscreen.png',
+                           output_width=7680)
+          PY
+          test -s manufacturing/previews/PSN-Presepe-RevA-technical.png
+          test -s manufacturing/previews/PSN-Presepe-RevA-manual-silkscreen.png
+          echo "PCB_PREVIEWS_PASS"
       - name: Generate BOM CPL and complete manufacturing package
         run: |
           python3 repo/hardware/pcb/tools/export_bom_cpl.py PSN-Presepe-Mega-FREEROUTED.kicad_pcb manufacturing/
