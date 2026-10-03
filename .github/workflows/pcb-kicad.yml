@@ -50,7 +50,8 @@ jobs:
           head -20 hardware/pcb/build/revb-pin-net-map.tsv
       - name: Probe native headless Eeschema conversion API
         run: |
-          python3 - <<'PY'
+          {
+            python3 - <<'PY'
           try:
               import _eeschema
               print("EESCHEMA_PYBIND_AVAILABLE", _eeschema)
@@ -58,8 +59,10 @@ jobs:
           except Exception as e:
               print("EESCHEMA_PYBIND_UNAVAILABLE", repr(e))
           PY
-          command -v eeschema || true
-          eeschema --version || true
+            command -v eeschema || true
+            eeschema --version || true
+            eeschema --help || true
+          } 2>&1 | tee hardware/pcb/build/eeschema-probe.txt
       - name: Generate real-symbol legacy Rev-B schematic
         run: |
           python3 hardware/pcb/tools/generate_revb_legacy_schematic.py \
@@ -124,6 +127,7 @@ jobs:
             hardware/pcb/build/revb-erc.txt
             hardware/pcb/build/revb-pin-net-map.tsv
             hardware/pcb/build/kicad-sch-help.txt
+            hardware/pcb/build/eeschema-probe.txt
             hardware/pcb/build/kicad-create-project-help.txt
             hardware/pcb/build/PSN-Presepe-Mega-RevB.sch
             hardware/pcb/build/PSN-Presepe-Mega-RevB-cache.lib
