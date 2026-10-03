@@ -214,18 +214,3 @@ jobs:
           path: |
             PSN-Presepe-Mega-FREEROUTED.kicad_pcb
             freerouted-k10.drc.txt
- | head -1)"
-          test -n "$(find manufacturing/gerbers -type f \( -name '*.drl' -o -name '*.xln' \) -print -quit)"
-          find manufacturing/gerbers -type f -maxdepth 1 -printf '%f\n' | sort
-      - uses: actions/upload-artifact@v4
-        with:
-          name: pcb-manufacturing-gerbers
-          path: manufacturing/
-          if-no-files-found: error
-
-      - uses: actions/upload-artifact@v4
-        with:
-          name: pcb-freerouted-k10
-          path: |
-            PSN-Presepe-Mega-FREEROUTED.kicad_pcb
-            freerouted-k10.drc.txt
