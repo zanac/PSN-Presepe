@@ -312,14 +312,10 @@ jobs:
           kicad-cli pcb render --help
           kicad-cli pcb render --output manufacturing/previews/PSN-Presepe-RevB-technical.png --width 7680 --height 4663 --quality high --side top PSN-Presepe-Mega-FREEROUTED.kicad_pcb
           kicad-cli pcb export svg -l F.Silkscreen,Edge.Cuts --page-size-mode 2 --exclude-drawing-sheet -o manufacturing/previews/PSN-Presepe-RevB-manual.svg PSN-Presepe-Mega-FREEROUTED.kicad_pcb
-          python3 - <<'PY'
-          import cairosvg
-          cairosvg.svg2png(url='manufacturing/previews/PSN-Presepe-RevB-manual.svg',
-                           write_to='manufacturing/previews/PSN-Presepe-RevB-manual-silkscreen.png',
-                           output_width=7680)
-          PY
+          # Keep the manual view as lossless SVG: KiCad produces it directly
+          # and it preserves terminal silkscreen text better than a raster conversion.
           test -s manufacturing/previews/PSN-Presepe-RevB-technical.png
-          test -s manufacturing/previews/PSN-Presepe-RevB-manual-silkscreen.png
+          test -s manufacturing/previews/PSN-Presepe-RevB-manual.svg
           echo "PCB_PREVIEWS_PASS"
       - name: Generate BOM CPL and complete manufacturing package
         run: |
