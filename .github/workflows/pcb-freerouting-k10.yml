@@ -13,6 +13,7 @@ on:
       - 'hardware/pcb/tools/make_clean_board.py'
       - 'hardware/pcb/tools/check_mega_stackable.py'
       - 'hardware/pcb/tools/check_terminal_silkscreen.py'
+      - 'hardware/pcb/ASSEMBLY.md'
 
 jobs:
   export-dsn:
