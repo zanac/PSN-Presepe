@@ -29,15 +29,22 @@ for ref,labels in required.items():
     if not b:
         errors.append(f"{ref}: footprint missing"); continue
     silk=[]
-    for m in re.finditer(r'\\(fp_text user "([^"]+)"',b):
-        start=m.start(); depth=0; stop=None
+    needle='(fp_text user "'
+    pos=0
+    while True:
+        start=b.find(needle,pos)
+        if start<0: break
+        name_start=start+len(needle)
+        name_end=b.find('"',name_start)
+        depth=0; stop=None
         for j,ch in enumerate(b[start:],start):
             if ch=="(": depth+=1
             elif ch==")":
                 depth-=1
                 if depth==0: stop=j+1; break
         tb=b[start:stop]
-        if '(layer "F.SilkS")' in tb: silk.append(m.group(1))
+        if '(layer "F.SilkS")' in tb: silk.append(b[name_start:name_end])
+        pos=stop or name_end
     for label in labels:
         if label not in silk: errors.append(f"{ref}: missing F.SilkS label {label}")
     if "TERMINAL_LABELS" not in b: errors.append(f"{ref}: terminal label marker missing")
