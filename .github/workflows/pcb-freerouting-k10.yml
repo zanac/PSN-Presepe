@@ -247,7 +247,7 @@ jobs:
                   # Freerouting may neck down locally to enter a pad/via. Allow only
                   # short terminal transitions; never an undersized trunk segment.
                   if L <= 6.0 and near_terminal(t): neck.append((n,w,L,req))
-                  else: bad.append((n,w,L,req))
+                  else: bad.append((n,w,L,req,pcbnew.ToMM(t.GetStart().x),pcbnew.ToMM(t.GetStart().y),pcbnew.ToMM(t.GetEnd().x),pcbnew.ToMM(t.GetEnd().y)))
           print("COPPER_WIDTH_GATE trunk_violations=",len(bad),"allowed_neckdowns=",len(neck))
           for x in neck[:30]: print("NECKDOWN_OK",*x)
           for x in bad[:100]: print("UNDERSIZED_TRUNK",*x)
