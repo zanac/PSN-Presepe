@@ -16,7 +16,14 @@ parts=[
 '  (segment (start 133.0 83.0) (end 133.0 74.7) (width 0.3) (layer "B.Cu") (net 25))',
 '  (segment (start 133.0 74.7) (end 135.0 74.7) (width 0.3) (layer "B.Cu") (net 25))',
 ]
-edge=s.find("  (gr_rect "); assert edge>0
+# Insert routing before the first board graphic/Edge.Cuts primitive. Rev-C no
+# longer guarantees a gr_rect outline, so do not couple candidate generation
+# to one specific outline primitive.
+markers=["  (gr_rect ", "  (gr_line ", "  (gr_arc ", "  (gr_poly "]
+positions=[s.find(m) for m in markers]
+positions=[p for p in positions if p>0]
+assert positions, "No board graphic/Edge.Cuts insertion point found"
+edge=min(positions)
 s=s[:edge]+chr(10).join(parts)+chr(10)+s[edge:]
 dst.parent.mkdir(parents=True,exist_ok=True); dst.write_text(s,encoding="utf-8")
 print("Added D30 low-left candidate")
