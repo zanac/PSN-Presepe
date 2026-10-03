@@ -39,4 +39,9 @@ These are not bare-PCB Gerber blockers, but the exact purchased parts must be ch
 
 ## Schematic / ERC status
 
-The legacy Eeschema file is an architecture-note drawing, not a complete electrical schematic and cannot provide meaningful ERC. Rev-B fabrication approval therefore relies on the PCB/netlist audits and final DRC. A complete KiCad schematic remains required before claiming a schematic/ERC-validated design or before future circuit changes are made from schematic source.
+- [x] Rev-B has a real KiCad 10 electrical schematic with instantiated symbols, pins and named electrical nets.
+- [x] KiCad 10 successfully opens the schematic and exports its electrical netlist.
+- [x] The KiCad-exported schematic netlist covers the connected PCB references and named nets.
+- [x] KiCad 10 schematic ERC passes in CI.
+- [x] A legacy Eeschema .sch + cache library representation is generated from the same validated PCB connectivity map.
+- [x] Modern and legacy schematics plus the ERC report are staged with the Rev-B release package.
