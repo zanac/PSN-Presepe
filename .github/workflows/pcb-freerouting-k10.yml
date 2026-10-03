@@ -6,6 +6,9 @@ on:
     branches: [dev]
     paths:
       - '.github/workflows/pcb-freerouting-k10.yml'
+      - 'hardware/pcb/kicad/PSN-Presepe-Mega.kicad_dru'
+      - 'hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb'
+      - 'hardware/pcb/tools/make_clean_board.py'
 
 jobs:
   export-dsn:
@@ -27,6 +30,9 @@ jobs:
           b=pcbnew.LoadBoard(src)
           ok=pcbnew.ExportSpecctraDSN(b,out)
           print("EXPORT_DSN",ok,out)
+          print("DSN_RELAY_RULE_LINES")
+          for line in open(out,errors="ignore"):
+              if "R1_COM" in line or "clearance" in line.lower(): print(line.rstrip())
           if not ok: raise SystemExit(1)
           PY
       - name: DRC baseline under KiCad 10
@@ -40,6 +46,7 @@ jobs:
             hardware/pcb/kicad/PSN-Presepe-Mega-CLEAN.kicad_pcb
             hardware/pcb/kicad/PSN-Presepe-Mega.dsn
             hardware/pcb/kicad/baseline-k10.drc.txt
+            hardware/pcb/kicad/PSN-Presepe-Mega.kicad_dru
 
   freeroute:
     needs: export-dsn
@@ -86,6 +93,10 @@ jobs:
           src=glob.glob("input/**/*.kicad_pcb",recursive=True)[0]
           ses=glob.glob("output/**/*.ses",recursive=True)[0]
           out="PSN-Presepe-Mega-FREEROUTED.kicad_pcb"
+          # Keep the custom-rule basename beside the final board so KiCad CLI loads it.
+          import shutil
+          dru=glob.glob("input/**/*.kicad_dru",recursive=True)
+          if dru: shutil.copyfile(dru[0],"PSN-Presepe-Mega-FREEROUTED.kicad_dru")
           b=pcbnew.LoadBoard(src)
           ok=pcbnew.ImportSpecctraSES(b,ses)
           print("IMPORT_SES",ok,ses)
