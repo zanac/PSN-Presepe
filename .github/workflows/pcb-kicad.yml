@@ -5,7 +5,7 @@ on:
   push:
     branches: [dev]
     paths:
-      - "hardware/pcb/**"
+      - "hardware/pcb/**"\n      - "hardware/pcb/tools/**"
       - ".github/workflows/pcb-kicad.yml"
 
 permissions:
