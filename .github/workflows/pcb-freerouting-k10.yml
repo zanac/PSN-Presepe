@@ -166,6 +166,17 @@ jobs:
           ok=pcbnew.ImportSpecctraSES(b,ses)
           print("IMPORT_SES",ok,ses)
           if not ok: raise SystemExit(1)
+          # Normalize five known GND backbone segments that Freerouting 2.2.4 necks down.
+          targets=[((114.6576,137.7002),(108.3602,137.7002)),((114.6576,167.7002),(108.3602,167.7002)),((94.6576,167.7002),(88.3602,167.7002)),((115.08,135.0),(115.08,150.0)),((115.08,150.0),(115.08,165.0))]
+          def mmpt(p): return (round(pcbnew.ToMM(p.x),4),round(pcbnew.ToMM(p.y),4))
+          fixed=0
+          for t in b.GetTracks():
+              if not isinstance(t,pcbnew.PCB_TRACK) or isinstance(t,pcbnew.PCB_VIA) or t.GetNetname()!="GND": continue
+              a=mmpt(t.GetStart()); z=mmpt(t.GetEnd())
+              if any((a==p and z==q) or (a==q and z==p) for p,q in targets):
+                  if pcbnew.ToMM(t.GetWidth()) < 3.0: t.SetWidth(pcbnew.FromMM(3.0)); fixed+=1
+          print("POSTROUTE_GND_WIDTH_FIX",fixed,"segments")
+          if fixed != 5: raise SystemExit(f"Expected 5 GND backbone fixes, got {fixed}")
           pcbnew.SaveBoard(out,b)
           shutil.copyfile(dru,"PSN-Presepe-Mega-FREEROUTED.kicad_dru")
           PY
