@@ -128,8 +128,10 @@ jobs:
           instances=len(re.findall(r'^  \\(symbol \\(lib_id "PSN:',s,re.M))
           pin_instances=len(re.findall(r'^    \\(pin "[^"]+" \\(uuid ',s,re.M))
           labels=len(re.findall(r'^  \\(global_label "',s,re.M))
-          print("REAL_SCHEMATIC_GATE","expected_refs=",len(expected_refs),"expected_pins=",expected_pins,
-                "libdefs=",libdefs,"instances=",instances,"pin_instances=",pin_instances,"labels=",labels)
+          diag=("REAL_SCHEMATIC_GATE expected_refs=%d expected_pins=%d libdefs=%d instances=%d pin_instances=%d labels=%d" %
+                (len(expected_refs),expected_pins,libdefs,instances,pin_instances,labels))
+          print(diag)
+          open("hardware/pcb/build/revb-real-gate.log","w").write(diag+"\\n")
           if not expected_refs or expected_pins < 1:
               raise SystemExit("PCB connectivity map unexpectedly empty")
           if libdefs != len(expected_refs) or instances != len(expected_refs):
@@ -169,6 +171,7 @@ jobs:
             hardware/pcb/build/kicad10-fixture.net
             hardware/pcb/build/revb-real.net
             hardware/pcb/build/revb-netlist-export.log
+            hardware/pcb/build/revb-real-gate.log
             hardware/pcb/build/kicad-create-project-help.txt
             hardware/pcb/build/PSN-Presepe-Mega-RevB.sch
             hardware/pcb/build/PSN-Presepe-Mega-RevB-cache.lib
