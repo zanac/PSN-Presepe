@@ -10,6 +10,7 @@ on:
       - hardware/pcb/tools/autoroute_large_2x.py
       - hardware/pcb/tools/grid_router.py
       - hardware/pcb/tools/reroute_d32_group.py
+      - hardware/pcb/tools/reroute_d26_group.py
       - .github/workflows/pcb-large-2x.yml
 
 jobs:
@@ -28,6 +29,8 @@ jobs:
         run: python3 hardware/pcb/tools/autoroute_large_2x.py
       - name: Local reroute D32 blocker group
         run: python3 hardware/pcb/tools/reroute_d32_group.py
+      - name: Local reroute D26 blocker group
+        run: python3 hardware/pcb/tools/reroute_d26_group.py
       - name: Diagnose D26 local blockers
         run: |
           python3 - <<'PY'
