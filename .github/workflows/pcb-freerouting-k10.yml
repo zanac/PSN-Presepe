@@ -107,6 +107,17 @@ jobs:
           PY
           test -f PSN-Presepe-Mega-FREEROUTED.kicad_dru
           grep -n "Relay contacts to SELV 6mm\|min 6mm" PSN-Presepe-Mega-FREEROUTED.kicad_dru
+          cp PSN-Presepe-Mega-FREEROUTED.kicad_pcb positive-control.kicad_pcb
+          cat > positive-control.kicad_dru <<'EOF'
+          (version 1)
+          (rule "CI positive control 100mm"
+            (condition "A.Type == 'Track' && B.Type == 'Track' && A.Net != B.Net")
+            (constraint clearance (min 100mm))
+          )
+          EOF
+          kicad-cli pcb drc --severity-all --output positive-control.drc.txt positive-control.kicad_pcb || true
+          grep -q '\\[clearance\\]' positive-control.drc.txt || { echo "CUSTOM_RULE_POSITIVE_CONTROL failed"; exit 1; }
+          echo "CUSTOM_RULE_POSITIVE_CONTROL passed"
           kicad-cli pcb drc --severity-all --output freerouted-k10.drc.txt PSN-Presepe-Mega-FREEROUTED.kicad_pcb || true
           grep -E 'Found|\\[.*\\]:' freerouted-k10.drc.txt | tail -160 || true
           python3 - <<'PY'
