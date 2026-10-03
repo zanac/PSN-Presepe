@@ -63,6 +63,14 @@ jobs:
             eeschema --version || true
             eeschema --help || true
           } 2>&1 | tee hardware/pcb/build/eeschema-probe.txt
+      - name: Probe maintained schematic-generation libraries
+        run: |
+          python3 -m pip install --quiet kicad-sch-api kiutils
+          python3 - <<'PY'
+          import kicad_sch_api, kiutils
+          print("KICAD_SCH_API_IMPORT_PASS", getattr(kicad_sch_api,"__version__","unknown"))
+          print("KIUTILS_IMPORT_PASS", getattr(kiutils,"__version__","unknown"))
+          PY
       - name: Generate real-symbol legacy Rev-B schematic
         run: |
           python3 hardware/pcb/tools/generate_revb_legacy_schematic.py \
