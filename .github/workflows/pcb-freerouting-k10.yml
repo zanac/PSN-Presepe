@@ -1,0 +1,118 @@
+name: PCB KiCad10 Freerouting Experiment
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [dev]
+    paths:
+      - '.github/workflows/pcb-freerouting-k10.yml'
+
+jobs:
+  export-dsn:
+    runs-on: ubuntu-latest
+    container:
+      image: kicad/kicad:10.0
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify KiCad 10
+        run: kicad-cli --version
+      - name: Build LARGE and reproduce current best routing
+        run: |
+          python3 hardware/pcb/tools/make_large_2x.py
+          python3 hardware/pcb/tools/autoroute_large_2x.py
+          python3 hardware/pcb/tools/reroute_d32_group.py
+          python3 hardware/pcb/tools/reroute_d26_group.py
+      - name: Export Specctra DSN with pcbnew
+        run: |
+          python3 - <<'PY'
+          import pcbnew
+          src="hardware/pcb/kicad/PSN-Presepe-Mega-LARGE-2X.kicad_pcb"
+          out="hardware/pcb/kicad/PSN-Presepe-Mega-LARGE-2X.dsn"
+          b=pcbnew.LoadBoard(src)
+          ok=pcbnew.ExportSpecctraDSN(b,out)
+          print("EXPORT_DSN",ok,out)
+          if not ok: raise SystemExit(1)
+          PY
+      - name: DRC baseline under KiCad 10
+        run: |
+          kicad-cli pcb drc --severity-all --output hardware/pcb/kicad/baseline-k10.drc.txt hardware/pcb/kicad/PSN-Presepe-Mega-LARGE-2X.kicad_pcb || true
+          grep -E 'Found|\\[.*\\]:' hardware/pcb/kicad/baseline-k10.drc.txt | tail -80 || true
+      - uses: actions/upload-artifact@v4
+        with:
+          name: freerouting-input
+          path: |
+            hardware/pcb/kicad/PSN-Presepe-Mega-LARGE-2X.kicad_pcb
+            hardware/pcb/kicad/PSN-Presepe-Mega-LARGE-2X.dsn
+            hardware/pcb/kicad/baseline-k10.drc.txt
+
+  freeroute:
+    needs: export-dsn
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/freerouting/freerouting:2.2.4
+      options: --user 0
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: freerouting-input
+          path: work
+      - name: Freerouting 2.2.4 headless
+        run: |
+          find work -type f -maxdepth 6 -print
+          DSN=$(find work -name '*.dsn' | head -1)
+          echo "DSN=$DSN"
+          java -jar /app/freerouting-executable.jar --gui.enabled=false -de "$DSN" -do work/routed.ses -mp 100
+          test -s work/routed.ses
+      - uses: actions/upload-artifact@v4
+        with:
+          name: freerouting-output
+          path: work/routed.ses
+
+  import-and-drc:
+    needs: [export-dsn, freeroute]
+    runs-on: ubuntu-latest
+    container:
+      image: kicad/kicad:10.0
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: freerouting-input
+          path: input
+      - uses: actions/download-artifact@v4
+        with:
+          name: freerouting-output
+          path: output
+      - name: Import SES into KiCad board
+        run: |
+          python3 - <<'PY'
+          import pcbnew,glob
+          src=glob.glob("input/**/*.kicad_pcb",recursive=True)[0]
+          ses=glob.glob("output/**/*.ses",recursive=True)[0]
+          out="PSN-Presepe-Mega-LARGE-2X-FREEROUTED.kicad_pcb"
+          b=pcbnew.LoadBoard(src)
+          ok=pcbnew.ImportSpecctraSES(b,ses)
+          print("IMPORT_SES",ok,ses)
+          if not ok: raise SystemExit(1)
+          pcbnew.SaveBoard(out,b)
+          PY
+      - name: KiCad 10 final DRC and connectivity
+        run: |
+          kicad-cli pcb drc --severity-all --output freerouted-k10.drc.txt PSN-Presepe-Mega-LARGE-2X-FREEROUTED.kicad_pcb || true
+          grep -E 'Found|\\[.*\\]:' freerouted-k10.drc.txt | tail -120 || true
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          s=Path("freerouted-k10.drc.txt").read_text()
+          m=re.findall(r"Found ([0-9]+) unconnected",s,re.I)
+          critical=[]
+          for cat in ["clearance","shorting_items","tracks_crossing","hole_clearance","solder_mask_bridge"]:
+              if re.search(r"\\["+re.escape(cat)+r"\\]",s): critical.append(cat)
+          print("FREEROUTING_UNCONNECTED",m[-1] if m else "unknown")
+          print("FREEROUTING_CRITICAL",critical or "none")
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: pcb-freerouted-k10
+          path: |
+            PSN-Presepe-Mega-LARGE-2X-FREEROUTED.kicad_pcb
+            freerouted-k10.drc.txt
