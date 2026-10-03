@@ -22,6 +22,9 @@ jobs:
       - uses: actions/checkout@v4
       - name: Verify KiCad 10
         run: kicad-cli --version
+      - name: Verify Mega stackable expansion envelope
+        run: python3 hardware/pcb/tools/check_mega_stackable.py
+
       - name: Prepare clean original 280x170 PCB and export Specctra DSN
         run: |
           python3 hardware/pcb/tools/make_clean_board.py --output hardware/pcb/kicad/PSN-Presepe-Mega-CLEAN.kicad_pcb
