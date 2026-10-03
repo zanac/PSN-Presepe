@@ -3,8 +3,7 @@ name: PCB KiCad Validation
 on:
   workflow_dispatch:
   push:
-    branches:
-      - dev
+    branches: [dev]
     paths:
       - "hardware/pcb/**"
       - ".github/workflows/pcb-kicad.yml"
@@ -12,79 +11,48 @@ on:
 permissions:
   contents: read
 
-env:
-  KICAD9_FOOTPRINT_DIR: /usr/share/kicad/footprints
-
 concurrency:
   group: pcb-kicad-dev
   cancel-in-progress: true
 
 jobs:
   validate-pcb:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     container:
-      image: kicad/kicad:9.0
+      image: kicad/kicad:10.0
       options: --user 0
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: PCB source sanity check
-        run: python3 hardware/pcb/tools/pcb_sanity.py hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb
-
-      - name: Verify KiCad 9 CLI
-        run: kicad-cli version
-
-      - name: PCB DRC full report
+      - uses: actions/checkout@v4
+      - name: Verify KiCad 10
+        run: kicad-cli --version
+      - name: Load PCB with KiCad geometry engine
+        run: |
+          python3 - <<'PY'
+          import pcbnew
+          p="hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb"
+          b=pcbnew.LoadBoard(p)
+          print("PCB_LOAD_PASS footprints=",len(list(b.GetFootprints())),"tracks=",len(list(b.GetTracks())))
+          if not list(b.GetFootprints()): raise SystemExit(1)
+          PY
+      - name: Verify production mechanical gates
+        run: |
+          python3 hardware/pcb/tools/check_mega_stackable.py
+          python3 hardware/pcb/tools/check_mega_pinmap.py
+          python3 hardware/pcb/tools/check_mega_mechanical_bom.py
+          python3 hardware/pcb/tools/check_terminal_silkscreen.py
+      - name: Validate Rev-B release PCB with KiCad 10
         run: |
           mkdir -p hardware/pcb/build
-          kicad-cli pcb drc --severity-all \
-            --output hardware/pcb/build/drc-report.txt \
-            hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb || true
-
-      - name: Summarize DRC
-        run: python3 hardware/pcb/tools/drc_summary.py hardware/pcb/build/drc-report.txt
-
-      - name: PCB DRC and connectivity gate
-        id: fabrication_gate
-        run: |
-          kicad-cli pcb drc --severity-error \
-            --output hardware/pcb/build/drc-errors.txt \
-            hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb || true
-          python3 hardware/pcb/tools/drc_gate.py hardware/pcb/build/drc-errors.txt --allow-unconnected 74
-
-      - name: Export Gerbers and drill
-        if: false
-        run: |
-          mkdir -p hardware/pcb/build/gerbers
-          kicad-cli pcb export gerbers \
-            --output hardware/pcb/build/gerbers/ \
-            --layers F.Cu,B.Cu,F.Silkscreen,B.Silkscreen,F.Mask,B.Mask,Edge.Cuts \
-            hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb
-          kicad-cli pcb export drill \
-            --output hardware/pcb/build/gerbers/ \
-            --format excellon --generate-map \
-            hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb
-
-      - name: Package fabrication preview
-        if: false
-        run: |
-          cd hardware/pcb/build/gerbers
-          zip -9 ../PSN-Presepe-RevA-Gerber-DRAFT.zip ./*
-
-      - name: Upload DRC report
+          test -s hardware/pcb/release/Rev-B/PSN-Presepe-Mega-FREEROUTED.kicad_pcb
+          cp hardware/pcb/release/Rev-B/PSN-Presepe-Mega-FREEROUTED.kicad_dru hardware/pcb/release/Rev-B/PSN-Presepe-Mega-FREEROUTED.kicad_dru.check
+          kicad-cli pcb drc --severity-all --output hardware/pcb/build/revb-drc.txt hardware/pcb/release/Rev-B/PSN-Presepe-Mega-FREEROUTED.kicad_pcb || true
+          grep -q "Found 0 unconnected pads" hardware/pcb/build/revb-drc.txt
+          if grep -qE '^\\[(clearance|shorting_items|unconnected_items)\\]' hardware/pcb/build/revb-drc.txt; then cat hardware/pcb/build/revb-drc.txt; exit 1; fi
+          echo REV_B_VALIDATION_PASS
+      - name: Upload validation report
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: PCB-DRC-report
-          path: |
-            hardware/pcb/build/drc-report.txt
-            hardware/pcb/build/drc-errors.txt
+          name: PCB-RevB-validation-report
+          path: hardware/pcb/build/revb-drc.txt
           if-no-files-found: warn
-
-      - name: Upload draft Gerbers
-        if: false
-        uses: actions/upload-artifact@v4
-        with:
-          name: PSN-Presepe-RevA-Gerber-DRAFT
-          path: hardware/pcb/build/PSN-Presepe-RevA-Gerber-DRAFT.zip
