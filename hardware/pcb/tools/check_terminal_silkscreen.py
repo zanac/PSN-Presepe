@@ -36,3 +36,30 @@ if errors:
     print("\n".join("TERMINAL_SILK_FAIL "+x for x in errors))
     sys.exit(1)
 print(f"TERMINAL_SILK_PASS connectors={len(required)} labels={sum(map(len,required.values()))}")
+
+# Mechanical visibility check under KiCad's real geometry API.
+# A terminal label must not lie inside the courtyard bounding box of any OTHER fitted footprint.
+try:
+    import pcbnew
+    board=pcbnew.LoadBoard("hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb")
+    fps=list(board.GetFootprints())
+    vis_errors=[]
+    for fp in fps:
+        ref=fp.GetReference()
+        if ref not in required: continue
+        for item in fp.GraphicalItems():
+            if not isinstance(item, pcbnew.FP_TEXT): continue
+            if item.GetLayer()!=pcbnew.F_SilkS: continue
+            if item.GetText() not in required[ref]: continue
+            box=item.GetBoundingBox()
+            for other in fps:
+                if other==fp: continue
+                ob=other.GetBoundingBox(False, False)
+                if box.Intersects(ob):
+                    vis_errors.append(f"{ref}:{item.GetText()} overlaps body/bbox of {other.GetReference()}")
+    if vis_errors:
+        print("\\n".join("TERMINAL_VISIBILITY_FAIL "+x for x in sorted(set(vis_errors))))
+        sys.exit(1)
+    print("TERMINAL_VISIBILITY_PASS labels clear of other fitted footprint bounding boxes")
+except ImportError:
+    print("TERMINAL_VISIBILITY_SKIP pcbnew unavailable; run this checker inside KiCad CI")
