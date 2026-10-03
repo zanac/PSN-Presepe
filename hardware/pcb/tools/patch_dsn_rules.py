@@ -64,31 +64,26 @@ for n in sorted(targets):
     if len(hits)!=1:
         raise SystemExit(f"DSN_CLASS_MEMBERSHIP_FAIL {n} count={len(hits)} headers={hits}")
 print("DSN_CLASS_MEMBERSHIP_PASS nets",len(targets))
-# Inject fixed 3 mm GND backbone directly into Specctra wiring. KiCad's DSN
-# exporter omits our locked PCB segments, so express them explicitly here.
+# Inject the deliberate 3 mm GND spine directly into Specctra wiring.
 fixed=[
- ((114657.6,137700.2),(108360.2,137700.2),"F.Cu"),
- ((114657.6,167700.2),(108360.2,167700.2),"F.Cu"),
- ((94657.6,167700.2),(88360.2,167700.2),"B.Cu"),
- ((115080,135000),(115080,150000),"B.Cu"),
- ((115080,150000),(115080,165000),"B.Cu"),
+ ((52000,176000),(122000,176000),"B.Cu"),
+ ((122000,176000),(122000,128000),"B.Cu"),
 ]
 widx=s.rfind("(wiring")
 if widx < 0:
-    # DSN may omit an empty wiring section; insert one before final design close.
     dend=len(s.rstrip())-1
-    wiring="  (wiring\n"
+    wiring="  (wiring\\n"
     for a,b,layer in fixed:
-        wiring+=f'    (wire (path {layer} 3000 {a[0]} {a[1]} {b[0]} {b[1]}) (net "GND") (type fix))\n'
-    wiring+="  )\n"
+        wiring+=f'    (wire (path {layer} 3000 {a[0]} {a[1]} {b[0]} {b[1]}) (net "GND") (type fix))\\n'
+    wiring+="  )\\n"
     s=s[:dend]+wiring+s[dend:]
 else:
     wend=sexpr_end(s,widx)-1
     wires=""
     for a,b,layer in fixed:
-        wires+=f'    (wire (path {layer} 3000 {a[0]} {a[1]} {b[0]} {b[1]}) (net "GND") (type fix))\n'
+        wires+=f'    (wire (path {layer} 3000 {a[0]} {a[1]} {b[0]} {b[1]}) (net "GND") (type fix))\\n'
     s=s[:wend]+wires+s[wend:]
-print("DSN_FIXED_GND_PASS segments",len(fixed),"width",3000)
+print("DSN_FIXED_GND_SPINE_PASS segments",len(fixed),"width",3000)
 
 p.write_text(s)
 print("DSN_RULE_PATCH_PASS")
