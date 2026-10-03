@@ -226,6 +226,7 @@ jobs:
           bad=[]; neck=[]
           def required(net):
               if net in {"+12V","GND"}: return 3.0
+              if net == "+5V_MEGA": return 0.8
               if net.endswith("_NEG"): return 1.5
               if re.fullmatch(r"R[0-9]+_(COM|NO|NC)",net): return 2.0
               return None
@@ -312,9 +313,11 @@ jobs:
           kicad-cli pcb render --help
           kicad-cli pcb render --output manufacturing/previews/PSN-Presepe-RevB-technical.png --width 7680 --height 4663 --quality high --side top PSN-Presepe-Mega-FREEROUTED.kicad_pcb
           kicad-cli pcb export svg -l F.Silkscreen,Edge.Cuts --page-size-mode 2 --exclude-drawing-sheet -o manufacturing/previews/PSN-Presepe-RevB-manual.svg PSN-Presepe-Mega-FREEROUTED.kicad_pcb
-          # Keep the manual view as lossless SVG: KiCad produces it directly
-          # and it preserves terminal silkscreen text better than a raster conversion.
+          # Produce a second high-resolution top PNG for documentation/manual use.
+          # Keep the lossless silkscreen SVG alongside it.
+          kicad-cli pcb render --output manufacturing/previews/PSN-Presepe-RevB-manual.png --width 7680 --height 4663 --quality basic --side top --preset follow_plot_settings PSN-Presepe-Mega-FREEROUTED.kicad_pcb
           test -s manufacturing/previews/PSN-Presepe-RevB-technical.png
+          test -s manufacturing/previews/PSN-Presepe-RevB-manual.png
           test -s manufacturing/previews/PSN-Presepe-RevB-manual.svg
           echo "PCB_PREVIEWS_PASS"
       - name: Generate BOM CPL and complete manufacturing package
@@ -346,10 +349,12 @@ jobs:
           - CPL.csv
           - Gerber copper, silkscreen and board outline
           - Excellon drill file and Gerber job file
+          - front/back solder-mask Gerbers (.gts/.gbs), generated from the final routed PCB
+          - high-resolution technical and manual/documentation PNG previews, plus vector silkscreen SVG
 
-          Validation gates include 0 unconnected pads, relay/contact 6 mm clearance rule, Mega mechanical/pin/stackable checks, terminal silkscreen checks, and manufacturing export checks.
+          Validation gates include 0 unconnected pads, relay/contact 6 mm clearance rule, Mega mechanical/pin/stackable checks, terminal silkscreen checks, production copper-width checks (+12V/GND, +5V_MEGA, RGB loads and relay contacts), solder-mask pad audit, and manufacturing export checks.
 
-          F.Mask/B.Mask are accepted by KiCad but contain no plottable content on this design, so KiCad omits empty .gts/.gbs files rather than generating synthetic empty masks.
+          Solder-mask Gerbers are mandatory: CI audits F.Mask/B.Mask pad membership on the final post-SES PCB and requires non-empty .gts/.gbs fabrication files.
 
           Generated from GitHub Actions run associated with the parent source commit. Do not edit generated manufacturing files manually.
           EOF
