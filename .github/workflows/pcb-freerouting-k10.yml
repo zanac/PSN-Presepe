@@ -166,6 +166,22 @@ jobs:
           ok=pcbnew.ImportSpecctraSES(b,ses)
           print("IMPORT_SES",ok,ses)
           if not ok: raise SystemExit(1)
+          # Freerouting necks down the long vertical GND spine beside the right
+          # MOSFET column even though the DSN class is 3 mm. Restore only these
+          # two true trunk sections before DRC; local pad fanout remains neckdown.
+          trunk_targets=[
+              ((125.08,135.0),(125.08,150.0)),
+              ((125.08,150.0),(125.08,165.0)),
+          ]
+          widened=0
+          def mmpt(p): return (round(pcbnew.ToMM(p.x),4),round(pcbnew.ToMM(p.y),4))
+          for t in b.GetTracks():
+              if not isinstance(t,pcbnew.PCB_TRACK) or isinstance(t,pcbnew.PCB_VIA) or t.GetNetname()!="GND": continue
+              a=mmpt(t.GetStart()); z=mmpt(t.GetEnd())
+              if any((a==p and z==q) or (a==q and z==p) for p,q in trunk_targets):
+                  t.SetWidth(pcbnew.FromMM(3.0)); widened+=1
+          print("POSTROUTE_GND_TRUNK_FIX",widened,"segments")
+          if widened != 2: raise SystemExit(f"Expected 2 GND trunk fixes, got {widened}")
           pcbnew.SaveBoard(out,b)
           shutil.copyfile(dru,"PSN-Presepe-Mega-FREEROUTED.kicad_dru")
           PY
