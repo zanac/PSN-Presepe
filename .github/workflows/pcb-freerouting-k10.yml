@@ -112,7 +112,7 @@ jobs:
           PY
       - name: KiCad 10 final DRC and connectivity
         run: |
-          cp "$(find input -name '*.kicad_dru' -print -quit)" PSN-Presepe-Mega-FREEROUTED.kicad_dru
+          # Re-downloads happen in the job workspace, but container run steps are isolated.\n          # Materialize the rule from the repository checkout in this same DRC step.\n          cp hardware/pcb/kicad/PSN-Presepe-Mega.kicad_dru PSN-Presepe-Mega-FREEROUTED.kicad_dru
           echo "CUSTOM_RULE_FILE:"
           ls -l PSN-Presepe-Mega-FREEROUTED*.dru || true
           grep -n "Relay contacts to SELV 6mm\|min 6mm" PSN-Presepe-Mega-FREEROUTED*.dru || { echo "CUSTOM_RULE_GATE missing"; exit 1; }
