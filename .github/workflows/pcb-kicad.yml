@@ -64,13 +64,22 @@ jobs:
             eeschema --help || true
           } 2>&1 | tee hardware/pcb/build/eeschema-probe.txt
       - name: Probe maintained schematic-generation libraries
+        continue-on-error: true
         run: |
-          python3 -m pip install --quiet kicad-sch-api kiutils
-          python3 - <<'PY'
-          import kicad_sch_api, kiutils
-          print("KICAD_SCH_API_IMPORT_PASS", getattr(kicad_sch_api,"__version__","unknown"))
-          print("KIUTILS_IMPORT_PASS", getattr(kiutils,"__version__","unknown"))
+          set +e
+          python3 -m pip install kicad-sch-api kiutils >hardware/pcb/build/schematic-libs-probe.log 2>&1
+          echo "PIP_RC=$?" >> hardware/pcb/build/schematic-libs-probe.log
+          python3 - <<'PY' >> hardware/pcb/build/schematic-libs-probe.log 2>&1
+          import importlib
+          for name in ("kicad_sch_api","kiutils"):
+              try:
+                  m=importlib.import_module(name)
+                  print(name,"IMPORT_PASS",getattr(m,"__version__","unknown"))
+              except Exception as e:
+                  print(name,"IMPORT_FAIL",repr(e))
           PY
+          cat hardware/pcb/build/schematic-libs-probe.log
+          exit 0
       - name: Generate real-symbol legacy Rev-B schematic
         run: |
           python3 hardware/pcb/tools/generate_revb_legacy_schematic.py \
@@ -184,6 +193,7 @@ jobs:
             hardware/pcb/build/revb-real.net
             hardware/pcb/build/revb-netlist-export.log
             hardware/pcb/build/revb-real-gate.log
+            hardware/pcb/build/schematic-libs-probe.log
             hardware/pcb/build/kicad-create-project-help.txt
             hardware/pcb/build/PSN-Presepe-Mega-RevB.sch
             hardware/pcb/build/PSN-Presepe-Mega-RevB-cache.lib
