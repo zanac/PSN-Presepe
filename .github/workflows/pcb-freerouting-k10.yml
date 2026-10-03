@@ -203,9 +203,12 @@ jobs:
           # This board intentionally has no plotted solder-mask content; KiCad omits empty F.Mask/B.Mask Gerbers.
           test -n "$(find manufacturing/gerbers -type f \( -name '*.drl' -o -name '*.xln' \) -print -quit)"
           find manufacturing/gerbers -type f -maxdepth 1 -printf '%f\n' | sort
+      - uses: actions/checkout@v4
+        with:
+          path: repo
       - name: Generate BOM CPL and complete manufacturing package
         run: |
-          python3 input/hardware/pcb/tools/export_bom_cpl.py PSN-Presepe-Mega-FREEROUTED.kicad_pcb manufacturing/
+          python3 repo/hardware/pcb/tools/export_bom_cpl.py PSN-Presepe-Mega-FREEROUTED.kicad_pcb manufacturing/
           cp PSN-Presepe-Mega-FREEROUTED.kicad_pcb manufacturing/
           cp PSN-Presepe-Mega-FREEROUTED.kicad_dru manufacturing/
           cp freerouted-k10.drc.txt manufacturing/
