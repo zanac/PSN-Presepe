@@ -14,6 +14,7 @@ for fp in sorted(b.GetFootprints(), key=lambda x: x.GetReference()):
         if not net:
             continue
         rows.append((ref, value, p.GetNumber(), net))
+print("ref\tvalue\tpad\tnet")
 for r in rows:
     print("\t".join(r))
 if len(rows) < 100:
