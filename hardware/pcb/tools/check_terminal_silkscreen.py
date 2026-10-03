@@ -4,12 +4,12 @@ import re, sys
 
 pcb=Path("hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb").read_text()
 required={
-"J1":["12V","GND"],"J_OLED":["5V","GND","SDA","SCL"],
+"J1":["12V","GND","POWER"],"J_OLED":["5V","GND","SDA","SCL","OLED"],
 "J_START":["START","GND"],"J_NEXT":["NEXT","GND"],"J_TEST":["TEST","GND"],
-"J_CIELO":["12V","R","G","B"],"J_TRAMONTO":["12V","R","G","B"],"J_ALBA":["12V","R","G","B"],
-"J_STELLE":["12V","GND","DATA"],"J_CASETTE":["12V","GND","DATA"],
+"J_CIELO":["12V","R","G","B","CIELO"],"J_TRAMONTO":["12V","R","G","B","TRAMONTO"],"J_ALBA":["12V","R","G","B","ALBA"],
+"J_STELLE":["12V","GND","DATA","STELLE"],"J_CASETTE":["12V","GND","DATA","CASETTE"],
 }
-for i in range(1,17): required[f"JR{i}"]=["COM","NO","NC"]
+for i in range(1,17): required[f"JR{i}"]=["COM","NO","NC",f"R{i}"]
 
 def footprint_block(ref):
     p=pcb.find(f'(property "Reference" "{ref}"')
