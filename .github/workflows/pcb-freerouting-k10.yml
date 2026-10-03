@@ -1,4 +1,4 @@
-name: PCB KiCad10 Freerouting Experiment
+name: PCB KiCad10 Freerouting Clean Experiment
 
 on:
   workflow_dispatch:
@@ -20,9 +20,8 @@ jobs:
       - name: Build LARGE and reproduce current best routing
         run: |
           python3 hardware/pcb/tools/make_large_2x.py
-          python3 hardware/pcb/tools/autoroute_large_2x.py
-          python3 hardware/pcb/tools/reroute_d32_group.py
-          python3 hardware/pcb/tools/reroute_d26_group.py
+          # Experiment B: let Freerouting solve the generated LARGE board globally from scratch.
+          # No custom A* tracks are preloaded; this avoids fragmented GND/+12V topology.
       - name: Export Specctra DSN with pcbnew
         run: |
           python3 - <<'PY'
