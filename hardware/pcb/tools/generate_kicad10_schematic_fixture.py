@@ -1,0 +1,50 @@
+#!/usr/bin/env python3
+from pathlib import Path
+import uuid,sys
+U=lambda:str(uuid.uuid4())
+root=U(); sym=U(); p1=U(); p2=U()
+s='''(kicad_sch
+  (version 20260306)
+  (generator "eeschema")
+  (generator_version "10.0")
+  (uuid "ROOTUUID")
+  (paper "A4")
+  (lib_symbols
+    (symbol "PSN:TEST2"
+      (pin_names (offset 0))
+      (exclude_from_sim no) (in_bom yes) (on_board yes) (in_pos_files yes)
+      (duplicate_pin_numbers_are_jumpers no)
+      (property "Reference" "J" (at 0 5 0) (effects (font (size 1.27 1.27))))
+      (property "Value" "TEST2" (at 0 -5 0) (effects (font (size 1.27 1.27))))
+      (property "Footprint" "" (at 0 0 0) (hide yes) (effects (font (size 1.27 1.27))))
+      (property "Datasheet" "" (at 0 0 0) (hide yes) (effects (font (size 1.27 1.27))))
+      (property "Description" "" (at 0 0 0) (hide yes) (effects (font (size 1.27 1.27))))
+      (symbol "TEST2_0_1"
+        (rectangle (start -5 2.54) (end 5 -2.54) (stroke (width 0) (type default)) (fill (type background)))
+        (pin passive line (at -7.54 0 0) (length 2.54) (name "A" (effects (font (size 1.27 1.27)))) (number "1" (effects (font (size 1.27 1.27)))))
+        (pin passive line (at 7.54 0 180) (length 2.54) (name "B" (effects (font (size 1.27 1.27)))) (number "2" (effects (font (size 1.27 1.27)))))
+      )
+      (embedded_fonts no)
+    )
+  )
+  (global_label "NET_A" (shape bidirectional) (at 92.46 100 180) (effects (font (size 1.27 1.27)) (justify right)) (uuid "LAB1"))
+  (global_label "NET_B" (shape bidirectional) (at 107.54 100 0) (effects (font (size 1.27 1.27)) (justify left)) (uuid "LAB2"))
+  (symbol
+    (lib_id "PSN:TEST2") (at 100 100 0) (unit 1) (body_style 1)
+    (exclude_from_sim no) (in_bom yes) (on_board yes) (in_pos_files yes) (dnp no)
+    (uuid "SYMUUID")
+    (property "Reference" "J1" (at 100 94 0) (effects (font (size 1.27 1.27))))
+    (property "Value" "TEST2" (at 100 106 0) (effects (font (size 1.27 1.27))))
+    (property "Footprint" "" (at 100 100 0) (hide yes) (effects (font (size 1.27 1.27))))
+    (property "Datasheet" "" (at 100 100 0) (hide yes) (effects (font (size 1.27 1.27))))
+    (property "Description" "" (at 100 100 0) (hide yes) (effects (font (size 1.27 1.27))))
+    (pin "1" (uuid "PIN1"))
+    (pin "2" (uuid "PIN2"))
+    (instances (project "fixture" (path "/ROOTUUID" (reference "J1") (unit 1))))
+  )
+  (sheet_instances (path "/" (page "1")))
+  (embedded_fonts no)
+)
+'''
+for a,b in {"ROOTUUID":root,"SYMUUID":sym,"PIN1":p1,"PIN2":p2,"LAB1":U(),"LAB2":U()}.items(): s=s.replace(a,b)
+Path(sys.argv[1]).write_text(s)
