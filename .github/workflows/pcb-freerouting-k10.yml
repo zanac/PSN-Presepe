@@ -222,6 +222,16 @@ jobs:
           cat freerouted-k10.drc.txt
           python3 - <<'PY'
           from pathlib import Path
+          import re, collections
+          d=Path("freerouted-k10.drc.txt").read_text()
+          rules=collections.Counter(re.findall(r"Rule: ([^;\n]+)",d))
+          print("DRC_RULE_COUNTS")
+          for k,v in rules.most_common(): print(v,k)
+          relay=sum(v for k,v in rules.items() if "Relay " in k or "Relay contacts" in k)
+          print("RELAY_6MM_VIOLATION_COUNT",relay)
+          PY
+          python3 - <<'PY'
+          from pathlib import Path
           import re
           s=Path("freerouted-k10.drc.txt").read_text()
           m=re.findall(r"Found ([0-9]+) unconnected",s,re.I)
