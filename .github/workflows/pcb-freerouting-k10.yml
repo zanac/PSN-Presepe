@@ -194,6 +194,20 @@ jobs:
           if n != 0 or bad:
               raise SystemExit(1)
           PY
+      - name: Generate production Gerbers and drill files
+        run: |
+          mkdir -p manufacturing/gerbers
+          kicad-cli pcb gerbers -o manufacturing/gerbers/ PSN-Presepe-Mega-FREEROUTED.kicad_pcb
+          kicad-cli pcb drill -o manufacturing/gerbers/ PSN-Presepe-Mega-FREEROUTED.kicad_pcb
+          test -n "$(find manufacturing/gerbers -type f -name '*.gbr' -print -quit)"
+          test -n "$(find manufacturing/gerbers -type f \( -name '*.drl' -o -name '*.xln' \) -print -quit)"
+          find manufacturing/gerbers -type f -maxdepth 1 -printf '%f\n' | sort
+      - uses: actions/upload-artifact@v4
+        with:
+          name: pcb-manufacturing-gerbers
+          path: manufacturing/gerbers/
+          if-no-files-found: error
+
       - uses: actions/upload-artifact@v4
         with:
           name: pcb-freerouted-k10
