@@ -1,6 +1,6 @@
 name: PCB Original KiCad10 Freerouting
 # 280x170 production routing pipeline
-# trigger: fixed-clean-generator-v2
+# trigger: newline-repair-verified
 
 on:
   workflow_dispatch:
