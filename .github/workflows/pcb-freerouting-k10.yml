@@ -68,7 +68,7 @@ jobs:
           widths=sorted(set(re.findall(r"\(width\s+([0-9.]+)",d)))
           print("DSN_WIDTH_VALUES",widths)
           print("DSN_SIZE",len(d))
-          for expected in ("3300","2000","1500"):
+          for expected in ("3000","2000","1500"):
               if expected not in widths:
                   raise SystemExit("DSN production width missing: "+expected)
           PY
@@ -219,7 +219,7 @@ jobs:
           bad=[]
           def required(net):
               if net in {"+12V","GND"}: return 3.0
-              if net.endswith("_NEG"): return 1.0
+              if net.endswith("_NEG"): return 1.5
               if re.fullmatch(r"R[0-9]+_(COM|NO|NC)",net): return 2.0
               return None
           for t in b.GetTracks():
