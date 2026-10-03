@@ -41,6 +41,13 @@ jobs:
           python3 hardware/pcb/tools/check_mega_pinmap.py
           python3 hardware/pcb/tools/check_mega_mechanical_bom.py
           python3 hardware/pcb/tools/check_terminal_silkscreen.py
+      - name: Export Rev-B component pin/net map
+        run: |
+          mkdir -p hardware/pcb/build
+          python3 hardware/pcb/tools/export_revb_pin_net_map.py \
+            hardware/pcb/release/Rev-B/PSN-Presepe-Mega-FREEROUTED.kicad_pcb \
+            > hardware/pcb/build/revb-pin-net-map.tsv
+          head -20 hardware/pcb/build/revb-pin-net-map.tsv
       - name: Generate Rev-B schematic from validated PCB netlist
         run: |
           python3 hardware/pcb/tools/generate_revb_schematic.py \
@@ -69,5 +76,6 @@ jobs:
           path: |
             hardware/pcb/build/revb-drc.txt
             hardware/pcb/build/revb-erc.txt
+            hardware/pcb/build/revb-pin-net-map.tsv
             hardware/pcb/kicad/PSN-Presepe-Mega-RevB.kicad_sch
           if-no-files-found: warn
