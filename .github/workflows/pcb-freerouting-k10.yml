@@ -10,6 +10,7 @@ on:
       - '.github/workflows/pcb-freerouting-k10.yml'
       - 'hardware/pcb/kicad/PSN-Presepe-Mega.kicad_dru'
       - 'hardware/pcb/kicad/PSN-Presepe-Mega.kicad_pcb'
+      - 'hardware/pcb/kicad/fp-lib-table'
       - 'hardware/pcb/tools/make_clean_board.py'
       - 'hardware/pcb/tools/check_mega_stackable.py'
       - 'hardware/pcb/tools/check_terminal_silkscreen.py'
