@@ -1,6 +1,6 @@
 name: PCB Size Sweep
 
-on:
+'on':
   workflow_dispatch:
   push:
     branches: [dev]
