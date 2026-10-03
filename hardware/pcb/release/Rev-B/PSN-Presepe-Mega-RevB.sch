@@ -1,0 +1,1957 @@
+EESchema Schematic File Version 4
+LIBS:PSN-Presepe-Mega-RevB-cache
+EELAYER 29 0
+EELAYER END
+$Descr A3 16535 11693
+Sheet 1 1
+Title "PSN-Presepe Mega Controller Rev B"
+Rev "B"
+Comp "zanac / PSN-Presepe"
+Comment1 "Generated from validated Rev-B PCB connectivity"
+$EndDescr
+$Comp
+L PSN-Presepe-Mega-RevB-cache:PSN_BZ1 BZ1
+U 1 1 60000000
+P 1200 1200
+F 0 "BZ1" H 1200 1120 40  0000 C CNN
+F 1 "PASSIVE_BUZZER_D6" H 1200 1280 30  0000 C CNN
+	1    1200 1200
+	1    0    0    -1
+$EndComp
+Text Label 500 1250 2    35   ~ 0
+D6_BUZZER
+Wire Wire Line
+	500 1250 700 1250
+Text Label 500 1150 2    35   ~ 0
+GND
+Wire Wire Line
+	500 1150 700 1150
+$Comp
+L PSN-Presepe-Mega-RevB-cache:PSN_C1 C1
+U 1 1 60000001
+P 1200 1720
+F 0 "C1" H 1200 1640 40  0000 C CNN
+F 1 "470uF_25V_RELAY_BULK" H 1200 1800 30  0000 C CNN
+	1    1200 1720
+	1    0    0    -1
+$EndComp
+Text Label 500 1770 2    35   ~ 0
++12V
+Wire Wire Line
+	500 1770 700 1770
+Text Label 500 1670 2    35   ~ 0
+GND
+Wire Wire Line
+	500 1670 700 1670
+$Comp
+L PSN-Presepe-Mega-RevB-cache:PSN_C2 C2
+U 1 1 60000002
+P 1200 2240
+F 0 "C2" H 1200 2160 40  0000 C CNN
+F 1 "100nF_ULN1" H 1200 2320 30  0000 C CNN
+	1    1200 2240
+	1    0    0    -1
+$EndComp
+Text Label 500 2290 2    35   ~ 0
++12V
+Wire Wire Line
+	500 2290 700 2290
+Text Label 500 2190 2    35   ~ 0
+GND
+Wire Wire Line
+	500 2190 700 2190
+$Comp
+L PSN-Presepe-Mega-RevB-cache:PSN_C3 C3
+U 1 1 60000003
+P 1200 2760
+F 0 "C3" H 1200 2680 40  0000 C CNN
+F 1 "100nF_ULN2" H 1200 2840 30  0000 C CNN
+	1    1200 2760
+	1    0    0    -1
+$EndComp
+Text Label 500 2810 2    35   ~ 0
++12V
+Wire Wire Line
+	500 2810 700 2810
+Text Label 500 2710 2    35   ~ 0
+GND
+Wire Wire Line
+	500 2710 700 2710
+$Comp
+L PSN-Presepe-Mega-RevB-cache:PSN_J1 J1
+U 1 1 60000004
+P 1200 3280
+F 0 "J1" H 1200 3200 40  0000 C CNN
+F 1 "12V_IN" H 1200 3360 30  0000 C CNN
+	1    1200 3280
+	1    0    0    -1
+$EndComp
+Text Label 500 3330 2    35   ~ 0
++12V
+Wire Wire Line
+	500 3330 700 3330
+Text Label 500 3230 2    35   ~ 0
+GND
+Wire Wire Line
+	500 3230 700 3230
+$Comp
+L PSN-Presepe-Mega-RevB-cache:PSN_JR1 JR1
+U 1 1 60000005
+P 1200 3800
+F 0 "JR1" H 1200 3720 40  0000 C CNN
+F 1 "COM_NO_NC" H 1200 3880 30  0000 C CNN
+	1    1200 3800
+	1    0    0    -1
+$EndComp
+Text Label 500 3900 2    35   ~ 0
+R1_COM
+Wire Wire Line
+	500 3900 700 3900
+Text Label 500 3800 2    35   ~ 0
+R1_NO
+Wire Wire Line
+	500 3800 700 3800
+Text Label 500 3700 2    35   ~ 0
+R1_NC
+Wire Wire Line
+	500 3700 700 3700
+$Comp
+L PSN-Presepe-Mega-RevB-cache:PSN_JR10 JR10
+U 1 1 60000006
+P 1200 4320
+F 0 "JR10" H 1200 4240 40  0000 C CNN
+F 1 "COM_NO_NC" H 1200 4400 30  0000 C CNN
+	1    1200 4320
+	1    0    0    -1
+$EndComp
+Text Label 500 4420 2    35   ~ 0
+R10_COM
+Wire Wire Line
+	500 4420 700 4420
+Text Label 500 4320 2    35   ~ 0
+R10_NO
+Wire Wire Line
+	500 4320 700 4320
+Text Label 500 4220 2    35   ~ 0
+R10_NC
+Wire Wire Line
+	500 4220 700 4220
+$Comp
+L PSN-Presepe-Mega-RevB-cache:PSN_JR11 JR11
+U 1 1 60000007
+P 1200 4840
+F 0 "JR11" H 1200 4760 40  0000 C CNN
+F 1 "COM_NO_NC" H 1200 4920 30  0000 C CNN
+	1    1200 4840
+	1    0    0    -1
+$EndComp
+Text Label 500 4940 2    35   ~ 0
+R11_COM
+Wire Wire Line
+	500 4940 700 4940
+Text Label 500 4840 2    35   ~ 0
+R11_NO
+Wire Wire Line
+	500 4840 700 4840
+Text Label 500 4740 2    35   ~ 0
+R11_NC
+Wire Wire Line
+	500 4740 700 4740
+$Comp
+L PSN-Presepe-Mega-RevB-cache:PSN_JR12 JR12
+U 1 1 60000008
+P 1200 5360
+F 0 "JR12" H 1200 5280 40  0000 C CNN
+F 1 "COM_NO_NC" H 1200 5440 30  0000 C CNN
+	1    1200 5360
+	1    0    0    -1
+$EndComp
+Text Label 500 5460 2    35   ~ 0
+R12_COM
+Wire Wire Line
+	500 5460 700 5460
+Text Label 500 5360 2    35   ~ 0
+R12_NO
+Wire Wire Line
+	500 5360 700 5360
+Text Label 500 5260 2    35   ~ 0
+R12_NC
+Wire Wire Line
+	500 5260 700 5260
+$Comp
+L PSN-Presepe-Mega-RevB-cache:PSN_JR13 JR13
+U 1 1 60000009
+P 1200 5880
+F 0 "JR13" H 1200 5800 40  0000 C CNN
+F 1 "COM_NO_NC" H 1200 5960 30  0000 C CNN
+	1    1200 5880
+	1    0    0    -1
+$EndComp
+Text Label 500 5980 2    35   ~ 0
+R13_COM
+Wire Wire Line
+	500 5980 700 5980
+Text Label 500 5880 2    35   ~ 0
+R13_NO
+Wire Wire Line
+	500 5880 700 5880
+Text Label 500 5780 2    35   ~ 0
+R13_NC
+Wire Wire Line
+	500 5780 700 5780
+$Comp
+L PSN-Presepe-Mega-RevB-cache:PSN_JR14 JR14
+U 1 1 6000000A
+P 1200 6400
+F 0 "JR14" H 1200 6320 40  0000 C CNN
+F 1 "COM_NO_NC" H 1200 6480 30  0000 C CNN
+	1    1200 6400
+	1    0    0    -1
+$EndComp
+Text Label 500 6500 2    35   ~ 0
+R14_COM
+Wire Wire Line
+	500 6500 700 6500
+Text Label 500 6400 2    35   ~ 0
+R14_NO
+Wire Wire Line
+	500 6400 700 6400
+Text Label 500 6300 2    35   ~ 0
+R14_NC
+Wire Wire Line
+	500 6300 700 6300
+$Comp
+L PSN-Presepe-Mega-RevB-cache:PSN_JR15 JR15
+U 1 1 6000000B
+P 1200 6920
+F 0 "JR15" H 1200 6840 40  0000 C CNN
+F 1 "COM_NO_NC" H 1200 7000 30  0000 C CNN
+	1    1200 6920
+	1    0    0    -1
+$EndComp
+Text Label 500 7020 2    35   ~ 0
+R15_COM
+Wire Wire Line
+	500 7020 700 7020
+Text Label 500 6920 2    35   ~ 0
+R15_NO
+Wire Wire Line
+	500 6920 700 6920
+Text Label 500 6820 2    35   ~ 0
+R15_NC
+Wire Wire Line
+	500 6820 700 6820
+$Comp
+L PSN-Presepe-Mega-RevB-cache:PSN_JR16 JR16
+U 1 1 6000000C
+P 1200 7440
+F 0 "JR16" H 1200 7360 40  0000 C CNN
+F 1 "COM_NO_NC" H 1200 7520 30  0000 C CNN
+	1    1200 7440
+	1    0    0    -1
+$EndComp
+Text Label 500 7540 2    35   ~ 0
+R16_COM
+Wire Wire Line
+	500 7540 700 7540
+Text Label 500 7440 2    35   ~ 0
+R16_NO
+Wire Wire Line
+	500 7440 700 7440
+Text Label 500 7340 2    35   ~ 0
+R16_NC
+Wire Wire Line
+	500 7340 700 7340
+$Comp
+L PSN-Presepe-Mega-RevB-cache:PSN_JR2 JR2
+U 1 1 6000000D
+P 1200 7960
+F 0 "JR2" H 1200 7880 40  0000 C CNN
+F 1 "COM_NO_NC" H 1200 8040 30  0000 C CNN
+	1    1200 7960
+	1    0    0    -1
+$EndComp
+Text Label 500 8060 2    35   ~ 0
+R2_COM
+Wire Wire Line
+	500 8060 700 8060
+Text Label 500 7960 2    35   ~ 0
+R2_NO
+Wire Wire Line
+	500 7960 700 7960
+Text Label 500 7860 2    35   ~ 0
+R2_NC
+Wire Wire Line
+	500 7860 700 7860
+$Comp
+L PSN-Presepe-Mega-RevB-cache:PSN_JR3 JR3
+U 1 1 6000000E
+P 1200 8480
+F 0 "JR3" H 1200 8400 40  0000 C CNN
+F 1 "COM_NO_NC" H 1200 8560 30  0000 C CNN
+	1    1200 8480
+	1    0    0    -1
+$EndComp
+Text Label 500 8580 2    35   ~ 0
+R3_COM
+Wire Wire Line
+	500 8580 700 8580
+Text Label 500 8480 2    35   ~ 0
+R3_NO
+Wire Wire Line
+	500 8480 700 8480
+Text Label 500 8380 2    35   ~ 0
+R3_NC
+Wire Wire Line
+	500 8380 700 8380
+$Comp
+L PSN-Presepe-Mega-RevB-cache:PSN_JR4 JR4
+U 1 1 6000000F
+P 1200 9000
+F 0 "JR4" H 1200 8920 40  0000 C CNN
+F 1 "COM_NO_NC" H 1200 9080 30  0000 C CNN
+	1    1200 9000
+	1    0    0    -1
+$EndComp
+Text Label 500 9100 2    35   ~ 0
+R4_COM
+Wire Wire Line
+	500 9100 700 9100
+Text Label 500 9000 2    35   ~ 0
+R4_NO
+Wire Wire Line
+	500 9000 700 9000
+Text Label 500 8900 2    35   ~ 0
+R4_NC
+Wire Wire Line
+	500 8900 700 8900
+$Comp
+L PSN-Presepe-Mega-RevB-cache:PSN_JR5 JR5
+U 1 1 60000010
+P 1200 9520
+F 0 "JR5" H 1200 9440 40  0000 C CNN
+F 1 "COM_NO_NC" H 1200 9600 30  0000 C CNN
+	1    1200 9520
+	1    0    0    -1
+$EndComp
+Text Label 500 9620 2    35   ~ 0
+R5_COM
+Wire Wire Line
+	500 9620 700 9620
+Text Label 500 9520 2    35   ~ 0
+R5_NO
+Wire Wire Line
+	500 9520 700 9520
+Text Label 500 9420 2    35   ~ 0
+R5_NC
+Wire Wire Line
+	500 9420 700 9420
+$Comp
+L PSN-Presepe-Mega-RevB-cache:PSN_JR6 JR6
+U 1 1 60000011
+P 1200 10040
+F 0 "JR6" H 1200 9960 40  0000 C CNN
+F 1 "COM_NO_NC" H 1200 10120 30  0000 C CNN
+	1    1200 10040
+	1    0    0    -1
+$EndComp
+Text Label 500 10140 2    35   ~ 0
+R6_COM
+Wire Wire Line
+	500 10140 700 10140
+Text Label 500 10040 2    35   ~ 0
+R6_NO
+Wire Wire Line
+	500 10040 700 10040
+Text Label 500 9940 2    35   ~ 0
+R6_NC
+Wire Wire Line
+	500 9940 700 9940
+$Comp
+L PSN-Presepe-Mega-RevB-cache:PSN_JR7 JR7
+U 1 1 60000012
+P 3800 1200
+F 0 "JR7" H 3800 1120 40  0000 C CNN
+F 1 "COM_NO_NC" H 3800 1280 30  0000 C CNN
+	1    3800 1200
+	1    0    0    -1
+$EndComp
+Text Label 3100 1300 2    35   ~ 0
+R7_COM
+Wire Wire Line
+	3100 1300 3300 1300
+Text Label 3100 1200 2    35   ~ 0
+R7_NO
+Wire Wire Line
+	3100 1200 3300 1200
+Text Label 3100 1100 2    35   ~ 0
+R7_NC
+Wire Wire Line
+	3100 1100 3300 1100
+$Comp
+L PSN-Presepe-Mega-RevB-cache:PSN_JR8 JR8
+U 1 1 60000013
+P 3800 1720
+F 0 "JR8" H 3800 1640 40  0000 C CNN
+F 1 "COM_NO_NC" H 3800 1800 30  0000 C CNN
+	1    3800 1720
+	1    0    0    -1
+$EndComp
+Text Label 3100 1820 2    35   ~ 0
+R8_COM
+Wire Wire Line
+	3100 1820 3300 1820
+Text Label 3100 1720 2    35   ~ 0
+R8_NO
+Wire Wire Line
+	3100 1720 3300 1720
+Text Label 3100 1620 2    35   ~ 0
+R8_NC
+Wire Wire Line
+	3100 1620 3300 1620
+$Comp
+L PSN-Presepe-Mega-RevB-cache:PSN_JR9 JR9
+U 1 1 60000014
+P 3800 2240
+F 0 "JR9" H 3800 2160 40  0000 C CNN
+F 1 "COM_NO_NC" H 3800 2320 30  0000 C CNN
+	1    3800 2240
+	1    0    0    -1
+$EndComp
+Text Label 3100 2340 2    35   ~ 0
+R9_COM
+Wire Wire Line
+	3100 2340 3300 2340
+Text Label 3100 2240 2    35   ~ 0
+R9_NO
+Wire Wire Line
+	3100 2240 3300 2240
+Text Label 3100 2140 2    35   ~ 0
+R9_NC
+Wire Wire Line
+	3100 2140 3300 2140
+$Comp
+L PSN-Presepe-Mega-RevB-cache:PSN_J_ALBA J_ALBA
+U 1 1 60000015
+P 3800 2760
+F 0 "J_ALBA" H 3800 2680 40  0000 C CNN
+F 1 "ALBA_12V_R_G_B" H 3800 2840 30  0000 C CNN
+	1    3800 2760
+	1    0    0    -1
+$EndComp
+Text Label 3100 2910 2    35   ~ 0
++12V
+Wire Wire Line
+	3100 2910 3300 2910
+Text Label 3100 2810 2    35   ~ 0
+ALBA_R_NEG
+Wire Wire Line
+	3100 2810 3300 2810
+Text Label 3100 2710 2    35   ~ 0
+ALBA_G_NEG
+Wire Wire Line
+	3100 2710 3300 2710
+Text Label 3100 2610 2    35   ~ 0
+ALBA_B_NEG
+Wire Wire Line
+	3100 2610 3300 2610
+$Comp
+L PSN-Presepe-Mega-RevB-cache:PSN_J_CASETTE J_CASETTE
+U 1 1 60000016
+P 3800 3280
+F 0 "J_CASETTE" H 3800 3200 40  0000 C CNN
+F 1 "CASETTE_12V_GND_DATA" H 3800 3360 30  0000 C CNN
+	1    3800 3280
+	1    0    0    -1
+$EndComp
+Text Label 3100 3380 2    35   ~ 0
++12V
+Wire Wire Line
+	3100 3380 3300 3380
+Text Label 3100 3280 2    35   ~ 0
+GND
+Wire Wire Line
+	3100 3280 3300 3280
+Text Label 3100 3180 2    35   ~ 0
+D8_CASETTE_DATA
+Wire Wire Line
+	3100 3180 3300 3180
+$Comp
+L PSN-Presepe-Mega-RevB-cache:PSN_J_CIELO J_CIELO
+U 1 1 60000017
+P 3800 3800
+F 0 "J_CIELO" H 3800 3720 40  0000 C CNN
+F 1 "CIELO_12V_R_G_B" H 3800 3880 30  0000 C CNN
+	1    3800 3800
+	1    0    0    -1
+$EndComp
+Text Label 3100 3950 2    35   ~ 0
++12V
+Wire Wire Line
+	3100 3950 3300 3950
+Text Label 3100 3850 2    35   ~ 0
+CIELO_R_NEG
+Wire Wire Line
+	3100 3850 3300 3850
+Text Label 3100 3750 2    35   ~ 0
+CIELO_G_NEG
+Wire Wire Line
+	3100 3750 3300 3750
+Text Label 3100 3650 2    35   ~ 0
+CIELO_B_NEG
+Wire Wire Line
+	3100 3650 3300 3650
+$Comp
+L PSN-Presepe-Mega-RevB-cache:PSN_J_NEXT J_NEXT
+U 1 1 60000018
+P 3800 4320
+F 0 "J_NEXT" H 3800 4240 40  0000 C CNN
+F 1 "NEXT_GND" H 3800 4400 30  0000 C CNN
+	1    3800 4320
+	1    0    0    -1
+$EndComp
+Text Label 3100 4370 2    35   ~ 0
+D23_NEXT
+Wire Wire Line
+	3100 4370 3300 4370
+Text Label 3100 4270 2    35   ~ 0
+GND
+Wire Wire Line
+	3100 4270 3300 4270
+$Comp
+L PSN-Presepe-Mega-RevB-cache:PSN_J_OLED J_OLED
+U 1 1 60000019
+P 3800 4840
+F 0 "J_OLED" H 3800 4760 40  0000 C CNN
+F 1 "OLED_5V_GND_SDA_SCL" H 3800 4920 30  0000 C CNN
+	1    3800 4840
+	1    0    0    -1
+$EndComp
+Text Label 3100 4990 2    35   ~ 0
++5V_MEGA
+Wire Wire Line
+	3100 4990 3300 4990
+Text Label 3100 4890 2    35   ~ 0
+GND
+Wire Wire Line
+	3100 4890 3300 4890
+Text Label 3100 4790 2    35   ~ 0
+D20_SDA
+Wire Wire Line
+	3100 4790 3300 4790
+Text Label 3100 4690 2    35   ~ 0
+D21_SCL
+Wire Wire Line
+	3100 4690 3300 4690
+$Comp
+L PSN-Presepe-Mega-RevB-cache:PSN_J_START J_START
+U 1 1 6000001A
+P 3800 5360
+F 0 "J_START" H 3800 5280 40  0000 C CNN
+F 1 "START_GND" H 3800 5440 30  0000 C CNN
+	1    3800 5360
+	1    0    0    -1
+$EndComp
+Text Label 3100 5410 2    35   ~ 0
+D22_START
+Wire Wire Line
+	3100 5410 3300 5410
+Text Label 3100 5310 2    35   ~ 0
+GND
+Wire Wire Line
+	3100 5310 3300 5310
+$Comp
+L PSN-Presepe-Mega-RevB-cache:PSN_J_STELLE J_STELLE
+U 1 1 6000001B
+P 3800 5880
+F 0 "J_STELLE" H 3800 5800 40  0000 C CNN
+F 1 "STELLE_12V_GND_DATA" H 3800 5960 30  0000 C CNN
+	1    3800 5880
+	1    0    0    -1
+$EndComp
+Text Label 3100 5980 2    35   ~ 0
++12V
+Wire Wire Line
+	3100 5980 3300 5980
+Text Label 3100 5880 2    35   ~ 0
+GND
+Wire Wire Line
+	3100 5880 3300 5880
+Text Label 3100 5780 2    35   ~ 0
+D5_STELLE_DATA
+Wire Wire Line
+	3100 5780 3300 5780
+$Comp
+L PSN-Presepe-Mega-RevB-cache:PSN_J_TEST J_TEST
+U 1 1 6000001C
+P 3800 6400
+F 0 "J_TEST" H 3800 6320 40  0000 C CNN
+F 1 "TEST_GND" H 3800 6480 30  0000 C CNN
+	1    3800 6400
+	1    0    0    -1
+$EndComp
+Text Label 3100 6450 2    35   ~ 0
+D24_TEST
+Wire Wire Line
+	3100 6450 3300 6450
+Text Label 3100 6350 2    35   ~ 0
+GND
+Wire Wire Line
+	3100 6350 3300 6350
+$Comp
+L PSN-Presepe-Mega-RevB-cache:PSN_J_TRAMONTO J_TRAMONTO
+U 1 1 6000001D
+P 3800 6920
+F 0 "J_TRAMONTO" H 3800 6840 40  0000 C CNN
+F 1 "TRAMONTO_12V_R_G_B" H 3800 7000 30  0000 C CNN
+	1    3800 6920
+	1    0    0    -1
+$EndComp
+Text Label 3100 7070 2    35   ~ 0
++12V
+Wire Wire Line
+	3100 7070 3300 7070
+Text Label 3100 6970 2    35   ~ 0
+TRAM_R_NEG
+Wire Wire Line
+	3100 6970 3300 6970
+Text Label 3100 6870 2    35   ~ 0
+TRAM_G_NEG
+Wire Wire Line
+	3100 6870 3300 6870
+Text Label 3100 6770 2    35   ~ 0
+TRAM_B_NEG
+Wire Wire Line
+	3100 6770 3300 6770
+$Comp
+L PSN-Presepe-Mega-RevB-cache:PSN_K1 K1
+U 1 1 6000001E
+P 3800 7440
+F 0 "K1" H 3800 7360 40  0000 C CNN
+F 1 "G5Q-1_DC12" H 3800 7520 30  0000 C CNN
+	1    3800 7440
+	1    0    0    -1
+$EndComp
+Text Label 3100 7640 2    35   ~ 0
++12V
+Wire Wire Line
+	3100 7640 3300 7640
+Text Label 3100 7540 2    35   ~ 0
+R1_COM
+Wire Wire Line
+	3100 7540 3300 7540
+Text Label 3100 7440 2    35   ~ 0
+R1_NC
+Wire Wire Line
+	3100 7440 3300 7440
+Text Label 3100 7340 2    35   ~ 0
+R1_NO
+Wire Wire Line
+	3100 7340 3300 7340
+Text Label 3100 7240 2    35   ~ 0
+RELAY1_COIL_LOW
+Wire Wire Line
+	3100 7240 3300 7240
+$Comp
+L PSN-Presepe-Mega-RevB-cache:PSN_K10 K10
+U 1 1 6000001F
+P 3800 7960
+F 0 "K10" H 3800 7880 40  0000 C CNN
+F 1 "G5Q-1_DC12" H 3800 8040 30  0000 C CNN
+	1    3800 7960
+	1    0    0    -1
+$EndComp
+Text Label 3100 8160 2    35   ~ 0
++12V
+Wire Wire Line
+	3100 8160 3300 8160
+Text Label 3100 8060 2    35   ~ 0
+R10_COM
+Wire Wire Line
+	3100 8060 3300 8060
+Text Label 3100 7960 2    35   ~ 0
+R10_NC
+Wire Wire Line
+	3100 7960 3300 7960
+Text Label 3100 7860 2    35   ~ 0
+R10_NO
+Wire Wire Line
+	3100 7860 3300 7860
+Text Label 3100 7760 2    35   ~ 0
+RELAY10_COIL_LOW
+Wire Wire Line
+	3100 7760 3300 7760
+$Comp
+L PSN-Presepe-Mega-RevB-cache:PSN_K11 K11
+U 1 1 60000020
+P 3800 8480
+F 0 "K11" H 3800 8400 40  0000 C CNN
+F 1 "G5Q-1_DC12" H 3800 8560 30  0000 C CNN
+	1    3800 8480
+	1    0    0    -1
+$EndComp
+Text Label 3100 8680 2    35   ~ 0
++12V
+Wire Wire Line
+	3100 8680 3300 8680
+Text Label 3100 8580 2    35   ~ 0
+R11_COM
+Wire Wire Line
+	3100 8580 3300 8580
+Text Label 3100 8480 2    35   ~ 0
+R11_NC
+Wire Wire Line
+	3100 8480 3300 8480
+Text Label 3100 8380 2    35   ~ 0
+R11_NO
+Wire Wire Line
+	3100 8380 3300 8380
+Text Label 3100 8280 2    35   ~ 0
+RELAY11_COIL_LOW
+Wire Wire Line
+	3100 8280 3300 8280
+$Comp
+L PSN-Presepe-Mega-RevB-cache:PSN_K12 K12
+U 1 1 60000021
+P 3800 9000
+F 0 "K12" H 3800 8920 40  0000 C CNN
+F 1 "G5Q-1_DC12" H 3800 9080 30  0000 C CNN
+	1    3800 9000
+	1    0    0    -1
+$EndComp
+Text Label 3100 9200 2    35   ~ 0
++12V
+Wire Wire Line
+	3100 9200 3300 9200
+Text Label 3100 9100 2    35   ~ 0
+R12_COM
+Wire Wire Line
+	3100 9100 3300 9100
+Text Label 3100 9000 2    35   ~ 0
+R12_NC
+Wire Wire Line
+	3100 9000 3300 9000
+Text Label 3100 8900 2    35   ~ 0
+R12_NO
+Wire Wire Line
+	3100 8900 3300 8900
+Text Label 3100 8800 2    35   ~ 0
+RELAY12_COIL_LOW
+Wire Wire Line
+	3100 8800 3300 8800
+$Comp
+L PSN-Presepe-Mega-RevB-cache:PSN_K13 K13
+U 1 1 60000022
+P 3800 9520
+F 0 "K13" H 3800 9440 40  0000 C CNN
+F 1 "G5Q-1_DC12" H 3800 9600 30  0000 C CNN
+	1    3800 9520
+	1    0    0    -1
+$EndComp
+Text Label 3100 9720 2    35   ~ 0
++12V
+Wire Wire Line
+	3100 9720 3300 9720
+Text Label 3100 9620 2    35   ~ 0
+R13_COM
+Wire Wire Line
+	3100 9620 3300 9620
+Text Label 3100 9520 2    35   ~ 0
+R13_NC
+Wire Wire Line
+	3100 9520 3300 9520
+Text Label 3100 9420 2    35   ~ 0
+R13_NO
+Wire Wire Line
+	3100 9420 3300 9420
+Text Label 3100 9320 2    35   ~ 0
+RELAY13_COIL_LOW
+Wire Wire Line
+	3100 9320 3300 9320
+$Comp
+L PSN-Presepe-Mega-RevB-cache:PSN_K14 K14
+U 1 1 60000023
+P 3800 10040
+F 0 "K14" H 3800 9960 40  0000 C CNN
+F 1 "G5Q-1_DC12" H 3800 10120 30  0000 C CNN
+	1    3800 10040
+	1    0    0    -1
+$EndComp
+Text Label 3100 10240 2    35   ~ 0
++12V
+Wire Wire Line
+	3100 10240 3300 10240
+Text Label 3100 10140 2    35   ~ 0
+R14_COM
+Wire Wire Line
+	3100 10140 3300 10140
+Text Label 3100 10040 2    35   ~ 0
+R14_NC
+Wire Wire Line
+	3100 10040 3300 10040
+Text Label 3100 9940 2    35   ~ 0
+R14_NO
+Wire Wire Line
+	3100 9940 3300 9940
+Text Label 3100 9840 2    35   ~ 0
+RELAY14_COIL_LOW
+Wire Wire Line
+	3100 9840 3300 9840
+$Comp
+L PSN-Presepe-Mega-RevB-cache:PSN_K15 K15
+U 1 1 60000024
+P 6400 1200
+F 0 "K15" H 6400 1120 40  0000 C CNN
+F 1 "G5Q-1_DC12" H 6400 1280 30  0000 C CNN
+	1    6400 1200
+	1    0    0    -1
+$EndComp
+Text Label 5700 1400 2    35   ~ 0
++12V
+Wire Wire Line
+	5700 1400 5900 1400
+Text Label 5700 1300 2    35   ~ 0
+R15_COM
+Wire Wire Line
+	5700 1300 5900 1300
+Text Label 5700 1200 2    35   ~ 0
+R15_NC
+Wire Wire Line
+	5700 1200 5900 1200
+Text Label 5700 1100 2    35   ~ 0
+R15_NO
+Wire Wire Line
+	5700 1100 5900 1100
+Text Label 5700 1000 2    35   ~ 0
+RELAY15_COIL_LOW
+Wire Wire Line
+	5700 1000 5900 1000
+$Comp
+L PSN-Presepe-Mega-RevB-cache:PSN_K16 K16
+U 1 1 60000025
+P 6400 1720
+F 0 "K16" H 6400 1640 40  0000 C CNN
+F 1 "G5Q-1_DC12" H 6400 1800 30  0000 C CNN
+	1    6400 1720
+	1    0    0    -1
+$EndComp
+Text Label 5700 1920 2    35   ~ 0
++12V
+Wire Wire Line
+	5700 1920 5900 1920
+Text Label 5700 1820 2    35   ~ 0
+R16_COM
+Wire Wire Line
+	5700 1820 5900 1820
+Text Label 5700 1720 2    35   ~ 0
+R16_NC
+Wire Wire Line
+	5700 1720 5900 1720
+Text Label 5700 1620 2    35   ~ 0
+R16_NO
+Wire Wire Line
+	5700 1620 5900 1620
+Text Label 5700 1520 2    35   ~ 0
+RELAY16_COIL_LOW
+Wire Wire Line
+	5700 1520 5900 1520
+$Comp
+L PSN-Presepe-Mega-RevB-cache:PSN_K2 K2
+U 1 1 60000026
+P 6400 2240
+F 0 "K2" H 6400 2160 40  0000 C CNN
+F 1 "G5Q-1_DC12" H 6400 2320 30  0000 C CNN
+	1    6400 2240
+	1    0    0    -1
+$EndComp
+Text Label 5700 2440 2    35   ~ 0
++12V
+Wire Wire Line
+	5700 2440 5900 2440
+Text Label 5700 2340 2    35   ~ 0
+R2_COM
+Wire Wire Line
+	5700 2340 5900 2340
+Text Label 5700 2240 2    35   ~ 0
+R2_NC
+Wire Wire Line
+	5700 2240 5900 2240
+Text Label 5700 2140 2    35   ~ 0
+R2_NO
+Wire Wire Line
+	5700 2140 5900 2140
+Text Label 5700 2040 2    35   ~ 0
+RELAY2_COIL_LOW
+Wire Wire Line
+	5700 2040 5900 2040
+$Comp
+L PSN-Presepe-Mega-RevB-cache:PSN_K3 K3
+U 1 1 60000027
+P 6400 2760
+F 0 "K3" H 6400 2680 40  0000 C CNN
+F 1 "G5Q-1_DC12" H 6400 2840 30  0000 C CNN
+	1    6400 2760
+	1    0    0    -1
+$EndComp
+Text Label 5700 2960 2    35   ~ 0
++12V
+Wire Wire Line
+	5700 2960 5900 2960
+Text Label 5700 2860 2    35   ~ 0
+R3_COM
+Wire Wire Line
+	5700 2860 5900 2860
+Text Label 5700 2760 2    35   ~ 0
+R3_NC
+Wire Wire Line
+	5700 2760 5900 2760
+Text Label 5700 2660 2    35   ~ 0
+R3_NO
+Wire Wire Line
+	5700 2660 5900 2660
+Text Label 5700 2560 2    35   ~ 0
+RELAY3_COIL_LOW
+Wire Wire Line
+	5700 2560 5900 2560
+$Comp
+L PSN-Presepe-Mega-RevB-cache:PSN_K4 K4
+U 1 1 60000028
+P 6400 3280
+F 0 "K4" H 6400 3200 40  0000 C CNN
+F 1 "G5Q-1_DC12" H 6400 3360 30  0000 C CNN
+	1    6400 3280
+	1    0    0    -1
+$EndComp
+Text Label 5700 3480 2    35   ~ 0
++12V
+Wire Wire Line
+	5700 3480 5900 3480
+Text Label 5700 3380 2    35   ~ 0
+R4_COM
+Wire Wire Line
+	5700 3380 5900 3380
+Text Label 5700 3280 2    35   ~ 0
+R4_NC
+Wire Wire Line
+	5700 3280 5900 3280
+Text Label 5700 3180 2    35   ~ 0
+R4_NO
+Wire Wire Line
+	5700 3180 5900 3180
+Text Label 5700 3080 2    35   ~ 0
+RELAY4_COIL_LOW
+Wire Wire Line
+	5700 3080 5900 3080
+$Comp
+L PSN-Presepe-Mega-RevB-cache:PSN_K5 K5
+U 1 1 60000029
+P 6400 3800
+F 0 "K5" H 6400 3720 40  0000 C CNN
+F 1 "G5Q-1_DC12" H 6400 3880 30  0000 C CNN
+	1    6400 3800
+	1    0    0    -1
+$EndComp
+Text Label 5700 4000 2    35   ~ 0
++12V
+Wire Wire Line
+	5700 4000 5900 4000
+Text Label 5700 3900 2    35   ~ 0
+R5_COM
+Wire Wire Line
+	5700 3900 5900 3900
+Text Label 5700 3800 2    35   ~ 0
+R5_NC
+Wire Wire Line
+	5700 3800 5900 3800
+Text Label 5700 3700 2    35   ~ 0
+R5_NO
+Wire Wire Line
+	5700 3700 5900 3700
+Text Label 5700 3600 2    35   ~ 0
+RELAY5_COIL_LOW
+Wire Wire Line
+	5700 3600 5900 3600
+$Comp
+L PSN-Presepe-Mega-RevB-cache:PSN_K6 K6
+U 1 1 6000002A
+P 6400 4320
+F 0 "K6" H 6400 4240 40  0000 C CNN
+F 1 "G5Q-1_DC12" H 6400 4400 30  0000 C CNN
+	1    6400 4320
+	1    0    0    -1
+$EndComp
+Text Label 5700 4520 2    35   ~ 0
++12V
+Wire Wire Line
+	5700 4520 5900 4520
+Text Label 5700 4420 2    35   ~ 0
+R6_COM
+Wire Wire Line
+	5700 4420 5900 4420
+Text Label 5700 4320 2    35   ~ 0
+R6_NC
+Wire Wire Line
+	5700 4320 5900 4320
+Text Label 5700 4220 2    35   ~ 0
+R6_NO
+Wire Wire Line
+	5700 4220 5900 4220
+Text Label 5700 4120 2    35   ~ 0
+RELAY6_COIL_LOW
+Wire Wire Line
+	5700 4120 5900 4120
+$Comp
+L PSN-Presepe-Mega-RevB-cache:PSN_K7 K7
+U 1 1 6000002B
+P 6400 4840
+F 0 "K7" H 6400 4760 40  0000 C CNN
+F 1 "G5Q-1_DC12" H 6400 4920 30  0000 C CNN
+	1    6400 4840
+	1    0    0    -1
+$EndComp
+Text Label 5700 5040 2    35   ~ 0
++12V
+Wire Wire Line
+	5700 5040 5900 5040
+Text Label 5700 4940 2    35   ~ 0
+R7_COM
+Wire Wire Line
+	5700 4940 5900 4940
+Text Label 5700 4840 2    35   ~ 0
+R7_NC
+Wire Wire Line
+	5700 4840 5900 4840
+Text Label 5700 4740 2    35   ~ 0
+R7_NO
+Wire Wire Line
+	5700 4740 5900 4740
+Text Label 5700 4640 2    35   ~ 0
+RELAY7_COIL_LOW
+Wire Wire Line
+	5700 4640 5900 4640
+$Comp
+L PSN-Presepe-Mega-RevB-cache:PSN_K8 K8
+U 1 1 6000002C
+P 6400 5360
+F 0 "K8" H 6400 5280 40  0000 C CNN
+F 1 "G5Q-1_DC12" H 6400 5440 30  0000 C CNN
+	1    6400 5360
+	1    0    0    -1
+$EndComp
+Text Label 5700 5560 2    35   ~ 0
++12V
+Wire Wire Line
+	5700 5560 5900 5560
+Text Label 5700 5460 2    35   ~ 0
+R8_COM
+Wire Wire Line
+	5700 5460 5900 5460
+Text Label 5700 5360 2    35   ~ 0
+R8_NC
+Wire Wire Line
+	5700 5360 5900 5360
+Text Label 5700 5260 2    35   ~ 0
+R8_NO
+Wire Wire Line
+	5700 5260 5900 5260
+Text Label 5700 5160 2    35   ~ 0
+RELAY8_COIL_LOW
+Wire Wire Line
+	5700 5160 5900 5160
+$Comp
+L PSN-Presepe-Mega-RevB-cache:PSN_K9 K9
+U 1 1 6000002D
+P 6400 5880
+F 0 "K9" H 6400 5800 40  0000 C CNN
+F 1 "G5Q-1_DC12" H 6400 5960 30  0000 C CNN
+	1    6400 5880
+	1    0    0    -1
+$EndComp
+Text Label 5700 6080 2    35   ~ 0
++12V
+Wire Wire Line
+	5700 6080 5900 6080
+Text Label 5700 5980 2    35   ~ 0
+R9_COM
+Wire Wire Line
+	5700 5980 5900 5980
+Text Label 5700 5880 2    35   ~ 0
+R9_NC
+Wire Wire Line
+	5700 5880 5900 5880
+Text Label 5700 5780 2    35   ~ 0
+R9_NO
+Wire Wire Line
+	5700 5780 5900 5780
+Text Label 5700 5680 2    35   ~ 0
+RELAY9_COIL_LOW
+Wire Wire Line
+	5700 5680 5900 5680
+$Comp
+L PSN-Presepe-Mega-RevB-cache:PSN_MCU1 MCU1
+U 1 1 6000002E
+P 6400 6400
+F 0 "MCU1" H 6400 6320 40  0000 C CNN
+F 1 "Arduino_Mega2560_R3_Shield" H 6400 6480 30  0000 C CNN
+	1    6400 6400
+	1    0    0    -1
+$EndComp
+Text Label 5700 8600 2    35   ~ 0
++5V_MEGA
+Wire Wire Line
+	5700 8600 5900 8600
+Text Label 5700 8500 2    35   ~ 0
++5V_MEGA
+Wire Wire Line
+	5700 8500 5900 8500
+Text Label 5700 8400 2    35   ~ 0
++5V_MEGA
+Wire Wire Line
+	5700 8400 5900 8400
+Text Label 5700 8300 2    35   ~ 0
++5V_MEGA
+Wire Wire Line
+	5700 8300 5900 8300
+Text Label 5700 8200 2    35   ~ 0
+A0_POT
+Wire Wire Line
+	5700 8200 5900 8200
+Text Label 5700 8100 2    35   ~ 0
+D2_CIELO_R
+Wire Wire Line
+	5700 8100 5900 8100
+Text Label 5700 8000 2    35   ~ 0
+D3_CIELO_G
+Wire Wire Line
+	5700 8000 5900 8000
+Text Label 5700 7900 2    35   ~ 0
+D4_CIELO_B
+Wire Wire Line
+	5700 7900 5900 7900
+Text Label 5700 7800 2    35   ~ 0
+D5_STELLE_DATA
+Wire Wire Line
+	5700 7800 5900 7800
+Text Label 5700 7700 2    35   ~ 0
+D6_BUZZER
+Wire Wire Line
+	5700 7700 5900 7700
+Text Label 5700 7600 2    35   ~ 0
+D7_TRAM_R
+Wire Wire Line
+	5700 7600 5900 7600
+Text Label 5700 7500 2    35   ~ 0
+D8_CASETTE_DATA
+Wire Wire Line
+	5700 7500 5900 7500
+Text Label 5700 7400 2    35   ~ 0
+D11_TRAM_G
+Wire Wire Line
+	5700 7400 5900 7400
+Text Label 5700 7300 2    35   ~ 0
+D12_TRAM_B
+Wire Wire Line
+	5700 7300 5900 7300
+Text Label 5700 7200 2    35   ~ 0
+D20_SDA
+Wire Wire Line
+	5700 7200 5900 7200
+Text Label 5700 7100 2    35   ~ 0
+D21_SCL
+Wire Wire Line
+	5700 7100 5900 7100
+Text Label 5700 7000 2    35   ~ 0
+D22_START
+Wire Wire Line
+	5700 7000 5900 7000
+Text Label 5700 6900 2    35   ~ 0
+D23_NEXT
+Wire Wire Line
+	5700 6900 5900 6900
+Text Label 5700 6800 2    35   ~ 0
+D24_TEST
+Wire Wire Line
+	5700 6800 5900 6800
+Text Label 5700 6700 2    35   ~ 0
+D25_RELAY1
+Wire Wire Line
+	5700 6700 5900 6700
+Text Label 5700 6600 2    35   ~ 0
+D26_RELAY2
+Wire Wire Line
+	5700 6600 5900 6600
+Text Label 5700 6500 2    35   ~ 0
+D27_RELAY3
+Wire Wire Line
+	5700 6500 5900 6500
+Text Label 5700 6400 2    35   ~ 0
+D28_RELAY4
+Wire Wire Line
+	5700 6400 5900 6400
+Text Label 5700 6300 2    35   ~ 0
+D29_RELAY5
+Wire Wire Line
+	5700 6300 5900 6300
+Text Label 5700 6200 2    35   ~ 0
+D30_RELAY6
+Wire Wire Line
+	5700 6200 5900 6200
+Text Label 5700 6100 2    35   ~ 0
+D31_RELAY7
+Wire Wire Line
+	5700 6100 5900 6100
+Text Label 5700 6000 2    35   ~ 0
+D32_RELAY8
+Wire Wire Line
+	5700 6000 5900 6000
+Text Label 5700 5900 2    35   ~ 0
+D33_RELAY9
+Wire Wire Line
+	5700 5900 5900 5900
+Text Label 5700 5800 2    35   ~ 0
+D34_RELAY10
+Wire Wire Line
+	5700 5800 5900 5800
+Text Label 5700 5700 2    35   ~ 0
+D35_RELAY11
+Wire Wire Line
+	5700 5700 5900 5700
+Text Label 5700 5600 2    35   ~ 0
+D36_RELAY12
+Wire Wire Line
+	5700 5600 5900 5600
+Text Label 5700 5500 2    35   ~ 0
+D37_RELAY13
+Wire Wire Line
+	5700 5500 5900 5500
+Text Label 5700 5400 2    35   ~ 0
+D38_RELAY14
+Wire Wire Line
+	5700 5400 5900 5400
+Text Label 5700 5300 2    35   ~ 0
+D39_RELAY15
+Wire Wire Line
+	5700 5300 5900 5300
+Text Label 5700 5200 2    35   ~ 0
+D40_RELAY16
+Wire Wire Line
+	5700 5200 5900 5200
+Text Label 5700 5100 2    35   ~ 0
+D44_ALBA_R
+Wire Wire Line
+	5700 5100 5900 5100
+Text Label 5700 5000 2    35   ~ 0
+D45_ALBA_G
+Wire Wire Line
+	5700 5000 5900 5000
+Text Label 5700 4900 2    35   ~ 0
+D46_ALBA_B
+Wire Wire Line
+	5700 4900 5900 4900
+Text Label 5700 4800 2    35   ~ 0
+GND
+Wire Wire Line
+	5700 4800 5900 4800
+Text Label 5700 4700 2    35   ~ 0
+GND
+Wire Wire Line
+	5700 4700 5900 4700
+Text Label 5700 4600 2    35   ~ 0
+GND
+Wire Wire Line
+	5700 4600 5900 4600
+Text Label 5700 4500 2    35   ~ 0
+GND
+Wire Wire Line
+	5700 4500 5900 4500
+Text Label 5700 4400 2    35   ~ 0
+GND
+Wire Wire Line
+	5700 4400 5900 4400
+Text Label 5700 4300 2    35   ~ 0
+GND
+Wire Wire Line
+	5700 4300 5900 4300
+Text Label 5700 4200 2    35   ~ 0
++12V
+Wire Wire Line
+	5700 4200 5900 4200
+$Comp
+L PSN-Presepe-Mega-RevB-cache:PSN_Q1 Q1
+U 1 1 6000002F
+P 6400 6920
+F 0 "Q1" H 6400 6840 40  0000 C CNN
+F 1 "IRLZ44N_CIELO_R" H 6400 7000 30  0000 C CNN
+	1    6400 6920
+	1    0    0    -1
+$EndComp
+Text Label 5700 7020 2    35   ~ 0
+GATE_Q1
+Wire Wire Line
+	5700 7020 5900 7020
+Text Label 5700 6920 2    35   ~ 0
+CIELO_R_NEG
+Wire Wire Line
+	5700 6920 5900 6920
+Text Label 5700 6820 2    35   ~ 0
+GND
+Wire Wire Line
+	5700 6820 5900 6820
+$Comp
+L PSN-Presepe-Mega-RevB-cache:PSN_Q2 Q2
+U 1 1 60000030
+P 6400 7440
+F 0 "Q2" H 6400 7360 40  0000 C CNN
+F 1 "IRLZ44N_CIELO_G" H 6400 7520 30  0000 C CNN
+	1    6400 7440
+	1    0    0    -1
+$EndComp
+Text Label 5700 7540 2    35   ~ 0
+GATE_Q2
+Wire Wire Line
+	5700 7540 5900 7540
+Text Label 5700 7440 2    35   ~ 0
+CIELO_G_NEG
+Wire Wire Line
+	5700 7440 5900 7440
+Text Label 5700 7340 2    35   ~ 0
+GND
+Wire Wire Line
+	5700 7340 5900 7340
+$Comp
+L PSN-Presepe-Mega-RevB-cache:PSN_Q3 Q3
+U 1 1 60000031
+P 6400 7960
+F 0 "Q3" H 6400 7880 40  0000 C CNN
+F 1 "IRLZ44N_CIELO_B" H 6400 8040 30  0000 C CNN
+	1    6400 7960
+	1    0    0    -1
+$EndComp
+Text Label 5700 8060 2    35   ~ 0
+GATE_Q3
+Wire Wire Line
+	5700 8060 5900 8060
+Text Label 5700 7960 2    35   ~ 0
+CIELO_B_NEG
+Wire Wire Line
+	5700 7960 5900 7960
+Text Label 5700 7860 2    35   ~ 0
+GND
+Wire Wire Line
+	5700 7860 5900 7860
+$Comp
+L PSN-Presepe-Mega-RevB-cache:PSN_Q4 Q4
+U 1 1 60000032
+P 6400 8480
+F 0 "Q4" H 6400 8400 40  0000 C CNN
+F 1 "IRLZ44N_TRAM_R" H 6400 8560 30  0000 C CNN
+	1    6400 8480
+	1    0    0    -1
+$EndComp
+Text Label 5700 8580 2    35   ~ 0
+GATE_Q4
+Wire Wire Line
+	5700 8580 5900 8580
+Text Label 5700 8480 2    35   ~ 0
+TRAM_R_NEG
+Wire Wire Line
+	5700 8480 5900 8480
+Text Label 5700 8380 2    35   ~ 0
+GND
+Wire Wire Line
+	5700 8380 5900 8380
+$Comp
+L PSN-Presepe-Mega-RevB-cache:PSN_Q5 Q5
+U 1 1 60000033
+P 6400 9000
+F 0 "Q5" H 6400 8920 40  0000 C CNN
+F 1 "IRLZ44N_TRAM_G" H 6400 9080 30  0000 C CNN
+	1    6400 9000
+	1    0    0    -1
+$EndComp
+Text Label 5700 9100 2    35   ~ 0
+GATE_Q5
+Wire Wire Line
+	5700 9100 5900 9100
+Text Label 5700 9000 2    35   ~ 0
+TRAM_G_NEG
+Wire Wire Line
+	5700 9000 5900 9000
+Text Label 5700 8900 2    35   ~ 0
+GND
+Wire Wire Line
+	5700 8900 5900 8900
+$Comp
+L PSN-Presepe-Mega-RevB-cache:PSN_Q6 Q6
+U 1 1 60000034
+P 6400 9520
+F 0 "Q6" H 6400 9440 40  0000 C CNN
+F 1 "IRLZ44N_TRAM_B" H 6400 9600 30  0000 C CNN
+	1    6400 9520
+	1    0    0    -1
+$EndComp
+Text Label 5700 9620 2    35   ~ 0
+GATE_Q6
+Wire Wire Line
+	5700 9620 5900 9620
+Text Label 5700 9520 2    35   ~ 0
+TRAM_B_NEG
+Wire Wire Line
+	5700 9520 5900 9520
+Text Label 5700 9420 2    35   ~ 0
+GND
+Wire Wire Line
+	5700 9420 5900 9420
+$Comp
+L PSN-Presepe-Mega-RevB-cache:PSN_Q7 Q7
+U 1 1 60000035
+P 6400 10040
+F 0 "Q7" H 6400 9960 40  0000 C CNN
+F 1 "IRLZ44N_ALBA_R" H 6400 10120 30  0000 C CNN
+	1    6400 10040
+	1    0    0    -1
+$EndComp
+Text Label 5700 10140 2    35   ~ 0
+GATE_Q7
+Wire Wire Line
+	5700 10140 5900 10140
+Text Label 5700 10040 2    35   ~ 0
+ALBA_R_NEG
+Wire Wire Line
+	5700 10040 5900 10040
+Text Label 5700 9940 2    35   ~ 0
+GND
+Wire Wire Line
+	5700 9940 5900 9940
+$Comp
+L PSN-Presepe-Mega-RevB-cache:PSN_Q8 Q8
+U 1 1 60000036
+P 9000 1200
+F 0 "Q8" H 9000 1120 40  0000 C CNN
+F 1 "IRLZ44N_ALBA_G" H 9000 1280 30  0000 C CNN
+	1    9000 1200
+	1    0    0    -1
+$EndComp
+Text Label 8300 1300 2    35   ~ 0
+GATE_Q8
+Wire Wire Line
+	8300 1300 8500 1300
+Text Label 8300 1200 2    35   ~ 0
+ALBA_G_NEG
+Wire Wire Line
+	8300 1200 8500 1200
+Text Label 8300 1100 2    35   ~ 0
+GND
+Wire Wire Line
+	8300 1100 8500 1100
+$Comp
+L PSN-Presepe-Mega-RevB-cache:PSN_Q9 Q9
+U 1 1 60000037
+P 9000 1720
+F 0 "Q9" H 9000 1640 40  0000 C CNN
+F 1 "IRLZ44N_ALBA_B" H 9000 1800 30  0000 C CNN
+	1    9000 1720
+	1    0    0    -1
+$EndComp
+Text Label 8300 1820 2    35   ~ 0
+GATE_Q9
+Wire Wire Line
+	8300 1820 8500 1820
+Text Label 8300 1720 2    35   ~ 0
+ALBA_B_NEG
+Wire Wire Line
+	8300 1720 8500 1720
+Text Label 8300 1620 2    35   ~ 0
+GND
+Wire Wire Line
+	8300 1620 8500 1620
+$Comp
+L PSN-Presepe-Mega-RevB-cache:PSN_RG1 RG1
+U 1 1 60000038
+P 9000 2240
+F 0 "RG1" H 9000 2160 40  0000 C CNN
+F 1 "100R_GATE" H 9000 2320 30  0000 C CNN
+	1    9000 2240
+	1    0    0    -1
+$EndComp
+Text Label 8300 2290 2    35   ~ 0
+D2_CIELO_R
+Wire Wire Line
+	8300 2290 8500 2290
+Text Label 8300 2190 2    35   ~ 0
+GATE_Q1
+Wire Wire Line
+	8300 2190 8500 2190
+$Comp
+L PSN-Presepe-Mega-RevB-cache:PSN_RG2 RG2
+U 1 1 60000039
+P 9000 2760
+F 0 "RG2" H 9000 2680 40  0000 C CNN
+F 1 "100R_GATE" H 9000 2840 30  0000 C CNN
+	1    9000 2760
+	1    0    0    -1
+$EndComp
+Text Label 8300 2810 2    35   ~ 0
+D3_CIELO_G
+Wire Wire Line
+	8300 2810 8500 2810
+Text Label 8300 2710 2    35   ~ 0
+GATE_Q2
+Wire Wire Line
+	8300 2710 8500 2710
+$Comp
+L PSN-Presepe-Mega-RevB-cache:PSN_RG3 RG3
+U 1 1 6000003A
+P 9000 3280
+F 0 "RG3" H 9000 3200 40  0000 C CNN
+F 1 "100R_GATE" H 9000 3360 30  0000 C CNN
+	1    9000 3280
+	1    0    0    -1
+$EndComp
+Text Label 8300 3330 2    35   ~ 0
+D4_CIELO_B
+Wire Wire Line
+	8300 3330 8500 3330
+Text Label 8300 3230 2    35   ~ 0
+GATE_Q3
+Wire Wire Line
+	8300 3230 8500 3230
+$Comp
+L PSN-Presepe-Mega-RevB-cache:PSN_RG4 RG4
+U 1 1 6000003B
+P 9000 3800
+F 0 "RG4" H 9000 3720 40  0000 C CNN
+F 1 "100R_GATE" H 9000 3880 30  0000 C CNN
+	1    9000 3800
+	1    0    0    -1
+$EndComp
+Text Label 8300 3850 2    35   ~ 0
+D7_TRAM_R
+Wire Wire Line
+	8300 3850 8500 3850
+Text Label 8300 3750 2    35   ~ 0
+GATE_Q4
+Wire Wire Line
+	8300 3750 8500 3750
+$Comp
+L PSN-Presepe-Mega-RevB-cache:PSN_RG5 RG5
+U 1 1 6000003C
+P 9000 4320
+F 0 "RG5" H 9000 4240 40  0000 C CNN
+F 1 "100R_GATE" H 9000 4400 30  0000 C CNN
+	1    9000 4320
+	1    0    0    -1
+$EndComp
+Text Label 8300 4370 2    35   ~ 0
+D11_TRAM_G
+Wire Wire Line
+	8300 4370 8500 4370
+Text Label 8300 4270 2    35   ~ 0
+GATE_Q5
+Wire Wire Line
+	8300 4270 8500 4270
+$Comp
+L PSN-Presepe-Mega-RevB-cache:PSN_RG6 RG6
+U 1 1 6000003D
+P 9000 4840
+F 0 "RG6" H 9000 4760 40  0000 C CNN
+F 1 "100R_GATE" H 9000 4920 30  0000 C CNN
+	1    9000 4840
+	1    0    0    -1
+$EndComp
+Text Label 8300 4890 2    35   ~ 0
+D12_TRAM_B
+Wire Wire Line
+	8300 4890 8500 4890
+Text Label 8300 4790 2    35   ~ 0
+GATE_Q6
+Wire Wire Line
+	8300 4790 8500 4790
+$Comp
+L PSN-Presepe-Mega-RevB-cache:PSN_RG7 RG7
+U 1 1 6000003E
+P 9000 5360
+F 0 "RG7" H 9000 5280 40  0000 C CNN
+F 1 "100R_GATE" H 9000 5440 30  0000 C CNN
+	1    9000 5360
+	1    0    0    -1
+$EndComp
+Text Label 8300 5410 2    35   ~ 0
+D44_ALBA_R
+Wire Wire Line
+	8300 5410 8500 5410
+Text Label 8300 5310 2    35   ~ 0
+GATE_Q7
+Wire Wire Line
+	8300 5310 8500 5310
+$Comp
+L PSN-Presepe-Mega-RevB-cache:PSN_RG8 RG8
+U 1 1 6000003F
+P 9000 5880
+F 0 "RG8" H 9000 5800 40  0000 C CNN
+F 1 "100R_GATE" H 9000 5960 30  0000 C CNN
+	1    9000 5880
+	1    0    0    -1
+$EndComp
+Text Label 8300 5930 2    35   ~ 0
+D45_ALBA_G
+Wire Wire Line
+	8300 5930 8500 5930
+Text Label 8300 5830 2    35   ~ 0
+GATE_Q8
+Wire Wire Line
+	8300 5830 8500 5830
+$Comp
+L PSN-Presepe-Mega-RevB-cache:PSN_RG9 RG9
+U 1 1 60000040
+P 9000 6400
+F 0 "RG9" H 9000 6320 40  0000 C CNN
+F 1 "100R_GATE" H 9000 6480 30  0000 C CNN
+	1    9000 6400
+	1    0    0    -1
+$EndComp
+Text Label 8300 6450 2    35   ~ 0
+D46_ALBA_B
+Wire Wire Line
+	8300 6450 8500 6450
+Text Label 8300 6350 2    35   ~ 0
+GATE_Q9
+Wire Wire Line
+	8300 6350 8500 6350
+$Comp
+L PSN-Presepe-Mega-RevB-cache:PSN_RPD1 RPD1
+U 1 1 60000041
+P 9000 6920
+F 0 "RPD1" H 9000 6840 40  0000 C CNN
+F 1 "100K_PULLDOWN" H 9000 7000 30  0000 C CNN
+	1    9000 6920
+	1    0    0    -1
+$EndComp
+Text Label 8300 6970 2    35   ~ 0
+GATE_Q1
+Wire Wire Line
+	8300 6970 8500 6970
+Text Label 8300 6870 2    35   ~ 0
+GND
+Wire Wire Line
+	8300 6870 8500 6870
+$Comp
+L PSN-Presepe-Mega-RevB-cache:PSN_RPD2 RPD2
+U 1 1 60000042
+P 9000 7440
+F 0 "RPD2" H 9000 7360 40  0000 C CNN
+F 1 "100K_PULLDOWN" H 9000 7520 30  0000 C CNN
+	1    9000 7440
+	1    0    0    -1
+$EndComp
+Text Label 8300 7490 2    35   ~ 0
+GATE_Q2
+Wire Wire Line
+	8300 7490 8500 7490
+Text Label 8300 7390 2    35   ~ 0
+GND
+Wire Wire Line
+	8300 7390 8500 7390
+$Comp
+L PSN-Presepe-Mega-RevB-cache:PSN_RPD3 RPD3
+U 1 1 60000043
+P 9000 7960
+F 0 "RPD3" H 9000 7880 40  0000 C CNN
+F 1 "100K_PULLDOWN" H 9000 8040 30  0000 C CNN
+	1    9000 7960
+	1    0    0    -1
+$EndComp
+Text Label 8300 8010 2    35   ~ 0
+GATE_Q3
+Wire Wire Line
+	8300 8010 8500 8010
+Text Label 8300 7910 2    35   ~ 0
+GND
+Wire Wire Line
+	8300 7910 8500 7910
+$Comp
+L PSN-Presepe-Mega-RevB-cache:PSN_RPD4 RPD4
+U 1 1 60000044
+P 9000 8480
+F 0 "RPD4" H 9000 8400 40  0000 C CNN
+F 1 "100K_PULLDOWN" H 9000 8560 30  0000 C CNN
+	1    9000 8480
+	1    0    0    -1
+$EndComp
+Text Label 8300 8530 2    35   ~ 0
+GATE_Q4
+Wire Wire Line
+	8300 8530 8500 8530
+Text Label 8300 8430 2    35   ~ 0
+GND
+Wire Wire Line
+	8300 8430 8500 8430
+$Comp
+L PSN-Presepe-Mega-RevB-cache:PSN_RPD5 RPD5
+U 1 1 60000045
+P 9000 9000
+F 0 "RPD5" H 9000 8920 40  0000 C CNN
+F 1 "100K_PULLDOWN" H 9000 9080 30  0000 C CNN
+	1    9000 9000
+	1    0    0    -1
+$EndComp
+Text Label 8300 9050 2    35   ~ 0
+GATE_Q5
+Wire Wire Line
+	8300 9050 8500 9050
+Text Label 8300 8950 2    35   ~ 0
+GND
+Wire Wire Line
+	8300 8950 8500 8950
+$Comp
+L PSN-Presepe-Mega-RevB-cache:PSN_RPD6 RPD6
+U 1 1 60000046
+P 9000 9520
+F 0 "RPD6" H 9000 9440 40  0000 C CNN
+F 1 "100K_PULLDOWN" H 9000 9600 30  0000 C CNN
+	1    9000 9520
+	1    0    0    -1
+$EndComp
+Text Label 8300 9570 2    35   ~ 0
+GATE_Q6
+Wire Wire Line
+	8300 9570 8500 9570
+Text Label 8300 9470 2    35   ~ 0
+GND
+Wire Wire Line
+	8300 9470 8500 9470
+$Comp
+L PSN-Presepe-Mega-RevB-cache:PSN_RPD7 RPD7
+U 1 1 60000047
+P 9000 10040
+F 0 "RPD7" H 9000 9960 40  0000 C CNN
+F 1 "100K_PULLDOWN" H 9000 10120 30  0000 C CNN
+	1    9000 10040
+	1    0    0    -1
+$EndComp
+Text Label 8300 10090 2    35   ~ 0
+GATE_Q7
+Wire Wire Line
+	8300 10090 8500 10090
+Text Label 8300 9990 2    35   ~ 0
+GND
+Wire Wire Line
+	8300 9990 8500 9990
+$Comp
+L PSN-Presepe-Mega-RevB-cache:PSN_RPD8 RPD8
+U 1 1 60000048
+P 11600 1200
+F 0 "RPD8" H 11600 1120 40  0000 C CNN
+F 1 "100K_PULLDOWN" H 11600 1280 30  0000 C CNN
+	1    11600 1200
+	1    0    0    -1
+$EndComp
+Text Label 10900 1250 2    35   ~ 0
+GATE_Q8
+Wire Wire Line
+	10900 1250 11100 1250
+Text Label 10900 1150 2    35   ~ 0
+GND
+Wire Wire Line
+	10900 1150 11100 1150
+$Comp
+L PSN-Presepe-Mega-RevB-cache:PSN_RPD9 RPD9
+U 1 1 60000049
+P 11600 1720
+F 0 "RPD9" H 11600 1640 40  0000 C CNN
+F 1 "100K_PULLDOWN" H 11600 1800 30  0000 C CNN
+	1    11600 1720
+	1    0    0    -1
+$EndComp
+Text Label 10900 1770 2    35   ~ 0
+GATE_Q9
+Wire Wire Line
+	10900 1770 11100 1770
+Text Label 10900 1670 2    35   ~ 0
+GND
+Wire Wire Line
+	10900 1670 11100 1670
+$Comp
+L PSN-Presepe-Mega-RevB-cache:PSN_RV1 RV1
+U 1 1 6000004A
+P 11600 2240
+F 0 "RV1" H 11600 2160 40  0000 C CNN
+F 1 "B10K" H 11600 2320 30  0000 C CNN
+	1    11600 2240
+	1    0    0    -1
+$EndComp
+Text Label 10900 2340 2    35   ~ 0
+GND
+Wire Wire Line
+	10900 2340 11100 2340
+Text Label 10900 2240 2    35   ~ 0
+A0_POT
+Wire Wire Line
+	10900 2240 11100 2240
+Text Label 10900 2140 2    35   ~ 0
++5V_MEGA
+Wire Wire Line
+	10900 2140 11100 2140
+$Comp
+L PSN-Presepe-Mega-RevB-cache:PSN_U1 U1
+U 1 1 6000004B
+P 11600 2760
+F 0 "U1" H 11600 2680 40  0000 C CNN
+F 1 "ULN2803C" H 11600 2840 30  0000 C CNN
+	1    11600 2760
+	1    0    0    -1
+$EndComp
+Text Label 10900 3610 2    35   ~ 0
+D25_RELAY1
+Wire Wire Line
+	10900 3610 11100 3610
+Text Label 10900 3510 2    35   ~ 0
+D26_RELAY2
+Wire Wire Line
+	10900 3510 11100 3510
+Text Label 10900 3410 2    35   ~ 0
+D27_RELAY3
+Wire Wire Line
+	10900 3410 11100 3410
+Text Label 10900 3310 2    35   ~ 0
+D28_RELAY4
+Wire Wire Line
+	10900 3310 11100 3310
+Text Label 10900 3210 2    35   ~ 0
+D29_RELAY5
+Wire Wire Line
+	10900 3210 11100 3210
+Text Label 10900 3110 2    35   ~ 0
+D30_RELAY6
+Wire Wire Line
+	10900 3110 11100 3110
+Text Label 10900 3010 2    35   ~ 0
+D31_RELAY7
+Wire Wire Line
+	10900 3010 11100 3010
+Text Label 10900 2910 2    35   ~ 0
+D32_RELAY8
+Wire Wire Line
+	10900 2910 11100 2910
+Text Label 10900 2810 2    35   ~ 0
+GND
+Wire Wire Line
+	10900 2810 11100 2810
+Text Label 10900 2710 2    35   ~ 0
++12V
+Wire Wire Line
+	10900 2710 11100 2710
+Text Label 10900 2610 2    35   ~ 0
+RELAY8_COIL_LOW
+Wire Wire Line
+	10900 2610 11100 2610
+Text Label 10900 2510 2    35   ~ 0
+RELAY7_COIL_LOW
+Wire Wire Line
+	10900 2510 11100 2510
+Text Label 10900 2410 2    35   ~ 0
+RELAY6_COIL_LOW
+Wire Wire Line
+	10900 2410 11100 2410
+Text Label 10900 2310 2    35   ~ 0
+RELAY5_COIL_LOW
+Wire Wire Line
+	10900 2310 11100 2310
+Text Label 10900 2210 2    35   ~ 0
+RELAY4_COIL_LOW
+Wire Wire Line
+	10900 2210 11100 2210
+Text Label 10900 2110 2    35   ~ 0
+RELAY3_COIL_LOW
+Wire Wire Line
+	10900 2110 11100 2110
+Text Label 10900 2010 2    35   ~ 0
+RELAY2_COIL_LOW
+Wire Wire Line
+	10900 2010 11100 2010
+Text Label 10900 1910 2    35   ~ 0
+RELAY1_COIL_LOW
+Wire Wire Line
+	10900 1910 11100 1910
+$Comp
+L PSN-Presepe-Mega-RevB-cache:PSN_U2 U2
+U 1 1 6000004C
+P 11600 3280
+F 0 "U2" H 11600 3200 40  0000 C CNN
+F 1 "ULN2803C" H 11600 3360 30  0000 C CNN
+	1    11600 3280
+	1    0    0    -1
+$EndComp
+Text Label 10900 4130 2    35   ~ 0
+D33_RELAY9
+Wire Wire Line
+	10900 4130 11100 4130
+Text Label 10900 4030 2    35   ~ 0
+D34_RELAY10
+Wire Wire Line
+	10900 4030 11100 4030
+Text Label 10900 3930 2    35   ~ 0
+D35_RELAY11
+Wire Wire Line
+	10900 3930 11100 3930
+Text Label 10900 3830 2    35   ~ 0
+D36_RELAY12
+Wire Wire Line
+	10900 3830 11100 3830
+Text Label 10900 3730 2    35   ~ 0
+D37_RELAY13
+Wire Wire Line
+	10900 3730 11100 3730
+Text Label 10900 3630 2    35   ~ 0
+D38_RELAY14
+Wire Wire Line
+	10900 3630 11100 3630
+Text Label 10900 3530 2    35   ~ 0
+D39_RELAY15
+Wire Wire Line
+	10900 3530 11100 3530
+Text Label 10900 3430 2    35   ~ 0
+D40_RELAY16
+Wire Wire Line
+	10900 3430 11100 3430
+Text Label 10900 3330 2    35   ~ 0
+GND
+Wire Wire Line
+	10900 3330 11100 3330
+Text Label 10900 3230 2    35   ~ 0
++12V
+Wire Wire Line
+	10900 3230 11100 3230
+Text Label 10900 3130 2    35   ~ 0
+RELAY16_COIL_LOW
+Wire Wire Line
+	10900 3130 11100 3130
+Text Label 10900 3030 2    35   ~ 0
+RELAY15_COIL_LOW
+Wire Wire Line
+	10900 3030 11100 3030
+Text Label 10900 2930 2    35   ~ 0
+RELAY14_COIL_LOW
+Wire Wire Line
+	10900 2930 11100 2930
+Text Label 10900 2830 2    35   ~ 0
+RELAY13_COIL_LOW
+Wire Wire Line
+	10900 2830 11100 2830
+Text Label 10900 2730 2    35   ~ 0
+RELAY12_COIL_LOW
+Wire Wire Line
+	10900 2730 11100 2730
+Text Label 10900 2630 2    35   ~ 0
+RELAY11_COIL_LOW
+Wire Wire Line
+	10900 2630 11100 2630
+Text Label 10900 2530 2    35   ~ 0
+RELAY10_COIL_LOW
+Wire Wire Line
+	10900 2530 11100 2530
+Text Label 10900 2430 2    35   ~ 0
+RELAY9_COIL_LOW
+Wire Wire Line
+	10900 2430 11100 2430
+$EndSCHEMATC

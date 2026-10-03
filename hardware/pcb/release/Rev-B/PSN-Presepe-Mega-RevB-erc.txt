@@ -1,0 +1,474 @@
+ERC report (2026-10-03T20:46:26, Encoding UTF8)
+Report includes: Errors, Warnings, Exclusions
+
+***** Sheet /
+[endpoint_off_grid]: Symbol pin or wire end off connection grid
+    ; warning
+    @(17.46 mm, 27.73 mm): Symbol BZ1 Pin 1 [D6_BUZZER, Passive, Line]
+[endpoint_off_grid]: Symbol pin or wire end off connection grid
+    ; warning
+    @(17.46 mm, 53.73 mm): Symbol C1 Pin 1 [+12V, Passive, Line]
+[endpoint_off_grid]: Symbol pin or wire end off connection grid
+    ; warning
+    @(17.46 mm, 79.73 mm): Symbol C2 Pin 1 [+12V, Passive, Line]
+[endpoint_off_grid]: Symbol pin or wire end off connection grid
+    ; warning
+    @(17.46 mm, 105.73 mm): Symbol C3 Pin 1 [+12V, Passive, Line]
+[endpoint_off_grid]: Symbol pin or wire end off connection grid
+    ; warning
+    @(17.46 mm, 131.73 mm): Symbol J1 Pin 1 [+12V, Passive, Line]
+[endpoint_off_grid]: Symbol pin or wire end off connection grid
+    ; warning
+    @(17.46 mm, 157.27 mm): Symbol JR1 Pin 1 [R1_COM, Passive, Line]
+[endpoint_off_grid]: Symbol pin or wire end off connection grid
+    ; warning
+    @(17.46 mm, 184.89 mm): Symbol JR10 Pin 1 [R10_COM, Passive, Line]
+[endpoint_off_grid]: Symbol pin or wire end off connection grid
+    ; warning
+    @(17.46 mm, 212.51 mm): Symbol JR11 Pin 1 [R11_COM, Passive, Line]
+[endpoint_off_grid]: Symbol pin or wire end off connection grid
+    ; warning
+    @(17.46 mm, 240.13 mm): Symbol JR12 Pin 1 [R12_COM, Passive, Line]
+[endpoint_off_grid]: Symbol pin or wire end off connection grid
+    ; warning
+    @(17.46 mm, 267.75 mm): Symbol JR13 Pin 1 [R13_COM, Passive, Line]
+[endpoint_off_grid]: Symbol pin or wire end off connection grid
+    ; warning
+    @(17.46 mm, 295.37 mm): Symbol JR14 Pin 1 [R14_COM, Passive, Line]
+[endpoint_off_grid]: Symbol pin or wire end off connection grid
+    ; warning
+    @(17.46 mm, 322.99 mm): Symbol JR15 Pin 1 [R15_COM, Passive, Line]
+[endpoint_off_grid]: Symbol pin or wire end off connection grid
+    ; warning
+    @(17.46 mm, 350.61 mm): Symbol JR16 Pin 1 [R16_COM, Passive, Line]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'PSN'
+    ; warning
+    @(25.00 mm, 29.00 mm): Symbol BZ1 [BZ1]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'PSN'
+    ; warning
+    @(25.00 mm, 55.00 mm): Symbol C1 [C1]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'PSN'
+    ; warning
+    @(25.00 mm, 81.00 mm): Symbol C2 [C2]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'PSN'
+    ; warning
+    @(25.00 mm, 107.00 mm): Symbol C3 [C3]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'PSN'
+    ; warning
+    @(25.00 mm, 133.00 mm): Symbol J1 [J1]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'PSN'
+    ; warning
+    @(25.00 mm, 159.81 mm): Symbol JR1 [JR1]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'PSN'
+    ; warning
+    @(25.00 mm, 187.43 mm): Symbol JR10 [JR10]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'PSN'
+    ; warning
+    @(25.00 mm, 215.05 mm): Symbol JR11 [JR11]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'PSN'
+    ; warning
+    @(25.00 mm, 242.67 mm): Symbol JR12 [JR12]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'PSN'
+    ; warning
+    @(25.00 mm, 270.29 mm): Symbol JR13 [JR13]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'PSN'
+    ; warning
+    @(25.00 mm, 297.91 mm): Symbol JR14 [JR14]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'PSN'
+    ; warning
+    @(25.00 mm, 325.53 mm): Symbol JR15 [JR15]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'PSN'
+    ; warning
+    @(25.00 mm, 353.15 mm): Symbol JR16 [JR16]
+[endpoint_off_grid]: Symbol pin or wire end off connection grid
+    ; warning
+    @(62.46 mm, 27.27 mm): Symbol JR2 Pin 1 [R2_COM, Passive, Line]
+[endpoint_off_grid]: Symbol pin or wire end off connection grid
+    ; warning
+    @(62.46 mm, 54.89 mm): Symbol JR3 Pin 1 [R3_COM, Passive, Line]
+[endpoint_off_grid]: Symbol pin or wire end off connection grid
+    ; warning
+    @(62.46 mm, 82.51 mm): Symbol JR4 Pin 1 [R4_COM, Passive, Line]
+[endpoint_off_grid]: Symbol pin or wire end off connection grid
+    ; warning
+    @(62.46 mm, 110.13 mm): Symbol JR5 Pin 1 [R5_COM, Passive, Line]
+[endpoint_off_grid]: Symbol pin or wire end off connection grid
+    ; warning
+    @(62.46 mm, 137.75 mm): Symbol JR6 Pin 1 [R6_COM, Passive, Line]
+[endpoint_off_grid]: Symbol pin or wire end off connection grid
+    ; warning
+    @(62.46 mm, 165.37 mm): Symbol JR7 Pin 1 [R7_COM, Passive, Line]
+[endpoint_off_grid]: Symbol pin or wire end off connection grid
+    ; warning
+    @(62.46 mm, 192.99 mm): Symbol JR8 Pin 1 [R8_COM, Passive, Line]
+[endpoint_off_grid]: Symbol pin or wire end off connection grid
+    ; warning
+    @(62.46 mm, 220.61 mm): Symbol JR9 Pin 1 [R9_COM, Passive, Line]
+[endpoint_off_grid]: Symbol pin or wire end off connection grid
+    ; warning
+    @(62.46 mm, 248.23 mm): Symbol J_ALBA Pin 1 [+12V, Passive, Line]
+[endpoint_off_grid]: Symbol pin or wire end off connection grid
+    ; warning
+    @(62.46 mm, 278.39 mm): Symbol J_CASETTE Pin 1 [+12V, Passive, Line]
+[endpoint_off_grid]: Symbol pin or wire end off connection grid
+    ; warning
+    @(62.46 mm, 306.01 mm): Symbol J_CIELO Pin 1 [+12V, Passive, Line]
+[endpoint_off_grid]: Symbol pin or wire end off connection grid
+    ; warning
+    @(62.46 mm, 336.63 mm): Symbol J_NEXT Pin 1 [D23_NEXT, Passive, Line]
+[endpoint_off_grid]: Symbol pin or wire end off connection grid
+    ; warning
+    @(62.46 mm, 362.17 mm): Symbol J_OLED Pin 1 [+5V_MEGA, Passive, Line]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'PSN'
+    ; warning
+    @(70.00 mm, 29.81 mm): Symbol JR2 [JR2]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'PSN'
+    ; warning
+    @(70.00 mm, 57.43 mm): Symbol JR3 [JR3]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'PSN'
+    ; warning
+    @(70.00 mm, 85.05 mm): Symbol JR4 [JR4]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'PSN'
+    ; warning
+    @(70.00 mm, 112.67 mm): Symbol JR5 [JR5]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'PSN'
+    ; warning
+    @(70.00 mm, 140.29 mm): Symbol JR6 [JR6]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'PSN'
+    ; warning
+    @(70.00 mm, 167.91 mm): Symbol JR7 [JR7]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'PSN'
+    ; warning
+    @(70.00 mm, 195.53 mm): Symbol JR8 [JR8]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'PSN'
+    ; warning
+    @(70.00 mm, 223.15 mm): Symbol JR9 [JR9]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'PSN'
+    ; warning
+    @(70.00 mm, 252.04 mm): Symbol J_ALBA [J_ALBA]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'PSN'
+    ; warning
+    @(70.00 mm, 280.93 mm): Symbol J_CASETTE [J_CASETTE]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'PSN'
+    ; warning
+    @(70.00 mm, 309.82 mm): Symbol J_CIELO [J_CIELO]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'PSN'
+    ; warning
+    @(70.00 mm, 337.90 mm): Symbol J_NEXT [J_NEXT]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'PSN'
+    ; warning
+    @(70.00 mm, 365.98 mm): Symbol J_OLED [J_OLED]
+[endpoint_off_grid]: Symbol pin or wire end off connection grid
+    ; warning
+    @(107.46 mm, 27.73 mm): Symbol J_START Pin 1 [D22_START, Passive, Line]
+[endpoint_off_grid]: Symbol pin or wire end off connection grid
+    ; warning
+    @(107.46 mm, 53.27 mm): Symbol J_STELLE Pin 1 [+12V, Passive, Line]
+[endpoint_off_grid]: Symbol pin or wire end off connection grid
+    ; warning
+    @(107.46 mm, 81.35 mm): Symbol J_TEST Pin 1 [D24_TEST, Passive, Line]
+[endpoint_off_grid]: Symbol pin or wire end off connection grid
+    ; warning
+    @(107.46 mm, 106.89 mm): Symbol J_TRAMONTO Pin 1 [+12V, Passive, Line]
+[endpoint_off_grid]: Symbol pin or wire end off connection grid
+    ; warning
+    @(107.46 mm, 137.05 mm): Symbol K1 Pin 1 [+12V, Passive, Line]
+[endpoint_off_grid]: Symbol pin or wire end off connection grid
+    ; warning
+    @(107.46 mm, 169.75 mm): Symbol K10 Pin 1 [+12V, Passive, Line]
+[endpoint_off_grid]: Symbol pin or wire end off connection grid
+    ; warning
+    @(107.46 mm, 202.45 mm): Symbol K11 Pin 1 [+12V, Passive, Line]
+[endpoint_off_grid]: Symbol pin or wire end off connection grid
+    ; warning
+    @(107.46 mm, 235.15 mm): Symbol K12 Pin 1 [+12V, Passive, Line]
+[endpoint_off_grid]: Symbol pin or wire end off connection grid
+    ; warning
+    @(107.46 mm, 267.85 mm): Symbol K13 Pin 1 [+12V, Passive, Line]
+[endpoint_off_grid]: Symbol pin or wire end off connection grid
+    ; warning
+    @(107.46 mm, 300.55 mm): Symbol K14 Pin 1 [+12V, Passive, Line]
+[endpoint_off_grid]: Symbol pin or wire end off connection grid
+    ; warning
+    @(107.46 mm, 333.25 mm): Symbol K15 Pin 1 [+12V, Passive, Line]
+[endpoint_off_grid]: Symbol pin or wire end off connection grid
+    ; warning
+    @(107.46 mm, 365.95 mm): Symbol K16 Pin 1 [+12V, Passive, Line]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'PSN'
+    ; warning
+    @(115.00 mm, 29.00 mm): Symbol J_START [J_START]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'PSN'
+    ; warning
+    @(115.00 mm, 55.81 mm): Symbol J_STELLE [J_STELLE]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'PSN'
+    ; warning
+    @(115.00 mm, 82.62 mm): Symbol J_TEST [J_TEST]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'PSN'
+    ; warning
+    @(115.00 mm, 110.70 mm): Symbol J_TRAMONTO [J_TRAMONTO]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'PSN'
+    ; warning
+    @(115.00 mm, 142.13 mm): Symbol K1 [K1]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'PSN'
+    ; warning
+    @(115.00 mm, 174.83 mm): Symbol K10 [K10]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'PSN'
+    ; warning
+    @(115.00 mm, 207.53 mm): Symbol K11 [K11]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'PSN'
+    ; warning
+    @(115.00 mm, 240.23 mm): Symbol K12 [K12]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'PSN'
+    ; warning
+    @(115.00 mm, 272.93 mm): Symbol K13 [K13]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'PSN'
+    ; warning
+    @(115.00 mm, 305.63 mm): Symbol K14 [K14]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'PSN'
+    ; warning
+    @(115.00 mm, 338.33 mm): Symbol K15 [K15]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'PSN'
+    ; warning
+    @(115.00 mm, 371.03 mm): Symbol K16 [K16]
+[endpoint_off_grid]: Symbol pin or wire end off connection grid
+    ; warning
+    @(152.46 mm, 27.27 mm): Symbol K2 Pin 1 [+12V, Passive, Line]
+[endpoint_off_grid]: Symbol pin or wire end off connection grid
+    ; warning
+    @(152.46 mm, 59.97 mm): Symbol K3 Pin 1 [+12V, Passive, Line]
+[endpoint_off_grid]: Symbol pin or wire end off connection grid
+    ; warning
+    @(152.46 mm, 92.67 mm): Symbol K4 Pin 1 [+12V, Passive, Line]
+[endpoint_off_grid]: Symbol pin or wire end off connection grid
+    ; warning
+    @(152.46 mm, 125.37 mm): Symbol K5 Pin 1 [+12V, Passive, Line]
+[endpoint_off_grid]: Symbol pin or wire end off connection grid
+    ; warning
+    @(152.46 mm, 158.07 mm): Symbol K6 Pin 1 [+12V, Passive, Line]
+[endpoint_off_grid]: Symbol pin or wire end off connection grid
+    ; warning
+    @(152.46 mm, 190.77 mm): Symbol K7 Pin 1 [+12V, Passive, Line]
+[endpoint_off_grid]: Symbol pin or wire end off connection grid
+    ; warning
+    @(152.46 mm, 223.47 mm): Symbol K8 Pin 1 [+12V, Passive, Line]
+[endpoint_off_grid]: Symbol pin or wire end off connection grid
+    ; warning
+    @(152.46 mm, 256.17 mm): Symbol K9 Pin 1 [+12V, Passive, Line]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'PSN'
+    ; warning
+    @(160.00 mm, 32.35 mm): Symbol K2 [K2]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'PSN'
+    ; warning
+    @(160.00 mm, 65.05 mm): Symbol K3 [K3]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'PSN'
+    ; warning
+    @(160.00 mm, 97.75 mm): Symbol K4 [K4]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'PSN'
+    ; warning
+    @(160.00 mm, 130.45 mm): Symbol K5 [K5]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'PSN'
+    ; warning
+    @(160.00 mm, 163.15 mm): Symbol K6 [K6]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'PSN'
+    ; warning
+    @(160.00 mm, 195.85 mm): Symbol K7 [K7]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'PSN'
+    ; warning
+    @(160.00 mm, 228.55 mm): Symbol K8 [K8]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'PSN'
+    ; warning
+    @(160.00 mm, 261.25 mm): Symbol K9 [K9]
+[endpoint_off_grid]: Symbol pin or wire end off connection grid
+    ; warning
+    @(197.46 mm, 27.27 mm): Symbol MCU1 Pin 5V1 [+5V_MEGA, Passive, Line]
+[endpoint_off_grid]: Symbol pin or wire end off connection grid
+    ; warning
+    @(197.46 mm, 161.57 mm): Symbol Q1 Pin 1 [GATE_Q1, Passive, Line]
+[endpoint_off_grid]: Symbol pin or wire end off connection grid
+    ; warning
+    @(197.46 mm, 189.19 mm): Symbol Q2 Pin 1 [GATE_Q2, Passive, Line]
+[endpoint_off_grid]: Symbol pin or wire end off connection grid
+    ; warning
+    @(197.46 mm, 216.81 mm): Symbol Q3 Pin 1 [GATE_Q3, Passive, Line]
+[endpoint_off_grid]: Symbol pin or wire end off connection grid
+    ; warning
+    @(197.46 mm, 244.43 mm): Symbol Q4 Pin 1 [GATE_Q4, Passive, Line]
+[endpoint_off_grid]: Symbol pin or wire end off connection grid
+    ; warning
+    @(197.46 mm, 272.05 mm): Symbol Q5 Pin 1 [GATE_Q5, Passive, Line]
+[endpoint_off_grid]: Symbol pin or wire end off connection grid
+    ; warning
+    @(197.46 mm, 299.67 mm): Symbol Q6 Pin 1 [GATE_Q6, Passive, Line]
+[endpoint_off_grid]: Symbol pin or wire end off connection grid
+    ; warning
+    @(197.46 mm, 327.29 mm): Symbol Q7 Pin 1 [GATE_Q7, Passive, Line]
+[endpoint_off_grid]: Symbol pin or wire end off connection grid
+    ; warning
+    @(197.46 mm, 354.91 mm): Symbol Q8 Pin 1 [GATE_Q8, Passive, Line]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'PSN'
+    ; warning
+    @(205.00 mm, 83.15 mm): Symbol MCU1 [MCU1]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'PSN'
+    ; warning
+    @(205.00 mm, 164.11 mm): Symbol Q1 [Q1]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'PSN'
+    ; warning
+    @(205.00 mm, 191.73 mm): Symbol Q2 [Q2]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'PSN'
+    ; warning
+    @(205.00 mm, 219.35 mm): Symbol Q3 [Q3]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'PSN'
+    ; warning
+    @(205.00 mm, 246.97 mm): Symbol Q4 [Q4]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'PSN'
+    ; warning
+    @(205.00 mm, 274.59 mm): Symbol Q5 [Q5]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'PSN'
+    ; warning
+    @(205.00 mm, 302.21 mm): Symbol Q6 [Q6]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'PSN'
+    ; warning
+    @(205.00 mm, 329.83 mm): Symbol Q7 [Q7]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'PSN'
+    ; warning
+    @(205.00 mm, 357.45 mm): Symbol Q8 [Q8]
+[endpoint_off_grid]: Symbol pin or wire end off connection grid
+    ; warning
+    @(242.46 mm, 27.27 mm): Symbol Q9 Pin 1 [GATE_Q9, Passive, Line]
+[endpoint_off_grid]: Symbol pin or wire end off connection grid
+    ; warning
+    @(242.46 mm, 55.35 mm): Symbol RG1 Pin 1 [D2_CIELO_R, Passive, Line]
+[endpoint_off_grid]: Symbol pin or wire end off connection grid
+    ; warning
+    @(242.46 mm, 81.35 mm): Symbol RG2 Pin 1 [D3_CIELO_G, Passive, Line]
+[endpoint_off_grid]: Symbol pin or wire end off connection grid
+    ; warning
+    @(242.46 mm, 107.35 mm): Symbol RG3 Pin 1 [D4_CIELO_B, Passive, Line]
+[endpoint_off_grid]: Symbol pin or wire end off connection grid
+    ; warning
+    @(242.46 mm, 133.35 mm): Symbol RG4 Pin 1 [D7_TRAM_R, Passive, Line]
+[endpoint_off_grid]: Symbol pin or wire end off connection grid
+    ; warning
+    @(242.46 mm, 159.35 mm): Symbol RG5 Pin 1 [D11_TRAM_G, Passive, Line]
+[endpoint_off_grid]: Symbol pin or wire end off connection grid
+    ; warning
+    @(242.46 mm, 185.35 mm): Symbol RG6 Pin 1 [D12_TRAM_B, Passive, Line]
+[endpoint_off_grid]: Symbol pin or wire end off connection grid
+    ; warning
+    @(242.46 mm, 211.35 mm): Symbol RG7 Pin 1 [D44_ALBA_R, Passive, Line]
+[endpoint_off_grid]: Symbol pin or wire end off connection grid
+    ; warning
+    @(242.46 mm, 237.35 mm): Symbol RG8 Pin 1 [D45_ALBA_G, Passive, Line]
+[endpoint_off_grid]: Symbol pin or wire end off connection grid
+    ; warning
+    @(242.46 mm, 263.35 mm): Symbol RG9 Pin 1 [D46_ALBA_B, Passive, Line]
+[endpoint_off_grid]: Symbol pin or wire end off connection grid
+    ; warning
+    @(242.46 mm, 289.35 mm): Symbol RPD1 Pin 1 [GATE_Q1, Passive, Line]
+[endpoint_off_grid]: Symbol pin or wire end off connection grid
+    ; warning
+    @(242.46 mm, 315.35 mm): Symbol RPD2 Pin 1 [GATE_Q2, Passive, Line]
+[endpoint_off_grid]: Symbol pin or wire end off connection grid
+    ; warning
+    @(242.46 mm, 341.35 mm): Symbol RPD3 Pin 1 [GATE_Q3, Passive, Line]
+[endpoint_off_grid]: Symbol pin or wire end off connection grid
+    ; warning
+    @(242.46 mm, 367.35 mm): Symbol RPD4 Pin 1 [GATE_Q4, Passive, Line]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'PSN'
+    ; warning
+    @(250.00 mm, 29.81 mm): Symbol Q9 [Q9]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'PSN'
+    ; warning
+    @(250.00 mm, 56.62 mm): Symbol RG1 [RG1]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'PSN'
+    ; warning
+    @(250.00 mm, 82.62 mm): Symbol RG2 [RG2]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'PSN'
+    ; warning
+    @(250.00 mm, 108.62 mm): Symbol RG3 [RG3]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'PSN'
+    ; warning
+    @(250.00 mm, 134.62 mm): Symbol RG4 [RG4]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'PSN'
+    ; warning
+    @(250.00 mm, 160.62 mm): Symbol RG5 [RG5]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'PSN'
+    ; warning
+    @(250.00 mm, 186.62 mm): Symbol RG6 [RG6]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'PSN'
+    ; warning
+    @(250.00 mm, 212.62 mm): Symbol RG7 [RG7]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'PSN'
+    ; warning
+    @(250.00 mm, 238.62 mm): Symbol RG8 [RG8]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'PSN'
+    ; warning
+    @(250.00 mm, 264.62 mm): Symbol RG9 [RG9]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'PSN'
+    ; warning
+    @(250.00 mm, 290.62 mm): Symbol RPD1 [RPD1]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'PSN'
+    ; warning
+    @(250.00 mm, 316.62 mm): Symbol RPD2 [RPD2]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'PSN'
+    ; warning
+    @(250.00 mm, 342.62 mm): Symbol RPD3 [RPD3]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'PSN'
+    ; warning
+    @(250.00 mm, 368.62 mm): Symbol RPD4 [RPD4]
+[endpoint_off_grid]: Symbol pin or wire end off connection grid
+    ; warning
+    @(287.46 mm, 27.73 mm): Symbol RPD5 Pin 1 [GATE_Q5, Passive, Line]
+[endpoint_off_grid]: Symbol pin or wire end off connection grid
+    ; warning
+    @(287.46 mm, 53.73 mm): Symbol RPD6 Pin 1 [GATE_Q6, Passive, Line]
+[endpoint_off_grid]: Symbol pin or wire end off connection grid
+    ; warning
+    @(287.46 mm, 79.73 mm): Symbol RPD7 Pin 1 [GATE_Q7, Passive, Line]
+[endpoint_off_grid]: Symbol pin or wire end off connection grid
+    ; warning
+    @(287.46 mm, 105.73 mm): Symbol RPD8 Pin 1 [GATE_Q8, Passive, Line]
+[endpoint_off_grid]: Symbol pin or wire end off connection grid
+    ; warning
+    @(287.46 mm, 131.73 mm): Symbol RPD9 Pin 1 [GATE_Q9, Passive, Line]
+[endpoint_off_grid]: Symbol pin or wire end off connection grid
+    ; warning
+    @(287.46 mm, 157.27 mm): Symbol RV1 Pin 1 [GND, Passive, Line]
+[endpoint_off_grid]: Symbol pin or wire end off connection grid
+    ; warning
+    @(287.46 mm, 184.89 mm): Symbol U1 Pin 1 [D25_RELAY1, Passive, Line]
+[endpoint_off_grid]: Symbol pin or wire end off connection grid
+    ; warning
+    @(287.46 mm, 250.61 mm): Symbol U2 Pin 1 [D33_RELAY9, Passive, Line]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'PSN'
+    ; warning
+    @(295.00 mm, 29.00 mm): Symbol RPD5 [RPD5]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'PSN'
+    ; warning
+    @(295.00 mm, 55.00 mm): Symbol RPD6 [RPD6]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'PSN'
+    ; warning
+    @(295.00 mm, 81.00 mm): Symbol RPD7 [RPD7]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'PSN'
+    ; warning
+    @(295.00 mm, 107.00 mm): Symbol RPD8 [RPD8]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'PSN'
+    ; warning
+    @(295.00 mm, 133.00 mm): Symbol RPD9 [RPD9]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'PSN'
+    ; warning
+    @(295.00 mm, 159.81 mm): Symbol RV1 [RV1]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'PSN'
+    ; warning
+    @(295.00 mm, 206.48 mm): Symbol U1 [U1]
+[lib_symbol_issues]: The current configuration does not include the symbol library 'PSN'
+    ; warning
+    @(295.00 mm, 272.20 mm): Symbol U2 [U2]
+
+ ** ERC messages: 154  Errors 0  Warnings 154
+
+ ** Ignored checks:
+    - Global label only appears once in the schematic
+    - Four connection points are joined together
+    - SPICE model issue
+    - Assigned footprint doesn't match footprint filters
