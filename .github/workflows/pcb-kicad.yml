@@ -59,6 +59,22 @@ jobs:
           python3 hardware/pcb/tools/check_revb_schematic_connectivity.py \
             hardware/pcb/release/Rev-B/PSN-Presepe-Mega-FREEROUTED.kicad_pcb \
             hardware/pcb/kicad/PSN-Presepe-Mega-RevB.kicad_sch
+      - name: Reject non-electrical schematic placeholders
+        run: |
+          SCH=hardware/pcb/kicad/PSN-Presepe-Mega-RevB.kicad_sch
+          # A real modern KiCad schematic must embed symbol definitions and
+          # instantiate electrical symbols/pins; text-only net inventories fail.
+          python3 - <<'PY'
+          import re
+          p="hardware/pcb/kicad/PSN-Presepe-Mega-RevB.kicad_sch"
+          s=open(p,encoding="utf-8").read()
+          libdefs=len(re.findall(r'\\(symbol "[^"]+"', s[s.find("(lib_symbols)"):])) if "(lib_symbols)" in s else 0
+          instances=len(re.findall(r'^  \\(symbol\\s',s,re.M))
+          pins=len(re.findall(r'\\(pin "[^"]+" \\(uuid ',s))
+          print("REAL_SCHEMATIC_GATE", "libdefs=",libdefs, "instances=",instances, "pins=",pins)
+          if libdefs < 1 or instances < 1 or pins < 1:
+              raise SystemExit("Text-only/placeholder schematic rejected: real symbols and pins required")
+          PY
       - name: Rev-B schematic ERC
         run: |
           mkdir -p hardware/pcb/build
