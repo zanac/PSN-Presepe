@@ -76,6 +76,19 @@ try:
     if vis_errors:
         print("\\n".join("TERMINAL_VISIBILITY_FAIL "+x for x in sorted(set(vis_errors))))
         sys.exit(1)
-    print("TERMINAL_VISIBILITY_PASS labels clear of other fitted footprint bounding boxes")
+    # Own-terminal visibility: pole labels are deliberately placed at local y=-4 mm,
+    # on the wiring/access side of the terminal row. Function/channel labels are at +4 mm.
+    # Verify these placements from the source blocks so later footprint edits cannot bury them.
+    own_errors=[]
+    for ref,labels in required.items():
+        b=footprint_block(ref)
+        pole_labels=labels[:-1] if len(labels)>2 and labels[-1] in ({'POWER','OLED','CIELO','TRAMONTO','ALBA','STELLE','CASETTE'} | {f'R{i}' for i in range(1,17)}) else labels
+        for label in pole_labels:
+            m=re.search(r'\\(fp_text user "'+re.escape(label)+r'"\\s+\\(at [-0-9.]+ (-?[0-9.]+)',b)
+            if not m or float(m.group(1)) > -3.5:
+                own_errors.append(f"{ref}:{label} not on terminal wiring/access side")
+    if own_errors:
+        print("\\n".join("TERMINAL_OWN_BODY_FAIL "+x for x in own_errors)); sys.exit(1)
+    print("TERMINAL_VISIBILITY_PASS labels clear of other fitted footprint bounding boxes; pole labels on own wiring/access side")
 except ImportError:
     print("TERMINAL_VISIBILITY_SKIP pcbnew unavailable; run this checker inside KiCad CI")
