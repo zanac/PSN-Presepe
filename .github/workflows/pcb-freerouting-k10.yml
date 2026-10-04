@@ -226,16 +226,27 @@ jobs:
           # Hard gate: every relay contact pad must retain its electrical net
           # after the DSN/SES round-trip. Check the serialized KiCad board, not
           # only pcbnew's in-memory view.
-          import re
           final_text=open(out,encoding="utf-8").read()
+          # Split serialized top-level footprints using the stable KiCad
+          # indentation instead of a nested-parenthesis regex.
+          chunks=final_text.split("\\n\\t(footprint ")
+          fp_by_ref={}
+          for chunk in chunks[1:]:
+              block="\\t(footprint "+chunk
+              for i in range(1,17):
+                  if f'(property "Reference" "K{i}"' in block:
+                      fp_by_ref[f"K{i}"]=block
+                      break
           lost=[]
           for i in range(1,17):
+              block=fp_by_ref.get(f"K{i}","")
               for pad,suffix in (("2","COM"),("3","NO"),("4","NC")):
                   net=f"R{i}_{suffix}"
-                  # Restrict to the K<i> footprint block and require the pad's
-                  # serialized S-expression to contain the expected net name.
-                  m=re.search(r'\\(footprint[\\s\\S]*?\\(property "Reference" "K'+str(i)+r'"[\\s\\S]*?(?=\\n\\t\\(footprint|\\Z)',final_text)
-                  if not m or not re.search(r'\\(pad "'+pad+r'"[\\s\\S]*?\\(net \\d+ "'+re.escape(net)+r'"\\)',m.group(0)):
+                  marker=f'(pad "{pad}"'
+                  p=block.find(marker)
+                  q=block.find('\\n\\t\\t(pad "',p+1) if p >= 0 else -1
+                  pad_block=block[p:q if q >= 0 else len(block)] if p >= 0 else ""
+                  if f'"{net}"' not in pad_block:
                       lost.append((f"K{i}",pad,net))
           print("SES_RELAY_CONTACT_NET_AUDIT lost=",lost)
           if lost:
