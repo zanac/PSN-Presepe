@@ -2,7 +2,7 @@ name: PCB Original KiCad10 Freerouting
 
 permissions:
   contents: write
-# 280x170 production routing pipeline
+# 380x180 Rev-C production routing pipeline
 # trigger: Rev-C current-head rerun after routing/sanity gate fixes
 
 on:
@@ -50,7 +50,7 @@ jobs:
       - name: Verify critical physical footprints and relay contact mapping
         run: python3 hardware/pcb/tools/check_critical_footprints.py
 
-      - name: Prepare clean original 280x170 PCB and export Specctra DSN
+      - name: Prepare clean original 380x180 PCB and export Specctra DSN
         run: |
           python3 hardware/pcb/tools/make_clean_board.py --output hardware/pcb/kicad/PSN-Presepe-Mega-CLEAN.kicad_pcb
           python3 - <<'PY'
@@ -109,14 +109,14 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 35
     container:
-      image: ghcr.io/freerouting/freerouting:2.2.4
+      image: ghcr.io/freerouting/freerouting:2.4.1
       options: --user 0
     steps:
       - uses: actions/download-artifact@v4
         with:
           name: freerouting-input
           path: work
-      - name: Freerouting 2.2.4 headless
+      - name: Freerouting 2.4.1 headless
         run: |
           find work -type f -maxdepth 6 -print
           DSN=$(find work -name '*.dsn' | head -1)
@@ -363,14 +363,14 @@ jobs:
         run: |
           mkdir -p manufacturing/previews
           kicad-cli pcb render --help
-          kicad-cli pcb render --output manufacturing/previews/PSN-Presepe-RevB-technical.png --width 7680 --height 4663 --quality high --side top PSN-Presepe-Mega-FREEROUTED.kicad_pcb
-          kicad-cli pcb export svg -l F.Silkscreen,Edge.Cuts --page-size-mode 2 --exclude-drawing-sheet -o manufacturing/previews/PSN-Presepe-RevB-manual.svg PSN-Presepe-Mega-FREEROUTED.kicad_pcb
+          kicad-cli pcb render --output manufacturing/previews/PSN-Presepe-RevC-technical.png --width 7680 --height 4663 --quality high --side top PSN-Presepe-Mega-FREEROUTED.kicad_pcb
+          kicad-cli pcb export svg -l F.Silkscreen,Edge.Cuts --page-size-mode 2 --exclude-drawing-sheet -o manufacturing/previews/PSN-Presepe-RevC-manual.svg PSN-Presepe-Mega-FREEROUTED.kicad_pcb
           # Produce a second high-resolution top PNG for documentation/manual use.
           # Keep the lossless silkscreen SVG alongside it.
-          kicad-cli pcb render --output manufacturing/previews/PSN-Presepe-RevB-manual.png --width 7680 --height 4663 --quality basic --side top --preset follow_plot_settings PSN-Presepe-Mega-FREEROUTED.kicad_pcb
-          test -s manufacturing/previews/PSN-Presepe-RevB-technical.png
-          test -s manufacturing/previews/PSN-Presepe-RevB-manual.png
-          test -s manufacturing/previews/PSN-Presepe-RevB-manual.svg
+          kicad-cli pcb render --output manufacturing/previews/PSN-Presepe-RevC-manual.png --width 7680 --height 4663 --quality basic --side top --preset follow_plot_settings PSN-Presepe-Mega-FREEROUTED.kicad_pcb
+          test -s manufacturing/previews/PSN-Presepe-RevC-technical.png
+          test -s manufacturing/previews/PSN-Presepe-RevC-manual.png
+          test -s manufacturing/previews/PSN-Presepe-RevC-manual.svg
           echo "PCB_PREVIEWS_PASS"
       - name: Generate BOM CPL and complete manufacturing package
         run: |
@@ -383,14 +383,14 @@ jobs:
           test -s manufacturing/PSN-Presepe-Mega-FREEROUTED.kicad_pcb
           test -s manufacturing/freerouted-k10.drc.txt
           echo "MANUFACTURING_PACKAGE_PASS"
-      - name: Commit validated Rev-B manufacturing release
+      - name: Commit validated Rev-C manufacturing release
         run: |
-          RELEASE=repo/hardware/pcb/release/Rev-B
+          RELEASE=repo/hardware/pcb/release/Rev-C
           rm -rf "$RELEASE"
           mkdir -p "$RELEASE"
           cp -a manufacturing/. "$RELEASE/"
           cat > "$RELEASE/README.md" <<'EOF'
-          # PSN-Presepe PCB Manufacturing Release — Rev B
+          # PSN-Presepe PCB Manufacturing Release — Rev C
 
           This directory is the validated manufacturing snapshot produced by the KiCad 10 / Freerouting CI pipeline.
 
@@ -413,11 +413,11 @@ jobs:
           cd repo
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add hardware/pcb/release/Rev-B
+          git add hardware/pcb/release/Rev-C
           if git diff --cached --quiet; then
             echo "RELEASE_ALREADY_CURRENT"
           else
-            git commit -m "Add validated Rev-B PCB manufacturing release [skip ci]"
+            git commit -m "Add validated Rev-C PCB manufacturing release [skip ci]"
             git push origin HEAD:dev
           fi
       - uses: actions/upload-artifact@v4
