@@ -172,7 +172,12 @@ jobs:
         run: |
           python3 - <<'PY'
           import pcbnew, glob, shutil
-          src=glob.glob("input/**/*.kicad_pcb",recursive=True)[0]
+          pcbs=glob.glob("input/**/*.kicad_pcb",recursive=True)
+          clean=[p for p in pcbs if p.endswith("PSN-Presepe-Mega-CLEAN.kicad_pcb")]
+          if len(clean) != 1:
+              raise SystemExit("Expected exactly one CLEAN PCB, found: "+repr(pcbs))
+          src=clean[0]
+          print("AUTHORITATIVE_CLEAN_PCB",src)
           ses=glob.glob("output/**/*.ses",recursive=True)[0]
           dru=glob.glob("input/**/*.kicad_dru",recursive=True)[0]
           out="PSN-Presepe-Mega-FREEROUTED.kicad_pcb"
