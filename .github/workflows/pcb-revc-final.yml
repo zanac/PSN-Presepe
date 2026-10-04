@@ -1,0 +1,38 @@
+name: PCB Rev-C KiCad10 Final Gate
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [dev]
+    paths:
+      - 'hardware/pcb/PSN-Presepe-RevC/**'
+      - '.github/workflows/pcb-revc-final.yml'
+
+jobs:
+  kicad10-final:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    container:
+      image: kicad/kicad:10.0
+    steps:
+      - uses: actions/checkout@v4
+      - name: KiCad version
+        run: kicad-cli version
+      - name: DRC
+        working-directory: hardware/pcb/PSN-Presepe-RevC/kicad
+        run: |
+          kicad-cli pcb drc --exit-code-violations --all-track-errors --schematic-parity -o ../../reports/kicad10-drc.txt PSN-Presepe-Mega-RevC.kicad_pcb
+          grep -E "Found 0 DRC violations|Found 0 unconnected" ../../reports/kicad10-drc.txt
+      - name: ERC
+        working-directory: hardware/pcb/PSN-Presepe-RevC/kicad
+        run: |
+          kicad-cli sch erc --exit-code-violations -o ../../reports/kicad10-erc.txt PSN-Presepe-Mega-RevC.kicad_sch
+      - name: Upload KiCad10 reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: revc-kicad10-final-reports
+          path: |
+            hardware/pcb/PSN-Presepe-RevC/reports/kicad10-drc.txt
+            hardware/pcb/PSN-Presepe-RevC/reports/kicad10-erc.txt
+          if-no-files-found: warn
