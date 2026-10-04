@@ -89,8 +89,8 @@ for n in sorted(targets):
 print("DSN_CLASS_MEMBERSHIP_PASS nets",len(targets))
 # Inject the deliberate 3 mm GND spine directly into Specctra wiring.
 fixed=[
- ((52000,176000),(130000,176000),"B.Cu"),
- ((130000,176000),(130000,128000),"B.Cu"),
+ ((52000,172000),(130000,172000),"B.Cu"),
+ ((130000,172000),(130000,128000),"B.Cu"),
 ]
 widx=s.rfind("(wiring")
 if widx < 0:
