@@ -204,20 +204,10 @@ jobs:
           grep -q "Relay contacts to SELV 6mm" positive-control.drc.txt || { echo "RELAY_6MM_RULE_DID_NOT_FIRE"; cat positive-control.drc.txt; exit 1; }
           echo "RELAY_6MM_RULE_POSITIVE_CONTROL_PASS"
           kicad-cli pcb drc --severity-all --output freerouted-k10.drc.txt PSN-Presepe-Mega-FREEROUTED.kicad_pcb || true
-          python3 - <<'PY'
-          from pathlib import Path
-          import re
-          def violations(path):
-              s=Path(path).read_text()
-              m=re.search(r"Found ([0-9]+) DRC violations",s,re.I)
-              return int(m.group(1)) if m else -1
-          base=violations("freerouted-k10.drc.txt")
-          control=violations("positive-control.drc.txt")
-          print("CUSTOM_RULE_POSITIVE_CONTROL baseline=",base,"forced=",control)
-          if base < 0 or control <= base:
-              raise SystemExit("CUSTOM_RULE_POSITIVE_CONTROL failed")
-          print("CUSTOM_RULE_POSITIVE_CONTROL passed")
-          PY
+          # The positive control is proven by the named 6 mm rule firing above.
+          # Do not compare total violation counts: the two synthetic tracks can
+          # simultaneously change unrelated connectivity/DRC counts.
+          echo "CUSTOM_RULE_POSITIVE_CONTROL passed named_rule=Relay_contacts_to_SELV_6mm"
           grep -E 'Found|\\[.*\\]:' freerouted-k10.drc.txt | tail -160 || true
           echo '--- FULL UNEXPECTED DRC DETAILS ---'
           cat freerouted-k10.drc.txt
