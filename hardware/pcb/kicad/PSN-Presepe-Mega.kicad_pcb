@@ -889,7 +889,7 @@
 	(footprint "PSN_Presep_Custom:TerminalBlock_Phoenix_MKDS-1.5-3-5.08"
 		(layer "F.Cu")
 		(uuid "2dd3494e-9da3-4271-8324-bbe9598295a7")
-		(at 392 138 90)
+		(at 392 143 90)
 		(property "Reference" "JR14"
 			(at 5.08 -3 90)
 			(layer "F.Fab")
@@ -6727,7 +6727,7 @@
 	(footprint "PSN_Presep_Custom:TerminalBlock_Phoenix_MKDS-1.5-3-5.08"
 		(layer "F.Cu")
 		(uuid "8f537e18-d9db-42d9-912c-65974f048fce")
-		(at 392 120 90)
+		(at 392 124 90)
 		(property "Reference" "JR13"
 			(at 5.08 -3 90)
 			(layer "F.Fab")
@@ -6909,7 +6909,7 @@
 	(footprint "PSN_Presep_Custom:TerminalBlock_Phoenix_MKDS-1.5-3-5.08"
 		(layer "F.Cu")
 		(uuid "9acbd9f1-cb29-4797-bf37-66e9d4cec42d")
-		(at 392 66 90)
+		(at 392 67 90)
 		(property "Reference" "JR10"
 			(at 5.08 -3 90)
 			(layer "F.Fab")
@@ -7340,7 +7340,7 @@
 	(footprint "PSN_Presep_Custom:TerminalBlock_Phoenix_MKDS-1.5-3-5.08"
 		(layer "F.Cu")
 		(uuid "a519ee45-73a1-4fc8-b8f3-317fefd00c32")
-		(at 392 84 90)
+		(at 392 86 90)
 		(property "Reference" "JR11"
 			(at 5.08 -3 90)
 			(layer "F.Fab")
@@ -7564,7 +7564,7 @@
 	(footprint "PSN_Presep_Custom:TerminalBlock_Phoenix_MKDS-1.5-3-5.08"
 		(layer "F.Cu")
 		(uuid "a975b62f-eb91-483d-a554-45003084813b")
-		(at 392 102 90)
+		(at 392 105 90)
 		(property "Reference" "JR12"
 			(at 5.08 -3 90)
 			(layer "F.Fab")
@@ -7865,7 +7865,7 @@
 	(footprint "PSN_Presep_Custom:TerminalBlock_Phoenix_MKDS-1.5-3-5.08"
 		(layer "F.Cu")
 		(uuid "b03d4e75-c4a6-4076-b4ff-684ff867936a")
-		(at 392 174 90)
+		(at 392 181 90)
 		(property "Reference" "JR16"
 			(at 5.08 -3 90)
 			(layer "F.Fab")
@@ -8992,7 +8992,7 @@
 	(footprint "PSN_Presep_Custom:TerminalBlock_Phoenix_MKDS-1.5-3-5.08"
 		(layer "F.Cu")
 		(uuid "d08c72d4-11de-4ca6-a70f-62da441d78b3")
-		(at 392 156 90)
+		(at 392 162 90)
 		(property "Reference" "JR15"
 			(at 5.08 -3 90)
 			(layer "F.Fab")
