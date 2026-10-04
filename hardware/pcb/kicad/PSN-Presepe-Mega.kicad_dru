@@ -1,8 +1,13 @@
 (version 1)
 
-# PSN-Presepe Rev-B safety rules.
-# Relay contact nets may carry mains voltage. 6 mm is an internal design target,
+# PSN-Presepe Rev-C safety rules.
+# Relay contact nets may carry mains voltage. 6 mm is an internal PCB design target,
 # not a statement of regulatory certification.
+# Scope: each relay contact circuit Rn_{COM,NO,NC} must keep >=6 mm from SELV
+# copper and from contact circuits belonging to DIFFERENT relays.
+# COM/NO/NC belonging to the SAME relay are one switched contact circuit and are
+# intentionally excluded from the 6 mm inter-circuit rule. Their geometry is
+# defined by the selected Omron G5Q-1 relay and 5.08 mm terminal footprint.
 # KiCad custom-rule string equality supports wildcard matching.
 
 (rule "Relay contacts to SELV 6mm"
