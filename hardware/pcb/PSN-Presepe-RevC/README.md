@@ -125,6 +125,10 @@ KICAD_FOOTPRINT_DIR=/usr/share/kicad/footprints \
   build/scripts/make_release.sh /tmp/revc/final.kicad_pcb /tmp/revc-release /path/PSN-Presepe.ino
 ```
 
+### Build reference data
+
+Files named `build/data/revb_*.json` are **read-only historical baselines** used to prove that Rev C preserves the intended Rev B electrical net/pad/value mapping except for the explicitly documented Rev C corrections. They are not fabrication inputs and do not identify the active PCB revision. The only production source is `kicad/PSN-Presepe-Mega-RevC.kicad_pcb`.
+
 Pipeline steps:
 1. `build_board.py`: placement and netlist, including the Rev C fixes.
 2. `make_rules.py`: net classes and isolation rules.
