@@ -72,6 +72,12 @@ jobs:
           widths=sorted(set(re.findall(r"\(width\s+([0-9.]+)",d)))
           print("DSN_WIDTH_VALUES",widths)
           print("DSN_SIZE",len(d))
+          cc=re.findall(r'\\(class_class\\s+"RELAY_[0-9]+_CONTACT"',d)
+          print("DSN_RELAY_CLASS_CLASS_COUNT",len(cc))
+          if len(cc) != 256:
+              raise SystemExit("DSN relay clearance matrix incomplete: "+str(len(cc)))
+          if d.count("(clearance 6000)") < 256:
+              raise SystemExit("DSN 6mm clearance entries missing")
           for expected in ("3000","2000","1500"):
               if expected not in widths:
                   raise SystemExit("DSN production width missing: "+expected)
@@ -121,7 +127,10 @@ jobs:
           find work -type f -maxdepth 6 -print
           DSN=$(find work -name '*.dsn' | head -1)
           echo "DSN=$DSN"
-          timeout 30m java -jar /app/freerouting-executable.jar --gui.enabled=false -de "$DSN" -do work/routed.ses -mp 120
+          timeout 30m java -jar /app/freerouting-executable.jar --gui.enabled=false -de "$DSN" -do work/routed.ses -mp 120 2>&1 | tee work/freerouting.log
+          test -s work/routed.ses
+          echo "FREEROUTING_RULE_DIAGNOSTICS"
+          grep -Ei 'class_class|clearance|rule|warning|error' work/freerouting.log | tail -120 || true
           test -s work/routed.ses
       - uses: actions/upload-artifact@v4
         with:
