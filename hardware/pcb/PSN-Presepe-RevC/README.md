@@ -4,7 +4,7 @@ Rev C supersedes Rev B. It fixes the Rev B blocking defects, and every step of t
 build is checked by KiCad DRC plus two independent checkers (one on the board file,
 one on the Gerber/Excellon files the fab will actually use).
 
-**Status: ready to order once the pre-order checklist below is done.** That checklist
+**Status: official Rev C source and manufacturing candidate.** The accepted design target is 6 mm MAINS-to-SELV, 5 mm between different relay contact circuits, and 2 mm within the same relay contact circuit. Final ordering remains gated by KiCad 10 CI plus the pre-order checklist below. That checklist
 is a 1:1 paper fit test and confirming the exact part numbers.
 
 ## 1. What changed from Rev B
@@ -55,6 +55,8 @@ The isolation distances are a conservative design target for 230 V AC, pollution
 | Board geometry: shorts, clearances by class, connectivity, holes, edge, widths, pinout, footprint patterns, netlist parity with Rev B + listed changes, firmware pins, Mega keep-out | `build/verify.py` (shapely, no KiCad) | **ALL CHECKS PASSED** |
 | Manufacturing files: Gerber copper islands vs X2 net attributes, clearances incl. MAINS, annular rings, NPTH, mask openings, tented vias, outline | `build/verify_gerbers.py` (gerbonara, no KiCad) | **ALL GERBER CHECKS PASSED** |
 | Schematic ↔ PCB | `kicad-cli sch export netlist` + `check_sch_parity.py` | 315/315 pins match |
+
+Project decision (2026-10-04): the 5 mm inter-relay target is accepted for Rev C; the measured 5.23 mm is therefore compliant and is not a waiver. The 6 mm target remains mandatory between relay-contact copper and SELV.
 
 Measured minimum distances:
 
