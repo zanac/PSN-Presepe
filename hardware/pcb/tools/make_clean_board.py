@@ -64,8 +64,8 @@ text=text.replace(old,new,1)
 # Reserve a deliberate 3 mm GND power spine below the MOSFET matrix, away
 # from the Q1..Q9 pads. Freerouting will connect the local GND branches to it.
 preroutes=[
-    ((52.0,176.0),(130.0,176.0),"B.Cu"),
-    ((130.0,176.0),(130.0,128.0),"B.Cu"),
+    ((52.0,172.0),(130.0,172.0),"B.Cu"),
+    ((130.0,172.0),(130.0,128.0),"B.Cu"),
 ]
 segments=[]
 for idx,(p1,p2,layer) in enumerate(preroutes,1):
@@ -74,7 +74,7 @@ for idx,(p1,p2,layer) in enumerate(preroutes,1):
 end=text.rfind(")")
 if end<0: raise RuntimeError("Board closing parenthesis not found")
 text=text[:end]+"".join(segments)+"\n"+text[end:]
-print(f"PREROUTE_GND_SPINE locked_segments={len(preroutes)} width=3.0mm corridor_y=176mm")
+print(f"PREROUTE_GND_SPINE locked_segments={len(preroutes)} width=3.0mm corridor_y=172mm")
 
 dst.parent.mkdir(parents=True,exist_ok=True);dst.write_text(text)
 print(f"CLEAN board={w:.1f}x{h:.1f}mm footprints={len(blocks(text,'(footprint'))}")
