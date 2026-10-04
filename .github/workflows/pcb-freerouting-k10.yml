@@ -223,6 +223,23 @@ jobs:
           # centerline cannot satisfy clearance to Q3/Q6/Q9 pad 2. Keep this
           # local neckdown and enforce 3 mm on the external power backbone.
           pcbnew.SaveBoard(out,b)
+          # Hard gate: every relay contact pad must retain its electrical net
+          # after the DSN/SES round-trip. Check the serialized KiCad board, not
+          # only pcbnew's in-memory view.
+          import re
+          final_text=open(out,encoding="utf-8").read()
+          lost=[]
+          for i in range(1,17):
+              for pad,suffix in (("2","COM"),("3","NO"),("4","NC")):
+                  net=f"R{i}_{suffix}"
+                  # Restrict to the K<i> footprint block and require the pad's
+                  # serialized S-expression to contain the expected net name.
+                  m=re.search(r'\\(footprint[\\s\\S]*?\\(property "Reference" "K'+str(i)+r'"[\\s\\S]*?(?=\\n\\t\\(footprint|\\Z)',final_text)
+                  if not m or not re.search(r'\\(pad "'+pad+r'"[\\s\\S]*?\\(net \\d+ "'+re.escape(net)+r'"\\)',m.group(0)):
+                      lost.append((f"K{i}",pad,net))
+          print("SES_RELAY_CONTACT_NET_AUDIT lost=",lost)
+          if lost:
+              raise SystemExit("SES relay contact nets lost: "+repr(lost))
           shutil.copyfile(dru,"PSN-Presepe-Mega-FREEROUTED.kicad_dru")
           PY
           test -f PSN-Presepe-Mega-FREEROUTED.kicad_dru
